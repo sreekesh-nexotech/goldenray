@@ -3,7 +3,9 @@
 
 
 
-
+html{
+  scroll-behavior: smooth;
+}
 body {
   font-family: 'Switzer', sans-serif;
 }
@@ -21,3 +23,4 @@ body {
 .btn-sm {
   @apply px-3 py-[5px];
 }
+

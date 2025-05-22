@@ -27,9 +27,9 @@ export default function HeroHome() {
       ></div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-5 py-32 max-w-7xl flex flex-col md:flex-row items-center h-full lg:gap-8 gap-0">
+      <div className="relative z-10 container mx-auto px-4 py-32 max-w-7xl flex flex-col md:flex-row items-center h-full lg:gap-40 gap-0">
         {/* Left Side - Text */}
-        <div className="w-full md:w-1/2 text-center md:text-left">
+        <div className="w-full  text-center md:text-left">
             <h1 className="text-[40px]/10 sm:text-5xl lg:text-7xl font-bold text-[#123532] mb-4">
             We help you go solar in <span className="text-[#ED8723] line-through">months</span>
           </h1>
@@ -48,7 +48,7 @@ export default function HeroHome() {
         </div>
 
         {/* Right Side - Image */}
-        <div className="w-full md:w-1/2 mt-10 md:mt-0 flex justify-center">
+        <div className="w-full mx-auto  mt-10 md:mt-0 flex justify-center">
           <Image
             src={heroImg}
             alt="Solar House"

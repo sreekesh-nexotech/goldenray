@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <header className="flex justify-between items-center p-4 lg:px-36 shadow-md bg-white fixed w-full top-0 z-50">
       <div className="text-2xl font-medium text-[#123532]">
-        G<span className="text-[#FBC207]">o</span>lden Ray
+       <Link href="/"> G<span className="text-[#FBC207]">o</span>lden Ray </Link>
       </div>
 
       {/* Navigation Bar */}
