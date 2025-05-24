@@ -1,3 +1,4 @@
+"use client";
 import Link from 'next/link';
 import Image from 'next/image'; 
 import footerLogo from '../../../public/Mask group.png'
@@ -8,6 +9,18 @@ import YoutubeLogo from '../../../public/YoutubeLogo.png'
 
 
 export default function Footer() {
+
+  //form handling
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const name = formData.get('name') as string; // Type assertion for string
+      const mobileNumber = formData.get('mobileNumber') as string; // Type assertion for string
+      e.currentTarget.reset()
+      // API calling goes here
+    };
+
+
   return (
     <section className="w-full bg-[#074A4D] rounded-t-3xl text-white py-16 px-4 sm:px-8 md:px-12 relative overflow-hidden">
       {/* Grid Background Layer */}
@@ -44,20 +57,28 @@ export default function Footer() {
         </div>
 
         {/* Right - Form */}
-        <form className="flex flex-col gap-4 w-full max-w-sm max-sm:max-w-full">
+        <form className="flex flex-col gap-4 w-full max-w-sm max-sm:max-w-full" onSubmit={handleSubmit}>
           <input
             type="text"
+            name='name'
             placeholder="Name"
             className="px-4 py-3 rounded-xl text-black bg-white focus:outline-none"
+            required
+            pattern="[A-Za-z\s]{3,}"
+            title="Please enter at least 3 alphabetic characters."
           />
           <input
             type="text"
+            name='mobileNumber'
             placeholder="Mobile Number"
             className="px-4 py-3 rounded-xl text-black bg-white mb-3 focus:outline-none"
+            required
+            pattern="[0-9]{*}"
+            title="Enter a valid phone number"
           />
-          <Link href='/' className="btn md:w-2/5 w-full bg-[#F7BA41] text-[#272218] hover:bg-yellow-500">
+          <button className="btn md:w-2/5 w-full bg-[#F7BA41] text-[#272218] hover:bg-yellow-500">
               Book Now
-          </Link>
+          </button>
         </form>
       </div>
 

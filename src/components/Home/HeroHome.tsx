@@ -32,7 +32,7 @@ export default function HeroHome() {
 
           <div className="flex flex-row justify-center text-xs lg:text-lg md:justify-start lg:gap-4 gap-2 ">
             <ButtonYellow content="Calculate Solar Advantage" ButtonLink="#solar-advantage"/>
-            <Link href="/" className="btn border border-[#074A4D] text-[#074A4D] hover:bg-yellow-100">
+            <Link href="#booking" className="btn border border-[#074A4D] text-[#074A4D] hover:bg-yellow-100">
               Book Consultation
             </Link>
           </div>

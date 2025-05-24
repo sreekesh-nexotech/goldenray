@@ -4,6 +4,7 @@ import HeroHome from '@/components/Home/HeroHome';
 import SolarAdvantage from '@/components/Home/solar-advantage';
 import SolarSteps from '@/components/Home/solar-steps';
 import HomeTestimonial from '@/components/Home/Testimomial';
+import Booking from './Booking';
 
 export default function Main() {
   return (
@@ -13,6 +14,7 @@ export default function Main() {
       <SolarAdvantage/>
       <HomeTestimonial/>
       <SolarSteps/>
+      <Booking/>
     </section>
   );
 }
