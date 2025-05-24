@@ -6,6 +6,7 @@ import SolarSteps from '@/components/Home/solar-steps';
 import HomeTestimonial from '@/components/Home/Testimomial';
 import Booking from './Booking';
 import Services from './Services';
+import GroupPurchaseScheme from './Group-purchase';
 
 export default function Main() {
   return (
@@ -17,6 +18,7 @@ export default function Main() {
       <SolarSteps/>
       <Booking/>
       <Services/>
+      <GroupPurchaseScheme/>
     </section>
   );
 }
