@@ -1,11 +1,11 @@
-// src/app/page.tsx
-import HeroHome from '@/components/HeroHome';
+import Main from "@/components/Home/home";
+
+
 
 export default function Home() {
   return (
-    <>
-      <HeroHome />
-      
-    </>
+    <section  className='font-switzer'>
+      <Main/>
+    </section>
   );
 }

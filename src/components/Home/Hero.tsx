@@ -1,3 +1,4 @@
+import PageIllustration from "@/components/ui/page-illustration";
 
 type HeroProps = {
   title:string;
@@ -10,16 +11,7 @@ export default function Hero({
 }:HeroProps) {
   return (
       <section className="relative w-full  overflow-hidden min-h-screen">
-      {/* Grid Background Layer */}
-      <div
-        className="absolute inset-0 z-0 opacity-50 pointer-events-none 
-          bg-[url('../../public/grid.svg')] 
-          bg-no-repeat 
-          bg-auto 
-          mask-[linear-gradient(to_right,transparent,black_20%,black_70%,transparent)] 
-          [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_70%,transparent)]"
-      />
-
+      <PageIllustration/>
       {/* Radial Gradients Layer */}
       <div
         className="absolute inset-0 z-0 pointer-events-none"

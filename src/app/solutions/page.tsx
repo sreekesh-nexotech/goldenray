@@ -1,4 +1,5 @@
-import Hero from "@/components/Hero";
+import Hero from "@/components/Home/Hero";
+
 
 export default function Solutions(){
     return(

@@ -1,20 +1,12 @@
 import Image from 'next/image'; 
-import heroImg from '../../public/heroImg.png'
+import heroImg from '../../../public/heroImg.png'
 import Link from 'next/link';
+import PageIllustration from '@/components/ui/page-illustration';
 
 export default function HeroHome() {
   return (
-    <section className="relative w-full  overflow-hidden min-h-screen">
-      {/* Grid Background Layer */}
-      <div
-        className="absolute inset-0 z-0 opacity-50 pointer-events-none 
-          bg-[url('../../public/grid.svg')] 
-          bg-no-repeat 
-          bg-auto 
-          mask-[linear-gradient(to_right,transparent,black_20%,black_70%,transparent)] 
-          [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_70%,transparent)]"
-      />
-
+    <section className="relative w-full  overflow-hidden ">
+     <PageIllustration/>
       {/* Radial Gradients Layer */}
       <div
         className="absolute inset-0 z-0 pointer-events-none"
@@ -38,7 +30,7 @@ export default function HeroHome() {
           </p>
 
           <div className="flex flex-row justify-center text-xs lg:text-lg md:justify-start lg:gap-4 gap-2 ">
-            <Link href='/' className="btn bg-[#F7BA41] text-[#272218] hover:bg-yellow-500">
+            <Link href='#solar-advantage' className="btn bg-[#F7BA41] text-[#272218] hover:bg-yellow-500">
               Calculate solar advantage
             </Link>
             <Link href="/" className="btn border border-[#074A4D] text-[#074A4D] hover:bg-yellow-100">
