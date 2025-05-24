@@ -2,6 +2,7 @@ import Image from 'next/image';
 import heroImg from '../../../public/heroImg.png'
 import Link from 'next/link';
 import PageIllustration from '@/components/ui/page-illustration';
+import ButtonYellow from '../ui/Button-yellow';
 
 export default function HeroHome() {
   return (
@@ -30,9 +31,7 @@ export default function HeroHome() {
           </p>
 
           <div className="flex flex-row justify-center text-xs lg:text-lg md:justify-start lg:gap-4 gap-2 ">
-            <Link href='#solar-advantage' className="btn bg-[#F7BA41] text-[#272218] hover:bg-yellow-500">
-              Calculate solar advantage
-            </Link>
+            <ButtonYellow content="Calculate Solar Advantage" ButtonLink="#solar-advantage"/>
             <Link href="/" className="btn border border-[#074A4D] text-[#074A4D] hover:bg-yellow-100">
               Book Consultation
             </Link>

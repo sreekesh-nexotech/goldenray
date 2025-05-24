@@ -1,7 +1,7 @@
 "use client";
 import { ChangeEvent, useState } from "react";
-import Link from "next/link";
 import PageIllustration from "@/components/ui/page-illustration";
+import ButtonYellow from "../ui/Button-yellow";
 
 export default function SolarAdvantage() {
   const [propertyType, setPropertyType] = useState("");
@@ -82,12 +82,8 @@ export default function SolarAdvantage() {
             </div>
 
             {/* Calculate Button */}
-            <Link
-              href="/"
-              className="btn bg-[#F7BA41] text-[#272218] hover:bg-yellow-500"
-            >
-              Calculate solar advantage
-            </Link>
+            <ButtonYellow content="Calculate Solar Advantage" ButtonLink="#solar-advantage"/>
+            
           </form>
         </div>
       </div>
