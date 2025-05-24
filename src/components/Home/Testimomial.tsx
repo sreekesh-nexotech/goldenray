@@ -82,7 +82,7 @@ export default function HomeTestimonial() {
               className="w-full flex flex-col xl:flex-row items-stretch justify-baseline rounded-xl"
             >
               <div className="w-full xl:w-1/2 h-auto">
-                <div className="relative rounded-l-2xl overflow-hidden">
+                <div className="relative rounded-2xl lg:rounded-l-2xl overflow-hidden">
                   <ReactPlayer
                     url={`http://www.youtube.com/embed/${testimonial.videoId}`}
                     width="100%"
