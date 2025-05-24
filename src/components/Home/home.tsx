@@ -5,6 +5,7 @@ import SolarAdvantage from '@/components/Home/solar-advantage';
 import SolarSteps from '@/components/Home/solar-steps';
 import HomeTestimonial from '@/components/Home/Testimomial';
 import Booking from './Booking';
+import Services from './Services';
 
 export default function Main() {
   return (
@@ -15,6 +16,7 @@ export default function Main() {
       <HomeTestimonial/>
       <SolarSteps/>
       <Booking/>
+      <Services/>
     </section>
   );
 }
