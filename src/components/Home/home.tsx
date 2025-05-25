@@ -8,6 +8,7 @@ import Booking from './Booking';
 import Services from './Services';
 import GroupPurchaseScheme from './Group-purchase';
 import Faq from './faq';
+import Partners from './Partners';
 
 export default function Main() {
   return (
@@ -21,6 +22,7 @@ export default function Main() {
       <Services serviceTitle="We help you all the way"/>
       <GroupPurchaseScheme/>
       <Faq/>
+      <Partners/>
     </section>
   );
 }
