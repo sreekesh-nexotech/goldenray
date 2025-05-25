@@ -6,17 +6,19 @@ import vector3 from '../../../public/Vector (3).png'
 import vector4 from '../../../public/Vector (4).png'
 import vector5 from '../../../public/Vector (5).png'
 
+type servicesProps = {
+  serviceTitle:string;
+}
 
 
-
-export default function Services() {
+export default function Services({serviceTitle}:servicesProps) {
   return (
     // Main container for the section, using Tailwind for padding and background
-    <section className="py-16 sm:py-20  font-inter mb-20 mt-10">
+    <section className="py-16 sm:py-20  font-inter mb-10 lg:mb-20 mt-10">
       <div className="container mx-auto px-4">
         {/* Section Title */}
         <h1 className="text-3xl md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-15 text-center">
-          We help you all the way
+          {serviceTitle}
         </h1>
 
         {/* Grid for service items */}

@@ -17,7 +17,7 @@ export default function SolarAdvantage() {
 
       <div className="relative max-w-7xl mx-auto text-center px-4 md:px-0">
         {/* Heading */}
-        <h1 className="text-3xl md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-15">
+        <h1 className="text-4xl md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-15">
           Calculate Your Solar Advantage
         </h1>
 
@@ -82,7 +82,7 @@ export default function SolarAdvantage() {
             </div>
 
             {/* Calculate Button */}
-            <ButtonYellow content="Calculate Solar Advantage" ButtonLink="#solar-advantage"/>
+            <ButtonYellow content="Calculate Solar Advantage" ButtonLink="/"/>
             
           </form>
         </div>

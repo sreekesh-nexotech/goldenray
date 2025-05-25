@@ -13,8 +13,8 @@ import vector3 from '../../../public/Vector (9).png'
 // Main GroupPurchaseScheme component
 export default function GroupPurchaseScheme() {
   return (
-    <section className='px-0 md:mx-10'>
-      <div className="container mx-auto px-4">
+    <section className='px-0 md:mx-10 mb-10'>
+      <div className="container mx-auto px-4 ">
         {/* Main content card */}
         <div className="bg-[#F7BA41] rounded-3xl p-8 sm:p-12 lg:p-16 flex flex-col gap-2 items-center xl:items-stretch">
           <div className='flex flex-col xl:flex-row justify-between items-center '>
