@@ -1,4 +1,4 @@
-import Hero from "@/components/Home/Hero";
+import Hero from "@/components/ui/Hero";
 
 export default function Projects(){
     return(

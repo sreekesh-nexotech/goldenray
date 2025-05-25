@@ -1,7 +1,7 @@
 "use client";
 import { ChangeEvent, useState } from "react";
 import PageIllustration from "@/components/ui/page-illustration";
-import ButtonYellow from "../ui/Button-yellow";
+import ButtonYellow from "@/components/ui/Button-yellow";
 
 export default function SolarAdvantage() {
   const [propertyType, setPropertyType] = useState("");
