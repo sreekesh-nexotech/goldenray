@@ -1,10 +1,10 @@
 import ServiceItem from "@/components/ServiceItem";
 import Image from "next/image";
-import vector1 from '../../public/Vector (1).png'
-import vector2 from '../../public/Vector (2).png'
-import vector3 from '../../public/Vector (3).png'
-import vector4 from '../../public/Vector (4).png'
-import vector5 from '../../public/Vector (5).png'
+import vector1 from '../../public/Vector-1.png'
+import vector2 from '../../public/Vector-2.png'
+import vector3 from '../../public/Vector-3.png'
+import vector4 from '../../public/Vector-4.png'
+import vector5 from '../../public/Vector-5.png'
 
 type servicesProps = {
   serviceTitle:string;

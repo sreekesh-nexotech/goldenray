@@ -16,7 +16,7 @@ export default function Booking(){
   };
 
   return (
-    <div className="relative xl:min-h-screen bg-cover bg-no-repeat md:bg-center bg-center scroll-mt-10" style={{ backgroundImage: "url('/Image 1 3.png')" }} id='booking'>
+    <div className="relative xl:min-h-screen bg-cover bg-no-repeat md:bg-center bg-center scroll-mt-10" style={{ backgroundImage: "url('/Image-1-3.png')" }} id='booking'>
 
       <div className="absolute inset-0 bg-black opacity-20"></div>      {/* Overlay for better text readability */}
 

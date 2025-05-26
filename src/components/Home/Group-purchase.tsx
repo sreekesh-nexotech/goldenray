@@ -3,11 +3,11 @@
 import React from 'react';
 import Image from 'next/image';
 import GroupPurchaseItem from './Group-purchase-item';
-import people from '../../../public/People 1.png'
-import line from '../../../public/Vector 6.png'
-import vector1 from '../../../public/Vector (7).png'
-import vector2 from '../../../public/Vector (8).png'
-import vector3 from '../../../public/Vector (9).png'
+import people from '../../../public/People-1.png'
+import line from '../../../public/Vector-6.png'
+import vector1 from '../../../public/Vector-7.png'
+import vector2 from '../../../public/Vector-8.png'
+import vector3 from '../../../public/Vector-9.png'
 
 
 // Main GroupPurchaseScheme component

@@ -44,7 +44,7 @@ export default function SolutionBox({
               src={BoxImg}
               width={300}
               height={300}
-              alt="Residential Solar Solution"
+              alt={BoxTitle}
               className="rounded-xl w-full h-full" 
             />
           </div>

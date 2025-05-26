@@ -4,12 +4,12 @@ import React from 'react';
 
 
 const logos = [
-  '/p (6).png', 
-  '/p (1).png',
-  '/p (2).png',
-  '/p (3).png',
-  '/p (4).png',
-  '/p (5).png',
+  '/p-6.png', 
+  '/p-1.png',
+  '/p-2.png',
+  '/p-3.png',
+  '/p-4.png',
+  '/p-5.png',
 ];
 
 const InfiniteLogoScroll = () => {

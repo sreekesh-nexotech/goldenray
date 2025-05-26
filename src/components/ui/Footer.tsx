@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image'; 
-import footerLogo from '../../../public/Mask group.png'
+import footerLogo from '../../../public/Mask-group.png'
 import LinkedInLogo from '../../../public/LinkedinLogo.png'
 import FacebookLogo from '../../../public/FacebookLogo.png'
 import InstagramLogo from '../../../public/InstagramLogo.png'
