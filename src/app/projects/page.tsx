@@ -1,4 +1,4 @@
-'use client'; // This directive marks the component as a Client Component
+'use client'; 
 
 
 
@@ -10,16 +10,17 @@ import ProjectCard from '@/components/Projects/Project-card';
 
 
 // Define the Project interface for type safety, same as in ProjectCard.tsx
-interface Project {
+type Project = {
   id: string;
   category: 'Residential' | 'Commercial' | 'Industrial';
   title: string;
-  location: string;
   description: string;
   imageUrl: string;
   area: string;
   power: string;
   usp: string;
+  uspTextColor:string;
+  uspBgColor:string;
 }
 
 // Mock data for projects - replace this with actual data from your dashboard API
@@ -28,56 +29,61 @@ const mockProjects: Project[] = [
     id: '1',
     category: 'Residential',
     title: 'Residential Project in Calicut, Kerala',
-    location: 'Calicut, Kerala',
     description: 'Rooftop installation for a townhouse for a family of four in Calicut, Kerala.',
-    imageUrl: '/Commercial-Image-2.png', // Using path from your public/images
+    imageUrl: '/Residential-3.png', 
     area: '10,400 m2',
     power: '200 KW',
     usp: '1 TON CO₂ SAVED ANNUALLY',
+    uspTextColor:'text-[#AD812A]',
+    uspBgColor:'bg-[#FFF8E9]'
   },
   {
     id: '2',
     category: 'Commercial',
     title: 'Commercial Project in Palakkad, Kerala',
-    location: 'Palakkad, Kerala',
     description: '500KW solar panel installation for a 5 story office building space in Palakkad, Kerala.',
-    imageUrl: '/Commercial-Image-2.png', // Using path from your public/images
+    imageUrl: '/Commercial-1.png',
     area: '10,400 m2',
     power: '200 KW',
     usp: 'INSTALLATION DONE IN 1 WEEK',
+    uspTextColor:'text-[#124944]',
+    uspBgColor:'bg-[#EFF8F8]'
   },
   {
     id: '3',
     category: 'Residential',
     title: 'Residential Project in Trissur, Kerala',
-    location: 'Trissur, Kerala',
     description: 'Solar power is transforming homes, businesses, and industries with smart solar solutions.',
-    imageUrl: '/Commercial-Image-2.png', // Using path from your public/images
+    imageUrl: '/Residential-4.png', 
     area: '10,400 m2',
     power: '200 KW',
     usp: '12L ANNUAL SAVINGS PER YEAR',
+    uspTextColor:'text-[#1989BB]',
+    uspBgColor:'bg-[#E9F8FF]'
   },
   {
     id: '4',
     category: 'Residential',
     title: 'Residential Project in Cochin, Kerala',
-    location: 'Cochin, Kerala',
     description: '200KW solar panel installation for a two-story townhouse in Cochin, Kerala.',
-    imageUrl: '/Commercial-Image-2.png', 
+    imageUrl: '/Residential-1.png', 
     area: '10,400 m2',
     power: '200 KW',
     usp: 'INSTALLATION DONE IN 3 DAYS',
+    uspTextColor:'text-[#124944]',
+    uspBgColor:'bg-[#EFF8F8]'
   },
   {
     id: '5',
     category: 'Industrial',
-    title: 'Industrial Project in Coimbatore, TN',
-    location: 'Coimbatore, Tamil Nadu',
+    title: 'Industrial Project in Tuticorin, Tamil Nadu',
     description: 'Large-scale solar farm installation for a manufacturing plant, ensuring energy independence.',
-    imageUrl: '/Commercial-Image-2.png',
+    imageUrl: '/Industrial-1.png',
     area: '50,000 m2',
     power: '1 MW',
     usp: 'REDUCED OPERATIONAL COSTS BY 30%',
+    uspTextColor:'text-[#AD812A]',
+    uspBgColor:'bg-[#FFF8E9]'
   },
 ];
 
@@ -90,7 +96,7 @@ export default function Projects(){
   // Simulate fetching data
   useEffect(() => {
     setLoading(true);
-    // In a real application, you would fetch data here from an API endpoint
+    // In future we can fetch data here from an API endpoint
     // For now, we're using mock data with a slight delay to simulate network call
     const timer = setTimeout(() => {
       setProjects(mockProjects);
@@ -126,20 +132,20 @@ export default function Projects(){
         {/* Hero section */}
         <Hero title="Our Success Stories" description="See how we’re transforming homes, businesses, and industries with smart solar solutions"/>
         
-        
         {/* project content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20">
+      <div className=" mx-auto px-4 lg:px-18 xl:px-36 flex flex-col items-center mb-20">
 
         {/* Category Tabs */}
-        <div className="flex justify-center mb-8 space-x-4 overflow-x-auto pb-2">
+        <div className="flex justify-between items-center mb-16 p-2 bg-[#F3F3F3] xl:w-3/5 max-w-full rounded-full overflow-auto ">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-6 py-3 rounded-full text-sm font-medium transition duration-300 ease-in-out whitespace-nowrap
+              className={`
+                flex-1 text-center py-3 px-3 rounded-full text-xs md:text-xl font-medium transition duration-300 ease-in-out whitespace-nowrap cursor-pointer
                 ${activeCategory === category
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-white text-[#2C2821] font-semibold' // Active state: white background, dark text, subtle shadow
+                  : 'text-[#123532] hover:bg-gray-100' // Inactive state: dark text, slight hover background
                 }`}
             >
               {category}
@@ -148,16 +154,12 @@ export default function Projects(){
         </div>
 
         {/* Projects Grid */}
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredProjects.length > 0 ? (
+        <div className="grid lg:grid-cols-2 gap-20">
+          {
             filteredProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))
-          ) : (
-            <p className="col-span-full text-center text-gray-600 text-lg">
-              No projects found in this category.
-            </p>
-          )}
+          }
         </div>
       </div>
     </section>
