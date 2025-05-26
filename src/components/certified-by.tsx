@@ -1,9 +1,9 @@
 import Image from "next/image";
-import logo1 from "../../../public/image-33.png";
-import logo2 from "../../../public/image-36.png";
-import logo3 from "../../../public/image-34.png";
-import logo4 from "../../../public/image-37.png";
-import logo5 from "../../../public/image-32.png";
+import logo1 from "../../public/image-33.png";
+import logo2 from "../../public/image-36.png";
+import logo3 from "../../public/image-34.png";
+import logo4 from "../../public/image-37.png";
+import logo5 from "../../public/image-32.png";
 
 export default function Certified() {
   return (

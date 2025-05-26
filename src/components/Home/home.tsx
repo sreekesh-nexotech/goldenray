@@ -1,5 +1,5 @@
 // src/app/page.tsx
-import Certified from '@/components/Home/certified-by';
+import Certified from '@/components/certified-by';
 import HeroHome from '@/components/Home/HeroHome';
 import SolarAdvantage from '@/components/solar-advantage';
 import SolarSteps from '@/components/Home/solar-steps';
