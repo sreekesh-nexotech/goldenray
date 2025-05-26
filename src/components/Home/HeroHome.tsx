@@ -8,16 +8,7 @@ export default function HeroHome() {
   return (
     <section className="relative w-full  overflow-hidden ">
      <PageIllustration/>
-      {/* Radial Gradients Layer */}
-      <div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 80% at 0% 18%, #F8F2E1 0%, rgba(255, 255, 255, 0) 70%),
-            radial-gradient(ellipse 80% 80% at 100% 18%, #F8F2E1 0%, rgba(255, 255, 255, 0) 70%)
-          `,
-        }}
-      ></div>
+      
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-32 max-w-7xl flex flex-col md:flex-row items-center h-full lg:gap-40 gap-0">

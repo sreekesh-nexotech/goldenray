@@ -29,7 +29,7 @@ const mockProjects: Project[] = [
     id: '1',
     category: 'Residential',
     title: 'Residential Project in Calicut, Kerala',
-    description: 'Rooftop installation for a townhouse for a family of four in Calicut, Kerala.',
+    description: 'Rooftop installation for a townhouse for a family of four in Calicut, Kerala',
     imageUrl: '/Residential-3.png', 
     area: '10,400 m2',
     power: '200 KW',
@@ -41,7 +41,7 @@ const mockProjects: Project[] = [
     id: '2',
     category: 'Commercial',
     title: 'Commercial Project in Palakkad, Kerala',
-    description: '500KW solar panel installation for a 5 story office building space in Palakkad, Kerala.',
+    description: '500KW solar panel installation for a 5 story office building space in Palakkad, Kerala',
     imageUrl: '/Commercial-1.png',
     area: '10,400 m2',
     power: '200 KW',
@@ -52,12 +52,12 @@ const mockProjects: Project[] = [
   {
     id: '3',
     category: 'Residential',
-    title: 'Residential Project in Trissur, Kerala',
-    description: 'Solar power is transforming homes, businesses, and industries with smart solar solutions.',
+    title: 'Residential Project in Thrissur, Kerala',
+    description: 'See how we’re transforming homes, businesses, and industries with smart solar solutions',
     imageUrl: '/Residential-4.png', 
     area: '10,400 m2',
     power: '200 KW',
-    usp: '12L ANNUAL SAVINGS PER YEAR',
+    usp: '1.2L ANNUAL SAVINGS PER YEAR',
     uspTextColor:'text-[#1989BB]',
     uspBgColor:'bg-[#E9F8FF]'
   },
@@ -65,7 +65,7 @@ const mockProjects: Project[] = [
     id: '4',
     category: 'Residential',
     title: 'Residential Project in Cochin, Kerala',
-    description: '200KW solar panel installation for a two-story townhouse in Cochin, Kerala.',
+    description: '200KW solar panel installation for a two story house in Cochin, Kerala',
     imageUrl: '/Residential-1.png', 
     area: '10,400 m2',
     power: '200 KW',
@@ -77,11 +77,11 @@ const mockProjects: Project[] = [
     id: '5',
     category: 'Industrial',
     title: 'Industrial Project in Tuticorin, Tamil Nadu',
-    description: 'Large-scale solar farm installation for a manufacturing plant, ensuring energy independence.',
+    description: '1MW solar panel installation for a 5 story office building space in Palakkad, Kerala',
     imageUrl: '/Industrial-1.png',
     area: '10,400 m2',
     power: '200 KW',
-    usp: '75000 KWh generated per year',
+    usp: '75000 KWH GENERATED PER YEAR',
     uspTextColor:'text-[#AD812A]',
     uspBgColor:'bg-[#FFF8E9]'
   },
@@ -145,7 +145,7 @@ export default function ProjectMain(){
         <Hero title="Our Success Stories" description="See how we’re transforming homes, businesses, and industries with smart solar solutions"/>
         
         {/* project content */}
-      <div className=" mx-auto px-4 lg:px-18 xl:px-36 flex flex-col items-center mb-20">
+      <div className=" mx-auto px-3 lg:px-18 xl:px-36 flex flex-col items-center mb-20">
 
         {/* Category Tabs */}
         <div className="flex justify-between items-center mb-16 p-2 bg-[#F3F3F3] xl:w-3/5 max-w-full rounded-full overflow-auto ">
@@ -154,7 +154,7 @@ export default function ProjectMain(){
               key={category}
               onClick={() => setActiveCategory(category)}
               className={`
-                flex-1 text-center py-3 px-3 rounded-full text-xs md:text-xl font-medium transition duration-300 ease-in-out whitespace-nowrap cursor-pointer
+                flex-1 text-center py-3 px-2 rounded-full text-xs md:text-xl font-medium transition duration-300 ease-in-out whitespace-nowrap cursor-pointer
                 ${activeCategory === category
                   ? 'bg-white text-[#2C2821] font-semibold' // Active state: white background, dark text
                   : 'text-[#123532] hover:bg-gray-100' // Inactive state: dark text, slight hover background
