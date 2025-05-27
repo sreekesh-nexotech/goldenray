@@ -3,19 +3,9 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Define the Project interface for type safety
-type Project = {
-  id: string;
-  category: 'Residential' | 'Commercial' | 'Industrial';
-  title: string;
-  description: string;
-  imageUrl: string;
-  area: string;
-  power: string;
-  usp: string; // Unique Selling Proposition, like "1 TON CO₂ SAVED ANNUALLY"
-  uspTextColor: string;
-  uspBgColor: string;
-}
+
+///importing project type for type safety
+import { Project } from '@/data/Mock-projects';
 
 type ProjectCardProps = {
   project: Project;
@@ -45,7 +35,7 @@ export default function ProjectCard({ project }:ProjectCardProps) {
           </h3>
           {/* Project Description */}
           <p className="text-gray-700 text-xl line-clamp-3">
-            {project.description}
+            {project.cardDescription}
           </p>
 
           {/* Area and Power Section */}

@@ -8,96 +8,9 @@ import ProjectCard from '@/components/Projects/Project-card';
 
 
 
-
-// Define the Project type for type safety, same as in ProjectCard.tsx
-type Project = {
-  id: string;
-  category: 'Residential' | 'Commercial' | 'Industrial';
-  title: string;
-  description: string;
-  imageUrl: string;
-  area: string;
-  power: string;
-  usp: string;
-  uspTextColor:string;
-  uspBgColor:string;
-}
-
-// Mock data for projects - replace this with actual data from your dashboard API
-const mockProjects: Project[] = [
-  {
-    id: '1',
-    category: 'Residential',
-    title: 'Residential Project in Calicut, Kerala',
-    description: 'Rooftop installation for a townhouse for a family of four in Calicut, Kerala',
-    imageUrl: '/Residential-3.png', 
-    area: '10,400 m2',
-    power: '200 KW',
-    usp: '1 TON CO₂ SAVED ANNUALLY',
-    uspTextColor:'text-[#AD812A]',
-    uspBgColor:'bg-[#FFF8E9]'
-  },
-  {
-    id: '2',
-    category: 'Commercial',
-    title: 'Commercial Project in Palakkad, Kerala',
-    description: '500KW solar panel installation for a 5 story office building space in Palakkad, Kerala',
-    imageUrl: '/Commercial-1.png',
-    area: '10,400 m2',
-    power: '200 KW',
-    usp: 'INSTALLATION DONE IN 1 WEEK',
-    uspTextColor:'text-[#124944]',
-    uspBgColor:'bg-[#EFF8F8]'
-  },
-  {
-    id: '3',
-    category: 'Residential',
-    title: 'Residential Project in Thrissur, Kerala',
-    description: 'See how we’re transforming homes, businesses, and industries with smart solar solutions',
-    imageUrl: '/Residential-4.png', 
-    area: '10,400 m2',
-    power: '200 KW',
-    usp: '1.2L ANNUAL SAVINGS PER YEAR',
-    uspTextColor:'text-[#1989BB]',
-    uspBgColor:'bg-[#E9F8FF]'
-  },
-  {
-    id: '4',
-    category: 'Residential',
-    title: 'Residential Project in Cochin, Kerala',
-    description: '200KW solar panel installation for a two story house in Cochin, Kerala',
-    imageUrl: '/Residential-1.png', 
-    area: '10,400 m2',
-    power: '200 KW',
-    usp: 'INSTALLATION DONE IN 3 DAYS',
-    uspTextColor:'text-[#124944]',
-    uspBgColor:'bg-[#EFF8F8]'
-  },
-  {
-    id: '5',
-    category: 'Industrial',
-    title: 'Industrial Project in Tuticorin, Tamil Nadu',
-    description: '1MW solar panel installation for a 5 story office building space in Palakkad, Kerala',
-    imageUrl: '/Industrial-1.png',
-    area: '10,400 m2',
-    power: '200 KW',
-    usp: '75000 KWH GENERATED PER YEAR',
-    uspTextColor:'text-[#AD812A]',
-    uspBgColor:'bg-[#FFF8E9]'
-  },
-  {
-    id: '6',
-    category: 'Residential',
-    title: 'Residential Project in Madurai, Tamil Nadu',
-    description: 'See how we’re transforming homes, businesses, and industries with smart solar solutions',
-    imageUrl: '/Residential-2.png',
-    area: '10,400 m2',
-    power: '200 KW',
-    usp: 'INSTALLATION  DONE IN 1 WEEK',
-    uspTextColor:'text-[#124944]',
-    uspBgColor:'bg-[#EFF8F8]'
-  },
-];
+//importing mock data
+import { Project } from '@/data/Mock-projects';
+import { mockProjects } from '@/data/Mock-projects';
 
 export default function ProjectMain(){
   const [projects, setProjects] = useState<Project[]>([]);
