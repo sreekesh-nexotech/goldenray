@@ -13,7 +13,7 @@ export default function SolarAdvantage() {
   return (
     <div className="relative bg-white py-12 mt-12 scroll-mt-30" id="solar-advantage">
       {/* Grid Background Layer */}
-      <PageIllustration />
+      <PageIllustration isGradient={false}/>
 
       <div className="relative max-w-7xl mx-auto text-center px-4 md:px-0">
         {/* Heading */}

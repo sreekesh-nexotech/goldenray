@@ -1,4 +1,8 @@
-export default function PageIllustration(){
+type PageIllustrationProps = {
+  isGradient?: boolean;
+}
+
+export default function PageIllustration({isGradient = true}: PageIllustrationProps){
     return(
         <>
         <div
@@ -10,7 +14,8 @@ export default function PageIllustration(){
             [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_70%,transparent)]">
         </div>
         {/* Radial Gradients Layer */}
-      <div
+      {isGradient && (
+        <div
         className="absolute inset-0 z-0 pointer-events-none"
         style={{
           background: `
@@ -19,6 +24,7 @@ export default function PageIllustration(){
           `,
         }}
       ></div>
+      )}
       </>
     )
     
