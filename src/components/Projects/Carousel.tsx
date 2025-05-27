@@ -10,65 +10,95 @@ type CarouselProps = {
 export default function Carousel({ images }: CarouselProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Handle next image
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
 
-  // Handle previous image
   const prevImage = () => {
     setCurrentImageIndex((prevIndex) =>
       prevIndex === 0 ? images.length - 1 : prevIndex - 1
     );
   };
 
-  // Handle direct image selection via indicators
-  const goToImage = (index: number) => {
-    setCurrentImageIndex(index);
-  };
+  const prevIndex = currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1;
+  const nextIndex = currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1;
+
+  const sideImages = [
+    { src: images[prevIndex], onClick: prevImage, alt: "Previous image", position: "left" },
+    { src: images[nextIndex], onClick: nextImage, alt: "Next image", position: "right" },
+  ];
 
   return (
-    <div className="relative w-full h-[400px] sm:h-[500px] md:h-[600px] overflow-hidden rounded-2xl">
-      {/* Image */}
-      <Image
-        src={images[currentImageIndex]}
-        alt={`Project image ${currentImageIndex + 1}`}
-        layout="fill"
-        objectFit="cover"
-        className="transition-opacity duration-300"
-      />
-
-      {/* Carousel Controls */}
-      <button
-        onClick={prevImage}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition"
-        aria-label="Previous image"
-      >
-        ←
-      </button>
-      <button
-        onClick={nextImage}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition"
-        aria-label="Next image"
-      >
-        →
-      </button>
-
-      {/* Image Indicators */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToImage(index)}
-            className={`h-2 w-2 rounded-full ${
-              index === currentImageIndex ? 'bg-white' : 'bg-gray-400'
-            }`}
-            aria-label={`Go to image ${index + 1}`}
-          />
+    <div className="flex items-center w-full h-[300px] sm:h-[500px] md:h-[600px] overflow-hidden relative">
+      
+      {/* Left Side Image */}
+      {sideImages
+        .filter((img) => img.position === "left")
+        .map((img, index) => (
+          <div
+            key={`left-${index}`}
+            className="lg:w-1/6 h-full cursor-pointer relative mr-2"
+          >
+            <Image
+              src={img.src}
+              alt={img.alt}
+              fill
+              className="object-cover object-right  transition-opacity duration-300 rounded-r-2xl"
+            />
+          </div>
         ))}
+
+      {/* Main Image */}
+      <div className="w-full lg:w-4/6 h-full relative">
+        <div className="absolute inset-0 z-0">
+          <div
+            className="w-full h-full transition-opacity duration-500 ease-in-out"
+            style={{ opacity: 1 }}
+            key={images[currentImageIndex]} // Key ensures re-render on image change
+          >
+            <Image
+              src={images[currentImageIndex]}
+              alt={`Project image ${currentImageIndex + 1}`}
+              fill
+              className="object-cover rounded-2xl"
+            />
+          </div>
+        </div>
+
+
       </div>
+
+      {/* Right Side Image */}
+      {sideImages
+        .filter((img) => img.position === "right")
+        .map((img, index) => (
+          <div
+            key={`right-${index}`}
+            className="lg:w-1/6 h-full cursor-pointer relative ml-2"
+          >
+            <Image
+              src={img.src}
+              alt={img.alt}
+              fill
+              className="object-cover  object-left transition-opacity duration-300 rounded-l-2xl"
+            />
+          </div>
+        ))}
+                {/* Navigation Buttons */}
+        <button
+          onClick={prevImage}
+          className="z-10 w-10 h-10 flex items-center justify-center absolute left-4 top-1/2 transform -translate-y-1/2 bg-[#D9D9D9A6] bg-opacity-60 text-white p-3 rounded-full hover:bg-opacity-90 transition cursor-pointer"
+        >
+          <Image src='/left-arrow.png' alt='left-arrow' width={10} height={10}/>
+        </button>
+        <button
+          onClick={nextImage}
+          className="z-10  w-10 h-10 flex items-center justify-center absolute right-4 top-1/2 transform -translate-y-1/2 bg-[#D9D9D9A6] bg-opacity-60 text-white p-3 rounded-full hover:bg-opacity-90 transition cursor-pointer"
+        >
+          <Image src='/right-arrow.png' alt='right-arrow' width={10} height={10}/>
+        </button>
     </div>
   );
 }

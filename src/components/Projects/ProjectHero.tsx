@@ -16,13 +16,13 @@ export default function ProjectHero({
               <PageIllustration/>
         
               {/* Content */}
-              <div className="relative z-10  mx-auto px-4 pt-40 pb-20 md:pt-60 md:pb-40 max-w-7xl flex flex-col md:flex-row  h-full lg:gap-40 gap-0">
+              <div className="relative z-10  mx-auto px-4 pt-40 pb-10 md:pt-60 md:pb-15 max-w-7xl flex flex-col md:flex-row  h-full lg:gap-40 gap-0">
                 {/* Title and description*/}
                 <div className="w-full lg:w-2xl text-center lg:text-left ">
-                    <h1 className="text-[40px]/10 sm:text-5xl lg:text-7xl font-medium text-[#123532] mb-4">
+                    <h1 className="text-[40px]/10 sm:text-5xl lg:text-7xl font-medium text-[#123532] mb-4 ">
                         {title}
                     </h1>
-                    <p className="block md:hidden text-base sm:text-lg md:text-2xl text-[#444444] mb-6">
+                    <p className="block md:hidden text-base sm:text-lg md:text-2xl text-[#444444]">
                         {description} <span className="font-semibold text-[#074A4D]">{descriptionBold}</span>
                     </p>
                 </div>
