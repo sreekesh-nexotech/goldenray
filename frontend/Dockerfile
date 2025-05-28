@@ -1,9 +1,7 @@
 # Stage 1: Builder with all dependencies
-FROM node:18 as builder
+FROM node:18-alpine as builder
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libvips-dev
+RUN apk add --no-cache build-base vips-dev
 
 WORKDIR /app
 COPY package*.json ./
@@ -18,7 +16,7 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/next.config.ts ./
 
 EXPOSE 3000
 CMD ["npm", "start"]
