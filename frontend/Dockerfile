@@ -1,21 +1,24 @@
-FROM node:18
+# Stage 1: Builder with all dependencies
+FROM node:18 as builder
 
-# Install system dependencies for sharp
 RUN apt-get update && apt-get install -y \
+    build-essential \
     libvips-dev
 
 WORKDIR /app
 COPY package*.json ./
-
-# Force sharp to compile for your CPU
-RUN npm install --ignore-scripts=false sharp
-RUN npm install
-
+RUN npm install --include=optional
 COPY . .
 RUN npm run build
 
-# Expose the port the app runs on
-EXPOSE 3000
+# Stage 2: Production image
+FROM node:18-alpine
+WORKDIR /app
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/next.config.js ./
 
-# Command to run the application
-CMD ["npm", "run", "start"]
+EXPOSE 3000
+CMD ["npm", "start"]
