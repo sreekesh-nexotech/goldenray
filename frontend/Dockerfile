@@ -1,20 +1,17 @@
-
-# Use the official Node.js image as the base image
 FROM node:18
 
-# Set the working directory in the container
-WORKDIR /app
+# Install system dependencies for sharp
+RUN apt-get update && apt-get install -y \
+    libvips-dev
 
-# Copy package.json and package-lock.json
+WORKDIR /app
 COPY package*.json ./
 
-# Install dependencies
+# Force sharp to compile for your CPU
+RUN npm install --ignore-scripts=false sharp
 RUN npm install
 
-# Copy the rest of the application code
 COPY . .
-
-# Build the Next.js app
 RUN npm run build
 
 # Expose the port the app runs on
