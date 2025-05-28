@@ -9,7 +9,9 @@ export default function Booking(){
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const name = formData.get('name') as string; // Type assertion for string
+    console.log(name);
     const mobileNumber = formData.get('mobileNumber') as string; // Type assertion for string
+    console.log(mobileNumber);
     // API calling goes here
       e.currentTarget.reset()
 
