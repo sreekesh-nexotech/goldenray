@@ -1,0 +1,58 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+
+body{
+  overflow-x: hidden;
+
+}
+
+html{
+  scroll-behavior: smooth;
+}
+body {
+  font-family: 'Switzer', sans-serif;
+}
+
+/* Buttons */
+.btn,
+.btn-sm {
+  @apply inline-flex items-center justify-center whitespace-nowrap font-semibold px-6 py-3 rounded-xl transition-all cursor-pointer
+}
+
+.btn {
+  @apply px-4 py-[11px] ;
+}
+
+.btn-sm {
+  @apply px-3 py-[5px];
+}
+
+/* logo scrolling in partners section (home page) */
+ @keyframes scroll-logos {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            /*
+              To ensure a truly seamless loop without any visible break or gap:
+              - We now duplicate the 'logos' array *three* times in the JSX (N=3).
+              - The animation then translates by -100% / N of the total combined width.
+              - So, with N=3, we translate by -33.333%. This ensures that as the first
+                set of logos scrolls out, the second set is perfectly in place,
+                and the third set acts as a buffer. The animation resets at the
+                exact moment the first set is replaced by the second.
+            */
+            transform: translateX(-33.333%);
+          }
+        }
+        .animate-logo-scroll {
+          animation: scroll-logos 60s linear infinite; 
+          /* min-width: max-content ensures the container is wide enough for all its content */
+          min-width: max-content;
+        }
+
+        /* Pause animation on hover for better user experience */
+        .scroll-container:hover .animate-logo-scroll {
+          animation-play-state: paused;
+        }
