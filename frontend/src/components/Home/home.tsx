@@ -7,7 +7,7 @@ import HomeTestimonial from '@/components/Home/Testimomial';
 import Booking from './Booking';
 import Services from '../Services';
 import GroupPurchaseScheme from './Group-purchase';
-import Faq from './faq';
+import Faq from './Faq';
 import Partners from './Partners';
 
 export default function Main() {
