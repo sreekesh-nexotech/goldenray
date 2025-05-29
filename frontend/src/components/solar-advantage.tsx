@@ -1,7 +1,7 @@
 "use client";
 import { ChangeEvent, useState } from "react";
 import PageIllustration from "@/components/ui/page-illustration";
-import ButtonYellow from "@/components/ui/Button-yellow";
+import Button from "./ui/Button";
 
 export default function SolarAdvantage() {
   const [propertyType, setPropertyType] = useState("");
@@ -82,7 +82,7 @@ export default function SolarAdvantage() {
             </div>
 
             {/* Calculate Button */}
-            <ButtonYellow content="Calculate Solar Advantage" ButtonLink="/"/>
+            <Button content="Calculate Solar Advantage" ButtonLink="/" ButtonBg="bg-[#F7BA41]" ButtonHover="hover:bg-yellow-500" Buttontext="text-[#272218]"/>
             
           </form>
         </div>

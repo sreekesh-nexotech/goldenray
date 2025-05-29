@@ -12,7 +12,7 @@ export default function Header() {
   const isActive = (href:string) => pathname === href;
 
   return (
-    <header className="flex justify-between items-center p-4 lg:px-36 shadow-md bg-white fixed w-full top-0 z-50">
+    <header className="flex justify-between items-center p-4 xl:px-36 shadow-md bg-white fixed w-full top-0 z-50">
       <div className="text-2xl font-medium text-[#123532]">
        <Link href="/"> G<span className="text-[#FBC207]">o</span>lden Ray </Link>
       </div>
@@ -122,7 +122,7 @@ export default function Header() {
             </Link>
           </li>
           <li>
-            <Link href="/" className="border border-[#074A4D] px-4 py-1 rounded-xl hover:bg-transparent text-[#074A4D] font-sans text-base font-[600]">
+            <Link href="/" className="border border-[#074A4D] px-4 py-1 flex justify-center rounded-xl hover:bg-transparent text-[#074A4D] font-sans text-base font-semibold">
               Contact us
             </Link>
           </li>
