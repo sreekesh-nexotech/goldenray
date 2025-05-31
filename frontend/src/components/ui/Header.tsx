@@ -12,7 +12,7 @@ export default function Header() {
   const isActive = (href:string) => pathname === href;
 
   return (
-    <header className="flex justify-between items-center p-4 xl:px-36 shadow-md bg-white fixed w-full top-0 z-50">
+    <header className="flex justify-between items-center py-4 px-4 sm:px-6 lg:px-8 xl:px-36 shadow-md bg-white fixed w-full top-0 z-50">
       <div className="text-2xl font-medium text-[#123532]">
        <Link href="/"> G<span className="text-[#FBC207]">o</span>lden Ray </Link>
       </div>

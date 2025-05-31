@@ -71,7 +71,7 @@ export default function HomeTestimonial() {
   return (
     <div
       ref={ref}
-      className="overflow-hidden py-10 px-4 sm:px-6 xl:px-30 relative mt-10"
+      className="overflow-hidden py-10 px-4 sm:px-6 lg:px-8 xl:px-36 relative mt-10"
     >
       <h2 className="text-4xl xl:w-1/2 sm:text-4xl lg:text-[64px] font-bold text-[#123532] mb-10 text-center xl:text-left">
         What our clients have to say
