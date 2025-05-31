@@ -28,11 +28,11 @@ export default function PopularPosts({ posts }: PopularPostsProps) {
                 className="rounded-lg"
               />
             </div>
-            <h3 className="text-lg font-semibold mt-4 line-clamp-2">{post.title}</h3>
-            <p>
+            <h3 className="text-2xl text-[#123532] font-semibold mt-4 line-clamp-2">{post.title}</h3>
+            <p className="text-[#666666] text-base">
                 {post.description}
             </p>
-            <p className="text-gray-500 text-sm mt-2">
+            <p className="text-[#666666] font-medium text-xs sm:text-sm mt-2">
               {post.date} • {post.readTime}
             </p>
           </Link>

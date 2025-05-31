@@ -1,6 +1,5 @@
 import ResourceDetailHero from "@/components/Resources/ResourceDetailHero";
 import { mockBlogs, heroPosts, BlogPost, HeroPost } from "@/data/Mock-Resources";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 
 type BlogDetailProps = {

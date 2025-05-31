@@ -139,9 +139,9 @@ export default function Header() {
       {/* Mobile Menu: Always in DOM, visibility toggled with classes */}
       <ul
         className={`
-          absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-center gap-4 py-4
+          absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-center gap-6 py-4
           md:hidden
-          transition-all duration-300 ease-in-out
+          transition-all duration-300 ease-in-out pb-10
           ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}
         `}
       >
