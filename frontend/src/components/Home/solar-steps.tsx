@@ -55,7 +55,7 @@ export default function SolarSteps(){
             {/* Step Number (always visible on mobile, conditional visibility on desktop) */}
             <div
               className={`
-                absolute bottom-[-23px] md:bottom-[-72px] right-3 text-[64px] md:text-[200px] font-extrabold z-0 text-white              `}
+                absolute bottom-[-25px] md:bottom-[-78px] right-3 text-[64px] md:text-[200px] font-extrabold z-0 text-white              `}
             // Keep consistent
             >
               {step.id}

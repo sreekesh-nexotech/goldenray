@@ -20,7 +20,7 @@ export default function Header() {
       {/* Navigation Bar */}
       <nav>
         {/* Navigation links visible on bigger screens, hidden on mobile */}
-        <ul className="hidden md:flex gap-6 text-gray-600 font-medium md:justify-center md:items-center">
+        <ul className="font-dm-sans hidden md:flex gap-6 text-gray-600 font-medium md:justify-center md:items-center">
           <li>
             <Link
               href="/solutions"
@@ -138,7 +138,7 @@ export default function Header() {
 
       {/* Mobile Menu: Always in DOM, visibility toggled with classes */}
       <ul
-        className={`
+        className={` font-dm-sans
           absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-center gap-6 py-4
           md:hidden
           transition-all duration-300 ease-in-out pb-10
