@@ -1,1 +1,1 @@
-from .device import Device
+from .device_type import DeviceType

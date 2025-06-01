@@ -1,1 +1,1 @@
-from .device_views import DeviceAPIView
+from .device_type_views import DeviceTypeAPIView

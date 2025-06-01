@@ -1,26 +1,26 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import Device
-from ..serializers.device_serializer import DeviceSerializer
+from ..models import DeviceType
+from ..serializers.device_type_serializer import DeviceTypeSerializer
 
 
-class DeviceAPIView(APIView):
+class DeviceTypeAPIView(APIView):
     def get(self, request, pk=None):
         if pk:
             try:
-                device = Device.objects.get(pk=pk)
-                serializer = DeviceSerializer(device)
+                device_type = DeviceType.objects.get(pk=pk)
+                serializer = DeviceTypeSerializer(device_type)
                 return Response(serializer.data)
-            except Device.DoesNotExist:
+            except DeviceType.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
-        devices = Device.objects.all()
-        serializer = DeviceSerializer(devices, many=True)
+        device_types = DeviceType.objects.all()
+        serializer = DeviceTypeSerializer(device_types, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = DeviceSerializer(data=request.data)
+        serializer = DeviceTypeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -28,11 +28,11 @@ class DeviceAPIView(APIView):
 
     def put(self, request, pk):
         try:
-            device = Device.objects.get(pk=pk)
-        except Device.DoesNotExist:
+            device_type = DeviceType.objects.get(pk=pk)
+        except DeviceType.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = DeviceSerializer(device, data=request.data)
+        serializer = DeviceTypeSerializer(device_type, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -40,9 +40,9 @@ class DeviceAPIView(APIView):
 
     def delete(self, request, pk):
         try:
-            device = Device.objects.get(pk=pk)
-        except Device.DoesNotExist:
+            device_type = DeviceType.objects.get(pk=pk)
+        except DeviceType.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        device.delete()
+        device_type.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,1 +1,1 @@
-from .device_serializer import DeviceSerializer
+from .device_type_serializer import DeviceTypeSerializer
