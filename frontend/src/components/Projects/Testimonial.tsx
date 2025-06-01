@@ -14,7 +14,7 @@ export default function TestimonialSection({ testimonial }: TestimonialProps) {
 
   return (
 
-    <div className="flex justify-center items-center  px-4  xl:px-10">
+    <div className="flex justify-center items-center  px-4 sm:px-6 lg:px-8 xl:px-36">
       <div className="bg-[#F7F7F2] rounded-2xl -hidden w-full">
         {/* Image Section */}
         <div className="relative w-full h-64 sm:h-80 md:h-[550px]">

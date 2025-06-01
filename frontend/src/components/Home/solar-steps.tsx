@@ -36,12 +36,12 @@ export default function SolarSteps(){
   };
 
   return (
-    <div className="flex flex-col py-10 px-4 sm:px-6 xl:px-30 relative mt-10">
+    <div className="flex flex-col py-10 px-4 sm:px-6 lg:px-8 xl:px-36 relative mt-10">
       <h2 className="text-3xl xl:w-1/2 sm:text-4xl lg:text-[64px] font-bold text-[#123532] mb-10 text-center xl:text-left">
         Go Solar in just 3 easy steps
       </h2>
     
-      <div className="w-full max-w-full md:flex space-y-4 md:space-y-0">
+      <div className="w-full max-w-full md:flex space-y-4 md:space-y-0 ">
         {steps.map((step) => (
           <div
             key={step.id}
@@ -55,7 +55,7 @@ export default function SolarSteps(){
             {/* Step Number (always visible on mobile, conditional visibility on desktop) */}
             <div
               className={`
-                absolute bottom-[-23px] md:bottom-[-72px] right-3 text-[64px] md:text-[200px] font-extrabold z-0 text-white              `}
+                absolute bottom-[-25px] md:bottom-[-78px] right-3 text-[64px] md:text-[200px] font-extrabold z-0 text-white              `}
             // Keep consistent
             >
               {step.id}

@@ -7,10 +7,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        // Sets DM Sans as the default sans-serif font using the Next.js font variable
-        sans: ['var(--font-dm-sans)', 'sans-serif'],
-        // Define a custom font family for Switzer
-        switzer: ['Switzer', 'sans-serif'],
+        'dm-sans': ['var(--font-dm-sans)', 'sans-serif'],
+        switzer: ['var(--font-switzer)', 'sans-serif'],
       },
     },
   },

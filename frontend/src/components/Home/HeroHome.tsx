@@ -1,8 +1,7 @@
 import Image from 'next/image'; 
 import heroImg from '../../../public/heroImg.png'
-import Link from 'next/link';
 import PageIllustration from '@/components/ui/page-illustration';
-import ButtonYellow from '../ui/Button-yellow';
+import Button from '../ui/Button';
 
 export default function HeroHome() {
   return (
@@ -11,7 +10,7 @@ export default function HeroHome() {
       
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-32 max-w-7xl flex flex-col md:flex-row items-center h-full lg:gap-40 gap-0">
+      <div className="relative z-10 container mx-auto px-4 py-32 max-w-7xl flex flex-col md:flex-row items-center h-full xl:gap-40 gap-0">
         {/* Left Side - Text */}
         <div className="w-full  text-center md:text-left">
             <h1 className="text-[40px]/10 sm:text-5xl lg:text-7xl font-bold text-[#123532] mb-4">
@@ -22,10 +21,8 @@ export default function HeroHome() {
           </p>
 
           <div className="flex flex-row justify-center text-xs lg:text-lg md:justify-start lg:gap-4 gap-2 ">
-            <ButtonYellow content="Calculate Solar Advantage" ButtonLink="#solar-advantage"/>
-            <Link href="#booking" className="btn border border-[#074A4D] text-[#074A4D] hover:bg-yellow-100">
-              Book Consultation
-            </Link>
+            <Button content="Calculate Solar Advantage" ButtonLink="#solar-advantage" ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-500'/>
+            <Button content="Book Consultation" ButtonLink="#booking" ButtonBorder='border border-[#074A4D]' ButtonBg='bg-[#FFFFFF]' Buttontext='text-[#074A4D]' ButtonHover='hover:bg-[#eeeeee]'/>
           </div>
         </div>
 
