@@ -1,1 +1,2 @@
 from .device_type_serializer import DeviceTypeSerializer
+from .wattage_serializer import WattageSerializer
