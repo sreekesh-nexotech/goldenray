@@ -49,7 +49,7 @@ export default function ProjectPage() {
       <ProjectHero
         title={project.title}
         description={project.description}
-        PublishDate={project.PublishDate}
+        descriptionBold={project.descriptionBold}
       />
       <InnerProject project={project} />
       <SolarAdvantage />

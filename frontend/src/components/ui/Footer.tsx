@@ -6,7 +6,6 @@ import LinkedInLogo from '../../../public/LinkedinLogo.png'
 import FacebookLogo from '../../../public/FacebookLogo.png'
 import InstagramLogo from '../../../public/InstagramLogo.png'
 import YoutubeLogo from '../../../public/YoutubeLogo.png'
-import Button from './Button';
 
 
 export default function Footer() {
@@ -79,7 +78,9 @@ export default function Footer() {
             pattern="[0-9]{*}"
             title="Enter a valid phone number"
           />
-          <Button ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-500' ButtonLink='/' content='Book Now'/>
+          <button className="btn md:w-2/5 w-full bg-[#F7BA41] text-[#272218] hover:bg-yellow-500">
+              Book Now
+          </button>
         </form>
       </div>
 

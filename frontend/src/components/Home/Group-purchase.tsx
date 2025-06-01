@@ -13,8 +13,8 @@ import vector3 from '../../../public/Vector-9.png'
 // Main GroupPurchaseScheme component
 export default function GroupPurchaseScheme() {
   return (
-    <section className=' mb-10 px-4 sm:px-6 lg:px-8 xl:px-36'>
-      <div>
+    <section className='px-0 md:mx-10 mb-10'>
+      <div className="container mx-auto px-4 ">
         {/* Main content card */}
         <div className="bg-[#F7BA41] rounded-3xl p-8 sm:p-12 lg:p-16 flex flex-col gap-2 items-center xl:items-stretch">
           <div className='flex flex-col xl:flex-row justify-between items-center '>
@@ -44,7 +44,7 @@ export default function GroupPurchaseScheme() {
 
 
           {/* Benefit cards section */}
-          <div className="flex flex-wrap flex-col xl:flex-row xl:justify-between align-baseline mt-12 gap-x-12 "> 
+          <div className="flex flex-wrap flex-col xl:flex-row xl:justify-start align-baseline mt-12 gap-x-12 xl:gap-x-44"> 
             {/* Benefit 1: Lower Costs */}
             <GroupPurchaseItem
               icon={

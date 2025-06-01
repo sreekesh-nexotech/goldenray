@@ -21,7 +21,7 @@ export default function Hero({
             <h1 className="text-[40px]/10 sm:text-5xl lg:text-7xl font-bold text-[#123532] mb-4">
             {title}
           </h1>
-          <p className="text-base w-full md:w-2/3 mx-auto sm:text-lg md:text-2xl text-[#444444] mb-6">
+          <p className="text-base sm:text-lg md:text-2xl text-[#444444] mb-6">
             {description}
           </p>
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image'; 
-import Button from '../ui/Button';
+import ButtonYellow from '../ui/Button-yellow';
+import ButtonWhite from '../ui/Button-white';
 
 type SolutionBoxProps = {
     BoxBgColor:string;
@@ -100,8 +101,8 @@ export default function SolutionBox({
 
             {/* Call to action button */}
             <div>
-                {showYellowBtn && <Button content="View Projects" ButtonLink='/projects' ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-100'/>}
-                {showWhiteBtn && <Button content="View Projects" ButtonLink='/projects'  ButtonBg='bg-[#FFFFFF]' Buttontext='text-[#272218]' ButtonHover='hover:bg-[#eeeeee]' />}
+                {showYellowBtn && <ButtonYellow content="View Projects" ButtonLink='/projects' />}
+                {showWhiteBtn && <ButtonWhite content="View Projects" ButtonLink='/projects' />}
             </div>
           </div>
 

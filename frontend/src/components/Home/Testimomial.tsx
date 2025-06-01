@@ -1,10 +1,9 @@
 "use client";
-
 import React, { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
-import { useInView } from "react-intersection-observer";
+import dynamic from 'next/dynamic'; 
 
-const ReactPlayer = dynamic(() => import("react-player/youtube"), { ssr: false });
+const ReactPlayer = dynamic(() => import('react-player/youtube'), { ssr: false });//to remove the hydration error ReactPlayer is dynamically imported with ssr false
+
 
 const testimonials = [
   {
@@ -32,29 +31,23 @@ const testimonials = [
 export default function HomeTestimonial() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const intervalRef = useRef<number | null>(null);
-  const { ref, inView } = useInView({
-    threshold: 0.3, // Trigger when 30% of the section is visible
-  });
+  const sliderRef = useRef(null);
 
   useEffect(() => {
-    if (inView && !isPlaying) {
-      intervalRef.current = window.setInterval(() => {
+    let interval: number | undefined; // Keep the type as number | undefined
+    if (!isPlaying) {
+      // Cast the return value of setInterval to number
+      interval = window.setInterval(() => { // Use window.setInterval for clarity in browser context
         setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-      }, 5000);
-    } else if (intervalRef.current) {
-      window.clearInterval(intervalRef.current);
-      intervalRef.current = null;
+      }, 5000) as number; // <--- Add 'as number' here
     }
 
     return () => {
-      if (intervalRef.current) {
-        window.clearInterval(intervalRef.current);
-        intervalRef.current = null;
+      if (interval) {
+        window.clearInterval(interval); // Use window.clearInterval
       }
     };
-  }, [inView, isPlaying, testimonials.length]);
+  }, [isPlaying, testimonials.length]);
 
   const handlePlay = () => {
     setIsPlaying(true);
@@ -69,15 +62,12 @@ export default function HomeTestimonial() {
   };
 
   return (
-    <div
-      ref={ref}
-      className="overflow-hidden py-10 px-4 sm:px-6 lg:px-8 xl:px-36 relative mt-10"
-    >
+    <div className="overflow-hidden py-10 px-4 sm:px-6 xl:px-30 relative mt-10">
       <h2 className="text-4xl xl:w-1/2 sm:text-4xl lg:text-[64px] font-bold text-[#123532] mb-10 text-center xl:text-left">
         What our clients have to say
       </h2>
 
-      <div className={`relative ${currentIndex === 0 ? "overflow-x-visible" : "overflow-x-hidden"}`}>
+      <div className="relative">
         <div
           ref={sliderRef}
           className="flex transition-transform duration-700 ease-in-out gap-7 md:gap-10"
@@ -94,12 +84,12 @@ export default function HomeTestimonial() {
               <div className="w-full xl:w-1/2 h-auto">
                 <div className="relative rounded-t-2xl xl:rounded-l-2xl overflow-hidden">
                   <ReactPlayer
-                    url={`https://www.youtube.com/embed/${testimonial.videoId}`}
+                    url={`http://www.youtube.com/embed/${testimonial.videoId}`}
                     width="100%"
                     height="500px"
                     controls={true}
                     light={true}
-                    playing={index === currentIndex && isPlaying && inView}
+                    playing={false}
                     onPlay={handlePlay}
                     onPause={handlePause}
                     onEnded={handleEnded}
@@ -117,7 +107,7 @@ export default function HomeTestimonial() {
                 </div>
               </div>
 
-              <div className="w-full xl:w-1/2 bg-[#F7F7F2] p-6 py-10 rounded-b-2xl xl:rounded-r-2xl h-full flex flex-col justify-evenly">
+              <div className="w-full xl:w-1/2 bg-[#F7F7F2] p-6 py-10  rounded-b-2xl xl:rounded-r-2xl h-full flex flex-col justify-evenly">
                 <div className="flex flex-wrap justify-between">
                   {testimonial.stats.map((stat, i) => (
                     <div key={i} className="text-left">
@@ -138,4 +128,4 @@ export default function HomeTestimonial() {
       </div>
     </div>
   );
-}
+}   

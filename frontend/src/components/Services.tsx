@@ -13,7 +13,7 @@ type servicesProps = {
 
 export default function Services({serviceTitle}:servicesProps) {
   return (
-    // Main container for the section
+    // Main container for the section, using Tailwind for padding and background
     <section className="py-16 sm:py-20  font-inter mb-10 lg:mb-20 mt-10">
       <div className="container mx-auto px-4">
         {/* Section Title */}

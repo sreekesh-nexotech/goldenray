@@ -1,11 +1,9 @@
 // src/app/layout.tsx
 import Header from '@/components/ui/Header';
-import Footer from '@/components/ui/Footer';
 import '@/styles/globals.css';
+import Footer from '@/components/ui/Footer';
 import { DM_Sans } from 'next/font/google';
-import localFont from 'next/font/local';
 
-// Configure DM Sans for headers
 const dmSans = DM_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -13,66 +11,7 @@ const dmSans = DM_Sans({
   display: 'swap',
 });
 
-// Configure Switzer for body text (local font)
-const switzer = localFont({
-  src: [
-    {
-      path: '../../public/fonts/switzer/Switzer-Regular.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/switzer/Switzer-Medium.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/switzer/Switzer-Semibold.woff2',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/switzer/Switzer-Bold.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/switzer/Switzer-Extrabold.woff2',
-      weight: '800',
-      style: 'normal',
-    },
-    // Italic variants
-    {
-      path: '../../public/fonts/switzer/Switzer-Italic.woff2',
-      weight: '400',
-      style: 'italic',
-    },
-    {
-      path: '../../public/fonts/switzer/Switzer-MediumItalic.woff2',
-      weight: '500',
-      style: 'italic',
-    },
-    {
-      path: '../../public/fonts/switzer/Switzer-SemiboldItalic.woff2',
-      weight: '600',
-      style: 'italic',
-    },
-    {
-      path: '../../public/fonts/switzer/Switzer-BoldItalic.woff2',
-      weight: '700',
-      style: 'italic',
-    },
-    {
-      path: '../../public/fonts/switzer/Switzer-ExtraboldItalic.woff2',
-      weight: '800',
-      style: 'italic',
-    },
-  ],
-  variable: '--font-switzer',
-  display: 'swap',
-});
-
-// Metadata
+//meta data for better SEO
 export const metadata = {
   title: 'GoldenRay - Sustainable Solar Energy Solutions',
   description:
@@ -84,11 +23,11 @@ export const metadata = {
     title: 'GoldenRay - Sustainable Solar Energy Solutions',
     description:
       'Discover custom solar solutions with GoldenRay. Save money and power your future with sustainable energy for homes and businesses.',
-    url: 'https://www.goldenray.com',
+    url: 'https://www.goldenray.com', // Replace with your actual domain
     siteName: 'GoldenRay',
     images: [
       {
-        url: '/heroImg.png',
+        url: '/heroImg.png', // Path to a default social sharing image in public/
         width: 1200,
         height: 630,
         alt: 'GoldenRay Solar Solutions',
@@ -102,7 +41,7 @@ export const metadata = {
     title: 'GoldenRay - Sustainable Solar Energy Solutions',
     description:
       'Join the solar revolution with GoldenRay’s custom energy solutions for homes and businesses.',
-    images: ['/heroImg.png'],
+    images: ['/heroImg.png'], // Path to a Twitter card image
   },
 };
 
@@ -112,8 +51,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${switzer.variable}`}>
-      <body className="font-switzer">
+    <html lang="en" className={`${dmSans.variable}`}>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Switzer:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
         <Header />
         {children}
         <Footer />

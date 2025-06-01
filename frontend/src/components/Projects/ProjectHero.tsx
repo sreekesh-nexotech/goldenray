@@ -2,12 +2,14 @@ import PageIllustration from "../ui/page-illustration";
 
 type ProjectHeroProps = {
   title:string;
-  PublishDate:string;
+  description:string;
+  descriptionBold:string;
 }
 
 export default function ProjectHero({
   title,
-  PublishDate,
+  description,
+  descriptionBold,
 }:ProjectHeroProps) {
     return(
          <section className="relative w-full  overflow-hidden">
@@ -21,7 +23,7 @@ export default function ProjectHero({
                         {title}
                     </h1>
                     <p className="block md:hidden text-base sm:text-lg md:text-2xl text-[#444444]">
-                        Published On <span className="font-semibold text-[#074A4D]">{PublishDate}</span> 
+                        {description} <span className="font-semibold text-[#074A4D]">{descriptionBold}</span>
                     </p>
                 </div>
               </div>

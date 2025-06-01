@@ -18,11 +18,11 @@ export default function Booking(){
   };
 
   return (
-    <div className="relative xl:min-h-screen bg-cover bg-no-repeat md:bg-center bg-center scroll-mt-10 " style={{ backgroundImage: "url('/Image-1-3.png')" }} id='booking'>
+    <div className="relative xl:min-h-screen bg-cover bg-no-repeat md:bg-center bg-center scroll-mt-10" style={{ backgroundImage: "url('/Image-1-3.png')" }} id='booking'>
 
       <div className="absolute inset-0 bg-black opacity-20"></div>      {/* Overlay for better text readability */}
 
-      <div className="relative z-10 xl:min-h-screen flex items-center justify-start py-20 md:px-12 px-4 sm:px-6 lg:px-8 xl:px-36 ">
+      <div className="relative z-10 xl:min-h-screen flex items-center justify-start p-4 py-20 md:px-12 sm:p-8 md:p-12 lg:p-20 ">
         <div className="text-white max-w-xl text-center md:text-left">
           <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-semibold leading-tight mb-4">
             Book your free consultation

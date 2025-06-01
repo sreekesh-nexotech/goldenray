@@ -45,8 +45,8 @@ export default function Faq() {
   };
 
   return (
-    <div className="flex items-center justify-center ">
-      <div className="container mx-auto flex flex-col xl:flex-row items-start xl:items-baseline justify-center gap-8 lg:gap-16 md:p-10 rounded-xl max-w-full mt-15 mb-15 px-4 sm:px-6 lg:px-8 xl:px-36">
+    <div className="flex items-center justify-center p-4">
+      <div className="container mx-auto flex flex-col xl:flex-row items-start xl:items-baseline justify-center gap-8 lg:gap-16 md:p-10 rounded-xl max-w-full mt-15 mb-15">
         {/* Left Section: Heading and Description */}
         <div className="w-full xl:w-1/2 xl:text-left text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-[#123532] mb-2 leading-tight">
