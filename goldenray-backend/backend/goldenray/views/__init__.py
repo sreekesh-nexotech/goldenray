@@ -1,2 +1,7 @@
 from .device_type_views import DeviceTypeAPIView
 from .wattage_views import WattageAPIView
+from .kseb_tariff_views import KSEBTariffAPIView
+from .evcar_views import EVCarAPIView
+from .evscooter_views import EVScooterAPIView
+from .solar_installation_views import SolarInstallationAPIView
+from .pincode_views import PincodeAPIView

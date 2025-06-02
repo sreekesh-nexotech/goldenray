@@ -1,2 +1,7 @@
 from .device_type_serializer import DeviceTypeSerializer
 from .wattage_serializer import WattageSerializer
+from .kseb_tariff_serializer import KSEBTariffSerializer
+from .evcar_serializer import EVCarSerializer
+from .evscooter_serializer import EVScooterSerializer
+from .solar_installation_serializer import SolarInstallationSerializer
+from .pincode_serializer import PincodeSerializer
