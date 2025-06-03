@@ -25,7 +25,7 @@ export default function ResourceDetailHero({
                         {title}
                     </h1>
                     <p className="text-base sm:text-lg md:text-2xl text-[#444444] mb-4">
-                        {description}
+                        {description || null}
                     </p>
                     <p className="text-xs md:text-sm text-[#B2B2B2]">
                         published on <span className="font-medium text-[#124944]">{PublishDate} • {readTime}</span>

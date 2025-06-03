@@ -54,7 +54,7 @@ export default function HomeTestimonial() {
         intervalRef.current = null;
       }
     };
-  }, [inView, isPlaying, testimonials.length]);
+  }, [inView, isPlaying]);
 
   const handlePlay = () => {
     setIsPlaying(true);

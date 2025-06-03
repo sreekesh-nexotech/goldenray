@@ -1,10 +1,10 @@
 import { heroPosts, mockBlogs, selectedCategory } from "@/data/Mock-Resources";
 import Hero from "../ui/Hero";
-import ResourceHero from "./ResourceHero";
-import RecentlyAdded from "./RecentlyAdded";
-import PopularPosts from "./PopularPost";
-import CategoryBlogs from "./CategoryBlogs";
-import SolarAdvantage from "../solar-advantage";
+import ResourceHero from "@/components/Resources/ResourceHero";
+import RecentlyAdded from "@/components/Resources/RecentlyAdded";
+import PopularPosts from "@/components/Resources/PopularPost";
+import CategoryBlogs from "@/components/Resources/CategoryBlogs";
+import SolarAdvantageMain from "@/components/solar-calculator/SolarAdvantageMain";
 
 export default function ResourceMain(){
     return(
@@ -24,7 +24,7 @@ export default function ResourceMain(){
             <CategoryBlogs posts={mockBlogs} selectedCategory={selectedCategory}/>
 
             {/* Solar advantage */}
-            <SolarAdvantage/>
+            <SolarAdvantageMain/>
         </section>
     )
 }
