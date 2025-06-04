@@ -12,7 +12,7 @@ export default function Header() {
   const isActive = (href:string) => pathname === href;
 
   return (
-    <header className="flex justify-between items-center p-4 lg:px-36 shadow-md bg-white fixed w-full top-0 z-50">
+    <header className="flex justify-between items-center py-4 px-4 sm:px-6 lg:px-8 xl:px-36 shadow-md bg-white fixed w-full top-0 z-50">
       <div className="text-2xl font-medium text-[#123532]">
        <Link href="/"> G<span className="text-[#FBC207]">o</span>lden Ray </Link>
       </div>
@@ -20,7 +20,7 @@ export default function Header() {
       {/* Navigation Bar */}
       <nav>
         {/* Navigation links visible on bigger screens, hidden on mobile */}
-        <ul className="hidden md:flex gap-6 text-gray-600 font-medium md:justify-center md:items-center">
+        <ul className="font-dm-sans hidden md:flex gap-6 text-gray-600 font-medium md:justify-center md:items-center">
           <li>
             <Link
               href="/solutions"
@@ -122,7 +122,7 @@ export default function Header() {
             </Link>
           </li>
           <li>
-            <Link href="/" className="border border-[#074A4D] px-4 py-1 rounded-xl hover:bg-transparent text-[#074A4D] font-sans text-base font-[600]">
+            <Link href="/" className="border border-[#074A4D] px-4 py-1 flex justify-center rounded-xl hover:bg-transparent text-[#074A4D] font-sans text-base font-semibold">
               Contact us
             </Link>
           </li>
@@ -138,10 +138,10 @@ export default function Header() {
 
       {/* Mobile Menu: Always in DOM, visibility toggled with classes */}
       <ul
-        className={`
-          absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-center gap-4 py-4
+        className={` font-dm-sans
+          absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-center gap-6 py-4
           md:hidden
-          transition-all duration-300 ease-in-out
+          transition-all duration-300 ease-in-out pb-10
           ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}
         `}
       >

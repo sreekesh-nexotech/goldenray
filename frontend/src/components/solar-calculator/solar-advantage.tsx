@@ -1,19 +1,41 @@
+// src/components/solar-calculator/solar-advantage.tsx
 "use client";
 import { ChangeEvent, useState } from "react";
 import PageIllustration from "@/components/ui/page-illustration";
-import ButtonYellow from "@/components/ui/Button-yellow";
 
-export default function SolarAdvantage() {
-  const [propertyType, setPropertyType] = useState("");
+interface SolarAdvantageProps {
+  onSubmit: (pincode: string, propertyType: string, electricityBill: string) => void;
+  // Add initial values if you want to pre-fill the form when going back
+  initialPincode?: string;
+  initialPropertyType?: string;
+  initialElectricityBill?: string;
+}
+
+export default function SolarAdvantage({
+  onSubmit,
+  initialPincode = "",
+  initialPropertyType = "",
+  initialElectricityBill = "",
+}: SolarAdvantageProps) {
+  const [pincode, setPincode] = useState(initialPincode);
+  const [propertyType, setPropertyType] = useState(initialPropertyType);
+  const [electricityBill, setElectricityBill] = useState(initialElectricityBill);
 
   const handlePropertyTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    console.log("Property type changed to:", e.target.value); // Debugging
     setPropertyType(e.target.value);
   };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(pincode, propertyType, electricityBill);
+  };
+  
 
   return (
     <div className="relative bg-white py-12 mt-12 scroll-mt-30" id="solar-advantage">
       {/* Grid Background Layer */}
-      <PageIllustration />
+      <PageIllustration isGradient={false} />
 
       <div className="relative max-w-7xl mx-auto text-center px-4 md:px-0">
         {/* Heading */}
@@ -23,7 +45,7 @@ export default function SolarAdvantage() {
 
         {/* Form Container */}
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.2)] rounded-3xl p-10 py-12 max-w-sm mx-auto">
-          <form className="flex flex-col">
+          <form className="flex flex-col" onSubmit={handleSubmit}>
             {/* Pincode Input */}
             <div className="mb-4">
               <label
@@ -36,7 +58,10 @@ export default function SolarAdvantage() {
                 type="text"
                 id="pincode"
                 placeholder="688503"
+                value={pincode}
+                onChange={(e) => setPincode(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                required
               />
             </div>
 
@@ -55,13 +80,14 @@ export default function SolarAdvantage() {
                 className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none ${
                   propertyType === "" ? "text-gray-400" : "text-black"
                 }`}
+                required
               >
                 <option value="" hidden>
                   Residential
                 </option>
                 <option value="residential">Residential</option>
-                <option value="residential1">Commercial</option>
-                <option value="residential2">Industrial</option>
+                <option value="commercial">Commercial</option> {/* Corrected value */}
+                <option value="industrial">Industrial</option> {/* Corrected value */}
               </select>
             </div>
 
@@ -77,13 +103,16 @@ export default function SolarAdvantage() {
                 type="text"
                 id="electricity-bill"
                 placeholder="₹ 2500"
+                value={electricityBill}
+                onChange={(e) => setElectricityBill(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                required
               />
             </div>
 
             {/* Calculate Button */}
-            <ButtonYellow content="Calculate Solar Advantage" ButtonLink="/"/>
-            
+            <button type="submit" className="btn bg-[#F7BA41] hover:bg-yellow-500 text-[#272218]">Calculate Solar Advantage</button>
+
           </form>
         </div>
       </div>

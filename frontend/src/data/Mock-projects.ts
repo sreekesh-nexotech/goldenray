@@ -7,7 +7,7 @@ export type Project = {
   title: string;
   cardDescription:string;
   description: string;
-  descriptionBold: string;
+  PublishDate: string;
   images: string[];
 
   imageUrl: string;
@@ -44,7 +44,7 @@ export const mockProjects: Project[] = [
     title: 'Residential Project in Calicut, Kerala',
     cardDescription:"Rooftop installation for a townhouse for a family of four in Calicut, Kerala",
     description: 'Published Completed',
-    descriptionBold: 'January 23, 2025',
+    PublishDate: 'January 23, 2025',
     images: ['/Residential-3.png', '/Residential-4.png', '/Residential-2.png'],
     imageUrl: '/Residential-3.png',
     area: '10,400 m2',
@@ -92,7 +92,7 @@ export const mockProjects: Project[] = [
     title: 'Commercial Project in Palakkad, Kerala',
     cardDescription:"500KW solar panel installation for a 5 story office building space in Palakkad, Kerala",
     description: 'Published Completed',
-    descriptionBold: 'January 23, 2025',
+    PublishDate: 'January 23, 2025',
     images: ['/Commercial-1.png', '/Commercial-1.png', '/Commercial-1.png'],
     imageUrl: '/Commercial-1.png',
     area: '10,400 m2',
@@ -141,7 +141,7 @@ export const mockProjects: Project[] = [
     title: 'Residential Project in Thrissur, Kerala',
     cardDescription:"See how we’re transforming homes, businesses, and industries with smart solar solutions",
     description: 'Published Completed',
-    descriptionBold: 'January 23, 2025',
+    PublishDate: 'January 23, 2025',
     images: ['/Residential-4.png', '/Residential-2.png', '/Residential-1.png'],
     imageUrl: '/Residential-4.png',
     area: '10,400 m2',
@@ -189,7 +189,7 @@ export const mockProjects: Project[] = [
     title: 'Residential Project in Cochin, Kerala',
     cardDescription:"200KW solar panel installation for a two story house in Cochin, Kerala",
     description: 'Published Completed',
-    descriptionBold: 'January 23, 2025',
+    PublishDate: 'January 23, 2025',
     images: ['/Residential-1.png', '/Residential-3.png', '/Residential-4.png'],
     imageUrl: '/Residential-1.png',
     area: '10,400 m2',
@@ -237,7 +237,7 @@ export const mockProjects: Project[] = [
     title: 'Industrial Project in Tuticorin, Tamil Nadu',
     cardDescription:"1MW solar panel installation for a 5 story office building space in Palakkad, Kerala",
     description: 'Published Completed',
-    descriptionBold: 'January 23, 2025',
+    PublishDate: 'January 23, 2025',
     images: ['/Industrial-1.png', '/Industrial-1.png', '/Industrial-1.png'],
     imageUrl: '/Industrial-1.png',
     area: '10,400 m2',
@@ -286,7 +286,7 @@ export const mockProjects: Project[] = [
     title: 'Residential Project in Madurai, Tamil Nadu',
     cardDescription:"See how we’re transforming homes, businesses, and industries with smart solar solutions",
     description: 'Published Completed',
-    descriptionBold: 'January 23, 2025',
+    PublishDate: 'January 23, 2025',
     images: ['/Residential-2.png', '/Residential-1.png', '/Residential-3.png'],
     imageUrl: '/Residential-2.png',
     area: '10,400 m2',
