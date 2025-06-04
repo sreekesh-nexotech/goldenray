@@ -6,6 +6,7 @@ from .views.evcar_views import EVCarAPIView
 from .views.evscooter_views import EVScooterAPIView
 from .views.solar_installation_views import SolarInstallationAPIView
 from .views.pincode_views import PincodeAPIView
+from .views.solar_calculator_views import SolarCalculatorAPIView
 
 
 urlpatterns = [
@@ -30,5 +31,6 @@ urlpatterns = [
     # Pincodes
     path("pincodes/", PincodeAPIView.as_view(), name="pincode-list-create"),
     path("pincodes/<int:pk>/", PincodeAPIView.as_view(), name="pincode-retrieve-update-destroy"),
-
+    # Solar Calculator.
+    path("calculate-solar/", SolarCalculatorAPIView.as_view(), name="calculate-solar"),
 ]
