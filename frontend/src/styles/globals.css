@@ -10,8 +10,10 @@ body{
 html{
   scroll-behavior: smooth;
 }
+
 body {
-  font-family: 'Switzer', sans-serif;
+  font-family: var(--font-switzer), sans-serif;
+  overflow-x: hidden;
 }
 
 /* Buttons */

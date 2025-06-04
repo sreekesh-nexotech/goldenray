@@ -3,13 +3,13 @@
 
 import InnerProject from '@/components/Projects/Inner-project';
 import ProjectHero from '@/components/Projects/ProjectHero';
-import SolarAdvantage from '@/components/solar-advantage';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 //importing mock data
 import { Project } from '@/data/Mock-projects';
 import { mockProjects } from '@/data/Mock-projects';
+import SolarAdvantageMain from '@/components/solar-calculator/SolarAdvantageMain';
 
 
 export default function ProjectPage() {
@@ -48,11 +48,10 @@ export default function ProjectPage() {
     <section className="relative">
       <ProjectHero
         title={project.title}
-        description={project.description}
-        descriptionBold={project.descriptionBold}
+        PublishDate={project.PublishDate}
       />
       <InnerProject project={project} />
-      <SolarAdvantage />
+      <SolarAdvantageMain/>
     </section>
   );
 }
