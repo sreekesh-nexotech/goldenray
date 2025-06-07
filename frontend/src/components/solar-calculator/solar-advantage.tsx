@@ -60,7 +60,7 @@ export default function SolarAdvantage({
                 placeholder="688503"
                 value={pincode}
                 onChange={(e) => setPincode(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
                 required
               />
             </div>
@@ -77,7 +77,7 @@ export default function SolarAdvantage({
                 id="property-type"
                 value={propertyType}
                 onChange={handlePropertyTypeChange}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none ${
+                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] ${
                   propertyType === "" ? "text-gray-400" : "text-black"
                 }`}
                 required
@@ -105,7 +105,7 @@ export default function SolarAdvantage({
                 placeholder="₹ 2500"
                 value={electricityBill}
                 onChange={(e) => setElectricityBill(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
                 required
               />
             </div>

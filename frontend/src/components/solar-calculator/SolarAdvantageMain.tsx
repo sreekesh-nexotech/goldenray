@@ -71,7 +71,7 @@ export default function SolarAdvantageMain(){
             ) : (
                 <SolarAdvantage
                 onSubmit={handleCalculateSubmit}
-                // Optionally pass initial values if you want them to persist when going back
+                // Optionally pass initial values if we want them to be there when going back
                 initialPincode={formInputs.pincode}
                 initialPropertyType={formInputs.propertyType}
                 initialElectricityBill={formInputs.electricityBill}

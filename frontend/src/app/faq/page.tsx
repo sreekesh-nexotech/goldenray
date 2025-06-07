@@ -1,11 +1,8 @@
-"use client";
-import React, { useState } from 'react';
+import Hero from "@/components/ui/Hero";
 
-// Main App component for the FAQ section
-export default function Faq() {
-  // State to manage the currently open FAQ item.
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+export default function FaqMain(){
 
+    
   // Array of FAQ data (questions and answers)
   const faqs = [
     {
@@ -37,54 +34,26 @@ export default function Faq() {
       answer: 'Without a battery backup system, grid-tied solar systems typically shut down during a power outage for safety reasons (to prevent back-feeding the grid and endangering utility workers). If you have a battery storage system, your home can continue to be powered by the stored solar energy during an outage.'
     }
   ];
+    return(
+        <section className="relative mb-12">
+            {/* Hero section */}
+            <Hero title="Have any questions?" description="Get expert advice and find your ideal solar solution—no obligations, just savings!"/>
 
-  // Function to toggle the open state of an FAQ item
-  const toggleFaq = (index:number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
-  return (
-    <div className="flex items-center justify-center ">
-      <div className="container mx-auto flex flex-col xl:flex-row items-start xl:items-baseline justify-center gap-8 lg:gap-16 md:p-10 rounded-xl max-w-full mt-15 mb-15 px-4 sm:px-6 lg:px-8 xl:px-36">
-        {/* Left Section: Heading and Description */}
-        <div className="w-full xl:w-1/2 xl:text-left text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#123532] mb-2 leading-tight">
-            Have any questions?
-          </h1>
-          <p className="text-base md:text-xl text-[#444444]">
-            Get expert advice and find your ideal solar solution—no obligations, just savings!
-          </p>
-        </div>
-
-        {/* Right Section: FAQ Accordion */}
-        <div className="w-full xl:w-1/2  p-6 rounded-3xl bg-[#F6F2EF]">
-          {faqs.map((faq, index) => (
-            <div key={index} className="border-b border-gray-200 last:border-b-0 py-4">
-              <button
-                className="flex justify-between items-center w-full text-left focus:outline-none cursor-pointer"
-                onClick={() => toggleFaq(index)}
-              >
-                <span className="text-base md:text-2xl font-semibold text-[#444444] pr-4">
-                  {faq.question}
-                </span>
-                <span
-                  className={`text-2xl font-light text-[#000000] transition-transform duration-300 ${
-                    openIndex === index ? 'rotate-45' : 'rotate-0'
-                  }`}
-                >
-                  +
-                </span>
-              </button>
-              {openIndex === index && (
-                <div className="mt-3 text-[#444444] text-sm md:text-lg leading-relaxed">
-                  {faq.answer}
-                </div>
-              )}
+            {/* faq content */}
+            <div className="relative  px-4 sm:px-6 lg:px-8 xl:px-36 rounded-3xl">
+                {faqs.map((faq, index) => (
+                    <div key={index} className="border-b border-gray-200 last:border-b-0 py-4">
+                        <span className="text-base md:text-2xl font-semibold text-[#444444] pr-4">
+                        {faq.question}
+                        </span>
+                        <div className="mt-3 text-[#444444] text-sm md:text-lg leading-relaxed">
+                        {faq.answer}
+                        </div>
+                    </div>
+                ))}
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
+                    
 
+        </section>
+    )
+}

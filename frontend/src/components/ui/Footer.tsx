@@ -127,7 +127,7 @@ export default function Footer() {
             <div className="min-w-[150px] space-y-3">
               <h1 className='text-[#666666] text-base font-light'>Resources</h1>
               <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
-                <li><Link href="#" className='hover:text-gray-800 transition-all ease-in-out duration-300'>FAQs</Link></li>
+                <li><Link href="/faq" className='hover:text-gray-800 transition-all ease-in-out duration-300'>FAQs</Link></li>
                 <li><Link href="#" className='hover:text-gray-800 transition-all ease-in-out duration-300'>Blogs</Link></li>
                 <li><Link href="#" className='hover:text-gray-800 transition-all ease-in-out duration-300'>Newsletters</Link></li>
               </ul>
