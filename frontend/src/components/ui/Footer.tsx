@@ -1,28 +1,32 @@
 "use client";
 import Link from 'next/link';
-import Image from 'next/image'; 
-import footerLogo from '../../../public/Mask-group.png'
-import LinkedInLogo from '../../../public/LinkedinLogo.png'
-import FacebookLogo from '../../../public/FacebookLogo.png'
-import InstagramLogo from '../../../public/InstagramLogo.png'
-import YoutubeLogo from '../../../public/YoutubeLogo.png'
-import Button from './Button';
-
+import Image from 'next/image';
+import footerLogo from '../../../public/Mask-group.png';
+import LinkedInLogo from '../../../public/LinkedinLogo.png';
+import FacebookLogo from '../../../public/FacebookLogo.png';
+import InstagramLogo from '../../../public/InstagramLogo.png';
+import YoutubeLogo from '../../../public/YoutubeLogo.png';
 
 export default function Footer() {
-
-  //form handling
+  // Form handling
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      const formData = new FormData(e.currentTarget);
-      const name = formData.get('name') as string; // Type assertion for string
-      console.log(name);
-      const mobileNumber = formData.get('mobileNumber') as string; // Type assertion for string
-      console.log(mobileNumber);
-      e.currentTarget.reset()
-      // API calling goes here
-    };
+    e.preventDefault();
+    const form = e.currentTarget;
 
+    // Check if the form is valid
+    if (form.checkValidity()) {
+      const formData = new FormData(form);
+      const name = formData.get('name') as string;
+      console.log('Name:', name);
+      const mobileNumber = formData.get('mobileNumber') as string;
+      console.log('Mobile Number:', mobileNumber);
+      form.reset(); // Reset form only if valid
+      // API calling goes here
+    } else {
+      // Trigger browser validation UI
+      form.reportValidity();
+    }
+  };
 
   return (
     <section className="w-full bg-[#074A4D] rounded-t-3xl text-white py-16 px-4 sm:px-8 md:px-12 relative overflow-hidden">
@@ -60,10 +64,10 @@ export default function Footer() {
         </div>
 
         {/* Right - Form */}
-        <form className="flex flex-col gap-4 w-full max-w-sm max-sm:max-w-full" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-4 w-full max-w-sm max-sm:max-w-full" onSubmit={handleSubmit} noValidate={false}>
           <input
             type="text"
-            name='name'
+            name="name"
             placeholder="Name"
             className="px-4 py-3 rounded-xl text-black bg-white focus:outline-none"
             required
@@ -71,22 +75,22 @@ export default function Footer() {
             title="Please enter at least 3 alphabetic characters."
           />
           <input
-            type="text"
-            name='mobileNumber'
+            type="tel" 
+            name="mobileNumber"
             placeholder="Mobile Number"
             className="px-4 py-3 rounded-xl text-black bg-white mb-3 focus:outline-none"
             required
-            pattern="[0-9]{*}"
-            title="Enter a valid phone number"
+            pattern="[0-9\s\-+]{7,15}" 
+            title="Please enter a valid phone number."
           />
-          <Button ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-500' ButtonLink='/' content='Book Now'/>
+
+            <button type="submit" className="btn bg-[#F7BA41] hover:bg-yellow-500 text-[#272218]">Book Now</button>
         </form>
       </div>
 
       {/* Footer Section */}
       <div className="relative bg-white z-10 text-black mt-12 rounded-2xl p-6 sm:p-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between">
-          
           {/* Logo + Description */}
           <div className="w-full md:w-1/3 max-w-md mb-6 md:mb-0">
             <div className="font-bold text-xl mb-2">
@@ -97,16 +101,16 @@ export default function Footer() {
             </p>
             <div className="flex gap-4">
               <Link href="#">
-                <Image src={LinkedInLogo} alt='Linkedin Logo'/>
+                <Image src={LinkedInLogo} alt="Linkedin Logo" />
               </Link>
               <Link href="#">
-                <Image src={FacebookLogo} alt='Facebook Logo'/>
+                <Image src={FacebookLogo} alt="Facebook Logo" />
               </Link>
               <Link href="#">
-                <Image src={InstagramLogo} alt='Instagram Logo'/>
+                <Image src={InstagramLogo} alt="Instagram Logo" />
               </Link>
               <Link href="#">
-                <Image src={YoutubeLogo} alt='Youtube Logo'/>
+                <Image src={YoutubeLogo} alt="Youtube Logo" />
               </Link>
             </div>
           </div>
@@ -115,30 +119,30 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row flex-wrap gap-10 md:justify-end">
             {/* Column 1 */}
             <div className="min-w-[150px] space-y-3">
-              <h1 className='text-[#666666] text-base font-light'>Company</h1>
+              <h1 className="text-[#666666] text-base font-light">Company</h1>
               <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
-                <li><Link href="/solutions" className='hover:text-gray-800 transition-all ease-in-out duration-300'>Our Solutions</Link></li>
-                <li><Link href="projects" className='hover:text-gray-800 transition-all ease-in-out duration-300'>Our Projects</Link></li>
-                <li><Link href="/resources" className='hover:text-gray-800 transition-all ease-in-out duration-300'>Resources</Link></li>
-                <li><Link href="/about" className='hover:text-gray-800 transition-all ease-in-out duration-300'>About Us</Link></li>
+                <li><Link href="/solutions" className="hover:text-gray-800 transition-all ease-in-out duration-300">Our Solutions</Link></li>
+                <li><Link href="/projects" className="hover:text-gray-800 transition-all ease-in-out duration-300">Our Projects</Link></li>
+                <li><Link href="/resources" className="hover:text-gray-800 transition-all ease-in-out duration-300">Resources</Link></li>
+                <li><Link href="/about" className="hover:text-gray-800 transition-all ease-in-out duration-300">About Us</Link></li>
               </ul>
             </div>
             {/* Column 2 */}
             <div className="min-w-[150px] space-y-3">
-              <h1 className='text-[#666666] text-base font-light'>Resources</h1>
+              <h1 className="text-[#666666] text-base font-light">Resources</h1>
               <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
-                <li><Link href="/faq" className='hover:text-gray-800 transition-all ease-in-out duration-300'>FAQs</Link></li>
-                <li><Link href="#" className='hover:text-gray-800 transition-all ease-in-out duration-300'>Blogs</Link></li>
-                <li><Link href="#" className='hover:text-gray-800 transition-all ease-in-out duration-300'>Newsletters</Link></li>
+                <li><Link href="/faq" className="hover:text-gray-800 transition-all ease-in-out duration-300">FAQs</Link></li>
+                <li><Link href="#" className="hover:text-gray-800 transition-all ease-in-out duration-300">Blogs</Link></li>
+                <li><Link href="#" className="hover:text-gray-800 transition-all ease-in-out duration-300">Newsletters</Link></li>
               </ul>
             </div>
             {/* Column 3 */}
             <div className="min-w-[150px] space-y-3">
-              <h1 className='text-[#666666] text-base font-light'>Legal</h1>
+              <h1 className="text-[#666666] text-base font-light">Legal</h1>
               <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
-                <li><Link href="#" className='hover:text-gray-800 transition-all ease-in-out duration-300'>Cookie Policy</Link></li>
-                <li><Link href="#" className='hover:text-gray-800 transition-all ease-in-out duration-300'>Legal Policy</Link></li>
-                <li><Link href="#" className='hover:text-gray-800 transition-all ease-in-out duration-300'>Terms of Service</Link></li>
+                <li><Link href="#" className="hover:text-gray-800 transition-all ease-in-out duration-300">Cookie Policy</Link></li>
+                <li><Link href="#" className="hover:text-gray-800 transition-all ease-in-out duration-300">Legal Policy</Link></li>
+                <li><Link href="#" className="hover:text-gray-800 transition-all ease-in-out duration-300">Terms of Service</Link></li>
               </ul>
             </div>
           </div>

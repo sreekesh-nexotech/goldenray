@@ -1,9 +1,9 @@
 "use client";
 import { useState, ChangeEvent } from "react";
-import BasicResult from "./basic-result";
 import { BackendData } from "@/data/mock-calculator";
 import PageIllustration from "@/components/ui/page-illustration";
 import Button from "../ui/Button";
+import BasicResult from "./basic-result";
 
 interface SolarBasicResultProps {
   initialPincode: string;
@@ -99,7 +99,7 @@ export default function SolarBasicResult({
             Resubmit Changes
           </button>
           {/* advance calculator link */}
-          <a href="#" className="text-[#007E85] hover:underline text-sm px-8 py-3  md:text-base md:ml-4">
+          <a href="/advancedCalculator" target="new" className="text-[#007E85] hover:underline text-sm px-8 py-3  md:text-base md:ml-4">
             Advanced Calculator
           </a>
         </div>
