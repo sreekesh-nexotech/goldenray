@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from '../ui/Button';
 import Image from 'next/image';
+import LinkingButton from '../ui/LinkingButton';
 
 type TeamMemberProps = {
     name:string;
@@ -29,7 +29,7 @@ export default function TeamMember({ name, title, description, linkedin, twitter
       </div>
       {socialLink && (
         <div>
-            <Button content={`${socialLink.platform} ➝`} ButtonLink={socialLink.url} ButtonBorder='border border-[#074A4D]' ButtonBg='bg-[#FFFFFF]' Buttontext='text-[#074A4D]' ButtonHover='hover:bg-[#eeeeee]'/>
+            <LinkingButton content={`${socialLink.platform} ➝`} ButtonLink={socialLink.url} ButtonBorder='border border-[#074A4D]' ButtonBg='bg-[#FFFFFF]' Buttontext='text-[#074A4D]' ButtonHover='hover:bg-[#eeeeee]'/>
         </div>
       )}
     </div>

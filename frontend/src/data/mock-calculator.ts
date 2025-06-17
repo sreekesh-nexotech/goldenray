@@ -36,7 +36,7 @@ export const mockBackendData: BackendData = {
     datasets: [
       {
         label: "Solar power",
-        data: [0, 100000, 200000, 100000, 600000, 400000],
+        data: [0, 100000, 200000, 100000, 600000, 70000],
         borderColor: "#F7BA41",
         backgroundColor: "#F7BA41",
         fill: false,

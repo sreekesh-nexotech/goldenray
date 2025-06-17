@@ -1,10 +1,10 @@
-// src/services/solarService.ts (or basicCalcService.ts)
+// src/services/CalculatorService.ts
+import { apiCall } from './apiService';
+import { BackendData, mockBackendData } from '@/data/mock-calculator';
+import { USE_MOCK_DATA } from '@/config';
 
-import { mockBackendData, BackendData } from "@/data/mock-calculator";
-// import { apiCall, ApiResponse } from "./apiService";
-
-
-// const SOLAR_CALCULATOR_ENDPOINT = "solar-calculator/"; 
+const SOLAR_CALCULATOR_ENDPOINT = 'solar-calculator/';
+const ADVANCED_SOLAR_CALCULATOR_ENDPOINT = 'advanced-solar-calculator/';
 
 
 export async function getSolarAdvantageData(
@@ -12,28 +12,61 @@ export async function getSolarAdvantageData(
   propertyType: string,
   electricityBill: string
 ): Promise<BackendData> {
-  // const queryParams = new URLSearchParams({
-  //   pincode,
-  //   propertyType,
-  //   electricityBill,
-  // }).toString();
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(mockBackendData);
+      }, 1000); // Simulate network delay
+    });
+  } else {
+    const queryParams = new URLSearchParams({
+      pincode,
+      propertyType,
+      electricityBill,
+    }).toString();
+    const url = `${SOLAR_CALCULATOR_ENDPOINT}?${queryParams}`;
+    const response = await apiCall<BackendData>(url, "GET");
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    if (response.data === null) {
+      throw new Error("No data returned from API");
+    }
+    return response.data;
+  }
+}
 
-  // const url = `${SOLAR_CALCULATOR_ENDPOINT}?${queryParams}`;
-
-  // return apiCall<BackendData>(url, "GET");
-  return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          // Simulate an error condition (e.g., invalid pincode)
-          if (pincode === "000000") {
-            reject("Invalid Pincode. Please try again.");
-          }else if(propertyType == null){
-            reject("Select a property type");
-          }else if(electricityBill == '0'){
-            reject("Set valid Electricity Bill");
-          }
-          else {
-            resolve(mockBackendData); // Always return mock data for now
-          }
-        }, 1000); // Simulate network delay
-      });
-    };
+/**
+ * Fetches advanced solar data based on the provided parameters.
+ * If USE_MOCK_DATA is true, returns mock data; otherwise, makes an API call.
+ * @param propertyType The type of property (e.g., "Existing Home", "New Home").
+ * @param consumptionValue The consumption value (average bill for existing home or estimated base load for new home).
+ * @returns A Promise that resolves to the BackendData object.
+ * @throws An Error if the API call fails or returns no data.
+ */
+export async function getSolarAdvancedData(
+  propertyType: string,
+  consumptionValue: string
+): Promise<BackendData> {
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(mockBackendData);
+      }, 1000); // Simulate network delay
+    });
+  } else {
+    const queryParams = new URLSearchParams({
+      propertyType,
+      consumptionValue,
+    }).toString();
+    const url = `${ADVANCED_SOLAR_CALCULATOR_ENDPOINT}?${queryParams}`;
+    const response = await apiCall<BackendData>(url, "GET");
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    if (response.data === null) {
+      throw new Error("No data returned from API");
+    }
+    return response.data;
+  }
+}

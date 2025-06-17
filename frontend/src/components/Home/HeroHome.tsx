@@ -1,7 +1,7 @@
 import Image from 'next/image'; 
 import heroImg from '../../../public/heroImg.png'
 import PageIllustration from '@/components/ui/page-illustration';
-import Button from '../ui/Button';
+import LinkingButton from '../ui/LinkingButton';
 
 export default function HeroHome() {
   return (
@@ -21,8 +21,8 @@ export default function HeroHome() {
           </p>
 
           <div className="flex flex-row justify-center text-xs lg:text-lg md:justify-start lg:gap-4 gap-2 ">
-            <Button content="Calculate Solar Advantage" ButtonLink="#solar-advantage" ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-500'/>
-            <Button content="Book Consultation" ButtonLink="#booking" ButtonBorder='border border-[#074A4D]' ButtonBg='bg-[#FFFFFF]' Buttontext='text-[#074A4D]' ButtonHover='hover:bg-[#eeeeee]'/>
+            <LinkingButton content="Calculate Solar Advantage" ButtonLink="#solar-advantage" ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-500'/>
+            <LinkingButton content="Book Consultation" ButtonLink="#booking" ButtonBorder='border border-[#074A4D]' ButtonBg='bg-[#FFFFFF]' Buttontext='text-[#074A4D]' ButtonHover='hover:bg-[#eeeeee]'/>
           </div>
         </div>
 

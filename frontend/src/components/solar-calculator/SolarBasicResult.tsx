@@ -2,7 +2,7 @@
 import { useState, ChangeEvent } from "react";
 import { BackendData } from "@/data/mock-calculator";
 import PageIllustration from "@/components/ui/page-illustration";
-import Button from "../ui/Button";
+import Button from "../ui/LinkingButton";
 import BasicResult from "./basic-result";
 
 interface SolarBasicResultProps {

@@ -1,7 +1,7 @@
 import Image from 'next/image'; 
 import heroImg from '../../../public/aboutHeroImg.png'
 import PageIllustration from '@/components/ui/page-illustration';
-import Button from '../ui/Button';
+import LinkingButton from '../ui/LinkingButton';
 
 export default function AboutHero() {
   return (
@@ -20,7 +20,7 @@ export default function AboutHero() {
             At Golden Ray, we believe in harnessing the limitless power of the sun to create a cleaner, greener, and more sustainable future.
           </p>
 
-          <Button content="Join Our Team &#10141;" ButtonLink="#" ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-500'/>
+          <LinkingButton content="Join Our Team &#10141;" ButtonLink="#team" ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-500'/>
             
         </div>
 
