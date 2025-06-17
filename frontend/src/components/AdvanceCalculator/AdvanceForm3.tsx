@@ -1,7 +1,7 @@
 /* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceForm3.tsx */
 import React from "react";
-import { BasicInfoFormData } from "./AdvanceCalculatorMain";
 import Button from "../ui/Button";
+import { BasicInfoFormData } from "@/types/calculator";
 
 interface NewHomeDetailsStepProps {
   formData: BasicInfoFormData;

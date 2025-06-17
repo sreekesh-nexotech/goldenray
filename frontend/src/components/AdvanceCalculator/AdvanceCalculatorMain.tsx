@@ -9,37 +9,8 @@ import UsageDetailsStep from "./AdvanceForm2";
 import NewHomeDetailsStep from "./AdvanceForm3";
 import ResultDisplay from "./AdvanceResult";
 import StepIndicator from "./StepIndicator";
+import { BasicInfoFormData, UsageDetailsFormData } from "@/types/calculator";
 
-// Interfaces for form data (assuming these are in a shared types file or defined here)
-export interface BasicInfoFormData {
-  homeType: "Existing Home" | "New Home" | null;
-  gridType: "On Grid" | "Hybrid" | null;
-  averageBill: string;
-  billFrequency: "Monthly" | "Bi-monthly" | null;
-  homeSize?: string;
-  estimatedBaseLoad?: string;
-}
-
-export interface ElectronicDevice {
-  id: string;
-  deviceType: string;
-  noOfUnits: string;
-  wattage: string;
-  dailyUsage: string;
-}
-
-export interface ElectricVehicle {
-  id: string;
-  deviceType: string;
-  noOfUnits: string;
-  wattage: string;
-  dailyUsage: string;
-}
-
-export interface UsageDetailsFormData {
-  electronicDevices: ElectronicDevice[];
-  electricVehicles: ElectricVehicle[];
-}
 
 export default function AdvancedCalculatorMain() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -224,7 +195,8 @@ export default function AdvancedCalculatorMain() {
     <div className="flex flex-col md:flex-row gap-8 mx-auto relative px-4 sm:px-6 lg:px-8 xl:px-36">
       {currentStep <= totalFormSteps && (
         <div className="w-full md:w-1/4 flex flex-col items-start">
-          <StepIndicator
+          <div className="rounded-2xl lg:border border-[#DBD8D8] py-9 lg:px-10 "> 
+            <StepIndicator
             actualStepNumber={1}
             title="Basic Information"
             currentStep={currentStep}
@@ -247,11 +219,12 @@ export default function AdvancedCalculatorMain() {
               homeType={basicInfo.homeType}
             />
           )}
+          </div>
         </div>
       )}
       <div
         className={`w-full ${
-          currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-lg shadow-md" : ""
+          currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8] " : ""
         } bg-white `}
       >
         {error && (

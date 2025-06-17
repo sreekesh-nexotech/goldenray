@@ -1,8 +1,11 @@
 /* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceForm2.tsx */
 import React, { useState } from "react";
-import { UsageDetailsFormData, ElectronicDevice, ElectricVehicle } from "./AdvanceCalculatorMain";
 import { v4 as uuidv4 } from "uuid";
 import Button from "../ui/Button";
+import { ElectricVehicle, ElectronicDevice, UsageDetailsFormData } from "@/types/calculator";
+import deviceIcon from "../../../public/device.svg"
+import Image from "next/image";
+
 
 interface UsageDetailsStepProps {
   formData: UsageDetailsFormData;
@@ -102,15 +105,21 @@ export default function UsageDetailsStep({
 
   return (
     <div className="space-y-8 p-4 md:p-6">
-      <h2 className="text-xl md:text-2xl font-semibold text-[#123532] mb-4">
-        Your Usage
-      </h2>
+      
 
       {/* Electronic Devices Section */}
       <div>
-        <h3 className="text-lg font-medium text-[#123532] mb-2">
-          Electronic Devices
-        </h3>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl md:text-2xl font-semibold text-[#123532] mb-4">
+        Tell us what electronics you want to include?
+          </h2>
+        <button
+          onClick={addElectronicDevice}
+          className="underline font-semibold text-[#123532] cursor-pointer "
+        >
+          + Add Device
+        </button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <input
             type="text"
@@ -145,22 +154,23 @@ export default function UsageDetailsStep({
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
           />
         </div>
-        <button
-          onClick={addElectronicDevice}
-          className="px-4 py-2 bg-[#235C58] text-white rounded-lg hover:bg-[#1e4e47]"
-        >
-          Add Device
-        </button>
+        
         <div className="mt-4">
           {formData.electronicDevices.map((device) => (
             <div
               key={device.id}
-              className="flex justify-between items-center p-2 border-b"
+              className="flex justify-between items-center p-3  rounded-2xl border border-[#DBD8D8]"
             >
-              <span>
-                {device.deviceType} - {device.noOfUnits} units, {device.wattage}W,{" "}
-                {device.dailyUsage}hrs/day
+              <span >
+                <span className="font-semibold flex gap-2 items-center">
+                  <Image src={deviceIcon} alt="device icon"/>
+                  {device.deviceType} &times; {device.noOfUnits}
+                </span>
+                <div>
+                  {device.wattage} Watts | {device.dailyUsage}h Daily Usage
+                </div>
               </span>
+              
               <button
                 onClick={() => removeDevice(device.id)}
                 className="text-red-500 hover:text-red-700"

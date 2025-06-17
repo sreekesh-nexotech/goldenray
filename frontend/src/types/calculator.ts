@@ -2,22 +2,17 @@
 
 // Keep the BackendData type as it defines the API response
 export type { BackendData } from '@/data/mock-calculator';
-
-// Defines the data for the first step of the form
+// Interfaces for form data (assuming these are in a shared types file or defined here)
 export interface BasicInfoFormData {
-  pincode: string;
-  homeType: 'Existing Home' | 'New Home' | null;
-  gridType: 'On Grid' | 'Hybrid' | null;
-  // Fields for Existing Home
+  homeType: "Existing Home" | "New Home" | null;
+  gridType: "On Grid" | "Hybrid" | null;
   averageBill: string;
-  billFrequency: 'Monthly' | 'Bi-monthly' | null;
-  // Fields for New Home
-  homeSize: string;
-  estimatedBaseLoad: string;
+  billFrequency: "Monthly" | "Bi-monthly" | null;
+  homeSize?: string;
+  estimatedBaseLoad?: string;
 }
 
-// Defines a single device or vehicle entry
-export interface Device {
+export interface ElectronicDevice {
   id: string;
   deviceType: string;
   noOfUnits: string;
@@ -25,10 +20,17 @@ export interface Device {
   dailyUsage: string;
 }
 
-// Defines the data for the usage details step
+export interface ElectricVehicle {
+  id: string;
+  deviceType: string;
+  noOfUnits: string;
+  wattage: string;
+  dailyUsage: string;
+}
+
 export interface UsageDetailsFormData {
-  electronicDevices: Device[];
-  electricVehicles: Device[];
+  electronicDevices: ElectronicDevice[];
+  electricVehicles: ElectricVehicle[];
 }
 
 // Combined structure for the final API call

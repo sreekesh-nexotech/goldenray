@@ -1,7 +1,15 @@
 /* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceForm1.tsx */
 import React from "react";
-import { BasicInfoFormData } from "./AdvanceCalculatorMain";
 import Button from "../ui/Button";
+import { BasicInfoFormData } from "@/types/calculator";
+import Image from "next/image";
+import homeIcon from "../../../public/homeIcon.svg"
+import onGridIcon from "../../../public/OnGrid.svg"
+import hybridIcon from "../../../public/hybrid.svg"
+import monthlyIcon from "../../../public/monthly.svg"
+import bimonthlyIcon from "../../../public/bimonthly.svg"
+
+
 
 interface BasicInformationStepProps {
   formData: BasicInfoFormData;
@@ -26,7 +34,7 @@ export default function BasicInformationStep({
   };
 
   return (
-    <div className="space-y-8 p-4 md:p-6">
+    <div className="space-y-8  md:p-6">
       {" "}
       {/* Added padding */}
       {/* Home Type Selection */}
@@ -34,29 +42,31 @@ export default function BasicInformationStep({
         <h2 className="text-xl md:text-2xl font-semibold text-[#123532] mb-4">
           Where are you in your solar journey?
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
           <div
-            className={`border p-6 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${
+            className={` border p-6 flex flex-col gap-2 items-center rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
               formData.homeType === "Existing Home"
                 ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                 : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
             }`}
             onClick={() => handleCardSelect("homeType", "Existing Home")}
           >
-            <h3 className="font-medium text-[#123532] mb-2">Existing Home</h3>
+            <Image src={homeIcon} alt="Home Icon"/>
+            <h3 className="font-bold text-[#123532]">Existing Home</h3>
             <p className="text-gray-600 text-sm">
               I already have a home and want to add solar power to it.
             </p>
           </div>
           <div
-            className={`border p-6 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${
+            className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
               formData.homeType === "New Home"
                 ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                 : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
             }`}
             onClick={() => handleCardSelect("homeType", "New Home")}
           >
-            <h3 className="font-medium text-[#123532] mb-2">New Home</h3>
+            <Image src={homeIcon} alt="Home Icon"/>
+            <h3 className="font-bold text-[#123532]">New Home</h3>
             <p className="text-gray-600 text-sm">
               Im planning or building a new home with solar power.
             </p>
@@ -68,29 +78,31 @@ export default function BasicInformationStep({
         <h2 className="text-xl md:text-2xl font-semibold text-[#123532] mb-4">
           What type of grid system are you considering?
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
           <div
-            className={`border p-6 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${
+            className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
               formData.gridType === "On Grid"
                 ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                 : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
             }`}
             onClick={() => handleCardSelect("gridType", "On Grid")}
           >
-            <h3 className="font-medium text-[#123532] mb-2">On Grid</h3>
+            <Image src={onGridIcon} alt="OnGrid Icon"/>
+            <h3 className=" text-[#123532] mb-2 font-bold">On Grid</h3>
             <p className="text-gray-600 text-sm">
               Connected to the utility grid. No backup during power outages.
             </p>
           </div>
           <div
-            className={`border p-6 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${
+            className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
               formData.gridType === "Hybrid"
                 ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                 : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
             }`}
             onClick={() => handleCardSelect("gridType", "Hybrid")}
           >
-            <h3 className="font-medium text-[#123532] mb-2">Hybrid</h3>
+            <Image src={hybridIcon} alt="Hybrid Icon"/>
+            <h3 className="font-bold text-[#123532] mb-2">Hybrid</h3>
             <p className="text-gray-600 text-sm">
               Includes battery backup for power outages. More reliable
             </p>
@@ -114,7 +126,7 @@ export default function BasicInformationStep({
                 onChange={handleChange}
                 className="w-full p-4 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500  text-2xl">
                 ₹
               </span>
             </div>
@@ -124,29 +136,31 @@ export default function BasicInformationStep({
             <h2 className="text-xl md:text-2xl font-semibold text-[#123532] mb-4">
               How often do you pay your electricity bill?
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
               <div
-                className={`border p-6 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${
+                className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
                   formData.billFrequency === "Monthly"
                     ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                     : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
                 }`}
                 onClick={() => handleCardSelect("billFrequency", "Monthly")}
               >
-                <h3 className="font-medium text-[#123532] mb-2">Monthly</h3>
+              <Image src={monthlyIcon} alt="Monthly Icon"/>
+                <h3 className="font-bold text-[#123532] mb-2">Monthly</h3>
                 <p className="text-gray-600 text-sm">
                   You get your electricity bill once every month.
                 </p>
               </div>
               <div
-                className={`border p-6 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${
+                className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
                   formData.billFrequency === "Bi-monthly"
                     ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                     : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
                 }`}
                 onClick={() => handleCardSelect("billFrequency", "Bi-monthly")}
               >
-                <h3 className="font-medium text-[#123532] mb-2">Bi-monthly</h3>
+                <Image src={bimonthlyIcon} alt="Bi Monthly Icon"/>
+                <h3 className="font-bold text-[#123532] mb-2">Bi-monthly</h3>
                 <p className="text-gray-600 text-sm">
                   You get billed once every two months.
                 </p>
