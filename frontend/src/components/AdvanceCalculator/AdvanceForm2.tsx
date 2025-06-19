@@ -1,18 +1,19 @@
 /* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceForm2.tsx */
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import Button from "../ui/Button";
-import { ElectricVehicle, ElectronicDevice, UsageDetailsFormData } from "@/types/calculator";
-import deviceIcon from "../../../public/device.svg"
 import Image from "next/image";
-
+import Button from "../ui/Button";
+import { UsageDetailsFormData, ElectricVehicle, ElectronicDevice } from "@/types/calculator";
+import DeviceManager from "./AdvanceDeviceManager"; // Import the reusable component
+import deviceIcon from "../../../public/device.svg";
+import deleteIcon from "../../../public/deleteIcon.svg";
 
 interface UsageDetailsStepProps {
   formData: UsageDetailsFormData;
   setFormData: React.Dispatch<React.SetStateAction<UsageDetailsFormData>>;
   onCalculate: () => void;
   loading: boolean;
-  homeType: "Existing Home" | "New Home" | null;
+  gridType: "On Grid" | "Hybrid" | null;
 }
 
 export default function UsageDetailsStep({
@@ -20,14 +21,11 @@ export default function UsageDetailsStep({
   setFormData,
   onCalculate,
   loading,
-  homeType,
+  gridType,
 }: UsageDetailsStepProps) {
-  const [newDevice, setNewDevice] = useState({
-    deviceType: "",
-    noOfUnits: "",
-    wattage: "",
-    dailyUsage: "",
-  });
+  
+
+  // State for the new vehicle input fields
   const [newVehicle, setNewVehicle] = useState({
     deviceType: "",
     noOfUnits: "",
@@ -35,36 +33,24 @@ export default function UsageDetailsStep({
     dailyUsage: "",
   });
 
-  const handleDeviceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewDevice((prev) => ({ ...prev, [name]: value }));
+  /**
+   * This is a wrapper function passed to the DeviceManager component.
+   * It allows the child component to update the `electronicDevices` array,
+   * which is part of the parent's `usageDetails` state object.
+   */
+  const setElectronicDevices: React.Dispatch<React.SetStateAction<ElectronicDevice[]>> = (
+    updater
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      electronicDevices: typeof updater === "function" ? updater(prev.electronicDevices) : updater,
+    }));
   };
+
 
   const handleVehicleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewVehicle((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const addElectronicDevice = () => {
-    if (
-      newDevice.deviceType &&
-      newDevice.noOfUnits &&
-      newDevice.wattage &&
-      newDevice.dailyUsage
-    ) {
-      const device: ElectronicDevice = {
-        id: uuidv4(),
-        deviceType: newDevice.deviceType,
-        noOfUnits: newDevice.noOfUnits,
-        wattage: newDevice.wattage,
-        dailyUsage: newDevice.dailyUsage,
-      };
-      setFormData((prev) => ({
-        ...prev,
-        electronicDevices: [...prev.electronicDevices, device],
-      }));
-      setNewDevice({ deviceType: "", noOfUnits: "", wattage: "", dailyUsage: "" });
-    }
   };
 
   const addElectricVehicle = () => {
@@ -85,15 +71,9 @@ export default function UsageDetailsStep({
         ...prev,
         electricVehicles: [...prev.electricVehicles, vehicle],
       }));
+      // Reset the input fields after adding
       setNewVehicle({ deviceType: "", noOfUnits: "", wattage: "", dailyUsage: "" });
     }
-  };
-
-  const removeDevice = (id: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      electronicDevices: prev.electronicDevices.filter((device) => device.id !== id),
-    }));
   };
 
   const removeVehicle = (id: string) => {
@@ -104,97 +84,35 @@ export default function UsageDetailsStep({
   };
 
   return (
-    <div className="space-y-8 p-4 md:p-6">
-      
+    <div className="space-y-12 p-0 md:p-6">
+      {/* --- Electronic Devices Section (Using Reusable Component) --- */}
+      <DeviceManager
+        devices={formData.electronicDevices}
+        setDevices={setElectronicDevices}
+        title="Tell us what electronics you want to include?"
+      />
 
-      {/* Electronic Devices Section */}
+      {/* --- Electric Vehicles Section --- */}
       <div>
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl md:text-2xl font-semibold text-[#123532] mb-4">
-        Tell us what electronics you want to include?
+        <div className="flex flex-col lg:flex-row items-start justify-between mb-4">
+          <h2 className="text-xl md:text-2xl font-semibold text-[#123532]">
+            Add your electric vehicle (if any)
           </h2>
-        <button
-          onClick={addElectronicDevice}
-          className="underline font-semibold text-[#123532] cursor-pointer "
-        >
-          + Add Device
-        </button>
+          <button
+            onClick={addElectricVehicle}
+            className="hidden lg:block underline font-semibold text-[#123532] cursor-pointer whitespace-nowrap"
+          >
+            + Add Vehicle
+          </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <input
             type="text"
             name="deviceType"
-            placeholder="Device Type"
-            value={newDevice.deviceType}
-            onChange={handleDeviceChange}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
-          />
-          <input
-            type="number"
-            name="noOfUnits"
-            placeholder="No. of Units"
-            value={newDevice.noOfUnits}
-            onChange={handleDeviceChange}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
-          />
-          <input
-            type="number"
-            name="wattage"
-            placeholder="Wattage"
-            value={newDevice.wattage}
-            onChange={handleDeviceChange}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
-          />
-          <input
-            type="number"
-            name="dailyUsage"
-            placeholder="Daily Usage (hrs)"
-            value={newDevice.dailyUsage}
-            onChange={handleDeviceChange}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
-          />
-        </div>
-        
-        <div className="mt-4">
-          {formData.electronicDevices.map((device) => (
-            <div
-              key={device.id}
-              className="flex justify-between items-center p-3  rounded-2xl border border-[#DBD8D8]"
-            >
-              <span >
-                <span className="font-semibold flex gap-2 items-center">
-                  <Image src={deviceIcon} alt="device icon"/>
-                  {device.deviceType} &times; {device.noOfUnits}
-                </span>
-                <div>
-                  {device.wattage} Watts | {device.dailyUsage}h Daily Usage
-                </div>
-              </span>
-              
-              <button
-                onClick={() => removeDevice(device.id)}
-                className="text-red-500 hover:text-red-700"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Electric Vehicles Section */}
-      <div>
-        <h3 className="text-lg font-medium text-[#123532] mb-2">
-          Electric Vehicles
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <input
-            type="text"
-            name="deviceType"
-            placeholder="Vehicle Type"
+            placeholder="Vehicle Type (e.g., Car)"
             value={newVehicle.deviceType}
             onChange={handleVehicleChange}
-            className="p-3 border  border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
+            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
           />
           <input
             type="number"
@@ -207,7 +125,7 @@ export default function UsageDetailsStep({
           <input
             type="number"
             name="wattage"
-            placeholder="Wattage"
+            placeholder="Charger Wattage"
             value={newVehicle.wattage}
             onChange={handleVehicleChange}
             className="p-3 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
@@ -215,45 +133,50 @@ export default function UsageDetailsStep({
           <input
             type="number"
             name="dailyUsage"
-            placeholder="Daily Usage (hrs)"
+            placeholder="Daily Charging (hrs)"
             value={newVehicle.dailyUsage}
             onChange={handleVehicleChange}
-            className="p-3 border  border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
+            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
           />
-        </div>
-        <button
+
+          <button
           onClick={addElectricVehicle}
-          className="px-4 py-2 bg-[#235C58] text-white rounded-lg hover:bg-[#1e4e47]"
+          className="block lg:hidden underline font-semibold text-[#123532] cursor-pointer whitespace-nowrap"
         >
-          Add Vehicle
+          + Add Device
         </button>
-        <div className="mt-4">
+        </div>
+
+        <div className="mt-4 space-y-3">
           {formData.electricVehicles.map((vehicle) => (
             <div
               key={vehicle.id}
-              className="flex justify-between items-center p-2 border-b"
+              className="flex justify-between items-center p-3 rounded-2xl border border-[#DBD8D8]"
             >
-              <span>
-                {vehicle.deviceType} - {vehicle.noOfUnits} units, {vehicle.wattage}W,{" "}
-                {vehicle.dailyUsage}hrs/day
-              </span>
+              <div>
+                <span className="font-semibold flex gap-2 items-center">
+                  <Image src={deviceIcon} alt="vehicle icon" />
+                  {vehicle.deviceType} × {vehicle.noOfUnits}
+                </span>
+                <div className="text-sm text-gray-600 pl-8">
+                  {vehicle.wattage} Watts | {vehicle.dailyUsage}h Daily Usage
+                </div>
+              </div>
               <button
                 onClick={() => removeVehicle(vehicle.id)}
-                className="text-red-500 hover:text-red-700"
+                className="cursor-pointer"
               >
-                Remove
+                <Image src={deleteIcon} alt="Delete" />
               </button>
             </div>
           ))}
         </div>
       </div>
 
+      {/* --- Navigation Button --- */}
       <div className="flex justify-end mt-8">
-        <Button
-          onClick={onCalculate}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : homeType === "New Home" ? "Next" : "Calculate"}
+        <Button onClick={onCalculate} disabled={loading}>
+          {loading ? "Processing..." : gridType === "Hybrid" ? "Next" : "Calculate"}
         </Button>
       </div>
     </div>

@@ -1,7 +1,8 @@
-/* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceForm3.tsx */
+"use client";
 import React from "react";
 import Button from "../ui/Button";
-import { BasicInfoFormData } from "@/types/calculator";
+import { BasicInfoFormData, ElectronicDevice } from "@/types/calculator";
+import DeviceManager from "./AdvanceDeviceManager"; 
 
 interface NewHomeDetailsStepProps {
   formData: BasicInfoFormData;
@@ -14,71 +15,61 @@ export default function NewHomeDetailsStep({
   setFormData,
   onNext,
 }: NewHomeDetailsStepProps) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: parseInt(value) }));
   };
+
+  // Wrapper function to update devices within the basicInfo state
+  const setBackupDevices: React.Dispatch<React.SetStateAction<ElectronicDevice[]>> = (
+    updater
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      electronicDevices: typeof updater === "function" ? updater(prev.electronicDevices) : updater,
+    }));
+  };
+  const backupHours = formData.backupHours;
 
   return (
     <div className="space-y-8 p-4 md:p-6">
-      {" "}
-      {/* Added padding */}
-      <h2 className="text-xl md:text-2xl font-semibold text-[#123532] mb-6">
-        Tell us more about your new home
-      </h2>
 
-      {/* Input for Home Size */}
+
+      {/* Backup Power Hours Slider */}
       <div>
-        <label
-          htmlFor="homeSize"
-          className="block text-gray-700 text-base font-medium mb-2"
-        >
-          What size is your new home?
+        <label className="text-xl md:text-2xl font-semibold text-[#123532] mb-6">
+          How many hours of backup power do you need?
         </label>
         <input
-          type="number"
-          id="homeSize"
-          name="homeSize"
-          placeholder="Enter Size (sq. ft.)"
-          value={formData.homeSize || ""}
-          onChange={handleChange}
-          className="w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
+          type="range"
+          name="backupHours"
+          min="3"
+          max="24"
+          step="1"
+          value={backupHours}
+          onChange={handleSliderChange}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          style={{
+            background: `linear-gradient(to right, #F7BA41 0%, #F7BA41 ${((backupHours - 3) / 21) * 100}%, #E5E7EB ${((backupHours - 3) / 21) * 100}%, #E5E7EB 100%)`,
+          }}
         />
-        <p className="text-sm text-gray-500 mt-1">
-          Provide the approximate area of your home in square feet.
-        </p>
-      </div>
-
-      {/* Input for Estimated Base Load */}
-      <div>
-        <label
-          htmlFor="estimatedBaseLoad"
-          className="block text-gray-700 text-base font-medium mb-2"
-        >
-          Estimated monthly base load
-        </label>
-        <div className="relative">
-          <input
-            type="number"
-            id="estimatedBaseLoad"
-            name="estimatedBaseLoad"
-            placeholder="Enter Estimated Base Load (kWh)"
-            value={formData.estimatedBaseLoad || ""}
-            onChange={handleChange}
-            className="w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
-          />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
-            kWh
-          </span>
+        <div className="flex justify-between text-sm text-gray-600 mt-2 px-1">
+          <span>3h</span>
+          <span className="font-bold text-black">{backupHours} hrs</span>
+          <span>24h</span>
         </div>
-        <p className="text-sm text-gray-500 mt-1">
-          Estimate your monthly electricity consumption for essential appliances.
-        </p>
       </div>
+      
+      {/* Electronic Devices Section for Backup */}
+      <DeviceManager
+        devices={formData.electronicDevices}
+        setDevices={setBackupDevices}
+        title="What devices need backup power?"
+      />
 
       <div className="flex justify-end mt-8">
-                <Button onClick={onNext}>Next</Button>
-        
+        <Button onClick={onNext}>Calculate</Button>
       </div>
     </div>
   );

@@ -1,19 +1,23 @@
-// app/AdvancedCalculatorMain.tsx
 "use client";
 
 import { useState, useMemo } from "react";
 import { getSolarAdvancedData } from "@/services/CalculatorService";
 import { BackendData } from "@/data/mock-calculator";
+import { BasicInfoFormData, UsageDetailsFormData } from "@/types/calculator";
+
 import BasicInformationStep from "./AdvanceForm1";
 import UsageDetailsStep from "./AdvanceForm2";
 import NewHomeDetailsStep from "./AdvanceForm3";
 import ResultDisplay from "./AdvanceResult";
 import StepIndicator from "./StepIndicator";
-import { BasicInfoFormData, UsageDetailsFormData } from "@/types/calculator";
-
+import FormHeading from "./FormHeading";
 
 export default function AdvancedCalculatorMain() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [resultData, setResultData] = useState<BackendData | null>(null);
+
   const [basicInfo, setBasicInfo] = useState<BasicInfoFormData>({
     homeType: null,
     gridType: null,
@@ -21,154 +25,121 @@ export default function AdvancedCalculatorMain() {
     billFrequency: null,
     homeSize: "",
     estimatedBaseLoad: "",
+    backupHours: 9,
+    electronicDevices: [],
   });
+
   const [usageDetails, setUsageDetails] = useState<UsageDetailsFormData>({
     electronicDevices: [],
     electricVehicles: [],
   });
-  const [resultData, setResultData] = useState<BackendData | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  // Determine total form steps dynamically based on homeType
   const totalFormSteps = useMemo(() => {
-    return basicInfo.homeType === "New Home" ? 3 : 2;
-  }, [basicInfo.homeType]);
+    // Change to depend on gridType instead of homeType
+    return basicInfo.gridType === "Hybrid" ? 3 : 2;
+  }, [basicInfo.gridType]);
+
+  // --- Step Navigation and Validation ---
 
   const handleBasicInfoSubmit = () => {
     setError(null);
-
     if (!basicInfo.homeType || !basicInfo.gridType) {
       setError("Please select a home type and grid type.");
       return;
     }
-
     if (basicInfo.homeType === "Existing Home") {
-      if (
-        !basicInfo.averageBill ||
-        basicInfo.averageBill.trim() === "" ||
-        !basicInfo.billFrequency
-      ) {
-        setError(
-          "Please provide your average electricity bill and bill frequency for your existing home."
-        );
+      if (!basicInfo.averageBill || !basicInfo.billFrequency) {
+        setError("Please provide your average electricity bill and bill frequency.");
         return;
       }
-      if (
-        isNaN(parseFloat(basicInfo.averageBill)) ||
-        parseFloat(basicInfo.averageBill) <= 0
-      ) {
-        setError(
-          "Please enter a valid positive number for your average electricity bill."
-        );
+      if (parseFloat(basicInfo.averageBill) <= 0) {
+        setError("Please enter a valid positive number for your average bill.");
         return;
       }
     }
-
+    if (basicInfo.homeType === "New Home") {
+      if (!basicInfo.homeSize || parseFloat(basicInfo.homeSize) <= 0) {
+        setError("Please enter a valid Home Size (e.g., a positive number in sq. ft.).");
+        return;
+      }
+      if (basicInfo.estimatedBaseLoad === "" || parseFloat(basicInfo.estimatedBaseLoad) < 0) {
+        setError("Please enter a valid Estimated Base Load (e.g., a non-negative number in kWh).");
+        return;
+      }
+    }
     setCurrentStep(2);
   };
 
   const handleUsageDetailsSubmit = () => {
-    setError(null);
+    
+    // ========================================================================
+    // LOGGING POINT 1: After clicking the button on Form 2
+    // ========================================================================
+    const dataAfterStep2 = {
+      fromStep1: basicInfo,
+      fromStep2: usageDetails,
+    };
+    console.log(
+      "--- 📊 Data collected after Step 2 ---",
+      JSON.stringify(dataAfterStep2, null, 2)
+    );
+    // ========================================================================
 
-    if (
-      usageDetails.electronicDevices.length === 0 &&
-      usageDetails.electricVehicles.length === 0
-    ) {
-      setError("Please add at least one electronic device or electric vehicle to proceed.");
+    if (usageDetails.electronicDevices.length === 0) {
+      setError("Please add at least one electronic device in the 'Your Usage' section.");
       return;
     }
 
-    const isElectronicDeviceDataValid = usageDetails.electronicDevices.every(
-      (device) =>
-        device.deviceType.trim() !== "" &&
-        !isNaN(parseFloat(device.noOfUnits)) &&
-        parseFloat(device.noOfUnits) > 0 &&
-        !isNaN(parseFloat(device.wattage)) &&
-        parseFloat(device.wattage) > 0 &&
-        !isNaN(parseFloat(device.dailyUsage)) &&
-        parseFloat(device.dailyUsage) > 0
-    );
 
-    const isElectricVehicleDataValid = usageDetails.electricVehicles.every(
-      (vehicle) =>
-        vehicle.deviceType.trim() !== "" &&
-        !isNaN(parseFloat(vehicle.noOfUnits)) &&
-        parseFloat(vehicle.noOfUnits) > 0 &&
-        !isNaN(parseFloat(vehicle.wattage)) &&
-        parseFloat(vehicle.wattage) > 0 &&
-        !isNaN(parseFloat(vehicle.dailyUsage)) &&
-        parseFloat(vehicle.dailyUsage) > 0
-    );
-
-    if (!isElectronicDeviceDataValid || !isElectricVehicleDataValid) {
-      setError(
-        "Please ensure all added device fields (type, units, wattage, daily usage) are filled correctly with positive numbers."
-      );
-      return;
-    }
-
-    if (basicInfo.homeType === "New Home") {
+    if (basicInfo.gridType === "Hybrid") {
       setCurrentStep(3);
     } else {
+      // For non-Hybrid grid types, this is the final step, so we calculate.
       handleCalculate();
     }
   };
 
-  const handleNewHomeDetailsSubmit = () => {
-    setError(null);
-
-    if (
-      !basicInfo.homeSize ||
-      basicInfo.homeSize.trim() === "" ||
-      !basicInfo.estimatedBaseLoad ||
-      basicInfo.estimatedBaseLoad.trim() === ""
-    ) {
-      setError("Please provide your new home's size and an estimated base load.");
-      return;
-    }
-    if (isNaN(parseFloat(basicInfo.homeSize)) || parseFloat(basicInfo.homeSize) <= 0) {
-      setError("Please enter a valid Home Size (e.g., a positive number in sq. ft.).");
-      return;
-    }
-    if (
-      isNaN(parseFloat(basicInfo.estimatedBaseLoad)) ||
-      parseFloat(basicInfo.estimatedBaseLoad) < 0
-    ) {
-      setError(
-        "Please enter a valid Estimated Base Load (e.g., a non-negative number in kWh)."
-      );
-      return;
-    }
-
-    handleCalculate();
-  };
-
   const handleCalculate = async () => {
+    // ========================================================================
+    // LOGGING POINT 2: After clicking the final button (on Form 3, or Form 2 for non-Hybrid)
+    // ========================================================================
+    const allElectronicDevices = [
+      ...usageDetails.electronicDevices, // from Form 2
+      ...basicInfo.electronicDevices,   // from Form 3
+    ];
+
+    if (basicInfo.electronicDevices.length === 0) {
+      setError("Please add at least one electronic device before calculating.");
+      return;
+    }
+
+    const finalPayload = {
+      ...basicInfo,
+      ...usageDetails,
+      electronicDevices: allElectronicDevices, // Overwrite with the combined list
+    };
+
+    console.log(
+      "--- ✅ Final Data before API call (All Steps) ---",
+      JSON.stringify(finalPayload, null, 2)
+    );
+    // ========================================================================
+
+
     setLoading(true);
-    setError(null);
 
     try {
-      let consumptionValueForBackend: string;
-      if (basicInfo.homeType === "Existing Home") {
-        consumptionValueForBackend = basicInfo.averageBill || "";
-      } else {
-        consumptionValueForBackend = basicInfo.estimatedBaseLoad || "";
-      }
-
-      const data = await getSolarAdvancedData(
-        basicInfo.homeType || "",
-        consumptionValueForBackend
-      );
+      const data = await getSolarAdvancedData(basicInfo, usageDetails);
       setResultData(data);
       setCurrentStep(totalFormSteps + 1);
     } catch (err: unknown) {
       console.error("Calculation error:", err);
       setError(
         "Failed to calculate solar advantage. Please check your inputs and try again. " +
-          (err instanceof Error ? err.message : "An unknown error occurred.")
+        (err instanceof Error ? err.message : "An unknown error occurred.")
       );
     } finally {
+      setError(null);
       setLoading(false);
     }
   };
@@ -182,6 +153,8 @@ export default function AdvancedCalculatorMain() {
       billFrequency: null,
       homeSize: "",
       estimatedBaseLoad: "",
+      backupHours: 9,
+      electronicDevices: [],
     });
     setUsageDetails({
       electronicDevices: [],
@@ -192,50 +165,60 @@ export default function AdvancedCalculatorMain() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 mx-auto relative px-4 sm:px-6 lg:px-8 xl:px-36">
+    <div>
+        {/*form headings  */}
+      {((currentStep === 1) || (currentStep === 2) || (currentStep === 3)) && (
+        <FormHeading
+          title="Let’s find your ideal solar setup"
+          description="A complete guide to calculating the right solar panel system size for your property and determining how many panels you need."
+        />
+      )}
+
+      {currentStep ===  totalFormSteps + 1 && resultData &&(<FormHeading
+          title="Here's your ideal on-grid solar system recommendation"
+          description="Based on your inputs, we've calculated the perfect solar solution for your needs"
+        />)}
+    
+    <div className="flex flex-col md:flex-row gap-8 mx-auto relative px-4 sm:px-6 lg:px-8 xl:px-36 mb-12">
       {currentStep <= totalFormSteps && (
         <div className="w-full md:w-1/4 flex flex-col items-start">
-          <div className="rounded-2xl lg:border border-[#DBD8D8] py-9 lg:px-10 "> 
+          <div className="w-full rounded-2xl lg:border border-[#DBD8D8] py-6 lg:py-9 px-4 lg:px-10 flex flex-row items-center justify-around gap-2 md:flex-col md:items-start md:gap-0">
             <StepIndicator
-            actualStepNumber={1}
-            title="Basic Information"
-            currentStep={currentStep}
-            totalFormSteps={totalFormSteps}
-            homeType={basicInfo.homeType}
-          />
-          <StepIndicator
-            actualStepNumber={2}
-            title="Your Usage"
-            currentStep={currentStep}
-            totalFormSteps={totalFormSteps}
-            homeType={basicInfo.homeType}
-          />
-          {basicInfo.homeType === "New Home" && (
-            <StepIndicator
-              actualStepNumber={3}
-              title="Home Details"
+              actualStepNumber={1}
+              title="Basic Info"
               currentStep={currentStep}
               totalFormSteps={totalFormSteps}
-              homeType={basicInfo.homeType}
             />
-          )}
+            <StepIndicator
+              actualStepNumber={2}
+              title="Your Usage"
+              currentStep={currentStep}
+              totalFormSteps={totalFormSteps}
+            />
+            {basicInfo.gridType === "Hybrid" && (
+              <StepIndicator
+                actualStepNumber={3}
+                title="Home Details"
+                currentStep={currentStep}
+                totalFormSteps={totalFormSteps}
+            />
+            )}
           </div>
         </div>
       )}
+
       <div
         className={`w-full ${
-          currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8] " : ""
-        } bg-white `}
+          currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8]" : ""
+        } bg-white transition-all duration-300`}
       >
         {error && (
-          <div
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-            role="alert"
-          >
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
             <strong className="font-bold">Error!</strong>
-            <span className="block sm:inline"> {error}</span>
+            <span className="block sm:inline ml-2">{error}</span>
           </div>
         )}
+
         {currentStep === 1 && (
           <BasicInformationStep
             formData={basicInfo}
@@ -243,22 +226,25 @@ export default function AdvancedCalculatorMain() {
             onNext={handleBasicInfoSubmit}
           />
         )}
+
         {currentStep === 2 && (
           <UsageDetailsStep
             formData={usageDetails}
             setFormData={setUsageDetails}
             onCalculate={handleUsageDetailsSubmit}
             loading={loading}
-            homeType={basicInfo.homeType}
+            gridType={basicInfo.gridType}
           />
         )}
-        {currentStep === 3 && basicInfo.homeType === "New Home" && (
+
+        {currentStep === 3 && basicInfo.gridType === "Hybrid" && (
           <NewHomeDetailsStep
             formData={basicInfo}
             setFormData={setBasicInfo}
-            onNext={handleNewHomeDetailsSubmit}
+            onNext={handleCalculate}
           />
         )}
+
         {currentStep === totalFormSteps + 1 && resultData && (
           <ResultDisplay
             data={resultData}
@@ -267,6 +253,7 @@ export default function AdvancedCalculatorMain() {
           />
         )}
       </div>
+    </div>
     </div>
   );
 }

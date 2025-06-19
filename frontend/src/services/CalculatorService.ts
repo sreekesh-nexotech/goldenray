@@ -2,10 +2,10 @@
 import { apiCall } from './apiService';
 import { BackendData, mockBackendData } from '@/data/mock-calculator';
 import { USE_MOCK_DATA } from '@/config';
+import { BasicInfoFormData, UsageDetailsFormData } from '@/types/calculator';
 
 const SOLAR_CALCULATOR_ENDPOINT = 'solar-calculator/';
 const ADVANCED_SOLAR_CALCULATOR_ENDPOINT = 'advanced-solar-calculator/';
-
 
 export async function getSolarAdvantageData(
   pincode: string,
@@ -39,14 +39,14 @@ export async function getSolarAdvantageData(
 /**
  * Fetches advanced solar data based on the provided parameters.
  * If USE_MOCK_DATA is true, returns mock data; otherwise, makes an API call.
- * @param propertyType The type of property (e.g., "Existing Home", "New Home").
- * @param consumptionValue The consumption value (average bill for existing home or estimated base load for new home).
+ * @param basicInfo The basic information form data (homeType, gridType, averageBill, billFrequency, homeSize, estimatedBaseLoad).
+ * @param usageDetails The usage details form data (electronicDevices, electricVehicles).
  * @returns A Promise that resolves to the BackendData object.
  * @throws An Error if the API call fails or returns no data.
  */
 export async function getSolarAdvancedData(
-  propertyType: string,
-  consumptionValue: string
+  basicInfo: BasicInfoFormData,
+  usageDetails: UsageDetailsFormData
 ): Promise<BackendData> {
   if (USE_MOCK_DATA) {
     return new Promise((resolve) => {
@@ -55,12 +55,18 @@ export async function getSolarAdvancedData(
       }, 1000); // Simulate network delay
     });
   } else {
-    const queryParams = new URLSearchParams({
-      propertyType,
-      consumptionValue,
-    }).toString();
-    const url = `${ADVANCED_SOLAR_CALCULATOR_ENDPOINT}?${queryParams}`;
-    const response = await apiCall<BackendData>(url, "GET");
+    const payload = {
+      homeType: basicInfo.homeType,
+      gridType: basicInfo.gridType,
+      averageBill: basicInfo.homeType === 'Existing Home' ? basicInfo.averageBill : undefined,
+      billFrequency: basicInfo.homeType === 'Existing Home' ? basicInfo.billFrequency : undefined,
+      homeSize: basicInfo.homeType === 'New Home' ? basicInfo.homeSize : undefined,
+      estimatedBaseLoad: basicInfo.homeType === 'New Home' ? basicInfo.estimatedBaseLoad : undefined,
+      electronicDevices: usageDetails.electronicDevices,
+      electricVehicles: usageDetails.electricVehicles,
+    };
+
+    const response = await apiCall<BackendData>(ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
     if (response.error) {
       throw new Error(response.error);
     }

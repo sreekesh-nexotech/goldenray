@@ -100,13 +100,7 @@ export default function ResultDisplay({
     <div className="space-y-8 my-6">
       {" "}
       {/* Added padding for better spacing */}
-      <h2 className="text-3xl md:text-4xl font-bold text-[#123532] text-center mb-4">
-        Heres your ideal on-grid solar system recommendation
-      </h2>
-      <p className="text-center text-gray-600 mb-8">
-        Based on your inputs, weve calculated the perfect solar solution for
-        your needs.
-      </p>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch mt-10">
         {" "}
         {/* Adjusted gap and items-stretch */}
@@ -179,23 +173,12 @@ export default function ResultDisplay({
             </div>
           </div>
         </div>
-        {/* Box 2: Costs & EMI */}
+        {/* Box 3: graph1 */}
         <div className="flex flex-col gap-4">
           {" "}
           {/* Adjusted gap */}
           <div className="bg-white shadow-lg p-6 rounded-xl flex-1 flex flex-col justify-between">
-            <p className="text-gray-600 text-sm md:text-base mb-2">
-              Your overall setup cost
-            </p>
-            <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] mb-4">
-              {data.overallCost}
-            </h2>
-            <p className="text-gray-600 text-sm md:text-base mb-2">
-              Govt. Subsidy
-            </p>
-            <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] flex items-center">
-              {data.govSubsidy}
-            </h2>
+            
           </div>
           
         </div>
@@ -216,7 +199,12 @@ export default function ResultDisplay({
         </div>
       </div>
       <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10">
-          <Button onClick={onStartOver}>Start Over</Button>
+        <button
+          onClick={onStartOver}
+          className="btn px-8 py-3 bg-[#F7BA41] text-black font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200"
+        >
+          Start Over
+        </button>
         
           
           <Button onClick={onGetDetailedQuote}>Get Detailed Quote</Button>

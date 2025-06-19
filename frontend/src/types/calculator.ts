@@ -8,8 +8,10 @@ export interface BasicInfoFormData {
   gridType: "On Grid" | "Hybrid" | null;
   averageBill: string;
   billFrequency: "Monthly" | "Bi-monthly" | null;
-  homeSize?: string;
-  estimatedBaseLoad?: string;
+  homeSize: string;
+  estimatedBaseLoad: string;
+  backupHours: number;
+  electronicDevices: ElectronicDevice[]; // ADDED: to hold devices from form 3
 }
 
 export interface ElectronicDevice {
@@ -32,6 +34,11 @@ export interface UsageDetailsFormData {
   electronicDevices: ElectronicDevice[];
   electricVehicles: ElectricVehicle[];
 }
+
+export interface BackupPowerFormData {
+  backupHours: number;
+}
+
 
 // Combined structure for the final API call
 export interface FullCalculatorPayload extends BasicInfoFormData, UsageDetailsFormData {}
