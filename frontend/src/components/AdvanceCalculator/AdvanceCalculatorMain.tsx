@@ -2,8 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { getSolarAdvancedData } from "@/services/CalculatorService";
-import { BackendData } from "@/data/mock-calculator";
-import { BasicInfoFormData, UsageDetailsFormData } from "@/types/calculator";
+import { BasicCalculatorData, BasicInfoFormData, UsageDetailsFormData } from "@/types/calculator";
 
 import BasicInformationStep from "./AdvanceForm1";
 import UsageDetailsStep from "./AdvanceForm2";
@@ -16,7 +15,7 @@ export default function AdvancedCalculatorMain() {
   const [currentStep, setCurrentStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [resultData, setResultData] = useState<BackendData | null>(null);
+  const [resultData, setResultData] = useState<BasicCalculatorData | null>(null);
 
   const [basicInfo, setBasicInfo] = useState<BasicInfoFormData>({
     homeType: null,
@@ -35,7 +34,6 @@ export default function AdvancedCalculatorMain() {
   });
 
   const totalFormSteps = useMemo(() => {
-    // Change to depend on gridType instead of homeType
     return basicInfo.gridType === "Hybrid" ? 3 : 2;
   }, [basicInfo.gridType]);
 
@@ -71,10 +69,6 @@ export default function AdvancedCalculatorMain() {
   };
 
   const handleUsageDetailsSubmit = () => {
-    
-    // ========================================================================
-    // LOGGING POINT 1: After clicking the button on Form 2
-    // ========================================================================
     const dataAfterStep2 = {
       fromStep1: basicInfo,
       fromStep2: usageDetails,
@@ -83,53 +77,51 @@ export default function AdvancedCalculatorMain() {
       "--- 📊 Data collected after Step 2 ---",
       JSON.stringify(dataAfterStep2, null, 2)
     );
-    // ========================================================================
 
     if (usageDetails.electronicDevices.length === 0) {
       setError("Please add at least one electronic device in the 'Your Usage' section.");
       return;
     }
 
-
     if (basicInfo.gridType === "Hybrid") {
       setCurrentStep(3);
     } else {
-      // For non-Hybrid grid types, this is the final step, so we calculate.
       handleCalculate();
     }
   };
 
   const handleCalculate = async () => {
-    // ========================================================================
-    // LOGGING POINT 2: After clicking the final button (on Form 3, or Form 2 for non-Hybrid)
-    // ========================================================================
-    const allElectronicDevices = [
-      ...usageDetails.electronicDevices, // from Form 2
-      ...basicInfo.electronicDevices,   // from Form 3
-    ];
-
-    if (basicInfo.electronicDevices.length === 0) {
-      setError("Please add at least one electronic device before calculating.");
+    if (basicInfo.gridType === "Hybrid" && basicInfo.electronicDevices.length === 0) {
+      setError("Please add at least one electronic device in the 'Home Details' section.");
       return;
     }
 
     const finalPayload = {
-      ...basicInfo,
-      ...usageDetails,
-      electronicDevices: allElectronicDevices, // Overwrite with the combined list
+      Specifications: {
+        homeType: basicInfo.homeType,
+        gridType: basicInfo.gridType,
+        averageBill: basicInfo.averageBill,
+        billFrequency: basicInfo.billFrequency,
+        homeSize: basicInfo.homeSize,
+        estimatedBaseLoad: basicInfo.estimatedBaseLoad,
+        backupHours: basicInfo.backupHours,
+      },
+      usageDetails: {
+        usageElectronicDevices: usageDetails.electronicDevices, // Form 2 devices
+        preferenceElectronicDevices: basicInfo.electronicDevices, // Form 3 devices (Hybrid only)
+        electricVehicles: usageDetails.electricVehicles,
+      },
     };
 
     console.log(
       "--- ✅ Final Data before API call (All Steps) ---",
       JSON.stringify(finalPayload, null, 2)
     );
-    // ========================================================================
-
 
     setLoading(true);
 
     try {
-      const data = await getSolarAdvancedData(basicInfo, usageDetails);
+      const data = await getSolarAdvancedData(finalPayload);
       setResultData(data);
       setCurrentStep(totalFormSteps + 1);
     } catch (err: unknown) {
@@ -139,7 +131,6 @@ export default function AdvancedCalculatorMain() {
         (err instanceof Error ? err.message : "An unknown error occurred.")
       );
     } finally {
-      setError(null);
       setLoading(false);
     }
   };
@@ -166,94 +157,98 @@ export default function AdvancedCalculatorMain() {
 
   return (
     <div>
-        {/*form headings  */}
-      {((currentStep === 1) || (currentStep === 2) || (currentStep === 3)) && (
+      {/* Form headings */}
+      {currentStep <= totalFormSteps && (
         <FormHeading
           title="Let’s find your ideal solar setup"
           description="A complete guide to calculating the right solar panel system size for your property and determining how many panels you need."
         />
       )}
 
-      {currentStep ===  totalFormSteps + 1 && resultData &&(<FormHeading
+      {currentStep === totalFormSteps + 1 && resultData && (
+        <FormHeading
           title="Here's your ideal on-grid solar system recommendation"
           description="Based on your inputs, we've calculated the perfect solar solution for your needs"
-        />)}
-    
-    <div className="flex flex-col md:flex-row gap-8 mx-auto relative px-4 sm:px-6 lg:px-8 xl:px-36 mb-12">
-      {currentStep <= totalFormSteps && (
-        <div className="w-full md:w-1/4 flex flex-col items-start">
-          <div className="w-full rounded-2xl lg:border border-[#DBD8D8] py-6 lg:py-9 px-4 lg:px-10 flex flex-row items-center justify-around gap-2 md:flex-col md:items-start md:gap-0">
-            <StepIndicator
-              actualStepNumber={1}
-              title="Basic Info"
-              currentStep={currentStep}
-              totalFormSteps={totalFormSteps}
-            />
-            <StepIndicator
-              actualStepNumber={2}
-              title="Your Usage"
-              currentStep={currentStep}
-              totalFormSteps={totalFormSteps}
-            />
-            {basicInfo.gridType === "Hybrid" && (
-              <StepIndicator
-                actualStepNumber={3}
-                title="Home Details"
-                currentStep={currentStep}
-                totalFormSteps={totalFormSteps}
-            />
-            )}
-          </div>
-        </div>
+        />
       )}
 
-      <div
-        className={`w-full ${
-          currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8]" : ""
-        } bg-white transition-all duration-300`}
-      >
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <strong className="font-bold">Error!</strong>
-            <span className="block sm:inline ml-2">{error}</span>
+      <div className="flex flex-col md:flex-row gap-8 mx-auto relative px-4 sm:px-6 lg:px-8 xl:px-36 mb-12">
+        {currentStep <= totalFormSteps && (
+          <div className="w-full md:w-1/4 flex flex-col items-start">
+            <div className="w-full rounded-2xl lg:border border-[#DBD8D8] py-6 lg:py-9 px-4 lg:px-10 flex flex-row items-center justify-around gap-2 md:flex-col md:items-start md:gap-0">
+              <StepIndicator
+                actualStepNumber={1}
+                title="Basic Info"
+                currentStep={currentStep}
+                totalFormSteps={totalFormSteps}
+              />
+              <StepIndicator
+                actualStepNumber={2}
+                title="Your Usage"
+                currentStep={currentStep}
+                totalFormSteps={totalFormSteps}
+              />
+              {basicInfo.gridType === "Hybrid" && (
+                <StepIndicator
+                  actualStepNumber={3}
+                  title="Home Details"
+                  currentStep={currentStep}
+                  totalFormSteps={totalFormSteps}
+                />
+              )}
+            </div>
           </div>
         )}
 
-        {currentStep === 1 && (
-          <BasicInformationStep
-            formData={basicInfo}
-            setFormData={setBasicInfo}
-            onNext={handleBasicInfoSubmit}
-          />
-        )}
+        <div
+          className={`w-full ${
+            currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8]" : ""
+          } bg-white transition-all duration-300`}
+        >
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+              <strong className="font-bold">Error!</strong>
+              <span className="block sm:inline ml-2">{error}</span>
+            </div>
+          )}
 
-        {currentStep === 2 && (
-          <UsageDetailsStep
-            formData={usageDetails}
-            setFormData={setUsageDetails}
-            onCalculate={handleUsageDetailsSubmit}
-            loading={loading}
-            gridType={basicInfo.gridType}
-          />
-        )}
+          {currentStep === 1 && (
+            <BasicInformationStep
+              formData={basicInfo}
+              setFormData={setBasicInfo}
+              onNext={handleBasicInfoSubmit}
+            />
+          )}
 
-        {currentStep === 3 && basicInfo.gridType === "Hybrid" && (
-          <NewHomeDetailsStep
-            formData={basicInfo}
-            setFormData={setBasicInfo}
-            onNext={handleCalculate}
-          />
-        )}
+          {currentStep === 2 && (
+            <UsageDetailsStep
+              formData={usageDetails}
+              setFormData={setUsageDetails}
+              onCalculate={handleUsageDetailsSubmit}
+              loading={loading}
+              gridType={basicInfo.gridType}
+            />
+          )}
 
-        {currentStep === totalFormSteps + 1 && resultData && (
-          <ResultDisplay
-            data={resultData}
-            onStartOver={handleStartOver}
-            onGetDetailedQuote={() => alert("Get Detailed Quote clicked!")}
-          />
-        )}
+          {currentStep === 3 && basicInfo.gridType === "Hybrid" && (
+            <NewHomeDetailsStep
+              formData={basicInfo}
+              setFormData={setBasicInfo}
+              onNext={handleCalculate}
+            />
+          )}
+
+          {currentStep === totalFormSteps + 1 && resultData && (
+            <ResultDisplay
+              data={resultData}
+              onStartOver={handleStartOver}
+              onGetDetailedQuote={() => alert("Get Detailed Quote clicked!")}
+              gridType={basicInfo.gridType}
+              backupHours={basicInfo.backupHours}
+            />
+          )}
+        </div>
       </div>
-    </div>
     </div>
   );
 }

@@ -1,7 +1,35 @@
 // This file centralizes the data structures for the calculator.
 
 // Keep the BackendData type as it defines the API response
-export type { BackendData } from '@/data/mock-calculator';
+export interface BasicCalculatorData {
+  specifications:{
+    powerRequirement: string;
+    areaRequirement: string;
+    installationTime: string;
+  }
+  financialDetails:{
+    lifetimeSavings: string;
+    overallCost: string;
+    governmentSubsidy: string;
+    finalCost: string;
+     monthlyEBReduction: string;
+    startingEMI: string;
+  }
+  backupDetails:{
+    batteryRequirement:string;
+    autonomyRate:string;
+  }
+  graphData: {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      borderColor: string;
+      backgroundColor: string;
+      fill: boolean;
+    }[];
+  };
+}
 // Interfaces for form data (assuming these are in a shared types file or defined here)
 export interface BasicInfoFormData {
   homeType: "Existing Home" | "New Home" | null;

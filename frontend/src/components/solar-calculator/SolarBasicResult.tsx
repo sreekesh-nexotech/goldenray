@@ -1,15 +1,15 @@
 "use client";
 import { useState, ChangeEvent } from "react";
-import { BackendData } from "@/data/mock-calculator";
 import PageIllustration from "@/components/ui/page-illustration";
 import Button from "../ui/LinkingButton";
 import BasicResult from "./basic-result";
+import { BasicCalculatorData } from "@/types/calculator";
 
 interface SolarBasicResultProps {
   initialPincode: string;
   initialPropertyType: string;
   initialElectricityBill: string;
-  calculatedData: BackendData;
+  calculatedData: BasicCalculatorData;
   onResubmit: (pincode: string, propertyType: string, electricityBill: string) => void;
   onGoBack: () => void;
 }

@@ -12,8 +12,8 @@ import {
   Legend,
   TooltipItem,
 } from "chart.js";
-import { BackendData } from "@/data/mock-calculator";
 import Button from "../ui/Button";
+import { BasicCalculatorData } from "@/types/calculator";
 
 ChartJS.register(
   CategoryScale,
@@ -26,15 +26,19 @@ ChartJS.register(
 );
 
 interface ResultDisplayProps {
-  data: BackendData;
+  data: BasicCalculatorData;
   onStartOver: () => void;
   onGetDetailedQuote: () => void;
+  gridType:string | null;
+  backupHours:number;
 }
 
 export default function ResultDisplay({
   data,
   onStartOver,
   onGetDetailedQuote,
+  gridType,
+  backupHours,
 }: ResultDisplayProps) {
     // Create chartData with tension for curved lines
   const chartData = {
@@ -105,7 +109,7 @@ export default function ResultDisplay({
         {" "}
         {/* Adjusted gap and items-stretch */}
         {/* Box 1: Power, Area, Installation */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           {" "}
           {/* Adjusted gap */}
           <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
@@ -113,7 +117,7 @@ export default function ResultDisplay({
             {/* Added flex-1 and shadow-lg, rounded-xl */}
             <div>
               <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                {data.powerRequirement}
+                {data.specifications.powerRequirement}
               </h2>
               <p className="text-gray-600 text-sm md:text-base">
                 Power Requirement
@@ -123,7 +127,7 @@ export default function ResultDisplay({
           <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
             <div>
               <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                {data.areaRequirement}
+                {data.specifications.areaRequirement}
               </h2>
               <p className="text-gray-600 text-sm md:text-base">
                 Area Requirement
@@ -133,7 +137,7 @@ export default function ResultDisplay({
           <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
             <div>
               <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                {data.installationTime}
+                {data.specifications.installationTime}
               </h2>
               <p className="text-gray-600 text-sm md:text-base">
                 Installation Time
@@ -141,39 +145,81 @@ export default function ResultDisplay({
             </div>
           </div>
         </div>
-        {/* Box 2: Costs & EMI */}
+         {/* Box 2 - only on hybrid:  */}
+        {gridType === "Hybrid" && (<div className="flex flex-col gap-2  ">
+          {" "}
+          {/* Adjusted gap */}
+          <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
+            {" "}
+            {/* Added flex-1 and shadow-lg, rounded-xl */}
+            <div>
+              <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
+                {data.backupDetails.batteryRequirement}
+              </h2>
+              <p className="text-gray-600 text-sm md:text-base">
+                Battery Requirement
+              </p>
+            </div>
+          </div>
+          <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
+                ~{backupHours}hrs
+              </h2>
+              <p className="text-gray-600 text-sm md:text-base">
+                Battery Duration
+              </p>
+            </div>
+          </div>
+          <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
+                {data.backupDetails.autonomyRate}
+              </h2>
+              <p className="text-gray-600 text-sm md:text-base">
+                Autonomy Rate
+              </p>
+            </div>
+          </div>
+          
+        </div>)}
+        {/* Box 3: Costs & EMI */}
         <div className="flex flex-col gap-4">
           {" "}
           {/* Adjusted gap */}
-          <div className="bg-white shadow-lg p-6 rounded-xl flex-1 flex flex-col justify-between">
-            <p className="text-gray-600 text-sm md:text-base mb-2">
-              Your overall setup cost
-            </p>
-            <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] mb-4">
-              {data.overallCost}
-            </h2>
-            <p className="text-gray-600 text-sm md:text-base mb-2">
-              Govt. Subsidy
-            </p>
-            <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] flex items-center">
-              {data.govSubsidy}
-            </h2>
-          </div>
-          <div className="bg-white shadow-lg p-6 rounded-xl flex-1 flex flex-col justify-between">
+          <div className="bg-white shadow-lg p-6 rounded-xl flex-1 flex flex-col justify-evenly">
+            <div>
+              <p className="text-gray-600 text-sm md:text-base mb-2">
+                Your overall setup cost
+              </p>
+              <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] mb-4">
+                {data.financialDetails.overallCost}
+              </h2>
+            </div>
+            <div>
+              <p className="text-gray-600 text-sm md:text-base mb-2">
+                Govt. Subsidy
+              </p>
+              <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] flex items-center">
+                {data.financialDetails.governmentSubsidy}
+              </h2>
+            </div>
+          
             <div>
               <p className="text-gray-600 text-sm md:text-base mb-2">
                 Your Final Cost
               </p>
               <h2 className="text-3xl lg:text-5xl font-semibold text-[#123532] mb-2">
-                {data.finalCost}
+                {data.financialDetails.finalCost}
               </h2>
-              <p className="text-gray-600 text-sm md:text-base">
-                {data.startingEMI}
+              <p className="text-[#124944] text-sm md:text-base mt-4 text-center bg-[#E8FEFF] border border-[#BCE8E4] rounded-full py-2 px-1">
+                {data.financialDetails.monthlyEBReduction}
               </p>
             </div>
           </div>
         </div>
-        {/* Box 3: graph1 */}
+       
+        {/* Box 4: graph1 */}
         <div className="flex flex-col gap-4">
           {" "}
           {/* Adjusted gap */}
@@ -182,10 +228,13 @@ export default function ResultDisplay({
           </div>
           
         </div>
-        {/* Box 3: Lifetime Savings & Graph */}
-        <div className="bg-white shadow-lg rounded-xl text-left p-6 flex flex-col col-span-0 md:col-span-3">
+        
+        {/* Box 5: Lifetime Savings & Graph */}
+        <div className={`bg-white shadow-lg rounded-xl text-left p-6 flex flex-col col-span-0 
+         ${gridType==="Hybrid" ? "md:col-span-2" : "md:col-span-3" }
+        `}>
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-            {data.lifetimeSavings}
+            {data.financialDetails.lifetimeSavings}
           </h2>
           <p className="text-gray-600 text-sm md:text-base mb-6">
             Lifetime Savings
@@ -201,7 +250,7 @@ export default function ResultDisplay({
       <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10">
         <button
           onClick={onStartOver}
-          className="btn px-8 py-3 bg-[#F7BA41] text-black font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200"
+          className="btn cursor-pointer px-8 py-3 border-2 border-[#074A4D] bg-transparent text-black font-semibold rounded-lg hover:bg-[#074A4D] hover:text-white transition-colors duration-200"
         >
           Start Over
         </button>

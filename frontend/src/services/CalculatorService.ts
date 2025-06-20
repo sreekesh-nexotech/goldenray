@@ -1,8 +1,25 @@
-// src/services/CalculatorService.ts
 import { apiCall } from './apiService';
-import { BackendData, mockBackendData } from '@/data/mock-calculator';
+import { mockBasicCalculatorData } from '@/data/mock-calculator';
 import { USE_MOCK_DATA } from '@/config';
-import { BasicInfoFormData, UsageDetailsFormData } from '@/types/calculator';
+import { BasicCalculatorData, ElectronicDevice, ElectricVehicle } from '@/types/calculator';
+
+// Define the expected payload type for getSolarAdvancedData
+interface SolarAdvancedPayload {
+  Specifications: {
+    homeType: string | null;
+    gridType: string | null;
+    averageBill: string;
+    billFrequency: string | null;
+    homeSize: string;
+    estimatedBaseLoad: string;
+    backupHours: number;
+  };
+  usageDetails: {
+    usageElectronicDevices: ElectronicDevice[];
+    preferenceElectronicDevices: ElectronicDevice[];
+    electricVehicles: ElectricVehicle[];
+  };
+}
 
 const SOLAR_CALCULATOR_ENDPOINT = 'solar-calculator/';
 const ADVANCED_SOLAR_CALCULATOR_ENDPOINT = 'advanced-solar-calculator/';
@@ -11,11 +28,11 @@ export async function getSolarAdvantageData(
   pincode: string,
   propertyType: string,
   electricityBill: string
-): Promise<BackendData> {
+): Promise<BasicCalculatorData> {
   if (USE_MOCK_DATA) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(mockBackendData);
+        resolve(mockBasicCalculatorData);
       }, 1000); // Simulate network delay
     });
   } else {
@@ -25,7 +42,7 @@ export async function getSolarAdvantageData(
       electricityBill,
     }).toString();
     const url = `${SOLAR_CALCULATOR_ENDPOINT}?${queryParams}`;
-    const response = await apiCall<BackendData>(url, "GET");
+    const response = await apiCall<BasicCalculatorData>(url, "GET");
     if (response.error) {
       throw new Error(response.error);
     }
@@ -39,34 +56,25 @@ export async function getSolarAdvantageData(
 /**
  * Fetches advanced solar data based on the provided parameters.
  * If USE_MOCK_DATA is true, returns mock data; otherwise, makes an API call.
- * @param basicInfo The basic information form data (homeType, gridType, averageBill, billFrequency, homeSize, estimatedBaseLoad).
- * @param usageDetails The usage details form data (electronicDevices, electricVehicles).
- * @returns A Promise that resolves to the BackendData object.
+ * @param payload The structured payload containing system specifications and usage details.
+ * @returns A Promise that resolves to the BasicCalculatorData object.
  * @throws An Error if the API call fails or returns no data.
  */
 export async function getSolarAdvancedData(
-  basicInfo: BasicInfoFormData,
-  usageDetails: UsageDetailsFormData
-): Promise<BackendData> {
+  payload: SolarAdvancedPayload
+): Promise<BasicCalculatorData> {
   if (USE_MOCK_DATA) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(mockBackendData);
+        resolve(mockBasicCalculatorData);
       }, 1000); // Simulate network delay
     });
   } else {
-    const payload = {
-      homeType: basicInfo.homeType,
-      gridType: basicInfo.gridType,
-      averageBill: basicInfo.homeType === 'Existing Home' ? basicInfo.averageBill : undefined,
-      billFrequency: basicInfo.homeType === 'Existing Home' ? basicInfo.billFrequency : undefined,
-      homeSize: basicInfo.homeType === 'New Home' ? basicInfo.homeSize : undefined,
-      estimatedBaseLoad: basicInfo.homeType === 'New Home' ? basicInfo.estimatedBaseLoad : undefined,
-      electronicDevices: usageDetails.electronicDevices,
-      electricVehicles: usageDetails.electricVehicles,
-    };
-
-    const response = await apiCall<BackendData>(ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
+    const response = await apiCall<BasicCalculatorData>(
+      ADVANCED_SOLAR_CALCULATOR_ENDPOINT,
+      "POST",
+      payload
+    );
     if (response.error) {
       throw new Error(response.error);
     }

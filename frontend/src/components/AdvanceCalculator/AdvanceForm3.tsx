@@ -21,6 +21,8 @@ export default function NewHomeDetailsStep({
     setFormData((prev) => ({ ...prev, [name]: parseInt(value) }));
   };
 
+  
+
   // Wrapper function to update devices within the basicInfo state
   const setBackupDevices: React.Dispatch<React.SetStateAction<ElectronicDevice[]>> = (
     updater
@@ -33,6 +35,7 @@ export default function NewHomeDetailsStep({
   const backupHours = formData.backupHours;
 
   return (
+    
     <div className="space-y-8 p-4 md:p-6">
 
 

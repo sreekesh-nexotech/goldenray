@@ -11,7 +11,7 @@ import {
   Legend,
   TooltipItem,
 } from "chart.js";
-import { BackendData } from "@/data/mock-calculator";
+import { BasicCalculatorData } from "@/types/calculator";
 
 ChartJS.register(
   CategoryScale,
@@ -24,7 +24,7 @@ ChartJS.register(
 );
 
 interface BasicResultProps {
-  data: BackendData;
+  data: BasicCalculatorData;
 }
 
 export default function BasicResult({ data }: BasicResultProps) {
@@ -97,19 +97,19 @@ export default function BasicResult({ data }: BasicResultProps) {
       <div className="flex flex-col gap-2">
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] rounded-t-3xl p-6">
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-            {data.powerRequirement}
+            {data.specifications.powerRequirement}
           </h2>
           <p className="text-gray-600 text-sm md:text-base">Power Requirement</p>
         </div>
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6">
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-            {data.areaRequirement}
+            {data.specifications.areaRequirement}
           </h2>
           <p className="text-gray-600 text-sm md:text-base">Area Requirement</p>
         </div>
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] rounded-b-3xl p-6">
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-            {data.installationTime}
+            {data.specifications.installationTime}
           </h2>
           <p className="text-gray-600 text-sm md:text-base">Installation Time</p>
         </div>
@@ -118,14 +118,14 @@ export default function BasicResult({ data }: BasicResultProps) {
       {/* Box 2: Lifetime Savings & Graph */}
       <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] rounded-3xl text-left p-6 flex flex-col">
         <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-          {data.lifetimeSavings}
+          {data.financialDetails.lifetimeSavings}
         </h2>
         <p className="text-gray-600 text-sm md:text-base mb-6">Lifetime Savings</p>
         <div className="relative h-48 w-full flex-grow">
           <Line data={chartData} options={chartOptions} />
         </div>
         <p className="text-[#124944] text-sm md:text-base mt-4 text-center bg-[#E8FEFF] border border-[#BCE8E4] rounded-full py-2 px-1">
-          {data.monthlyEBReduction}
+          {data.financialDetails.monthlyEBReduction}
         </p>
       </div>
 
@@ -134,21 +134,21 @@ export default function BasicResult({ data }: BasicResultProps) {
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6 rounded-t-3xl">
           <p className="text-gray-600 text-sm md:text-base mb-2">Your overall setup cost</p>
           <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] mb-4">
-            {data.overallCost}
+            {data.financialDetails.overallCost}
           </h2>
           <p className="text-gray-600 text-sm md:text-base mb-2">Govt. Subsidy</p>
           <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] flex items-center">
-            {data.govSubsidy}
+            {data.financialDetails.governmentSubsidy}
           </h2>
         </div>
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6 rounded-b-3xl">
           <div>
             <p className="text-gray-600 text-sm md:text-base mb-2">Your Final Cost</p>
             <h2 className="text-3xl lg:text-5xl font-semibold text-[#123532] mb-2">
-              {data.finalCost}
+              {data.financialDetails.finalCost}
             </h2>
             <p className="text-gray-600 text-sm md:text-base">
-              {data.startingEMI}
+              {data.financialDetails.startingEMI}
             </p>
           </div>
         </div>
