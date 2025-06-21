@@ -1,26 +1,22 @@
-import Link from "next/link"
+import { MouseEventHandler, ReactNode } from "react";
 
-type ButtonProps = {
-    content: string;
-    ButtonLink: string;
-    ButtonBg: string;
-    ButtonHover: string;
-    Buttontext: string;
-    ButtonBorder?: string;
+interface ButtonProps {
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  children: ReactNode;
+  className?: string;
+  disabled?: boolean;
 }
 
-export default function Button({
-  content,
-  ButtonLink,
-  ButtonBg,
-  ButtonHover,
-  Buttontext,
-  ButtonBorder,
-}:ButtonProps) {
-    return (
-        <Link href={ButtonLink} className={`btn  ${ButtonBg} ${ButtonHover} ${Buttontext}  ${ButtonBorder}`}>
-              {content} 
-        </Link>
-    )
-    
+export default function Button({ onClick, children, className = "", disabled = false }: ButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      className={`cursor-pointer px-8 py-3 bg-[#F7BA41] text-black font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200 ${
+        disabled ? "opacity-50 cursor-not-allowed hover:bg-[#F7BA41]" : ""
+      } ${className}`}
+      disabled={disabled}
+    >
+      {children}
+    </button>
+  );
 }

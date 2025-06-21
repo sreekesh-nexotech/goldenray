@@ -2,9 +2,8 @@ import ResourceDetailHero from "@/components/Resources/ResourceDetailHero";
 import { mockBlogs, heroPosts, BlogPost, HeroPost } from "@/data/Mock-Resources";
 import { notFound } from "next/navigation";
 
-// Define the props type to match Next.js expectations
 type BlogDetailProps = {
-  params: Promise<{ id: string }>; // params is a Promise in Next.js App Router
+  params: Promise<{ id: string }>; 
 };
 
 // Make the component async to await the params

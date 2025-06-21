@@ -1,15 +1,16 @@
 "use client";
-import { useState, ChangeEvent } from "react";
-import BasicResult from "./basic-result";
-import { BackendData } from "@/data/mock-calculator";
+import { useState, ChangeEvent, useEffect } from "react";
 import PageIllustration from "@/components/ui/page-illustration";
 import Button from "../ui/Button";
+import BasicResult from "./basic-result";
+import { BasicCalculatorData } from "@/types/calculator";
+import QuotePopup from "./QuotePopup";
 
 interface SolarBasicResultProps {
   initialPincode: string;
   initialPropertyType: string;
   initialElectricityBill: string;
-  calculatedData: BackendData;
+  calculatedData: BasicCalculatorData;
   onResubmit: (pincode: string, propertyType: string, electricityBill: string) => void;
   onGoBack: () => void;
 }
@@ -25,8 +26,31 @@ export default function SolarBasicResult({
   const [pincode, setPincode] = useState(initialPincode);
   const [propertyType, setPropertyType] = useState(initialPropertyType || "residential");
   const [electricityBill, setElectricityBill] = useState(initialElectricityBill);
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup
+  
+  //prevent scrolling the body when popup is open
+  useEffect(() => {
+    if (isPopupOpen) {
+      document.body.style.overflow = "hidden";
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.overflow = "auto";
+      window.scrollTo(0, parseInt(scrollY || "0") * -1);
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      window.scrollTo(0, 0);
+    };
+  }, [isPopupOpen]);
 
-  console.log("SolarBasicResult initial values:", { initialPincode, initialPropertyType, initialElectricityBill });
 
   const handlePropertyTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     console.log("Property type changed to:", e.target.value);
@@ -99,14 +123,16 @@ export default function SolarBasicResult({
             Resubmit Changes
           </button>
           {/* advance calculator link */}
-          <a href="#" className="text-[#007E85] hover:underline text-sm px-8 py-3  md:text-base md:ml-4">
+          <a href="/advancedCalculator" target="new" className="text-[#007E85] hover:underline text-sm px-8 py-3  md:text-base md:ml-4">
             Advanced Calculator
           </a>
         </div>
         <BasicResult data={calculatedData} />
         <div className="flex flex-col md:flex-row justify-center gap-4 mt-10">
           {/* Get detailed quote link */}
-              <Button content="Get Detailed Quote &#10141;" ButtonLink="#" ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-500' />
+          <Button
+            onClick={() => setIsPopupOpen(true)}
+          >Get Detailed Quote</Button>
           <button
             onClick={onGoBack}
             className="btn bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-3 rounded-lg"
@@ -114,6 +140,7 @@ export default function SolarBasicResult({
             Go Back to Form
           </button>
         </div>
+         {isPopupOpen && <QuotePopup onClose={() => setIsPopupOpen(false)} />}
       </div>
     </div>
   );

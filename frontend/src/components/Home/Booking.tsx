@@ -32,10 +32,10 @@ export default function Booking(){
           </p>
 
           {/* Form */}
-        <form className="flex flex-col gap-4 w-full max-w-sm max-sm:max-w-full" onSubmit={handleSubmit} id='form'>
+        <form className="flex flex-col gap-4 w-full max-w-sm max-sm:max-w-full" onSubmit={handleSubmit} noValidate={false}>
           <input
             type="text"
-            name='name'
+            name="name"
             placeholder="Name"
             className="px-4 py-3 rounded-xl text-black bg-white focus:outline-none"
             required
@@ -43,17 +43,16 @@ export default function Booking(){
             title="Please enter at least 3 alphabetic characters."
           />
           <input
-            type="text"
-            name='mobileNumber'
+            type="tel" 
+            name="mobileNumber"
             placeholder="Mobile Number"
             className="px-4 py-3 rounded-xl text-black bg-white mb-3 focus:outline-none"
             required
-            pattern="[0-9]{*}"
-            title="Enter a valid phone number"
+            pattern="[0-9\s\-+]{7,15}" 
+            title="Please enter a valid phone number."
           />
-          <button  className="btn md:w-2/5 w-full bg-[#F7BA41] text-[#272218] hover:bg-yellow-500">
-              Book Now
-          </button>
+
+            <button type="submit" className="btn bg-[#F7BA41] hover:bg-yellow-500 text-[#272218]">Book Now</button>
         </form>
         </div>
       </div>

@@ -49,6 +49,7 @@ const teamMembers = [
 
 const TeamSection = ({ members = teamMembers }) => {
   return (
+    <section id='team' className="scroll-mt-[65px]">
     <div className="relative mx-auto px-4 sm:px-6 lg:px-8 xl:px-36 py-16">
       {/* Section Heading Container */}
       <div className="max-w-7xl mx-auto text-center mb-16"> 
@@ -70,6 +71,7 @@ const TeamSection = ({ members = teamMembers }) => {
         ))}
       </div>
     </div>
+    </section>
   );
 };
 
