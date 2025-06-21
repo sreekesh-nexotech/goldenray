@@ -14,7 +14,7 @@ import {
 import Button from "../ui/Button";
 import { AdvancedCalculatorData } from "@/types/calculator";
 import { useEffect, useState } from "react";
-import QuotePopup from "@/components/Solar-calculator/QuotePopup"; // Import the new popup component
+import QuotePopup from "@/components/SolarCalculator/QuotePopup"; // Import the new popup component
 
 ChartJS.register(
   CategoryScale,
