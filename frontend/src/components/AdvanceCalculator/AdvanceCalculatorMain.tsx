@@ -9,7 +9,7 @@ import NewHomeDetailsStep from "./AdvanceForm3";
 import ResultDisplay from "./AdvanceResult";
 import StepIndicator from "./StepIndicator";
 import FormHeading from "./FormHeading";
-import QuotePopup from "@/components/Solar-calculator/QuotePopup"; // Import the new popup component
+import QuotePopup from "@/components/SolarCalculator/QuotePopup"; // Import the new popup component
 
 export default function AdvancedCalculatorMain() {
   const [currentStep, setCurrentStep] = useState(1);

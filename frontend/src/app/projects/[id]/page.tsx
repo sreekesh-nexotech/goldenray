@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 //importing mock data
 import { Project } from '@/data/Mock-projects';
 import { mockProjects } from '@/data/Mock-projects';
-import SolarAdvantageMain from '@/components/Solar-calculator/SolarAdvantageMain';
+import SolarAdvantageMain from '@/components/SolarCalculator/SolarAdvantageMain';
 
 
 export default function ProjectPage() {

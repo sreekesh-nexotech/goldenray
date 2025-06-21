@@ -4,7 +4,7 @@ import ResourceHero from "@/components/Resources/ResourceHero";
 import RecentlyAdded from "@/components/Resources/RecentlyAdded";
 import PopularPosts from "@/components/Resources/PopularPost";
 import CategoryBlogs from "@/components/Resources/CategoryBlogs";
-import SolarAdvantageMain from "@/components/Solar-calculator/SolarAdvantageMain";
+import SolarAdvantageMain from "@/components/SolarCalculator/SolarAdvantageMain";
 
 export default function ResourceMain(){
     return(
