@@ -28,11 +28,22 @@ interface BasicResultProps {
 }
 
 export default function BasicResult({ data }: BasicResultProps) {
-  // Create chartData with tension for curved lines
+  if (!data.graphData.labels.length || !data.graphData.datasets.length) {
+    return (
+      <div className="text-center text-gray-600 p-6">
+        No graph data available.
+      </div>
+    );
+  }
+  // Create chartData with tension for curved lines and hardcoded chart properties
   const chartData = {
-    ...data.graphData,
-    datasets: data.graphData.datasets.map(dataset => ({
+    labels: data.graphData.labels,
+    datasets: data.graphData.datasets.map((dataset, index) => ({
       ...dataset,
+      label: index === 0 ? "Solar Power" : "Current Source",
+      borderColor: index === 0 ? "#FBC207" : "#5958CB",
+      backgroundColor: index === 0 ? "#FBC207" : "#5958CB",
+      fill: false,
       tension: 0.4, // Set tension for smooth curves
     })),
   };
@@ -147,8 +158,8 @@ export default function BasicResult({ data }: BasicResultProps) {
             <h2 className="text-3xl lg:text-5xl font-semibold text-[#123532] mb-2">
               {data.financialDetails.finalCost}
             </h2>
-            <p className="text-gray-600 text-sm md:text-base">
-              {data.financialDetails.startingEMI}
+            <p className="text-[#124944] text-sm md:text-base mt-4 text-center bg-[#E8FEFF] border border-[#BCE8E4] rounded-full py-2 px-1">
+              starting from <b>{data.financialDetails.startingEMI}/mo</b> EMI 
             </p>
           </div>
         </div>

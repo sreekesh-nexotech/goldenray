@@ -28,7 +28,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
       : 0; // No fill for future steps
 
   // Determine if title should be shown
-  const showTitle = isCurrentStep || (isCompleted && actualStepNumber !== 1) || (actualStepNumber === 1 && currentStep === 1);
+  const showTitle = isCurrentStep || (isCompleted ) || (actualStepNumber === 1 && currentStep === 1);
 
   return (
     <div className="flex flex-col items-center md:items-start w-full md:flex-col relative">
@@ -45,7 +45,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
         {showTitle && (
           <span
             className={`ml-2 text-sm sm:text-base font-semibold break-words ${
-              isCurrentStep || isCompleted ? "text-[#123532]" : "text-gray-500"
+              isCurrentStep ? "text-[#123532]" : "text-gray-500"
             } md:ml-3 md:text-lg`}
           >
             {title}

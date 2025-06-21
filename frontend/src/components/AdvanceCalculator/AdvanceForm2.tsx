@@ -63,9 +63,9 @@ export default function UsageDetailsStep({
       const vehicle: ElectricVehicle = {
         id: uuidv4(),
         deviceType: newVehicle.deviceType,
-        noOfUnits: newVehicle.noOfUnits,
-        wattage: newVehicle.wattage,
-        dailyUsage: newVehicle.dailyUsage,
+        noOfUnits: parseFloat(newVehicle.noOfUnits),
+        wattage: parseFloat(newVehicle.wattage),
+        dailyUsage: parseFloat(newVehicle.dailyUsage),
       };
       setFormData((prev) => ({
         ...prev,

@@ -28,7 +28,10 @@ export default function BasicInformationStep({
   };
 
   // Handles selection for the clickable card components
-  const handleCardSelect = (name: keyof BasicInfoFormData, value: any) => {
+  const handleCardSelect = (
+    name: keyof BasicInfoFormData,
+    value: "Existing Home" | "New Home" | "On Grid" | "Hybrid" | "Monthly" | "Bi-monthly"
+  ) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 

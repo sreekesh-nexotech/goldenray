@@ -1,22 +1,24 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo} from "react";
 import { getSolarAdvancedData } from "@/services/CalculatorService";
-import { BasicCalculatorData, BasicInfoFormData, UsageDetailsFormData } from "@/types/calculator";
-
+import { AdvancedCalculatorData, BasicInfoFormData, UsageDetailsFormData, ChartGraphData } from "@/types/calculator";
 import BasicInformationStep from "./AdvanceForm1";
 import UsageDetailsStep from "./AdvanceForm2";
 import NewHomeDetailsStep from "./AdvanceForm3";
 import ResultDisplay from "./AdvanceResult";
 import StepIndicator from "./StepIndicator";
 import FormHeading from "./FormHeading";
+import QuotePopup from "@/components/Solar-calculator/QuotePopup"; // Import the new popup component
 
 export default function AdvancedCalculatorMain() {
   const [currentStep, setCurrentStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [resultData, setResultData] = useState<BasicCalculatorData | null>(null);
+  const [resultData, setResultData] = useState<AdvancedCalculatorData | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup
 
+  
   const [basicInfo, setBasicInfo] = useState<BasicInfoFormData>({
     homeType: null,
     gridType: null,
@@ -69,15 +71,6 @@ export default function AdvancedCalculatorMain() {
   };
 
   const handleUsageDetailsSubmit = () => {
-    const dataAfterStep2 = {
-      fromStep1: basicInfo,
-      fromStep2: usageDetails,
-    };
-    console.log(
-      "--- 📊 Data collected after Step 2 ---",
-      JSON.stringify(dataAfterStep2, null, 2)
-    );
-
     if (usageDetails.electronicDevices.length === 0) {
       setError("Please add at least one electronic device in the 'Your Usage' section.");
       return;
@@ -104,28 +97,52 @@ export default function AdvancedCalculatorMain() {
         billFrequency: basicInfo.billFrequency,
         homeSize: basicInfo.homeSize,
         estimatedBaseLoad: basicInfo.estimatedBaseLoad,
-        backupHours: basicInfo.backupHours,
       },
       usageDetails: {
-        usageElectronicDevices: usageDetails.electronicDevices, // Form 2 devices
-        preferenceElectronicDevices: basicInfo.electronicDevices, // Form 3 devices (Hybrid only)
+        usageElectronicDevices: usageDetails.electronicDevices,
         electricVehicles: usageDetails.electricVehicles,
+      },
+      preferenceDetails: {
+        backupHours: basicInfo.backupHours,
+        preferenceElectronicDevices: basicInfo.electronicDevices,
       },
     };
 
-    console.log(
-      "--- ✅ Final Data before API call (All Steps) ---",
-      JSON.stringify(finalPayload, null, 2)
-    );
+    console.log(JSON.stringify(finalPayload, null, 2))
 
     setLoading(true);
 
     try {
-      const data = await getSolarAdvancedData(finalPayload);
-      setResultData(data);
+      const apiData = await getSolarAdvancedData(finalPayload);
+      if (apiData.graphData.datasets.length !== 2) {
+        throw new Error("Expected exactly two datasets in graphData");
+      }
+      const transformedGraphData: ChartGraphData = {
+        labels: apiData.graphData.labels,
+        datasets: [
+          {
+            label: "Solar Bill",
+            data: apiData.graphData.datasets[0].data,
+            borderColor: "#FBC207",
+            backgroundColor: "#FBC207",
+            fill: false,
+          },
+          {
+            label: "EB Bill",
+            data: apiData.graphData.datasets[1].data,
+            borderColor: "#5958CB",
+            backgroundColor: "#5958CB",
+            fill: false,
+          },
+        ],
+      };
+      const transformedData: AdvancedCalculatorData = {
+        ...apiData,
+        graphData: transformedGraphData,
+      };
+      setResultData(transformedData);
       setCurrentStep(totalFormSteps + 1);
     } catch (err: unknown) {
-      console.error("Calculation error:", err);
       setError(
         "Failed to calculate solar advantage. Please check your inputs and try again. " +
         (err instanceof Error ? err.message : "An unknown error occurred.")
@@ -153,11 +170,11 @@ export default function AdvancedCalculatorMain() {
     });
     setResultData(null);
     setError(null);
+    setIsPopupOpen(false); // Close popup on start over
   };
 
   return (
     <div>
-      {/* Form headings */}
       {currentStep <= totalFormSteps && (
         <FormHeading
           title="Let’s find your ideal solar setup"
@@ -191,7 +208,7 @@ export default function AdvancedCalculatorMain() {
               {basicInfo.gridType === "Hybrid" && (
                 <StepIndicator
                   actualStepNumber={3}
-                  title="Home Details"
+                  title="Your Preference"
                   currentStep={currentStep}
                   totalFormSteps={totalFormSteps}
                 />
@@ -242,13 +259,14 @@ export default function AdvancedCalculatorMain() {
             <ResultDisplay
               data={resultData}
               onStartOver={handleStartOver}
-              onGetDetailedQuote={() => alert("Get Detailed Quote clicked!")}
+              onGetDetailedQuote={() => setIsPopupOpen(true)}
               gridType={basicInfo.gridType}
               backupHours={basicInfo.backupHours}
             />
           )}
         </div>
       </div>
+      {isPopupOpen && <QuotePopup onClose={() => setIsPopupOpen(false)} />}
     </div>
   );
 }

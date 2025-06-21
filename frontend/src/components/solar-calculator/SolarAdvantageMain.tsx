@@ -1,13 +1,13 @@
 "use client";
-import { BackendData } from "@/data/mock-calculator";
 import { useState } from "react";
 import SolarBasicResult from "./SolarBasicResult";
 import SolarAdvantage from "./solar-advantage";
 import {getSolarAdvantageData} from "@/services/CalculatorService"
+import { BasicCalculatorData } from "@/types/calculator";
 
 export default function SolarAdvantageMain() {
   const [showResults, setShowResults] = useState(false);
-  const [calculatorData, setCalculatorData] = useState<BackendData | null>(null);
+  const [calculatorData, setCalculatorData] = useState<BasicCalculatorData | null>(null);
   const [formInputs, setFormInputs] = useState({
     pincode: "",
     propertyType: "",
@@ -27,7 +27,7 @@ export default function SolarAdvantageMain() {
     setError(null); // Clear previous errors
     setFormInputs({ pincode, propertyType, electricityBill });
     try {
-      const data = await getSolarAdvantageData(pincode, propertyType, electricityBill);
+      const data = await getSolarAdvantageData({pincode, propertyType, electricityBill});
       setCalculatorData(data);
       setShowResults(true); // Show the results component
     } catch (err) {
@@ -46,7 +46,7 @@ export default function SolarAdvantageMain() {
     setError(null); // Clear previous errors
     setFormInputs({ pincode, propertyType, electricityBill });
     try {
-      const data = await getSolarAdvantageData(pincode, propertyType, electricityBill);
+      const data = await getSolarAdvantageData({pincode, propertyType, electricityBill});
       setCalculatorData(data); // Update only the data, stay on the results page
     } catch (err) {
       setError(err as string); // Set the error message
