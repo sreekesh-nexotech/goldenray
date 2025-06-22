@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Quote(models.Model):
+class SentQuote(models.Model):
     quote_id = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
@@ -11,7 +11,7 @@ class Quote(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = "quotes"
+        db_table = "sent_quotes"
 
     def __str__(self):
         return f"{self.quote_id} - {self.name}"
