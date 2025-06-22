@@ -2,7 +2,7 @@
 
 import { useState, useMemo} from "react";
 import { getSolarAdvancedData } from "@/services/CalculatorService";
-import { AdvancedCalculatorData, BasicInfoFormData, UsageDetailsFormData, Chartgraph_data } from "@/types/types";
+import { AdvancedCalculatorData, BasicInfoFormData, UsageDetailsFormData, Chartgraph_data, SolarAdvancedPayload } from "@/types/types";
 import BasicInformationStep from "./AdvanceForm1";
 import UsageDetailsStep from "./AdvanceForm2";
 import NewHomeDetailsStep from "./AdvanceForm3";
@@ -89,7 +89,7 @@ export default function AdvancedCalculatorMain() {
       return;
     }
 
-    const finalPayload = {
+    const finalPayload: SolarAdvancedPayload = {
       Specifications: {
         home_type: basicInfo.home_type,
         grid_type: basicInfo.grid_type,
@@ -113,7 +113,7 @@ export default function AdvancedCalculatorMain() {
     setLoading(true);
 
     try {
-      const apiData = await getSolarAdvancedData(finalPayload);
+      const apiData = await getSolarAdvancedData(/*finalPayload*/);
       if (apiData.graph_data.datasets.length !== 2) {
         throw new Error("Expected exactly two datasets in graph_data");
       }
