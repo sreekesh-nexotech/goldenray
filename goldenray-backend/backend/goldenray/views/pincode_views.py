@@ -3,9 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import Pincode
 from ..serializers.pincode_serializer import PincodeSerializer
+from ..permissions import ApiMethodPermission, non_authenticated_view
 
 
 class PincodeAPIView(APIView):
+    permission_classes = [ApiMethodPermission]
+
+    @non_authenticated_view
     def get(self, request, pk=None):
         if pk:
             try:
