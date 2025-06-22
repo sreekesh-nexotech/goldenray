@@ -27,7 +27,6 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
       ? 100 // Fully filled for completed steps
       : 0; // No fill for future steps
 
-  // CHANGE: Make showTitle always true, as we want to display all titles
   const showTitle = true; // Always show the title
 
   return (
@@ -42,10 +41,10 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
           {actualStepNumber}
         </div>
 
-        {showTitle && ( // showTitle is now always true
+        {showTitle && (
           <span
             className={`ml-2 text-sm sm:text-base font-semibold break-words ${
-              isActive // CHANGE: Use isActive here for text color
+              isActive
                 ? "text-[#123532]" // Active color (dark green)
                 : "text-gray-500" // Inactive color (gray)
             } md:ml-3 md:text-lg`}
@@ -57,7 +56,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
 
       {/* Mobile horizontal progress bar (below step number and title, hidden on md and up) */}
       <div className="w-full mt-2 md:hidden">
-        {(actualStepNumber === 1 || isCurrentStep) && (
+        {(actualStepNumber === 1 || isCurrentStep || isCompleted) && (
           <div className="flex items-center w-full">
             <div className="h-1 flex-1 bg-gray-300 rounded-full overflow-hidden">
               <div

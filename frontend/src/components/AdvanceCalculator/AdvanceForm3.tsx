@@ -36,7 +36,7 @@ export default function NewHomeDetailsStep({
 
   return (
     
-    <div className="space-y-8 p-4 md:p-6">
+    <div className="space-y-8 p-0 md:p-6">
 
 
       {/* Backup Power Hours Slider */}
