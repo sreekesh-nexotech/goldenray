@@ -6,7 +6,7 @@ class Quote(models.Model):
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     quote_url = models.URLField(max_length=200)
-    status = models.CharField(max_length=20, default="pending")
+    is_sent = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
