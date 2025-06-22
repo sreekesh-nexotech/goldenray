@@ -134,7 +134,7 @@ export default function SolarBasicResult({
             Resubmit Changes
           </button>
           {/* advance calculator link */}
-          <a href="/advancedCalculator" target="new" className="text-[#007E85] hover:underline text-sm px-8 py-3  md:text-base md:ml-4">
+          <a href="/advanced-calculator" target="new" className="text-[#007E85] hover:underline text-sm px-8 py-3  md:text-base md:ml-4">
             Advanced Calculator
           </a>
         </div>

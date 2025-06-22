@@ -1,11 +1,11 @@
 import { apiCall } from './apiService';
 import { mockBasicCalculatorData, mockAdvancedCalculatorData } from '@/data/mock-calculator';
 import { USE_MOCK_DATA } from '@/config';
-import { BasicCalculatorData, AdvancedCalculatorData, SolarAdvancedPayload, SolarBasicPayload } from '@/types/types';
+import { BasicCalculatorData, AdvancedCalculatorData,  SolarBasicPayload, SolarCalculatorApiResponse } from '@/types/types';
 
 // Endpoints
 const SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar/';
-const ADVANCED_SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar/';
+// const ADVANCED_SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar/';
 
 // Basic calculator API call
 export async function getSolarAdvantageData(
@@ -22,22 +22,46 @@ export async function getSolarAdvantageData(
 
   try {
     console.log("Sending POST request to:", SOLAR_CALCULATOR_ENDPOINT, "with payload:", payload);
-
-    const response = await apiCall<BasicCalculatorData>(
-      SOLAR_CALCULATOR_ENDPOINT,
-      "POST",
-      payload
-    );
+    const response = await apiCall<SolarCalculatorApiResponse>(SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
 
     if (!response) {
       throw new Error("No response received from the backend.");
     }
 
-    console.log("API response received:", response);
-    return response;
+    // Validate required fields
+    if (typeof response.total_cost !== 'number' || typeof response.subsidy !== 'number') {
+      console.error("Invalid response:", response);
+      throw new Error(`Invalid or missing financial data in response for bill ${payload.monthly_bill || 'unknown'}`);
+    }
 
+    // Transform the API response
+    const transformedData: BasicCalculatorData = {
+      specifications: {
+        power_requirement: `${response.solar_capacity_kW} kW`,
+        area_requirement: `${response.area_required} sq.ft`,
+        installation_time: `${response.installation_time_days} days`,
+      },
+      financialDetails: {
+        lifetime_savings: "₹10,00,000", // Replace with actual data if available
+        overall_cost: `₹${response.total_cost.toLocaleString('en-IN')}`,
+        government_subsidy: `₹${response.subsidy.toLocaleString('en-IN')}`,
+        final_cost: `₹${response.total_cost.toLocaleString('en-IN')}`,
+        monthlyEBReduction: "80% reduction", // Replace with actual data
+        starting_EMI: "₹5,000", // Replace with actual data
+      },
+      graph_data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        datasets: [
+          { data: [1000, 1200, 1100, 1300, 1400, 1500] },
+          { data: [2000, 2200, 2100, 2300, 2400, 2500] },
+        ],
+      },
+    };
+
+    console.log("Transformed API response:", transformedData);
+    return transformedData;
   } catch (error) {
-    console.error("Error in getSolarAdvantageData:", error);
+    console.error("Error in getSolarAdvantageData:", error, "Payload:", payload);
     throw error;
   }
 }
@@ -46,9 +70,9 @@ export async function getSolarAdvantageData(
 
 // Advanced calculator API call
 export async function getSolarAdvancedData(
-  payload: SolarAdvancedPayload
+  // payload: SolarAdvancedPayload
 ): Promise<AdvancedCalculatorData> {
-  if (USE_MOCK_DATA) {
+  // if (USE_MOCK_DATA) {
     console.log("Using mock data for getSolarAdvancedData");
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -57,23 +81,23 @@ export async function getSolarAdvancedData(
     });
   }
 
-  try {
-    console.log("Making API call to:", ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "with payload:", payload);
-    const response = await apiCall<AdvancedCalculatorData>(
-      ADVANCED_SOLAR_CALCULATOR_ENDPOINT,
-      "POST",
-      payload
-    );
-    if (response.error) {
-      throw new Error(response.error);
-    }
-    if (response.data === null) {
-      throw new Error("No data returned from the API");
-    }
-    console.log("API response received:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Error in getSolarAdvancedData:", error);
-    throw error;
-  }
-}
+//   try {
+//     console.log("Making API call to:", ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "with payload:", payload);
+//     const response = await apiCall<AdvancedCalculatorData>(
+//       ADVANCED_SOLAR_CALCULATOR_ENDPOINT,
+//       "POST",
+//       payload
+//     );
+//     if (response.error) {
+//       throw new Error(response.error);
+//     }
+//     if (response.data === null) {
+//       throw new Error("No data returned from the API");
+//     }
+//     console.log("API response received:", response.data);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error in getSolarAdvancedData:", error);
+//     throw error;
+//   }
+// }

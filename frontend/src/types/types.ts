@@ -23,6 +23,18 @@ export interface BasicCalculatorData {
     }[];
   };
 }
+export interface SolarCalculatorApiResponse {
+  estimated_units: number;
+  daily_consumption: number;
+  buffered_daily: number;
+  solar_capacity_kW: number;
+  area_required: number;
+  installation_time_days: number;
+  total_cost: number;
+  subsidy: number;
+  pincode: string;
+  property_type: string;
+}
 
 // Type for the API's graph_data response (Advanced Calculator)
 export interface Apigraph_data {
@@ -148,4 +160,12 @@ export interface DeviceType {
   show_in_ui: boolean;
   updated_at: string; 
   created_at: string; 
+}
+
+export interface VehicleType {
+  name: string;
+  category: string;
+  show_in_ui: boolean;
+  updated_at: string;
+  created_at: string;
 }

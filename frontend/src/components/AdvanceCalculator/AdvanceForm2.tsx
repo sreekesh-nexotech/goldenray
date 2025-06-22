@@ -1,12 +1,10 @@
 /* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceForm2.tsx */
-import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import Image from "next/image";
+
 import Button from "../ui/Button";
 import { UsageDetailsFormData, Electric_vehicle, Electronic_device } from "@/types/types";
 import DeviceManager from "./AdvanceDeviceManager"; // Import the reusable component
-import deviceIcon from "../../../public/device.svg";
-import deleteIcon from "../../../public/deleteIcon.svg";
+
+import AdvanceVehicleManager from "./AdvanceVehicleManager";
 
 interface UsageDetailsStepProps {
   formData: UsageDetailsFormData;
@@ -25,13 +23,7 @@ export default function UsageDetailsStep({
 }: UsageDetailsStepProps) {
   
 
-  // State for the new vehicle input fields
-  const [newVehicle, setNewVehicle] = useState({
-    deviceType: "",
-    noOfUnits: "",
-    wattage: "",
-    dailyUsage: "",
-  });
+
 
   /**
    * This is a wrapper function passed to the DeviceManager component.
@@ -48,40 +40,17 @@ export default function UsageDetailsStep({
   };
 
 
-  const handleVehicleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewVehicle((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const addElectricVehicle = () => {
-    if (
-      newVehicle.deviceType &&
-      newVehicle.noOfUnits &&
-      newVehicle.wattage &&
-      newVehicle.dailyUsage
-    ) {
-      const vehicle: Electric_vehicle = {
-        id: uuidv4(),
-        device_type: newVehicle.deviceType,
-        no_of_units: parseFloat(newVehicle.noOfUnits),
-        wattage: parseFloat(newVehicle.wattage),
-        daily_usage: parseFloat(newVehicle.dailyUsage),
-      };
-      setFormData((prev) => ({
-        ...prev,
-        electric_vehicles: [...prev.electric_vehicles, vehicle],
-      }));
-      // Reset the input fields after adding
-      setNewVehicle({ deviceType: "", noOfUnits: "", wattage: "", dailyUsage: "" });
-    }
-  };
-
-  const removeVehicle = (id: string) => {
+  // Wrapper function for updating electric_vehicles in formData
+  const setelectric_vehicles: React.Dispatch<React.SetStateAction<Electric_vehicle[]>> = (
+    updater
+  ) => {
     setFormData((prev) => ({
       ...prev,
-      electric_vehicles: prev.electric_vehicles.filter((vehicle) => vehicle.id !== id),
+      electric_vehicles: typeof updater === "function" ? updater(prev.electric_vehicles) : updater,
     }));
   };
+
+  
 
   return (
     <div className="space-y-12 p-0 md:p-6">
@@ -93,85 +62,10 @@ export default function UsageDetailsStep({
       />
 
       {/* --- Electric Vehicles Section --- */}
-      <div>
-        <div className="flex flex-col lg:flex-row items-start justify-between mb-4">
-          <h2 className="text-xl md:text-2xl font-semibold text-[#123532]">
-            Add your electric vehicle (if any)
-          </h2>
-          <button
-            onClick={addElectricVehicle}
-            className="hidden lg:block underline font-semibold text-[#123532] cursor-pointer whitespace-nowrap"
-          >
-            + Add Vehicle
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <input
-            type="text"
-            name="deviceType"
-            placeholder="Vehicle Type (e.g., Car)"
-            value={newVehicle.deviceType}
-            onChange={handleVehicleChange}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
-          />
-          <input
-            type="number"
-            name="noOfUnits"
-            placeholder="No. of Units"
-            value={newVehicle.noOfUnits}
-            onChange={handleVehicleChange}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
-          />
-          <input
-            type="number"
-            name="wattage"
-            placeholder="Charger Wattage"
-            value={newVehicle.wattage}
-            onChange={handleVehicleChange}
-            className="p-3 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
-          />
-          <input
-            type="number"
-            name="dailyUsage"
-            placeholder="Daily Charging (hrs)"
-            value={newVehicle.dailyUsage}
-            onChange={handleVehicleChange}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
-          />
-
-          <button
-          onClick={addElectricVehicle}
-          className="block lg:hidden underline font-semibold text-[#123532] cursor-pointer whitespace-nowrap"
-        >
-          + Add Device
-        </button>
-        </div>
-
-        <div className="mt-4 space-y-3">
-          {formData.electric_vehicles.map((vehicle) => (
-            <div
-              key={vehicle.id}
-              className="flex justify-between items-center p-3 rounded-2xl border border-[#DBD8D8]"
-            >
-              <div>
-                <span className="font-semibold flex gap-2 items-center">
-                  <Image src={deviceIcon} alt="vehicle icon" />
-                  {vehicle.device_type} × {vehicle.no_of_units}
-                </span>
-                <div className="text-sm text-gray-600 pl-8">
-                  {vehicle.wattage} Watts | {vehicle.daily_usage}h Daily Usage
-                </div>
-              </div>
-              <button
-                onClick={() => removeVehicle(vehicle.id)}
-                className="cursor-pointer"
-              >
-                <Image src={deleteIcon} alt="Delete" />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
+      <AdvanceVehicleManager
+        electric_vehicles={formData.electric_vehicles}
+        setelectric_vehicles={setelectric_vehicles}
+      />
 
       {/* --- Navigation Button --- */}
       <div className="flex justify-end mt-8">

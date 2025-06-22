@@ -1,4 +1,4 @@
-import { BasicCalculatorData, AdvancedCalculatorData, DeviceType } from "@/types/types";
+import { BasicCalculatorData, AdvancedCalculatorData, DeviceType, VehicleType } from "@/types/types";
 
 // Mock data for Basic Calculator
 export const mockBasicCalculatorData: BasicCalculatorData = {
@@ -78,4 +78,9 @@ export const mockDeviceTypes: DeviceType[] = [
   { name: 'Water Pump', show_in_ui: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-mq:00:00Z' },
   { name: 'EV Car', show_in_ui: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
   { name: 'EV Scooter', show_in_ui: true, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+];
+
+export const mockVehicleTypes: VehicleType[] = [
+  { name: "Tata Nexon EV", category: "Car", show_in_ui: true, created_at: "2023-01-01T00:00:00Z", updated_at: "2023-01-01T00:00:00Z" },
+  { name: "Ola S1 Pro", category: "Scooter", show_in_ui: true, created_at: "2023-01-01T00:00:00Z", updated_at: "2023-01-01T00:00:00Z" },
 ];

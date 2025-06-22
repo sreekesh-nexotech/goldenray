@@ -32,23 +32,15 @@ export default function SolarAdvantage({
     const newErrors = { pincode: "", property_type: "", monthly_bill: "" };
 
     // Pincode validation: Must be 6 digits
-    if (!pincode.match(/^\d{6}$/)) {
-      newErrors.pincode = "Pincode must be exactly 6 digits.";
-      valid = false;
-    }
-
-    // Property Type validation: Must be selected
-    if (!["residential", "commercial", "industrial"].includes(property_type)) {
-      newErrors.property_type = "Please select a valid property type.";
-      valid = false;
-    }
-
-    // Electricity Bill validation: Must be a positive number
     const billValue = Number(monthly_bill);
-    if (isNaN(billValue) || billValue <= 0) {
-      newErrors.monthly_bill = "Electricity bill must be a positive number.";
-      valid = false;
-    }
+  if (isNaN(billValue) || billValue <= 0) {
+    newErrors.monthly_bill = "Electricity bill must be a positive number.";
+    valid = false;
+  } 
+  // else if (billValue > 7300) {
+  //   newErrors.monthly_bill = "Monthly bill cannot exceed ₹7300.";
+  //   valid = false;
+  // }
 
     setErrors(newErrors);
     return valid;
