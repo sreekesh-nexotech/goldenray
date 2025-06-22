@@ -2,9 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import Pincode, KSEBTariff, SolarInstallation
+from ..permissions import ApiMethodPermission, non_authenticated_view
 
 
 class SolarCalculatorAPIView(APIView):
+    permission_classes = [ApiMethodPermission]
+
+    @non_authenticated_view
     def post(self, request):
         # Extract input data
         monthly_bill = request.data.get("monthly_bill")
@@ -25,7 +29,10 @@ class SolarCalculatorAPIView(APIView):
         def calculate_solar_from_bill(monthly_bill):
             # Fetch tariff slabs from KSEBTariff model
             tariff_objects = KSEBTariff.objects.all().order_by("min_units")
-            tariff_slabs = [(tariff.max_units if tariff.max_units is not None else float("inf"), float(tariff.rate)) for tariff in tariff_objects]
+            tariff_slabs = [
+                (tariff.max_units if tariff.max_units is not None else float("inf"), float(tariff.rate))
+                for tariff in tariff_objects
+            ]
 
             fixed_charges = 190 + 6 + (6 * 0.18)
             base_amount = monthly_bill - fixed_charges
@@ -48,7 +55,12 @@ class SolarCalculatorAPIView(APIView):
             buffered_daily_units = daily_units * 1.3
             solar_kW = -(-buffered_daily_units // 4)
 
-            return {"estimated_units": round(units, 2), "daily_consumption": round(daily_units, 2), "buffered_daily": round(buffered_daily_units, 2), "solar_capacity_kW": int(solar_kW)}
+            return {
+                "estimated_units": round(units, 2),
+                "daily_consumption": round(daily_units, 2),
+                "buffered_daily": round(buffered_daily_units, 2),
+                "solar_capacity_kW": int(solar_kW),
+            }
 
         result = calculate_solar_from_bill(monthly_bill)
 
@@ -69,4 +81,3 @@ class SolarCalculatorAPIView(APIView):
         result["pincode"] = pincode
         result["property_type"] = property_type
         return Response(result, status=status.HTTP_200_OK)
- 
