@@ -1,53 +1,64 @@
 import { apiCall } from './apiService';
 import { mockBasicCalculatorData, mockAdvancedCalculatorData } from '@/data/mock-calculator';
 import { USE_MOCK_DATA } from '@/config';
-import { BasicCalculatorData, AdvancedCalculatorData, SolarAdvancedPayload, SolarBasicPayload } from '@/types/calculator';
+import { BasicCalculatorData, AdvancedCalculatorData, SolarAdvancedPayload, SolarBasicPayload } from '@/types/types';
 
-//endpoints
-const SOLAR_CALCULATOR_ENDPOINT = 'solar-calculator/';
-const ADVANCED_SOLAR_CALCULATOR_ENDPOINT = 'advanced-solar-calculator/';
+// Endpoints
+const SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar/';
+const ADVANCED_SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar/';
 
-
-//basic calculator api call
+// Basic calculator API call
 export async function getSolarAdvantageData(
   payload: SolarBasicPayload
 ): Promise<BasicCalculatorData> {
   if (USE_MOCK_DATA) {
+    console.log("Using mock data for getSolarAdvantageData");
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(mockBasicCalculatorData);
       }, 1000);
     });
-  } else {
+  }
+
+  try {
     const queryParams = new URLSearchParams({
       pincode: payload.pincode,
-      propertyType: payload.propertyType,
-      electricityBill: payload.electricityBill,
+      property_type: payload.property_type,
+      electricity_bill: payload.electricity_bill,
     }).toString();
     const url = `${SOLAR_CALCULATOR_ENDPOINT}?${queryParams}`;
+    console.log("Making API call to:", url);
+    
     const response = await apiCall<BasicCalculatorData>(url, "GET");
     if (response.error) {
       throw new Error(response.error);
     }
     if (response.data === null) {
-      throw new Error("No data returned from API");
+      throw new Error("No data returned from the API");
     }
+    console.log("API response received:", response.data);
     return response.data;
+  } catch (error) {
+    console.error("Error in getSolarAdvantageData:", error);
+    throw error; // Re-throw to be handled by the caller
   }
 }
 
-
-//advanced api call
+// Advanced calculator API call
 export async function getSolarAdvancedData(
   payload: SolarAdvancedPayload
 ): Promise<AdvancedCalculatorData> {
   if (USE_MOCK_DATA) {
+    console.log("Using mock data for getSolarAdvancedData");
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(mockAdvancedCalculatorData);
       }, 1000);
     });
-  } else {
+  }
+
+  try {
+    console.log("Making API call to:", ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "with payload:", payload);
     const response = await apiCall<AdvancedCalculatorData>(
       ADVANCED_SOLAR_CALCULATOR_ENDPOINT,
       "POST",
@@ -57,8 +68,12 @@ export async function getSolarAdvancedData(
       throw new Error(response.error);
     }
     if (response.data === null) {
-      throw new Error("No data returned from API");
+      throw new Error("No data returned from the API");
     }
+    console.log("API response received:", response.data);
     return response.data;
+  } catch (error) {
+    console.error("Error in getSolarAdvancedData:", error);
+    throw error;
   }
 }

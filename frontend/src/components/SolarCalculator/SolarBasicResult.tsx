@@ -3,29 +3,29 @@ import { useState, ChangeEvent, useEffect } from "react";
 import PageIllustration from "@/components/ui/page-illustration";
 import Button from "../ui/Button";
 import BasicResult from "./basic-result";
-import { BasicCalculatorData } from "@/types/calculator";
+import { BasicCalculatorData } from "@/types/types";
 import QuotePopup from "./QuotePopup";
 
 interface SolarBasicResultProps {
   initialPincode: string;
-  initialPropertyType: string;
-  initialElectricityBill: string;
+  initialproperty_type: string;
+  initialelectricity_bill: string;
   calculatedData: BasicCalculatorData;
-  onResubmit: (pincode: string, propertyType: string, electricityBill: string) => void;
+  onResubmit: (pincode: string, property_type: string, electricity_bill: string) => void;
   onGoBack: () => void;
 }
 
 export default function SolarBasicResult({
   initialPincode,
-  initialPropertyType,
-  initialElectricityBill,
+  initialproperty_type,
+  initialelectricity_bill,
   calculatedData,
   onResubmit,
   onGoBack,
 }: SolarBasicResultProps) {
   const [pincode, setPincode] = useState(initialPincode);
-  const [propertyType, setPropertyType] = useState(initialPropertyType || "residential");
-  const [electricityBill, setElectricityBill] = useState(initialElectricityBill);
+  const [property_type, setproperty_type] = useState(initialproperty_type || "residential");
+  const [electricity_bill, setelectricity_bill] = useState(initialelectricity_bill);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup
   
   //prevent scrolling the body when popup is open
@@ -52,14 +52,14 @@ export default function SolarBasicResult({
   }, [isPopupOpen]);
 
 
-  const handlePropertyTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     console.log("Property type changed to:", e.target.value);
-    setPropertyType(e.target.value);
+    setproperty_type(e.target.value);
   };
 
   const handleResubmit = () => {
-    console.log("Resubmitting:", { pincode, propertyType, electricityBill });
-    onResubmit(pincode, propertyType, electricityBill);
+    console.log("Resubmitting:", { pincode, property_type, electricity_bill });
+    onResubmit(pincode, property_type, electricity_bill);
   };
 
   return (
@@ -91,10 +91,10 @@ export default function SolarBasicResult({
             </label>
             <select
               id="property-type-result"
-              value={propertyType}
-              onChange={handlePropertyTypeChange}
+              value={property_type}
+              onChange={handleproperty_typeChange}
               className={`w-full px-4 py-2  rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] shadow-md bg-white ${
-                propertyType === "" ? "text-gray-400" : "text-black"
+                property_type === "" ? "text-gray-400" : "text-black"
               }`}
             >
               <option value="residential">Residential</option>
@@ -110,8 +110,8 @@ export default function SolarBasicResult({
             <input
               type="text"
               id="electricity-bill-result"
-              value={electricityBill}
-              onChange={(e) => setElectricityBill(e.target.value)}
+              value={electricity_bill}
+              onChange={(e) => setelectricity_bill(e.target.value)}
               className="bg-white shadow-md  w-full px-4 py-2  rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
             />
           </div>

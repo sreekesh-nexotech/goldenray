@@ -1,27 +1,27 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
-import { ElectricVehicle } from "@/types/calculator";
+import { Electric_vehicle } from "@/types/types";
 import deviceIcon from "../../../public/device.svg";
 import deleteIcon from "../../../public/deleteIcon.svg";
 
 const VEHICLE_OPTIONS = ["Select A Vehicle Type", "Car", "Bike", "Scooty", "Other"];
 
-interface ElectricVehicleManagerProps {
-  electricVehicles: ElectricVehicle[];
-  setElectricVehicles: React.Dispatch<React.SetStateAction<ElectricVehicle[]>>;
+interface Electric_vehicleManagerProps {
+  electric_vehicles: Electric_vehicle[];
+  setelectric_vehicles: React.Dispatch<React.SetStateAction<Electric_vehicle[]>>;
 }
 
-export default function ElectricVehicleManager({
-  electricVehicles,
-  setElectricVehicles,
-}: ElectricVehicleManagerProps) {
+export default function Electric_vehicleManager({
+  electric_vehicles,
+  setelectric_vehicles,
+}: Electric_vehicleManagerProps) {
   
   const [newVehicle, setNewVehicle] = useState({
     vehicleType: "",
-    noOfUnits: "",
+    no_of_units: "",
     wattage: "",
-    dailyUsage: "",
+    daily_usage: "",
   });
   const [customVehicleType, setCustomVehicleType] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -40,10 +40,10 @@ export default function ElectricVehicleManager({
     }
   };
 
-  const addElectricVehicle = () => {
-    const noOfUnitsNum = parseFloat(newVehicle.noOfUnits);
+  const addElectric_vehicle = () => {
+    const no_of_unitsNum = parseFloat(newVehicle.no_of_units);
     const wattageNum = parseFloat(newVehicle.wattage);
-    const dailyUsageNum = parseFloat(newVehicle.dailyUsage);
+    const daily_usageNum = parseFloat(newVehicle.daily_usage);
 
     // Determine the actual vehicle type to use for validation and storage
     const vehicleTypeToValidate = newVehicle.vehicleType === "Other" ? customVehicleType : newVehicle.vehicleType;
@@ -51,22 +51,22 @@ export default function ElectricVehicleManager({
     if (
       vehicleTypeToValidate && // Ensure vehicleType (or customVehicleType) is not empty
       vehicleTypeToValidate !== "Select A Vehicle Type" && // Ensure a valid selection
-      !isNaN(noOfUnitsNum) &&
-      noOfUnitsNum > 0 &&
+      !isNaN(no_of_unitsNum) &&
+      no_of_unitsNum > 0 &&
       !isNaN(wattageNum) &&
       wattageNum > 0 &&
-      !isNaN(dailyUsageNum) &&
-      dailyUsageNum >= 0
+      !isNaN(daily_usageNum) &&
+      daily_usageNum >= 0
     ) {
-      const vehicle: ElectricVehicle = {
+      const vehicle: Electric_vehicle = {
         id: uuidv4(),
-        deviceType: vehicleTypeToValidate, // Use the determined vehicle type
-        noOfUnits: parseFloat(newVehicle.noOfUnits),
+        device_type: vehicleTypeToValidate, // Use the determined vehicle type
+        no_of_units: parseFloat(newVehicle.no_of_units),
         wattage: parseFloat(newVehicle.wattage),
-        dailyUsage: parseFloat(newVehicle.dailyUsage),
+        daily_usage: parseFloat(newVehicle.daily_usage),
       };
-      setElectricVehicles((prev) => [...prev, vehicle]);
-      setNewVehicle({ vehicleType: "", noOfUnits: "", wattage: "", dailyUsage: "" });
+      setelectric_vehicles((prev) => [...prev, vehicle]);
+      setNewVehicle({ vehicleType: "", no_of_units: "", wattage: "", daily_usage: "" });
       setCustomVehicleType("");
       setErrorMessage(null);
     } else {
@@ -79,7 +79,7 @@ export default function ElectricVehicleManager({
   };
 
   const removeVehicle = (id: string) => {
-    setElectricVehicles((prev) => prev.filter((vehicle) => vehicle.id !== id));
+    setelectric_vehicles((prev) => prev.filter((vehicle) => vehicle.id !== id));
   };
 
   return (
@@ -89,7 +89,7 @@ export default function ElectricVehicleManager({
           Add your electric vehicle (if any)
         </h2>
         <button
-          onClick={addElectricVehicle}
+          onClick={addElectric_vehicle}
           className="hidden lg:block underline font-semibold text-[#123532] cursor-pointer whitespace-nowrap"
         >
           + Add Vehicle
@@ -122,9 +122,9 @@ export default function ElectricVehicleManager({
         )}
         <input
           type="number"
-          name="noOfUnits"
+          name="no_of_units"
           placeholder="No. of Units"
-          value={newVehicle.noOfUnits}
+          value={newVehicle.no_of_units}
           onChange={handleVehicleChange}
           className="p-3 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
           aria-label="Number of units"
@@ -140,15 +140,15 @@ export default function ElectricVehicleManager({
         />
         <input
           type="number"
-          name="dailyUsage"
+          name="daily_usage"
           placeholder="Daily Charging (hrs)"
-          value={newVehicle.dailyUsage}
+          value={newVehicle.daily_usage}
           onChange={handleVehicleChange}
           className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
           aria-label="Daily charging hours"
         />
         <button
-          onClick={addElectricVehicle}
+          onClick={addElectric_vehicle}
           className="block lg:hidden underline font-semibold text-[#123532] cursor-pointer whitespace-nowrap"
         >
           + Add Vehicle
@@ -156,7 +156,7 @@ export default function ElectricVehicleManager({
       </div>
       {errorMessage && <p className="text-sm text-red-600 mt-2">{errorMessage}</p>}
       <div className="mt-4 space-y-3">
-        {electricVehicles.map((vehicle) => (
+        {electric_vehicles.map((vehicle) => (
           <div
             key={vehicle.id}
             className="flex justify-between items-center p-3 rounded-2xl border border-[#DBD8D8]"
@@ -164,16 +164,16 @@ export default function ElectricVehicleManager({
             <div>
               <span className="font-semibold flex gap-2 items-center">
                 <Image src={deviceIcon} alt="vehicle icon" />
-                {vehicle.deviceType} × {vehicle.noOfUnits}
+                {vehicle.device_type} × {vehicle.no_of_units}
               </span>
               <div className="text-sm text-gray-600 pl-8">
-                {vehicle.wattage} Watts | {vehicle.dailyUsage}h Daily Usage
+                {vehicle.wattage} Watts | {vehicle.daily_usage}h Daily Usage
               </div>
             </div>
             <button
               onClick={() => removeVehicle(vehicle.id)}
               className="cursor-pointer"
-              aria-label={`Remove ${vehicle.deviceType}`}
+              aria-label={`Remove ${vehicle.device_type}`}
             >
               <Image src={deleteIcon} alt="Delete" />
             </button>

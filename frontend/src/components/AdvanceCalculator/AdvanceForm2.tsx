@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import Button from "../ui/Button";
-import { UsageDetailsFormData, ElectricVehicle, ElectronicDevice } from "@/types/calculator";
+import { UsageDetailsFormData, Electric_vehicle, Electronic_device } from "@/types/types";
 import DeviceManager from "./AdvanceDeviceManager"; // Import the reusable component
 import deviceIcon from "../../../public/device.svg";
 import deleteIcon from "../../../public/deleteIcon.svg";
@@ -13,7 +13,7 @@ interface UsageDetailsStepProps {
   setFormData: React.Dispatch<React.SetStateAction<UsageDetailsFormData>>;
   onCalculate: () => void;
   loading: boolean;
-  gridType: "On Grid" | "Hybrid" | null;
+  grid_type: "On Grid" | "Hybrid" | null;
 }
 
 export default function UsageDetailsStep({
@@ -21,7 +21,7 @@ export default function UsageDetailsStep({
   setFormData,
   onCalculate,
   loading,
-  gridType,
+  grid_type,
 }: UsageDetailsStepProps) {
   
 
@@ -35,15 +35,15 @@ export default function UsageDetailsStep({
 
   /**
    * This is a wrapper function passed to the DeviceManager component.
-   * It allows the child component to update the `electronicDevices` array,
+   * It allows the child component to update the `electronic_devices` array,
    * which is part of the parent's `usageDetails` state object.
    */
-  const setElectronicDevices: React.Dispatch<React.SetStateAction<ElectronicDevice[]>> = (
+  const setelectronic_devices: React.Dispatch<React.SetStateAction<Electronic_device[]>> = (
     updater
   ) => {
     setFormData((prev) => ({
       ...prev,
-      electronicDevices: typeof updater === "function" ? updater(prev.electronicDevices) : updater,
+      electronic_devices: typeof updater === "function" ? updater(prev.electronic_devices) : updater,
     }));
   };
 
@@ -60,16 +60,16 @@ export default function UsageDetailsStep({
       newVehicle.wattage &&
       newVehicle.dailyUsage
     ) {
-      const vehicle: ElectricVehicle = {
+      const vehicle: Electric_vehicle = {
         id: uuidv4(),
-        deviceType: newVehicle.deviceType,
-        noOfUnits: parseFloat(newVehicle.noOfUnits),
+        device_type: newVehicle.deviceType,
+        no_of_units: parseFloat(newVehicle.noOfUnits),
         wattage: parseFloat(newVehicle.wattage),
-        dailyUsage: parseFloat(newVehicle.dailyUsage),
+        daily_usage: parseFloat(newVehicle.dailyUsage),
       };
       setFormData((prev) => ({
         ...prev,
-        electricVehicles: [...prev.electricVehicles, vehicle],
+        electric_vehicles: [...prev.electric_vehicles, vehicle],
       }));
       // Reset the input fields after adding
       setNewVehicle({ deviceType: "", noOfUnits: "", wattage: "", dailyUsage: "" });
@@ -79,7 +79,7 @@ export default function UsageDetailsStep({
   const removeVehicle = (id: string) => {
     setFormData((prev) => ({
       ...prev,
-      electricVehicles: prev.electricVehicles.filter((vehicle) => vehicle.id !== id),
+      electric_vehicles: prev.electric_vehicles.filter((vehicle) => vehicle.id !== id),
     }));
   };
 
@@ -87,8 +87,8 @@ export default function UsageDetailsStep({
     <div className="space-y-12 p-0 md:p-6">
       {/* --- Electronic Devices Section (Using Reusable Component) --- */}
       <DeviceManager
-        devices={formData.electronicDevices}
-        setDevices={setElectronicDevices}
+        devices={formData.electronic_devices}
+        setDevices={setelectronic_devices}
         title="Tell us what electronics you want to include?"
       />
 
@@ -148,7 +148,7 @@ export default function UsageDetailsStep({
         </div>
 
         <div className="mt-4 space-y-3">
-          {formData.electricVehicles.map((vehicle) => (
+          {formData.electric_vehicles.map((vehicle) => (
             <div
               key={vehicle.id}
               className="flex justify-between items-center p-3 rounded-2xl border border-[#DBD8D8]"
@@ -156,10 +156,10 @@ export default function UsageDetailsStep({
               <div>
                 <span className="font-semibold flex gap-2 items-center">
                   <Image src={deviceIcon} alt="vehicle icon" />
-                  {vehicle.deviceType} × {vehicle.noOfUnits}
+                  {vehicle.device_type} × {vehicle.no_of_units}
                 </span>
                 <div className="text-sm text-gray-600 pl-8">
-                  {vehicle.wattage} Watts | {vehicle.dailyUsage}h Daily Usage
+                  {vehicle.wattage} Watts | {vehicle.daily_usage}h Daily Usage
                 </div>
               </div>
               <button
@@ -176,7 +176,7 @@ export default function UsageDetailsStep({
       {/* --- Navigation Button --- */}
       <div className="flex justify-end mt-8">
         <Button onClick={onCalculate} disabled={loading}>
-          {loading ? "Processing..." : gridType === "Hybrid" ? "Next" : "Calculate"}
+          {loading ? "Processing..." : grid_type === "Hybrid" ? "Next" : "Calculate"}
         </Button>
       </div>
     </div>

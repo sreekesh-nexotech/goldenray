@@ -1,51 +1,52 @@
-// src/components/solar-calculator/solar-advantage.tsx
 "use client";
 import { ChangeEvent, useState } from "react";
 import PageIllustration from "@/components/ui/page-illustration";
+import { SolarBasicPayload } from "@/types/types";
 
 interface SolarAdvantageProps {
-  onSubmit: (pincode: string, propertyType: string, electricityBill: string) => void;
+  onSubmit: (pincode: string, property_type: string, electricity_bill: string) => void;
   initialPincode?: string;
-  initialPropertyType?: string;
-  initialElectricityBill?: string;
-  isLoading: boolean; // Add isLoading prop here
+  initialproperty_type?: string;
+  initialelectricity_bill?: string;
+  isLoading: boolean;
 }
 
 export default function SolarAdvantage({
   onSubmit,
   initialPincode = "",
-  initialPropertyType = "",
-  initialElectricityBill = "",
+  initialproperty_type = "",
+  initialelectricity_bill = "",
   isLoading,
 }: SolarAdvantageProps) {
   const [pincode, setPincode] = useState(initialPincode);
-  const [propertyType, setPropertyType] = useState(initialPropertyType);
-  const [electricityBill, setElectricityBill] = useState(initialElectricityBill);
+  const [property_type, setproperty_type] = useState(initialproperty_type);
+  const [electricity_bill, setelectricity_bill] = useState(initialelectricity_bill);
   const [errors, setErrors] = useState({
     pincode: "",
-    propertyType: "",
-    electricityBill: "",
+    property_type: "",
+    electricity_bill: "",
   });
 
   const validateForm = () => {
     let valid = true;
-    const newErrors = { pincode: "", propertyType: "", electricityBill: "" };
+    const newErrors = { pincode: "", property_type: "", electricity_bill: "" };
 
-    // Pincode validation
+    // Pincode validation: Must be 6 digits
     if (!pincode.match(/^\d{6}$/)) {
-      newErrors.pincode = "Pincode must be 6 digits.";
+      newErrors.pincode = "Pincode must be exactly 6 digits.";
       valid = false;
     }
 
-    // Property Type validation
-    if (propertyType === "") {
-      newErrors.propertyType = "Please select a property type.";
+    // Property Type validation: Must be selected
+    if (!["residential", "commercial", "industrial"].includes(property_type)) {
+      newErrors.property_type = "Please select a valid property type.";
       valid = false;
     }
 
-    // Electricity Bill validation
-    if (!electricityBill.match(/^\d+$/) || parseInt(electricityBill) <= 0) {
-      newErrors.electricityBill = "Electricity bill must be a positive number.";
+    // Electricity Bill validation: Must be a positive number
+    const billValue = parseFloat(electricity_bill);
+    if (isNaN(billValue) || billValue <= 0) {
+      newErrors.electricity_bill = "Electricity bill must be a positive number.";
       valid = false;
     }
 
@@ -53,40 +54,44 @@ export default function SolarAdvantage({
     return valid;
   };
 
-  const handlePropertyTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setPropertyType(e.target.value);
-    setErrors((prev) => ({ ...prev, propertyType: "" })); // Clear error on change
+  const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setproperty_type(e.target.value);
+    setErrors((prev) => ({ ...prev, property_type: "" }));
   };
 
   const handlePincodeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPincode(e.target.value);
-    setErrors((prev) => ({ ...prev, pincode: "" })); // Clear error on change
+    const value = e.target.value.replace(/\D/g, ""); // Allow only digits
+    setPincode(value);
+    setErrors((prev) => ({ ...prev, pincode: "" }));
   };
 
-  const handleElectricityBillChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setElectricityBill(e.target.value);
-    setErrors((prev) => ({ ...prev, electricityBill: "" })); // Clear error on change
+  const handleelectricity_billChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\d.]/g, ""); // Allow digits and decimal point
+    setelectricity_bill(value);
+    setErrors((prev) => ({ ...prev, electricity_bill: "" }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      onSubmit(pincode, propertyType, electricityBill);
+      // Format payload to match SolarBasicPayload
+      const payload: SolarBasicPayload = {
+        pincode,
+        property_type,
+        electricity_bill,
+      };
+      console.log("Submitting payload to backend:", payload);
+      onSubmit(pincode, property_type, electricity_bill);
     }
   };
 
   return (
     <div className="relative bg-white py-12 mt-12 scroll-mt-30" id="solar-advantage">
-      {/* Grid Background Layer */}
       <PageIllustration isGradient={false} />
-
       <div className="relative max-w-7xl mx-auto text-center px-4 md:px-0">
-        {/* Heading */}
         <h1 className="text-4xl md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-15">
           Calculate Your Solar Advantage
         </h1>
-
-        {/* Form Container */}
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.2)] rounded-3xl p-10 py-12 max-w-sm mx-auto">
           <form className="flex flex-col" onSubmit={handleSubmit}>
             {/* Pincode Input */}
@@ -103,11 +108,12 @@ export default function SolarAdvantage({
                 placeholder="688503"
                 value={pincode}
                 onChange={handlePincodeChange}
+                maxLength={6}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                   errors.pincode ? "border-red-500" : "border-gray-300 focus:ring-[#F7BA41]"
                 }`}
                 required
-                disabled={isLoading} // Disable input when loading
+                disabled={isLoading}
               />
               {errors.pincode && <p className="text-red-500 text-xs mt-1 text-left">{errors.pincode}</p>}
             </div>
@@ -122,22 +128,22 @@ export default function SolarAdvantage({
               </label>
               <select
                 id="property-type"
-                value={propertyType}
-                onChange={handlePropertyTypeChange}
+                value={property_type}
+                onChange={handleproperty_typeChange}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.propertyType ? "border-red-500" : "border-gray-300 focus:ring-[#F7BA41]"
-                } ${propertyType === "" ? "text-gray-400" : "text-black"}`}
+                  errors.property_type ? "border-red-500" : "border-gray-300 focus:ring-[#F7BA41]"
+                } ${property_type === "" ? "text-gray-400" : "text-black"}`}
                 required
-                disabled={isLoading} // Disable input when loading
+                disabled={isLoading}
               >
-                <option value="" hidden>
+                <option value="" disabled hidden>
                   Select Property Type
                 </option>
                 <option value="residential">Residential</option>
                 <option value="commercial">Commercial</option>
                 <option value="industrial">Industrial</option>
               </select>
-              {errors.propertyType && <p className="text-red-500 text-xs mt-1 text-left">{errors.propertyType}</p>}
+              {errors.property_type && <p className="text-red-500 text-xs mt-1 text-left">{errors.property_type}</p>}
             </div>
 
             {/* Average Monthly Electricity Bill Input */}
@@ -152,15 +158,15 @@ export default function SolarAdvantage({
                 type="text"
                 id="electricity-bill"
                 placeholder="₹ 2500"
-                value={electricityBill}
-                onChange={handleElectricityBillChange}
+                value={electricity_bill}
+                onChange={handleelectricity_billChange}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.electricityBill ? "border-red-500" : "border-gray-300 focus:ring-[#F7BA41]"
+                  errors.electricity_bill ? "border-red-500" : "border-gray-300 focus:ring-[#F7BA41]"
                 }`}
                 required
-                disabled={isLoading} // Disable input when loading
+                disabled={isLoading}
               />
-              {errors.electricityBill && <p className="text-red-500 text-xs mt-1 text-left">{errors.electricityBill}</p>}
+              {errors.electricity_bill && <p className="text-red-500 text-xs mt-1 text-left">{errors.electricity_bill}</p>}
             </div>
 
             {/* Calculate Button */}
@@ -169,7 +175,7 @@ export default function SolarAdvantage({
               className={`btn bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
-              disabled={isLoading} // Disable button when loading
+              disabled={isLoading}
             >
               {isLoading ? "Calculating..." : "Calculate Solar Advantage"}
             </button>
