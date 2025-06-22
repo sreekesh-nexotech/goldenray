@@ -131,8 +131,17 @@ export interface SolarAdvancedPayload {
 export interface SolarBasicPayload {
   pincode: string;
   property_type: string;
-  electricity_bill: string;
+  monthly_bill: number;
 }
+
+
+// Type for Pincode validation API response
+export interface PincodeValidationResponse {
+  valid: boolean;
+  pincode?: string;
+  error?: string;
+}
+
 
 export interface DeviceType {
   name: string;

@@ -21,28 +21,28 @@ export async function getSolarAdvantageData(
   }
 
   try {
-    const queryParams = new URLSearchParams({
-      pincode: payload.pincode,
-      property_type: payload.property_type,
-      electricity_bill: payload.electricity_bill,
-    }).toString();
-    const url = `${SOLAR_CALCULATOR_ENDPOINT}?${queryParams}`;
-    console.log("Making API call to:", url);
-    
-    const response = await apiCall<BasicCalculatorData>(url, "GET");
-    if (response.error) {
-      throw new Error(response.error);
+    console.log("Sending POST request to:", SOLAR_CALCULATOR_ENDPOINT, "with payload:", payload);
+
+    const response = await apiCall<BasicCalculatorData>(
+      SOLAR_CALCULATOR_ENDPOINT,
+      "POST",
+      payload
+    );
+
+    if (!response) {
+      throw new Error("No response received from the backend.");
     }
-    if (response.data === null) {
-      throw new Error("No data returned from the API");
-    }
-    console.log("API response received:", response.data);
-    return response.data;
+
+    console.log("API response received:", response);
+    return response;
+
   } catch (error) {
     console.error("Error in getSolarAdvantageData:", error);
-    throw error; // Re-throw to be handled by the caller
+    throw error;
   }
 }
+
+
 
 // Advanced calculator API call
 export async function getSolarAdvancedData(

@@ -4,10 +4,10 @@ import PageIllustration from "@/components/ui/page-illustration";
 import { SolarBasicPayload } from "@/types/types";
 
 interface SolarAdvantageProps {
-  onSubmit: (pincode: string, property_type: string, electricity_bill: string) => void;
+  onSubmit: (pincode: string, property_type: string, monthly_bill: number) => void;
   initialPincode?: string;
   initialproperty_type?: string;
-  initialelectricity_bill?: string;
+  initialmonthly_bill?: number | "";
   isLoading: boolean;
 }
 
@@ -15,21 +15,21 @@ export default function SolarAdvantage({
   onSubmit,
   initialPincode = "",
   initialproperty_type = "",
-  initialelectricity_bill = "",
+  initialmonthly_bill = "",
   isLoading,
 }: SolarAdvantageProps) {
   const [pincode, setPincode] = useState(initialPincode);
   const [property_type, setproperty_type] = useState(initialproperty_type);
-  const [electricity_bill, setelectricity_bill] = useState(initialelectricity_bill);
+  const [monthly_bill, setmonthly_bill] = useState<number | "">(initialmonthly_bill);
   const [errors, setErrors] = useState({
     pincode: "",
     property_type: "",
-    electricity_bill: "",
+    monthly_bill: "",
   });
 
   const validateForm = () => {
     let valid = true;
-    const newErrors = { pincode: "", property_type: "", electricity_bill: "" };
+    const newErrors = { pincode: "", property_type: "", monthly_bill: "" };
 
     // Pincode validation: Must be 6 digits
     if (!pincode.match(/^\d{6}$/)) {
@@ -44,9 +44,9 @@ export default function SolarAdvantage({
     }
 
     // Electricity Bill validation: Must be a positive number
-    const billValue = parseFloat(electricity_bill);
+    const billValue = Number(monthly_bill);
     if (isNaN(billValue) || billValue <= 0) {
-      newErrors.electricity_bill = "Electricity bill must be a positive number.";
+      newErrors.monthly_bill = "Electricity bill must be a positive number.";
       valid = false;
     }
 
@@ -65,23 +65,23 @@ export default function SolarAdvantage({
     setErrors((prev) => ({ ...prev, pincode: "" }));
   };
 
-  const handleelectricity_billChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^\d.]/g, ""); // Allow digits and decimal point
-    setelectricity_bill(value);
-    setErrors((prev) => ({ ...prev, electricity_bill: "" }));
+  const handlemonthly_billChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setmonthly_bill(value === "" ? "" : parseFloat(value)); // Allow empty string or parse to number
+    setErrors((prev) => ({ ...prev, monthly_bill: "" }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      // Format payload to match SolarBasicPayload
+      const billValue = Number(monthly_bill);
       const payload: SolarBasicPayload = {
         pincode,
         property_type,
-        electricity_bill,
+        monthly_bill: billValue,
       };
       console.log("Submitting payload to backend:", payload);
-      onSubmit(pincode, property_type, electricity_bill);
+      onSubmit(pincode, property_type, billValue);
     }
   };
 
@@ -155,18 +155,20 @@ export default function SolarAdvantage({
                 Average Monthly Electricity Bill
               </label>
               <input
-                type="text"
+                type="number"
                 id="electricity-bill"
-                placeholder="₹ 2500"
-                value={electricity_bill}
-                onChange={handleelectricity_billChange}
+                placeholder="2500"
+                value={monthly_bill}
+                onChange={handlemonthly_billChange}
+                step="0.01"
+                min="0.01"
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.electricity_bill ? "border-red-500" : "border-gray-300 focus:ring-[#F7BA41]"
+                  errors.monthly_bill ? "border-red-500" : "border-gray-300 focus:ring-[#F7BA41]"
                 }`}
                 required
                 disabled={isLoading}
               />
-              {errors.electricity_bill && <p className="text-red-500 text-xs mt-1 text-left">{errors.electricity_bill}</p>}
+              {errors.monthly_bill && <p className="text-red-500 text-xs mt-1 text-left">{errors.monthly_bill}</p>}
             </div>
 
             {/* Calculate Button */}

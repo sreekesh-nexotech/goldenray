@@ -11,7 +11,7 @@ export default function SolarAdvantageMain() {
   const [formInputs, setFormInputs] = useState({
     pincode: "",
     property_type: "",
-    electricity_bill: "",
+    monthly_bill: "" as number | "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,17 +19,17 @@ export default function SolarAdvantageMain() {
   const handleCalculateSubmit = async (
     pincode: string,
     property_type: string,
-    electricity_bill: string
+    monthly_bill: number
   ) => {
     setIsLoading(true);
     setError(null);
-    setFormInputs({ pincode, property_type, electricity_bill });
+    setFormInputs({ pincode, property_type, monthly_bill });
 
     try {
       const payload: SolarBasicPayload = {
         pincode,
         property_type,
-        electricity_bill,
+        monthly_bill,
       };
       console.log("Sending payload to API:", payload);
       const data = await getSolarAdvantageData(payload);
@@ -50,17 +50,17 @@ export default function SolarAdvantageMain() {
   const handleResubmitChanges = async (
     pincode: string,
     property_type: string,
-    electricity_bill: string
+    monthly_bill: number
   ) => {
     setIsLoading(true);
     setError(null);
-    setFormInputs({ pincode, property_type, electricity_bill });
+    setFormInputs({ pincode, property_type, monthly_bill });
 
     try {
       const payload: SolarBasicPayload = {
         pincode,
         property_type,
-        electricity_bill,
+        monthly_bill,
       };
       console.log("Resubmitting payload to API:", payload);
       const data = await getSolarAdvantageData(payload);
@@ -110,7 +110,7 @@ export default function SolarAdvantageMain() {
         <SolarBasicResult
           initialPincode={formInputs.pincode}
           initialproperty_type={formInputs.property_type}
-          initialelectricity_bill={formInputs.electricity_bill}
+          initialmonthly_bill={formInputs.monthly_bill}
           calculatedData={calculatorData}
           onResubmit={handleResubmitChanges}
           onGoBack={handleGoBackToForm}
@@ -120,7 +120,7 @@ export default function SolarAdvantageMain() {
           onSubmit={handleCalculateSubmit}
           initialPincode={formInputs.pincode}
           initialproperty_type={formInputs.property_type}
-          initialelectricity_bill={formInputs.electricity_bill}
+          initialmonthly_bill={formInputs.monthly_bill}
           isLoading={isLoading}
         />
       )}
