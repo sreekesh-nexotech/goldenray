@@ -1,5 +1,5 @@
 // src/components/AdvanceCalculator/AdvanceDeviceManager.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import { Electronic_device, DeviceType } from "@/types/types";
@@ -24,6 +24,14 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
   const [apiDeviceTypes, setApiDeviceTypes] = useState<DeviceType[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // States for custom searchable dropdown
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Refs for click outside detection and dropdown positioning
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Fetch device types
   const fetchDevices = async () => {
@@ -51,25 +59,49 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     fetchDevices();
   }, []);
 
-  // Filter device types for UI
-  const usableDeviceTypes = apiDeviceTypes ? apiDeviceTypes.filter(device => device.show_in_ui) : [];
+  // Effect to close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        inputWrapperRef.current &&
+        !inputWrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
 
-  // Combine placeholder with API-fetched options
-  const deviceOptions = [
-    { value: "", label: "Select a device", disabled: true },
-    ...usableDeviceTypes.map((device: DeviceType) => ({
-      value: device.name,
-      label: device.name,
-      disabled: false,
-    })),
-  ];
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Filter device types for UI
+  const usableDeviceTypes = useMemo(() => {
+    return apiDeviceTypes ? apiDeviceTypes.filter((device) => device.show_in_ui) : [];
+  }, [apiDeviceTypes]);
+
+  // Filtered devices based on search term for the custom dropdown
+  const filteredDevices = useMemo(() => {
+    if (!searchTerm) {
+      return usableDeviceTypes;
+    }
+    return usableDeviceTypes.filter((device) =>
+      device.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [usableDeviceTypes, searchTerm]);
 
   // Validate input fields
   const validateInputs = () => {
     const newErrors: { [key: string]: string } = {};
-    if (!newDevice.device_type || newDevice.device_type === "") {
-      newErrors.device_type = "Device type is required";
+
+    // Validate device type: must be selected from the list and not just typed
+    if (!newDevice.device_type || newDevice.device_type === "" || !usableDeviceTypes.some(d => d.name === newDevice.device_type)) {
+      newErrors.device_type = "Please select a valid device type";
     }
+
     const units = parseFloat(newDevice.no_of_units);
     if (!newDevice.no_of_units || isNaN(units) || units <= 0) {
       newErrors.no_of_units = "Number of units must be a positive number";
@@ -86,11 +118,28 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle input changes
-  const handleDeviceChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  // Handle input changes (for units, wattage, daily usage)
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewDevice((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear specific error on change
+  };
+
+  // Handle search input change (for device type)
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    setNewDevice((prev) => ({ ...prev, device_type: value })); // Keep newDevice.device_type in sync for validation
+    setIsDropdownOpen(true); // Open dropdown when typing
+    setErrors((prev) => ({ ...prev, device_type: "" })); // Clear device_type error on typing
+  };
+
+  // Handle selection from custom dropdown
+  const handleSelectDevice = (deviceName: string) => {
+    setNewDevice((prev) => ({ ...prev, device_type: deviceName }));
+    setSearchTerm(deviceName); // Set search term to selected name
+    setIsDropdownOpen(false); // Close dropdown
+    setErrors((prev) => ({ ...prev, device_type: "" })); // Clear device_type error on selection
   };
 
   // Add a new device
@@ -105,6 +154,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
       };
       setDevices([...devices, device]);
       setNewDevice({ device_type: "", no_of_units: "", wattage: "", daily_usage: "" });
+      setSearchTerm(""); // Clear search term after adding
       setErrors({});
     }
   };
@@ -154,25 +204,36 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-        <div className="relative">
-          {deviceOptions.length <= 1 ? (
-            <p className="text-gray-500 p-3 border border-gray-300 rounded-lg w-full">
-              No devices available
-            </p>
-          ) : (
-            <select
-              name="device_type"
-              value={newDevice.device_type}
-              onChange={handleDeviceChange}
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
-              aria-label="Select device type"
+        <div className="relative" ref={inputWrapperRef}>
+          {/* Custom Searchable Dropdown Input */}
+          <input
+            type="text"
+            placeholder="Search & Select Device Type"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onFocus={() => setIsDropdownOpen(true)}
+            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
+            aria-label="Search and select device type"
+          />
+          {isDropdownOpen && (
+            <div
+              ref={dropdownRef}
+              className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-[8rem] overflow-y-auto shadow-lg"
             >
-              {deviceOptions.map((option) => (
-                <option key={option.value} value={option.value} disabled={option.disabled}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+              {filteredDevices.length > 0 ? (
+                filteredDevices.map((device) => (
+                  <div
+                    key={device.name}
+                    onMouseDown={() => handleSelectDevice(device.name)}
+                    className="p-2 cursor-pointer hover:bg-gray-100"
+                  >
+                    {device.name}
+                  </div>
+                ))
+              ) : (
+                <div className="p-3 text-gray-500">No devices found. Try searching.</div>
+              )}
+            </div>
           )}
           {errors.device_type && (
             <p className="text-red-500 text-sm mt-1">{errors.device_type}</p>
@@ -184,7 +245,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
             name="no_of_units"
             placeholder="No. of Units"
             value={newDevice.no_of_units}
-            onChange={handleDeviceChange}
+            onChange={handleInputChange} // Changed to handleInputChange
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             min="1"
             step="1"
@@ -198,9 +259,9 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           <input
             type="number"
             name="wattage"
-            placeholder="Wattage"
+            placeholder="Wattage (Watts)" 
             value={newDevice.wattage}
-            onChange={handleDeviceChange}
+            onChange={handleInputChange} // Changed to handleInputChange
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             min="1"
             step="1"
@@ -214,9 +275,9 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           <input
             type="number"
             name="daily_usage"
-            placeholder="Daily Usage (hrs)"
+            placeholder="Daily Usage (Hours)" 
             value={newDevice.daily_usage}
-            onChange={handleDeviceChange}
+            onChange={handleInputChange} // Changed to handleInputChange
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             min="0"
             step="0.1"
@@ -234,6 +295,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           + Add Device
         </button>
       </div>
+      {/* Removed generic error message as specific errors are handled inline */}
       <div className="mt-4 space-y-3">
         {devices.map((device) => (
           <div

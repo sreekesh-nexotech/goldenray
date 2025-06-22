@@ -1,5 +1,5 @@
 // golden-ray/frontend/src/components/AdvanceCalculator/AdvanceVehicleManager.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react"; // Import useRef
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import { Electric_vehicle, VehicleType } from "@/types/types";
@@ -25,6 +25,14 @@ export default function Electric_vehicleManager({
   const [apiVehicleTypes, setApiVehicleTypes] = useState<VehicleType[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Ref for the input wrapper to position the dropdown
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Ref for the dropdown itself to close when clicking outside
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Fetch vehicle types
   const fetchVehicles = async () => {
@@ -52,16 +60,58 @@ export default function Electric_vehicleManager({
     fetchVehicles();
   }, []);
 
-  // Filter vehicle types for UI
-  const usableVehicleTypes = apiVehicleTypes ? apiVehicleTypes.filter((vehicle) => vehicle.show_in_ui) : [];
+  // Effect to close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        inputWrapperRef.current &&
+        !inputWrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
 
-  // Group vehicles by category
-  const cars = usableVehicleTypes.filter((vehicle) => vehicle.category === "Car");
-  const scooters = usableVehicleTypes.filter((vehicle) => vehicle.category === "Scooter");
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Filter vehicle types for UI
+  const usableVehicleTypes = useMemo(() => {
+    return apiVehicleTypes ? apiVehicleTypes.filter((vehicle) => vehicle.show_in_ui) : [];
+  }, [apiVehicleTypes]);
+
+  // Filtered vehicles based on search term
+  const filteredVehicles = useMemo(() => {
+    if (!searchTerm) {
+      return usableVehicleTypes;
+    }
+    return usableVehicleTypes.filter((vehicle) =>
+      vehicle.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [usableVehicleTypes, searchTerm]);
 
   const handleVehicleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setNewVehicle((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    setNewVehicle((prev) => ({ ...prev, vehicleType: value })); // Update newVehicle.vehicleType as well for validation
+    setIsDropdownOpen(true);
+    setErrorMessage(null); // Clear error message when typing
+  };
+
+  const handleSelectVehicle = (vehicleName: string) => {
+    setNewVehicle((prev) => ({ ...prev, vehicleType: vehicleName }));
+    setSearchTerm(vehicleName);
+    setIsDropdownOpen(false);
+    setErrorMessage(null); // Clear error message on successful selection
   };
 
   const addElectric_vehicle = () => {
@@ -74,6 +124,8 @@ export default function Electric_vehicleManager({
     if (
       vehicleTypeToValidate &&
       vehicleTypeToValidate !== "" &&
+      // Check if the selected vehicle type actually exists in usableVehicleTypes
+      usableVehicleTypes.some(v => v.name === vehicleTypeToValidate) &&
       !isNaN(no_of_unitsNum) &&
       no_of_unitsNum > 0 &&
       !isNaN(wattageNum) &&
@@ -90,11 +142,18 @@ export default function Electric_vehicleManager({
       };
       setelectric_vehicles((prev) => [...prev, vehicle]);
       setNewVehicle({ vehicleType: "", no_of_units: "", wattage: "", daily_usage: "" });
+      setSearchTerm("");
       setErrorMessage(null);
     } else {
       let message = "Please enter valid positive numbers for units, wattage, and daily usage.";
-      if (!vehicleTypeToValidate) {
-        message = "Please select a vehicle type.";
+      if (!vehicleTypeToValidate || !usableVehicleTypes.some(v => v.name === vehicleTypeToValidate)) {
+        message = "Please select a valid vehicle type from the list.";
+      } else if (isNaN(no_of_unitsNum) || no_of_unitsNum <= 0) {
+        message = "Please enter a valid positive number for units.";
+      } else if (isNaN(wattageNum) || wattageNum <= 0) {
+        message = "Please enter a valid positive number for wattage.";
+      } else if (isNaN(daily_usageNum) || daily_usageNum < 0) {
+        message = "Please enter a valid non-negative number for daily usage.";
       }
       setErrorMessage(message);
     }
@@ -153,41 +212,56 @@ export default function Electric_vehicleManager({
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-        <div className="relative">
-          {cars.length === 0 && scooters.length === 0 ? (
-            <p className="text-gray-500 p-3 border border-gray-300 rounded-lg w-full">
-              No vehicles available
-            </p>
-          ) : (
-            <select
-              name="vehicleType"
-              value={newVehicle.vehicleType}
-              onChange={handleVehicleChange}
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
-              aria-label="Select vehicle type"
+        <div className="relative" ref={inputWrapperRef}>
+          <input
+            type="text"
+            placeholder="Search & Select Vehicle Type"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onFocus={() => setIsDropdownOpen(true)}
+            // No onBlur needed here as handled by global click listener
+            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
+            aria-label="Search and select vehicle type"
+          />
+          {isDropdownOpen && (
+            <div
+              ref={dropdownRef}
+              // Changed max-h to display 2-4 options and then scroll
+              className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-[8rem] overflow-y-auto shadow-lg"
             >
-              <option value="" disabled>
-                Select A Vehicle Type
-              </option>
-              {cars.length > 0 && (
-                <optgroup label="Cars">
-                  {cars.map((vehicle) => (
-                    <option key={vehicle.name} value={vehicle.name}>
+              {filteredVehicles.length > 0 ? (
+                <>
+                  {/* Conditionally render 'Cars' category if there are cars in filteredVehicles */}
+                  {usableVehicleTypes.some(v => v.category === "Car") && filteredVehicles.filter(v => v.category === "Car").length > 0 && (
+                    <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200">Cars</div>
+                  )}
+                  {filteredVehicles.filter(v => v.category === "Car").map((vehicle) => (
+                    <div
+                      key={vehicle.name}
+                      onMouseDown={() => handleSelectVehicle(vehicle.name)}
+                      className="p-2 cursor-pointer hover:bg-gray-100"
+                    >
                       {vehicle.name}
-                    </option>
+                    </div>
                   ))}
-                </optgroup>
-              )}
-              {scooters.length > 0 && (
-                <optgroup label="Scooters">
-                  {scooters.map((vehicle) => (
-                    <option key={vehicle.name} value={vehicle.name}>
+                  {/* Conditionally render 'Scooters' category if there are scooters in filteredVehicles */}
+                  {usableVehicleTypes.some(v => v.category === "Scooter") && filteredVehicles.filter(v => v.category === "Scooter").length > 0 && (
+                    <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200 mt-1 pt-1">Scooters</div>
+                  )}
+                  {filteredVehicles.filter(v => v.category === "Scooter").map((vehicle) => (
+                    <div
+                      key={vehicle.name}
+                      onMouseDown={() => handleSelectVehicle(vehicle.name)}
+                      className="p-2 cursor-pointer hover:bg-gray-100"
+                    >
                       {vehicle.name}
-                    </option>
+                    </div>
                   ))}
-                </optgroup>
+                </>
+              ) : (
+                <div className="p-3 text-gray-500">No vehicles found. Try searching.</div>
               )}
-            </select>
+            </div>
           )}
           {errorMessage?.includes("vehicle type") && (
             <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
@@ -213,7 +287,7 @@ export default function Electric_vehicleManager({
           <input
             type="number"
             name="wattage"
-            placeholder="Wattage"
+            placeholder="Wattage (Watts)"
             value={newVehicle.wattage}
             onChange={handleVehicleChange}
             className="p-3 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
@@ -229,7 +303,7 @@ export default function Electric_vehicleManager({
           <input
             type="number"
             name="daily_usage"
-            placeholder="Daily Usage"
+            placeholder="Daily Usage (Hours)"
             value={newVehicle.daily_usage}
             onChange={handleVehicleChange}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
