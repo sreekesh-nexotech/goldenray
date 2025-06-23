@@ -2,7 +2,7 @@
 
 import { useState, useMemo} from "react";
 import { getSolarAdvancedData } from "@/services/CalculatorService";
-import { AdvancedCalculatorData, BasicInfoFormData, UsageDetailsFormData, ChartGraphData } from "@/types/calculator";
+import { AdvancedCalculatorData, BasicInfoFormData, UsageDetailsFormData, Chartgraph_data, SolarAdvancedPayload } from "@/types/types";
 import BasicInformationStep from "./AdvanceForm1";
 import UsageDetailsStep from "./AdvanceForm2";
 import NewHomeDetailsStep from "./AdvanceForm3";
@@ -20,49 +20,49 @@ export default function AdvancedCalculatorMain() {
 
   
   const [basicInfo, setBasicInfo] = useState<BasicInfoFormData>({
-    homeType: null,
-    gridType: null,
-    averageBill: "",
-    billFrequency: null,
-    homeSize: "",
-    estimatedBaseLoad: "",
-    backupHours: 9,
-    electronicDevices: [],
+    home_type: null,
+    grid_type: null,
+    average_bill: "",
+    bill_frequency: null,
+    home_size: "",
+    estimated_base_load: "",
+    backup_hours: 9,
+    electronic_devices: [],
   });
 
   const [usageDetails, setUsageDetails] = useState<UsageDetailsFormData>({
-    electronicDevices: [],
-    electricVehicles: [],
+    electronic_devices: [],
+    electric_vehicles: [],
   });
 
   const totalFormSteps = useMemo(() => {
-    return basicInfo.gridType === "Hybrid" ? 3 : 2;
-  }, [basicInfo.gridType]);
+    return basicInfo.grid_type === "Hybrid" ? 3 : 2;
+  }, [basicInfo.grid_type]);
 
   // --- Step Navigation and Validation ---
 
   const handleBasicInfoSubmit = () => {
     setError(null);
-    if (!basicInfo.homeType || !basicInfo.gridType) {
+    if (!basicInfo.home_type || !basicInfo.grid_type) {
       setError("Please select a home type and grid type.");
       return;
     }
-    if (basicInfo.homeType === "Existing Home") {
-      if (!basicInfo.averageBill || !basicInfo.billFrequency) {
+    if (basicInfo.home_type === "Existing Home") {
+      if (!basicInfo.average_bill || !basicInfo.bill_frequency) {
         setError("Please provide your average electricity bill and bill frequency.");
         return;
       }
-      if (parseFloat(basicInfo.averageBill) <= 0) {
+      if (parseFloat(basicInfo.average_bill) <= 0) {
         setError("Please enter a valid positive number for your average bill.");
         return;
       }
     }
-    if (basicInfo.homeType === "New Home") {
-      if (!basicInfo.homeSize || parseFloat(basicInfo.homeSize) <= 0) {
+    if (basicInfo.home_type === "New Home") {
+      if (!basicInfo.home_size || parseFloat(basicInfo.home_size) <= 0) {
         setError("Please enter a valid Home Size (e.g., a positive number in sq. ft.).");
         return;
       }
-      if (basicInfo.estimatedBaseLoad === "" || parseFloat(basicInfo.estimatedBaseLoad) < 0) {
+      if (basicInfo.estimated_base_load === "" || parseFloat(basicInfo.estimated_base_load) < 0) {
         setError("Please enter a valid Estimated Base Load (e.g., a non-negative number in kWh).");
         return;
       }
@@ -71,12 +71,12 @@ export default function AdvancedCalculatorMain() {
   };
 
   const handleUsageDetailsSubmit = () => {
-    if (usageDetails.electronicDevices.length === 0) {
+    if (usageDetails.electronic_devices.length === 0) {
       setError("Please add at least one electronic device in the 'Your Usage' section.");
       return;
     }
 
-    if (basicInfo.gridType === "Hybrid") {
+    if (basicInfo.grid_type === "Hybrid") {
       setCurrentStep(3);
     } else {
       handleCalculate();
@@ -84,27 +84,27 @@ export default function AdvancedCalculatorMain() {
   };
 
   const handleCalculate = async () => {
-    if (basicInfo.gridType === "Hybrid" && basicInfo.electronicDevices.length === 0) {
+    if (basicInfo.grid_type === "Hybrid" && basicInfo.electronic_devices.length === 0) {
       setError("Please add at least one electronic device in the 'Home Details' section.");
       return;
     }
 
-    const finalPayload = {
+    const finalPayload: SolarAdvancedPayload = {
       Specifications: {
-        homeType: basicInfo.homeType,
-        gridType: basicInfo.gridType,
-        averageBill: basicInfo.averageBill,
-        billFrequency: basicInfo.billFrequency,
-        homeSize: basicInfo.homeSize,
-        estimatedBaseLoad: basicInfo.estimatedBaseLoad,
+        home_type: basicInfo.home_type,
+        grid_type: basicInfo.grid_type,
+        average_bill: basicInfo.average_bill,
+        bill_frequency: basicInfo.bill_frequency,
+        home_size: basicInfo.home_size,
+        estimated_base_load: basicInfo.estimated_base_load,
       },
       usageDetails: {
-        usageElectronicDevices: usageDetails.electronicDevices,
-        electricVehicles: usageDetails.electricVehicles,
+        usage_electronic_devices: usageDetails.electronic_devices,
+        electric_vehicles: usageDetails.electric_vehicles,
       },
       preferenceDetails: {
-        backupHours: basicInfo.backupHours,
-        preferenceElectronicDevices: basicInfo.electronicDevices,
+        backup_hours: basicInfo.backup_hours,
+        preference_electronic_devices: basicInfo.electronic_devices,
       },
     };
 
@@ -113,23 +113,23 @@ export default function AdvancedCalculatorMain() {
     setLoading(true);
 
     try {
-      const apiData = await getSolarAdvancedData(finalPayload);
-      if (apiData.graphData.datasets.length !== 2) {
-        throw new Error("Expected exactly two datasets in graphData");
+      const apiData = await getSolarAdvancedData(/*finalPayload*/);
+      if (apiData.graph_data.datasets.length !== 2) {
+        throw new Error("Expected exactly two datasets in graph_data");
       }
-      const transformedGraphData: ChartGraphData = {
-        labels: apiData.graphData.labels,
+      const transformedgraph_data: Chartgraph_data = {
+        labels: apiData.graph_data.labels,
         datasets: [
           {
             label: "Solar Bill",
-            data: apiData.graphData.datasets[0].data,
+            data: apiData.graph_data.datasets[0].data,
             borderColor: "#FBC207",
             backgroundColor: "#FBC207",
             fill: false,
           },
           {
             label: "EB Bill",
-            data: apiData.graphData.datasets[1].data,
+            data: apiData.graph_data.datasets[1].data,
             borderColor: "#5958CB",
             backgroundColor: "#5958CB",
             fill: false,
@@ -138,7 +138,7 @@ export default function AdvancedCalculatorMain() {
       };
       const transformedData: AdvancedCalculatorData = {
         ...apiData,
-        graphData: transformedGraphData,
+        graph_data: transformedgraph_data,
       };
       setResultData(transformedData);
       setCurrentStep(totalFormSteps + 1);
@@ -149,24 +149,25 @@ export default function AdvancedCalculatorMain() {
       );
     } finally {
       setLoading(false);
+      setError(null);
     }
   };
 
   const handleStartOver = () => {
     setCurrentStep(1);
     setBasicInfo({
-      homeType: null,
-      gridType: null,
-      averageBill: "",
-      billFrequency: null,
-      homeSize: "",
-      estimatedBaseLoad: "",
-      backupHours: 9,
-      electronicDevices: [],
+      home_type: null,
+      grid_type: null,
+      average_bill: "",
+      bill_frequency: null,
+      home_size: "",
+      estimated_base_load: "",
+      backup_hours: 9,
+      electronic_devices: [],
     });
     setUsageDetails({
-      electronicDevices: [],
-      electricVehicles: [],
+      electronic_devices: [],
+      electric_vehicles: [],
     });
     setResultData(null);
     setError(null);
@@ -205,7 +206,7 @@ export default function AdvancedCalculatorMain() {
                 currentStep={currentStep}
                 totalFormSteps={totalFormSteps}
               />
-              {basicInfo.gridType === "Hybrid" && (
+              {basicInfo.grid_type === "Hybrid" && (
                 <StepIndicator
                   actualStepNumber={3}
                   title="Your Preference"
@@ -243,11 +244,11 @@ export default function AdvancedCalculatorMain() {
               setFormData={setUsageDetails}
               onCalculate={handleUsageDetailsSubmit}
               loading={loading}
-              gridType={basicInfo.gridType}
+              grid_type={basicInfo.grid_type}
             />
           )}
 
-          {currentStep === 3 && basicInfo.gridType === "Hybrid" && (
+          {currentStep === 3 && basicInfo.grid_type === "Hybrid" && (
             <NewHomeDetailsStep
               formData={basicInfo}
               setFormData={setBasicInfo}
@@ -260,8 +261,8 @@ export default function AdvancedCalculatorMain() {
               data={resultData}
               onStartOver={handleStartOver}
               onGetDetailedQuote={() => setIsPopupOpen(true)}
-              gridType={basicInfo.gridType}
-              backupHours={basicInfo.backupHours}
+              grid_type={basicInfo.grid_type}
+              backup_hours={basicInfo.backup_hours}
             />
           )}
         </div>

@@ -122,7 +122,7 @@ export default function Header() {
             </Link>
           </li>
           <li>
-            <Link href="/" className="border border-[#074A4D] px-4 py-1 flex justify-center rounded-xl hover:bg-transparent text-[#074A4D] font-sans text-base font-semibold">
+            <Link href="#footer" className=" border border-[#074A4D] px-4 py-1 flex justify-center rounded-xl hover:bg-transparent text-[#074A4D] font-sans text-base font-semibold">
               Contact us
             </Link>
           </li>
@@ -250,7 +250,7 @@ export default function Header() {
           </Link>
         </li>
         <li>
-          <Link href="/" className="border border-[#074A4D] px-4 py-1 rounded-xl hover:bg-transparent text-[#074A4D] font-sans text-base font-[600]">
+          <Link href="#footer" className="border border-[#074A4D] px-4 py-1 rounded-xl hover:bg-transparent text-[#074A4D] font-sans text-base font-[600]">
               Contact us
           </Link>
         </li>

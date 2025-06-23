@@ -1,7 +1,7 @@
 /* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceForm1.tsx */
 import React from "react";
 import Button from "../ui/Button";
-import { BasicInfoFormData } from "@/types/calculator";
+import { BasicInfoFormData } from "@/types/types";
 import Image from "next/image";
 import homeIcon from "../../../public/homeIcon.svg";
 import onGridIcon from "../../../public/OnGrid.svg";
@@ -47,11 +47,11 @@ export default function BasicInformationStep({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-center">
           <div
             className={` border p-6 flex flex-col gap-2 items-center rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
-              formData.homeType === "Existing Home"
+              formData.home_type === "Existing Home"
                 ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                 : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
             }`}
-            onClick={() => handleCardSelect("homeType", "Existing Home")}
+            onClick={() => handleCardSelect("home_type", "Existing Home")}
           >
             <Image src={homeIcon} alt="Home Icon" />
             <h3 className="font-bold text-[#123532]">Existing Home</h3>
@@ -61,11 +61,11 @@ export default function BasicInformationStep({
           </div>
           <div
             className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
-              formData.homeType === "New Home"
+              formData.home_type === "New Home"
                 ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                 : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
             }`}
-            onClick={() => handleCardSelect("homeType", "New Home")}
+            onClick={() => handleCardSelect("home_type", "New Home")}
           >
             <Image src={homeIcon} alt="Home Icon" />
             <h3 className="font-bold text-[#123532]">New Home</h3>
@@ -84,11 +84,11 @@ export default function BasicInformationStep({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-center">
           <div
             className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
-              formData.gridType === "On Grid"
+              formData.grid_type === "On Grid"
                 ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                 : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
             }`}
-            onClick={() => handleCardSelect("gridType", "On Grid")}
+            onClick={() => handleCardSelect("grid_type", "On Grid")}
           >
             <Image src={onGridIcon} alt="OnGrid Icon" />
             <h3 className=" text-[#123532] mb-2 font-bold">On Grid</h3>
@@ -98,11 +98,11 @@ export default function BasicInformationStep({
           </div>
           <div
             className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
-              formData.gridType === "Hybrid"
+              formData.grid_type === "Hybrid"
                 ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                 : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
             }`}
-            onClick={() => handleCardSelect("gridType", "Hybrid")}
+            onClick={() => handleCardSelect("grid_type", "Hybrid")}
           >
             <Image src={hybridIcon} alt="Hybrid Icon" />
             <h3 className="font-bold text-[#123532] mb-2">Hybrid</h3>
@@ -114,7 +114,7 @@ export default function BasicInformationStep({
       </div>
 
       {/* --- Conditional Fields for EXISTING HOME --- */}
-      {formData.homeType === "Existing Home" && (
+      {formData.home_type === "Existing Home" && (
         <>
           {/* Average Electricity Bill Input */}
           <div className="space-y-4">
@@ -124,9 +124,9 @@ export default function BasicInformationStep({
             <div className="relative">
               <input
                 type="number"
-                name="averageBill"
+                name="average_bill"
                 placeholder="Enter Amount"
-                value={formData.averageBill}
+                value={formData.average_bill}
                 onChange={handleChange}
                 className="w-full p-4 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
               />
@@ -143,11 +143,11 @@ export default function BasicInformationStep({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
               <div
                 className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
-                  formData.billFrequency === "Monthly"
+                  formData.bill_frequency === "Monthly"
                     ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                     : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
                 }`}
-                onClick={() => handleCardSelect("billFrequency", "Monthly")}
+                onClick={() => handleCardSelect("bill_frequency", "Monthly")}
               >
                 <Image src={monthlyIcon} alt="Monthly Icon" />
                 <h3 className="font-bold text-[#123532] mb-2">Monthly</h3>
@@ -157,11 +157,11 @@ export default function BasicInformationStep({
               </div>
               <div
                 className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
-                  formData.billFrequency === "Bi-monthly"
+                  formData.bill_frequency === "Bi-monthly"
                     ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
                     : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
                 }`}
-                onClick={() => handleCardSelect("billFrequency", "Bi-monthly")}
+                onClick={() => handleCardSelect("bill_frequency", "Bi-monthly")}
               >
                 <Image src={bimonthlyIcon} alt="Bi Monthly Icon" />
                 <h3 className="font-bold text-[#123532] mb-2">Bi-monthly</h3>
@@ -175,19 +175,19 @@ export default function BasicInformationStep({
       )}
 
       {/* --- Conditional Fields for NEW HOME --- */}
-      {formData.homeType === "New Home" && (
+      {formData.home_type === "New Home" && (
         <>
           {/* Input for Home Size */}
           <div className="space-y-4">
-            <label htmlFor="homeSize" className="text-xl md:text-2xl font-semibold text-[#123532] block">
+            <label htmlFor="home_size" className="text-xl md:text-2xl font-semibold text-[#123532] block">
               What size is your new home?
             </label>
             <input
               type="number"
-              id="homeSize"
-              name="homeSize"
+              id="home_size"
+              name="home_size"
               placeholder="Enter size in sq. ft."
-              value={formData.homeSize || ""}
+              value={formData.home_size || ""}
               onChange={handleChange}
               className="w-full p-4 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
             />
@@ -195,16 +195,16 @@ export default function BasicInformationStep({
 
           {/* Input for Estimated Base Load */}
           <div className="space-y-4">
-            <label htmlFor="estimatedBaseLoad" className="text-xl md:text-2xl font-semibold text-[#123532] block">
+            <label htmlFor="estimated_base_load" className="text-xl md:text-2xl font-semibold text-[#123532] block">
               Want to add an estimated base load?
             </label>
             <div className="relative">
               <input
                 type="number"
-                id="estimatedBaseLoad"
-                name="estimatedBaseLoad"
+                id="estimated_base_load"
+                name="estimated_base_load"
                 placeholder="Enter Estimated Base Load (kWh)"
-                value={formData.estimatedBaseLoad || ""}
+                value={formData.estimated_base_load || ""}
                 onChange={handleChange}
                 className="w-full p-4 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
               />

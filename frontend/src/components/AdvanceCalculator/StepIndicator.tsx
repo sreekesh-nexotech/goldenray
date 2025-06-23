@@ -13,7 +13,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
   currentStep,
   totalFormSteps,
 }) => {
-  const isActive = currentStep >= actualStepNumber;
+  const isActive = currentStep >= actualStepNumber; // True if currentStep is at or past this step
   const isCurrentStep = currentStep === actualStepNumber;
   const isCompleted = currentStep > actualStepNumber;
 
@@ -27,8 +27,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
       ? 100 // Fully filled for completed steps
       : 0; // No fill for future steps
 
-  // Determine if title should be shown
-  const showTitle = isCurrentStep || (isCompleted ) || (actualStepNumber === 1 && currentStep === 1);
+  const showTitle = true; // Always show the title
 
   return (
     <div className="flex flex-col items-center md:items-start w-full md:flex-col relative">
@@ -36,7 +35,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
       <div className="flex flex-row items-center w-full max-w-full mb-0 md:mb-4">
         <div
           className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white flex-shrink-0 ${
-            isActive ? "bg-[#235C58]" : "bg-gray-300"
+            isActive ? "bg-[#235C58]" : "bg-gray-300" // Circle color logic remains the same
           }`}
         >
           {actualStepNumber}
@@ -45,7 +44,9 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
         {showTitle && (
           <span
             className={`ml-2 text-sm sm:text-base font-semibold break-words ${
-              isCurrentStep ? "text-[#123532]" : "text-gray-500"
+              isActive
+                ? "text-[#123532]" // Active color (dark green)
+                : "text-gray-500" // Inactive color (gray)
             } md:ml-3 md:text-lg`}
           >
             {title}
@@ -55,7 +56,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
 
       {/* Mobile horizontal progress bar (below step number and title, hidden on md and up) */}
       <div className="w-full mt-2 md:hidden">
-        {(actualStepNumber === 1 || isCurrentStep) && (
+        {(actualStepNumber === 1 || isCurrentStep || isCompleted) && (
           <div className="flex items-center w-full">
             <div className="h-1 flex-1 bg-gray-300 rounded-full overflow-hidden">
               <div
@@ -69,7 +70,11 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
 
       {/* Vertical line for desktop (visible on md and up) */}
       {actualStepNumber < totalFormSteps && (
-        <div className="w-px h-10 bg-gray-300 ml-4 hidden md:block"></div>
+        <div
+          className={`w-px h-10 ml-4 hidden md:block ${
+            isCompleted ? "bg-[#235C58]" : "bg-gray-300" // Line color based on completion
+          }`}
+        ></div>
       )}
     </div>
   );

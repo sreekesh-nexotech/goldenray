@@ -8,7 +8,7 @@ const ReactPlayer = dynamic(() => import("react-player/youtube"), { ssr: false }
 
 const testimonials = [
   {
-    videoId: "Jw7s42Op2ao",
+    videoId: "8LSt8_11wbQ",
     stats: [
       { value: "75%", label: "Reduction in bills" },
       { value: "2 Days", label: "Installation Time" },
@@ -20,8 +20,18 @@ const testimonials = [
   {
     videoId: "8LSt8_11wbQ",
     stats: [
-      { value: "75%", label: "Reduction in bills" },
-      { value: "2 Days", label: "Installation Time" },
+      { value: "85%", label: "Reduction in bills" },
+      { value: "4 Days", label: "Installation Time" },
+    ],
+    quote:
+      '"Switching to solar with Flarize was the best decision for my home. The team made the entire process seamless, from consultation to installation. Not only have I reduced my electricity bills by nearly 75%, but I also feel great knowing I’m contributing to a sustainable future. Their support team is always available, and the maintenance services are top-notch. Highly recommended!"',
+    author: "Rajesh Sharma & Family, Cochin",
+  },
+  {
+    videoId: "8LSt8_11wbQ",
+    stats: [
+      { value: "78%", label: "Reduction in bills" },
+      { value: "6 Days", label: "Installation Time" },
     ],
     quote:
       '"Switching to solar with Flarize was the best decision for my home. The team made the entire process seamless, from consultation to installation. Not only have I reduced my electricity bills by nearly 75%, but I also feel great knowing I’m contributing to a sustainable future. Their support team is always available, and the maintenance services are top-notch. Highly recommended!"',
@@ -37,24 +47,29 @@ export default function HomeTestimonial() {
   const { ref, inView } = useInView({
     threshold: 0.3, // Trigger when 30% of the section is visible
   });
+  const currentIndexRef = useRef(0);
+
 
   useEffect(() => {
-    if (inView && !isPlaying) {
-      intervalRef.current = window.setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-      }, 5000);
-    } else if (intervalRef.current) {
+  if (inView && !isPlaying) {
+    intervalRef.current = window.setInterval(() => {
+      const nextIndex = (currentIndexRef.current + 1) % testimonials.length;
+      currentIndexRef.current = nextIndex;
+      setCurrentIndex(nextIndex);
+    }, 5000);
+  } else if (intervalRef.current) {
+    window.clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }
+
+  return () => {
+    if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-
-    return () => {
-      if (intervalRef.current) {
-        window.clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [inView, isPlaying]);
+  };
+}, [inView, isPlaying]);
+  
 
   const handlePlay = () => {
     setIsPlaying(true);
@@ -89,6 +104,7 @@ export default function HomeTestimonial() {
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
+              style={{ width: `${100 / testimonials.length}%` }}
               className="w-full flex flex-col xl:flex-row items-stretch justify-baseline rounded-xl"
             >
               <div className="w-full xl:w-1/2 h-auto">

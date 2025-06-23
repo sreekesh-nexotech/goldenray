@@ -12,7 +12,7 @@ import {
   TooltipItem,
 } from "chart.js";
 import Button from "../ui/Button";
-import { AdvancedCalculatorData } from "@/types/calculator";
+import { AdvancedCalculatorData } from "@/types/types";
 import { useEffect, useState } from "react";
 import QuotePopup from "@/components/SolarCalculator/QuotePopup"; // Import the new popup component
 
@@ -31,15 +31,15 @@ interface ResultDisplayProps {
   data: AdvancedCalculatorData;
   onStartOver: () => void;
   onGetDetailedQuote: () => void;
-  gridType: string | null;
-  backupHours: number;
+  grid_type: string | null;
+  backup_hours: number;
 }
 
 export default function ResultDisplay({
   data,
   onStartOver,
-  gridType,
-  backupHours,
+  grid_type,
+  backup_hours,
 }: ResultDisplayProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -68,8 +68,8 @@ export default function ResultDisplay({
 
   // Create chartData with tension for curved lines (for the Line chart)
   const chartData = {
-    ...data.graphData,
-    datasets: data.graphData.datasets.map((dataset) => ({
+    ...data.graph_data,
+    datasets: data.graph_data.datasets.map((dataset) => ({
       ...dataset,
       tension: 0.4, // Set tension for smooth curves
     })),
@@ -133,8 +133,8 @@ export default function ResultDisplay({
       {
         label: "Amount Paid",
         data: [
-          data.lifetimeBillComparison.withoutSolarAmount,
-          data.lifetimeBillComparison.withSolarAmountPayable,
+          data.lifetime_bill_comparison.without_solar_amount,
+          data.lifetime_bill_comparison.with_solar_amount_payable,
         ],
         backgroundColor: "#FBE8DA",
         borderColor: "#FBE8DA",
@@ -142,7 +142,7 @@ export default function ResultDisplay({
       },
       {
         label: "Amount Saved",
-        data: [0, data.lifetimeBillComparison.withSolarAmountSaved],
+        data: [0, data.lifetime_bill_comparison.with_solar_amount_saved],
         backgroundColor: "#C3E0BD",
         borderColor: "#C3E0BD",
         borderWidth: 1,
@@ -235,7 +235,7 @@ export default function ResultDisplay({
           <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
             <div>
               <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                {data.specifications.powerRequirement}
+                {data.specifications.power_requirement}
               </h2>
               <p className="text-gray-600 text-sm md:text-base">
                 Power Requirement
@@ -245,7 +245,7 @@ export default function ResultDisplay({
           <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
             <div>
               <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                {data.specifications.areaRequirement}
+                {data.specifications.area_requirement}
               </h2>
               <p className="text-gray-600 text-sm md:text-base">
                 Area Requirement
@@ -255,7 +255,7 @@ export default function ResultDisplay({
           <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
             <div>
               <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                {data.specifications.installationTime}
+                {data.specifications.installation_time}
               </h2>
               <p className="text-gray-600 text-sm md:text-base">
                 Installation Time
@@ -264,12 +264,12 @@ export default function ResultDisplay({
           </div>
         </div>
         {/* Box 2 - only on hybrid: */}
-        {gridType === "Hybrid" && (
+        {grid_type === "Hybrid" && (
           <div className="flex flex-col gap-2">
             <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
               <div>
                 <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                  {data.backupDetails.batteryRequirement}
+                  {data.backupDetails.battery_requirement}
                 </h2>
                 <p className="text-gray-600 text-sm md:text-base">
                   Battery Requirement
@@ -279,7 +279,7 @@ export default function ResultDisplay({
             <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
               <div>
                 <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                  ~{backupHours}hrs
+                  ~{backup_hours}hrs
                 </h2>
                 <p className="text-gray-600 text-sm md:text-base">
                   Battery Duration
@@ -289,7 +289,7 @@ export default function ResultDisplay({
             <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
               <div>
                 <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                  {data.backupDetails.autonomyRate}
+                  {data.backupDetails.autonomy_rate}
                 </h2>
                 <p className="text-gray-600 text-sm md:text-base">
                   Autonomy Rate
@@ -306,7 +306,7 @@ export default function ResultDisplay({
                 Your overall setup cost
               </p>
               <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] mb-4">
-                {data.financialDetails.overallCost}
+                {data.financialDetails.overall_cost}
               </h2>
             </div>
             <div>
@@ -314,7 +314,7 @@ export default function ResultDisplay({
                 Govt. Subsidy
               </p>
               <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] flex items-center">
-                {data.financialDetails.governmentSubsidy}
+                {data.financialDetails.government_subsidy}
               </h2>
             </div>
             <div>
@@ -322,10 +322,10 @@ export default function ResultDisplay({
                 Your Final Cost
               </p>
               <h2 className="text-3xl lg:text-5xl font-semibold text-[#123532] mb-2">
-                {data.financialDetails.finalCost}
+                {data.financialDetails.final_cost}
               </h2>
               <p className="text-[#124944] text-sm md:text-base mt-4 text-center bg-[#E8FEFF] border border-[#BCE8E4] rounded-full py-2 px-1">
-                Starting from <b>{data.financialDetails.startingEMI}/mo</b> EMI
+                Starting from <b>{data.financialDetails.starting_EMI}/mo</b> EMI
               </p>
             </div>
           </div>
@@ -341,10 +341,10 @@ export default function ResultDisplay({
         {/* Box 5: Lifetime Savings & Graph (Line Chart) */}
         <div
           className={`bg-white shadow-lg rounded-xl text-left p-6 flex flex-col col-span-0 
-          ${gridType === "Hybrid" ? "md:col-span-2" : "md:col-span-3"}`}
+          ${grid_type === "Hybrid" ? "md:col-span-2" : "md:col-span-3"}`}
         >
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-            {data.financialDetails.lifetimeSavings}
+            {data.financialDetails.lifetime_savings}
           </h2>
           <p className="text-gray-600 text-sm md:text-base mb-6">
             Lifetime Savings
