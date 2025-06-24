@@ -3,9 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import SolarInstallation
 from ..serializers.solar_installation_serializer import SolarInstallationSerializer
+from ..permissions import ApiMethodPermission, non_authenticated_view
 
 
 class SolarInstallationAPIView(APIView):
+    permission_classes = [ApiMethodPermission]
+
+    @non_authenticated_view
     def get(self, request, pk=None):
         if pk:
             try:

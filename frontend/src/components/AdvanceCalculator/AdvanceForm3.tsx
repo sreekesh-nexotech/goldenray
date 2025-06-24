@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Button from "../ui/Button";
-import { BasicInfoFormData, ElectronicDevice } from "@/types/calculator";
+import { BasicInfoFormData, Electronic_device } from "@/types/types";
 import DeviceManager from "./AdvanceDeviceManager"; 
 
 interface NewHomeDetailsStepProps {
@@ -24,19 +24,19 @@ export default function NewHomeDetailsStep({
   
 
   // Wrapper function to update devices within the basicInfo state
-  const setBackupDevices: React.Dispatch<React.SetStateAction<ElectronicDevice[]>> = (
+  const setBackupDevices: React.Dispatch<React.SetStateAction<Electronic_device[]>> = (
     updater
   ) => {
     setFormData((prev) => ({
       ...prev,
-      electronicDevices: typeof updater === "function" ? updater(prev.electronicDevices) : updater,
+      electronic_devices: typeof updater === "function" ? updater(prev.electronic_devices) : updater,
     }));
   };
-  const backupHours = formData.backupHours;
+  const backup_hours = formData.backup_hours;
 
   return (
     
-    <div className="space-y-8 p-4 md:p-6">
+    <div className="space-y-8 p-0 md:p-6">
 
 
       {/* Backup Power Hours Slider */}
@@ -46,27 +46,27 @@ export default function NewHomeDetailsStep({
         </label>
         <input
           type="range"
-          name="backupHours"
+          name="backup_hours"
           min="3"
           max="24"
           step="1"
-          value={backupHours}
+          value={backup_hours}
           onChange={handleSliderChange}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           style={{
-            background: `linear-gradient(to right, #F7BA41 0%, #F7BA41 ${((backupHours - 3) / 21) * 100}%, #E5E7EB ${((backupHours - 3) / 21) * 100}%, #E5E7EB 100%)`,
+            background: `linear-gradient(to right, #F7BA41 0%, #F7BA41 ${((backup_hours - 3) / 21) * 100}%, #E5E7EB ${((backup_hours - 3) / 21) * 100}%, #E5E7EB 100%)`,
           }}
         />
         <div className="flex justify-between text-sm text-gray-600 mt-2 px-1">
           <span>3h</span>
-          <span className="font-bold text-black">{backupHours} hrs</span>
+          <span className="font-bold text-black">{backup_hours} hrs</span>
           <span>24h</span>
         </div>
       </div>
       
       {/* Electronic Devices Section for Backup */}
       <DeviceManager
-        devices={formData.electronicDevices}
+        devices={formData.electronic_devices}
         setDevices={setBackupDevices}
         title="What devices need backup power?"
       />

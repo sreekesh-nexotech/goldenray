@@ -3,9 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import DeviceType
 from ..serializers.device_type_serializer import DeviceTypeSerializer
+from ..permissions import ApiMethodPermission, non_authenticated_view
 
 
 class DeviceTypeAPIView(APIView):
+    permission_classes = [ApiMethodPermission]
+
+    @non_authenticated_view
     def get(self, request, pk=None):
         if pk:
             try:

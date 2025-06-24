@@ -3,9 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import KSEBTariff
 from ..serializers.kseb_tariff_serializer import KSEBTariffSerializer
+from ..permissions import ApiMethodPermission, non_authenticated_view
 
 
 class KSEBTariffAPIView(APIView):
+    permission_classes = [ApiMethodPermission]
+
+    @non_authenticated_view
     def get(self, request, pk=None):
         if pk:
             try:

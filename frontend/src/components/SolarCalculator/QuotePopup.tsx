@@ -12,6 +12,7 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [formSubmitted, setFormSubmitted] = useState(false); // New state for submission status
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -34,73 +35,96 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
     e.preventDefault();
     if (validateForm()) {
       console.log("Quote submitted:", { name, whatsappNumber, email });
-      // Add your submission logic here (e.g., API call)
-      onClose(); // Close the popup after submission
+      // In a real application, you'd send this data to your backend here.
+      // For demonstration, we'll just set the formSubmitted state to true.
+      setFormSubmitted(true);
+      
+      // Close popup after 3 seconds,
+      setTimeout(() => {
+       onClose();
+      }, 3000); 
     }
   };
 
   return (
     <div className="fixed inset-0 backdrop-blur-lg bg-opacity-50 flex items-center justify-center z-50">
-        
-        <div className="bg-white px-10 pb-10 rounded-2xl shadow-lg w-full max-w-md">
-            <div className="flex items-end justify-end">
-                <button
-                    onClick={onClose}
-                    className="mt-4 text-gray-500 hover:text-gray-700"
-                    >
-                    Close
-                </button>
-            </div>
-            <form onSubmit={handleSubmit} className="space-y-4 pt-8">
+      <div className="bg-white px-10 pb-10 rounded-2xl shadow-lg w-full max-w-md relative">
+        {/* Close button always visible */}
+        <div className="flex items-end justify-end">
+          <button
+            onClick={onClose}
+            className="mt-4 text-gray-500 hover:text-gray-700"
+            aria-label="Close quote request form"
+          >
+            Close
+          </button>
+        </div>
+
+        {formSubmitted ? (
+          // Display thank you message if formSubmitted is true
+          <div className="text-center py-10">
+            <h2 className="text-2xl font-semibold text-[#123532] mb-4">
+              Thank You!
+            </h2>
+            <p className="text-gray-700">
+              Your request for a detailed quote has been received.
+            </p>
+            <p className="text-gray-700 mt-2">
+              We&apos;ll get back to you shortly on your WhatsApp number or email.
+            </p>
+          </div>
+        ) : (
+          // Display the form if formSubmitted is false
+          <form  className="space-y-4 pt-8">
             <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Name
-                </label>
-                <input
+              </label>
+              <input
                 id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your first name"
                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                />
-                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+              />
+              {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
             </div>
 
             <div>
-                <label htmlFor="whatsappNumber" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="whatsappNumber" className="block text-sm font-medium text-gray-700">
                 WhatsApp Number
-                </label>
-                <input
+              </label>
+              <input
                 id="whatsappNumber"
                 type="text"
                 value={whatsappNumber}
                 onChange={(e) => setWhatsappNumber(e.target.value)}
                 placeholder="e.g., 9145785412"
                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                />
-                {errors.whatsappNumber && <p className="mt-1 text-sm text-red-600">{errors.whatsappNumber}</p>}
+              />
+              {errors.whatsappNumber && <p className="mt-1 text-sm text-red-600">{errors.whatsappNumber}</p>}
             </div>
 
             <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email
-                </label>
-                <input
+              </label>
+              <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="e.g., user@test.com"
                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                />
-                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+              />
+              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
             </div>
 
             <Button onClick={handleSubmit} className="w-full">Get Detailed Quote</Button>
-            </form>
-            
-        </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 }

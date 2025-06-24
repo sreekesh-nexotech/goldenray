@@ -5,3 +5,4 @@ from .evcar import EVCar
 from .evscooter import EVScooter
 from .solar_installation import SolarInstallation
 from .pincode import Pincode
+from .sent_quote import SentQuote

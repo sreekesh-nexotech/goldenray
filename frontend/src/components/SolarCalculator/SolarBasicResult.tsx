@@ -3,32 +3,32 @@ import { useState, ChangeEvent, useEffect } from "react";
 import PageIllustration from "@/components/ui/page-illustration";
 import Button from "../ui/Button";
 import BasicResult from "./basic-result";
-import { BasicCalculatorData } from "@/types/calculator";
+import { BasicCalculatorData } from "@/types/types";
 import QuotePopup from "./QuotePopup";
 
 interface SolarBasicResultProps {
   initialPincode: string;
-  initialPropertyType: string;
-  initialElectricityBill: string;
+  initialproperty_type: string;
+  initialmonthly_bill: number | "";
   calculatedData: BasicCalculatorData;
-  onResubmit: (pincode: string, propertyType: string, electricityBill: string) => void;
+  onResubmit: (pincode: string, property_type: string, monthly_bill: number) => void;
   onGoBack: () => void;
 }
 
 export default function SolarBasicResult({
   initialPincode,
-  initialPropertyType,
-  initialElectricityBill,
+  initialproperty_type,
+  initialmonthly_bill,
   calculatedData,
   onResubmit,
   onGoBack,
 }: SolarBasicResultProps) {
   const [pincode, setPincode] = useState(initialPincode);
-  const [propertyType, setPropertyType] = useState(initialPropertyType || "residential");
-  const [electricityBill, setElectricityBill] = useState(initialElectricityBill);
+  const [property_type, setproperty_type] = useState(initialproperty_type || "residential");
+  const [monthly_bill, setmonthly_bill] = useState<number | "">(initialmonthly_bill);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup
   
-  //prevent scrolling the body when popup is open
+  // Prevent scrolling the body when popup is open
   useEffect(() => {
     if (isPopupOpen) {
       document.body.style.overflow = "hidden";
@@ -51,15 +51,24 @@ export default function SolarBasicResult({
     };
   }, [isPopupOpen]);
 
-
-  const handlePropertyTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     console.log("Property type changed to:", e.target.value);
-    setPropertyType(e.target.value);
+    setproperty_type(e.target.value);
+  };
+
+  const handlemonthly_billChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setmonthly_bill(value === "" ? "" : parseFloat(value)); // Allow empty string or parse to number
   };
 
   const handleResubmit = () => {
-    console.log("Resubmitting:", { pincode, propertyType, electricityBill });
-    onResubmit(pincode, propertyType, electricityBill);
+    const billValue = Number(monthly_bill);
+    if (isNaN(billValue) || billValue <= 0) {
+      alert("Please enter a valid monthly bill greater than 0.");
+      return;
+    }
+    console.log("Resubmitting:", { pincode, property_type, monthly_bill: billValue });
+    onResubmit(pincode, property_type, billValue);
   };
 
   return (
@@ -91,10 +100,10 @@ export default function SolarBasicResult({
             </label>
             <select
               id="property-type-result"
-              value={propertyType}
-              onChange={handlePropertyTypeChange}
+              value={property_type}
+              onChange={handleproperty_typeChange}
               className={`w-full px-4 py-2  rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] shadow-md bg-white ${
-                propertyType === "" ? "text-gray-400" : "text-black"
+                property_type === "" ? "text-gray-400" : "text-black"
               }`}
             >
               <option value="residential">Residential</option>
@@ -108,22 +117,24 @@ export default function SolarBasicResult({
               Your Avg Monthly Current Bill
             </label>
             <input
-              type="text"
+              type="number"
               id="electricity-bill-result"
-              value={electricityBill}
-              onChange={(e) => setElectricityBill(e.target.value)}
-              className="bg-white shadow-md  w-full px-4 py-2  rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
+              value={monthly_bill}
+              onChange={handlemonthly_billChange}
+              step="0.01"
+              min="0.01"
+              className="bg-white shadow-md w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
             />
           </div>
           {/* form resubmission button */}
-              <button
+          <button
             onClick={handleResubmit}
             className="btn bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] px-8 py-3 rounded-lg"
           >
             Resubmit Changes
           </button>
           {/* advance calculator link */}
-          <a href="/advancedCalculator" target="new" className="text-[#007E85] hover:underline text-sm px-8 py-3  md:text-base md:ml-4">
+          <a href="/advanced-calculator" target="new" className="text-[#007E85] hover:underline text-sm px-8 py-3  md:text-base md:ml-4">
             Advanced Calculator
           </a>
         </div>

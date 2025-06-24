@@ -3,9 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import EVCar
 from ..serializers.evcar_serializer import EVCarSerializer
+from ..permissions import ApiMethodPermission, non_authenticated_view
 
 
 class EVCarAPIView(APIView):
+    permission_classes = [ApiMethodPermission]
+
+    @non_authenticated_view
     def get(self, request, pk=None):
         if pk:
             try:

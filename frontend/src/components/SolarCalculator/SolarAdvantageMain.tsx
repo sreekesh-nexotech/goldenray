@@ -2,36 +2,46 @@
 import { useState } from "react";
 import SolarBasicResult from "./SolarBasicResult";
 import SolarAdvantage from "./solar-advantage";
-import {getSolarAdvantageData} from "@/services/CalculatorService"
-import { BasicCalculatorData } from "@/types/calculator";
+import { BasicCalculatorData, SolarBasicPayload } from "@/types/types";
+import { getSolarAdvantageData } from "@/services/CalculatorService";
 
 export default function SolarAdvantageMain() {
   const [showResults, setShowResults] = useState(false);
   const [calculatorData, setCalculatorData] = useState<BasicCalculatorData | null>(null);
   const [formInputs, setFormInputs] = useState({
     pincode: "",
-    propertyType: "",
-    electricityBill: "",
+    property_type: "",
+    monthly_bill: "" as number | "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-
-
   const handleCalculateSubmit = async (
     pincode: string,
-    propertyType: string,
-    electricityBill: string
+    property_type: string,
+    monthly_bill: number
   ) => {
     setIsLoading(true);
-    setError(null); // Clear previous errors
-    setFormInputs({ pincode, propertyType, electricityBill });
+    setError(null);
+    setFormInputs({ pincode, property_type, monthly_bill });
+
     try {
-      const data = await getSolarAdvantageData({pincode, propertyType, electricityBill});
+      const payload: SolarBasicPayload = {
+        pincode,
+        property_type,
+        monthly_bill,
+      };
+      console.log("Sending payload to API:", payload);
+      const data = await getSolarAdvantageData(payload);
+      if (!data) {
+        throw new Error("No data returned from the API.");
+      }
       setCalculatorData(data);
-      setShowResults(true); // Show the results component
+      setShowResults(true);
     } catch (err) {
-      setError(err as string); // Set the error message
+      const errorMessage = err instanceof Error ? err.message : "Failed to fetch solar advantage data. Please try again.";
+      console.error("API Error:", err);
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -39,25 +49,37 @@ export default function SolarAdvantageMain() {
 
   const handleResubmitChanges = async (
     pincode: string,
-    propertyType: string,
-    electricityBill: string
+    property_type: string,
+    monthly_bill: number
   ) => {
     setIsLoading(true);
-    setError(null); // Clear previous errors
-    setFormInputs({ pincode, propertyType, electricityBill });
+    setError(null);
+    setFormInputs({ pincode, property_type, monthly_bill });
+
     try {
-      const data = await getSolarAdvantageData({pincode, propertyType, electricityBill});
-      setCalculatorData(data); // Update only the data, stay on the results page
+      const payload: SolarBasicPayload = {
+        pincode,
+        property_type,
+        monthly_bill,
+      };
+      console.log("Resubmitting payload to API:", payload);
+      const data = await getSolarAdvantageData(payload);
+      if (!data) {
+        throw new Error("No data returned from the API.");
+      }
+      setCalculatorData(data);
     } catch (err) {
-      setError(err as string); // Set the error message
+      const errorMessage = err instanceof Error ? err.message : "Failed to resubmit solar advantage data. Please try again.";
+      console.error("API Error:", err);
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGoBackToForm = () => {
-    setShowResults(false); // Go back to the input form
-    setError(null); // Clear errors when going back
+    setShowResults(false);
+    setError(null);
   };
 
   return (
@@ -73,7 +95,7 @@ export default function SolarAdvantageMain() {
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-red-100 bg-opacity-90 z-10">
           <div className="text-xl font-semibold text-red-700 p-6 rounded-lg shadow-lg">
-            Error: {error}
+            {error}
             <button
               onClick={() => setError(null)}
               className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
@@ -87,8 +109,8 @@ export default function SolarAdvantageMain() {
       {showResults && calculatorData ? (
         <SolarBasicResult
           initialPincode={formInputs.pincode}
-          initialPropertyType={formInputs.propertyType}
-          initialElectricityBill={formInputs.electricityBill}
+          initialproperty_type={formInputs.property_type}
+          initialmonthly_bill={formInputs.monthly_bill}
           calculatedData={calculatorData}
           onResubmit={handleResubmitChanges}
           onGoBack={handleGoBackToForm}
@@ -97,9 +119,9 @@ export default function SolarAdvantageMain() {
         <SolarAdvantage
           onSubmit={handleCalculateSubmit}
           initialPincode={formInputs.pincode}
-          initialPropertyType={formInputs.propertyType}
-          initialElectricityBill={formInputs.electricityBill}
-          isLoading={isLoading} // Pass loading state to disable form
+          initialproperty_type={formInputs.property_type}
+          initialmonthly_bill={formInputs.monthly_bill}
+          isLoading={isLoading}
         />
       )}
     </section>
