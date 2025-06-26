@@ -1,9 +1,10 @@
+/* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceDeviceManager.tsx */
 // src/components/AdvanceCalculator/AdvanceDeviceManager.tsx
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import { Electronic_device, DeviceType } from "@/types/types";
-import deviceIcon from "../../../public/device.svg";
+import deviceIcon from "../../../public/icons/common-device.svg"; // This will be a fallback if API doesn't provide
 import deleteIcon from "../../../public/deleteIcon.svg";
 import { getDeviceTypes } from "@/services/deviceService";
 
@@ -19,7 +20,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     no_of_units: "",
     wattage: "",
     daily_usage: "",
-    icon_url:"",
+    url: "", // Changed back to 'url'
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [apiDeviceTypes, setApiDeviceTypes] = useState<DeviceType[] | null>(null);
@@ -42,6 +43,8 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     try {
       const fetchedTypes = await getDeviceTypes();
       setApiDeviceTypes(fetchedTypes);
+      console.log("Fetched device types from API:", fetchedTypes);//debugging
+
     } catch (err: unknown) {
       console.error("Failed to fetch device types:", err);
       let errorMessage = "Failed to load device types.";
@@ -112,8 +115,8 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
       newErrors.wattage = "Wattage must be a positive number";
     }
     const daily_usage = parseFloat(newDevice.daily_usage);
-    if (!newDevice.daily_usage || isNaN(daily_usage) || daily_usage < 0 || daily_usage > 24 ) {
-      newErrors.daily_usage = "Enter a valid Usage Hours per day";
+    if (!newDevice.daily_usage || isNaN(daily_usage) || daily_usage < 0 || daily_usage > 24) {
+      newErrors.daily_usage = "Enter a valid Usage Hours per day (0-24)";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -130,7 +133,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    setNewDevice((prev) => ({ ...prev, device_type: value })); // Keep newDevice.device_type in sync for validation
+    setNewDevice((prev) => ({ ...prev, device_type: value, url: '' })); // Clear url when typing new device type
     setIsDropdownOpen(true); // Open dropdown when typing
     setErrors((prev) => ({ ...prev, device_type: "" })); // Clear device_type error on typing
   };
@@ -138,27 +141,39 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
   // Handle selection from custom dropdown
   const handleSelectDevice = (deviceName: string) => {
     const selectedDevice = usableDeviceTypes.find((device) => device.name === deviceName);
-    setNewDevice((prev) => ({ ...prev, device_type: deviceName, icon_url: selectedDevice?.icon_url || '', }));
+    setNewDevice((prev) => ({
+      ...prev,
+      device_type: deviceName,
+      url: selectedDevice?.url || deviceIcon.src, // Use selected device's icon_url or a common fallback, assign to 'url'
+    }));
     setSearchTerm(deviceName); // Set search term to selected name
     setIsDropdownOpen(false); // Close dropdown
     setErrors((prev) => ({ ...prev, device_type: "" })); // Clear device_type error on selection
+    console.log("Selected device icon_url:", selectedDevice?.url);
+
   };
 
   // Add a new device
   const addElectronic_device = () => {
     if (validateInputs()) {
+      // Find the selected device from the usableDeviceTypes to get its icon_url
+      const selectedDevice = usableDeviceTypes.find(d => d.name === newDevice.device_type);
+      const urlToUse = selectedDevice?.url || deviceIcon.src; // Fallback to common icon if not found, assign to 'url'
+
       const device: Electronic_device = {
         id: uuidv4(),
         device_type: newDevice.device_type,
         no_of_units: parseFloat(newDevice.no_of_units),
         wattage: parseFloat(newDevice.wattage),
         daily_usage: parseFloat(newDevice.daily_usage),
-        icon_url:newDevice.icon_url,
+        url: urlToUse, // Use the determined icon URL
       };
       setDevices([...devices, device]);
-      setNewDevice({ device_type: "", no_of_units: "", wattage: "", daily_usage: "",icon_url:""});
+      setNewDevice({ device_type: "", no_of_units: "", wattage: "", daily_usage: "", url: "" }); // Reset url
       setSearchTerm(""); // Clear search term after adding
       setErrors({});
+       console.log('Device URL:', device.url);
+
     }
   };
 
@@ -248,7 +263,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
             name="no_of_units"
             placeholder="No. of Units"
             value={newDevice.no_of_units}
-            onChange={handleInputChange} // Changed to handleInputChange
+            onChange={handleInputChange}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             min="1"
             step="1"
@@ -262,9 +277,9 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           <input
             type="number"
             name="wattage"
-            placeholder="Wattage (Watts)" 
+            placeholder="Wattage (Watts)"
             value={newDevice.wattage}
-            onChange={handleInputChange} // Changed to handleInputChange
+            onChange={handleInputChange}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             min="1"
             step="1"
@@ -278,9 +293,9 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           <input
             type="number"
             name="daily_usage"
-            placeholder="Daily Usage (Hours)" 
+            placeholder="Daily Usage (Hours)"
             value={newDevice.daily_usage}
-            onChange={handleInputChange} // Changed to handleInputChange
+            onChange={handleInputChange}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             min="0"
             step="0.1"
@@ -306,8 +321,9 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           >
             <div>
               <span className="font-semibold flex gap-2 items-center">
+                {/* Use device.url for the Image src */}
                 <Image
-                  src={device.icon_url || deviceIcon}
+                  src={device.url} // Changed to device.url
                   alt={`Icon for ${device.device_type}`}
                   width={24}
                   height={24}
