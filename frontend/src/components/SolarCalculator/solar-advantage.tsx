@@ -26,6 +26,7 @@ export default function SolarAdvantage({
     property_type: "",
     monthly_bill: "",
   });
+  const [monthly_label , setmonthly_label] = useState("Average Monthly Bill");
 
   const validateForm = () => {
     let valid = true;
@@ -49,6 +50,7 @@ export default function SolarAdvantage({
   const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setproperty_type(e.target.value);
     setErrors((prev) => ({ ...prev, property_type: "" }));
+    setmonthly_label(e.target.value === "residential"?"Average bi-Monthly Bill":"Average Monthly Bill");
   };
 
   const handlePincodeChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -144,7 +146,7 @@ export default function SolarAdvantage({
                 htmlFor="electricity-bill"
                 className="block text-left text-sm font-medium text-gray-700 mb-1"
               >
-                Average Monthly Electricity Bill
+                {monthly_label}
               </label>
               <input
                 type="number"

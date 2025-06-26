@@ -27,6 +27,8 @@ export default function SolarBasicResult({
   const [property_type, setproperty_type] = useState(initialproperty_type || "residential");
   const [monthly_bill, setmonthly_bill] = useState<number | "">(initialmonthly_bill);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup
+  const [monthly_label , setmonthly_label] = useState(initialproperty_type === "residential" ? "Average bi-Monthly Bill" : "Average Monthly Bill");
+
   
   // Prevent scrolling the body when popup is open
   useEffect(() => {
@@ -54,6 +56,7 @@ export default function SolarBasicResult({
   const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     console.log("Property type changed to:", e.target.value);
     setproperty_type(e.target.value);
+    setmonthly_label(e.target.value === "residential"?"Average bi-Monthly Bill":"Average Monthly Bill");
   };
 
   const handlemonthly_billChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -114,7 +117,7 @@ export default function SolarBasicResult({
           {/* avg monthly bill */}
           <div>
             <label htmlFor="electricity-bill-result" className="block text-left text-sm font-medium text-gray-700 mb-1">
-              Your Avg Monthly Current Bill
+              Your {monthly_label}
             </label>
             <input
               type="number"
@@ -138,7 +141,7 @@ export default function SolarBasicResult({
             Advanced Calculator
           </a>
         </div>
-        <BasicResult data={calculatedData} monthlyBill={initialmonthly_bill} />
+        <BasicResult data={calculatedData} monthlyBill={initialmonthly_bill}/>
         <div className="flex flex-col md:flex-row justify-center gap-4 mt-10">
           {/* Get detailed quote link */}
           <Button
