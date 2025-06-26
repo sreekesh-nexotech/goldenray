@@ -19,6 +19,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     no_of_units: "",
     wattage: "",
     daily_usage: "",
+    icon_url:"",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [apiDeviceTypes, setApiDeviceTypes] = useState<DeviceType[] | null>(null);
@@ -111,8 +112,8 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
       newErrors.wattage = "Wattage must be a positive number";
     }
     const daily_usage = parseFloat(newDevice.daily_usage);
-    if (!newDevice.daily_usage || isNaN(daily_usage) || daily_usage < 0) {
-      newErrors.daily_usage = "Daily usage must be a non-negative number";
+    if (!newDevice.daily_usage || isNaN(daily_usage) || daily_usage < 0 || daily_usage > 24 ) {
+      newErrors.daily_usage = "Enter a valid Usage Hours per day";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -136,7 +137,8 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
 
   // Handle selection from custom dropdown
   const handleSelectDevice = (deviceName: string) => {
-    setNewDevice((prev) => ({ ...prev, device_type: deviceName }));
+    const selectedDevice = usableDeviceTypes.find((device) => device.name === deviceName);
+    setNewDevice((prev) => ({ ...prev, device_type: deviceName, icon_url: selectedDevice?.icon_url || '', }));
     setSearchTerm(deviceName); // Set search term to selected name
     setIsDropdownOpen(false); // Close dropdown
     setErrors((prev) => ({ ...prev, device_type: "" })); // Clear device_type error on selection
@@ -151,9 +153,10 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
         no_of_units: parseFloat(newDevice.no_of_units),
         wattage: parseFloat(newDevice.wattage),
         daily_usage: parseFloat(newDevice.daily_usage),
+        icon_url:newDevice.icon_url,
       };
       setDevices([...devices, device]);
-      setNewDevice({ device_type: "", no_of_units: "", wattage: "", daily_usage: "" });
+      setNewDevice({ device_type: "", no_of_units: "", wattage: "", daily_usage: "",icon_url:""});
       setSearchTerm(""); // Clear search term after adding
       setErrors({});
     }
@@ -295,7 +298,6 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           + Add Device
         </button>
       </div>
-      {/* Removed generic error message as specific errors are handled inline */}
       <div className="mt-4 space-y-3">
         {devices.map((device) => (
           <div
@@ -305,7 +307,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
             <div>
               <span className="font-semibold flex gap-2 items-center">
                 <Image
-                  src={deviceIcon}
+                  src={device.icon_url || deviceIcon}
                   alt={`Icon for ${device.device_type}`}
                   width={24}
                   height={24}

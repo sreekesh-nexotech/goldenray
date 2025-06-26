@@ -138,7 +138,7 @@ export default function SolarBasicResult({
             Advanced Calculator
           </a>
         </div>
-        <BasicResult data={calculatedData} />
+        <BasicResult data={calculatedData} monthlyBill={initialmonthly_bill} />
         <div className="flex flex-col md:flex-row justify-center gap-4 mt-10">
           {/* Get detailed quote link */}
           <Button

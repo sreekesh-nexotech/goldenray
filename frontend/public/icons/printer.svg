@@ -1,10 +1,5 @@
-<svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<mask id="mask0_733_10950" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="22" height="18">
-<path d="M20 1H2C1.44772 1 1 1.44772 1 2V10C1 10.5523 1.44772 11 2 11H20C20.5523 11 21 10.5523 21 10V2C21 1.44772 20.5523 1 20 1Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M5 7H17V11H5V7Z" fill="#555555" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M15 4H17M11 14V17M7 15V16M15 15V16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</mask>
-<g mask="url(#mask0_733_10950)">
-<path d="M-1 -3H23V21H-1V-3Z" fill="black"/>
-</g>
+<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.5 15H4.5V21H17.5V15Z" stroke="black" stroke-width="2" stroke-linejoin="round"/>
+<path d="M1 9H21V18H17.5085V15H4.49V18H1V9Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18 1H4V9H18V1Z" stroke="black" stroke-width="2" stroke-linejoin="round"/>
 </svg>

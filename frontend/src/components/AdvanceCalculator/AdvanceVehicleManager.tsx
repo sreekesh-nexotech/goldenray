@@ -1,8 +1,7 @@
-// golden-ray/frontend/src/components/AdvanceCalculator/AdvanceVehicleManager.tsx
-import React, { useState, useEffect, useMemo, useRef } from "react"; // Import useRef
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
-import { Electric_vehicle, VehicleType } from "@/types/types";
+import { Electric_vehicle, VehicleType } from "@/types/types"; 
 import deleteIcon from "../../../public/deleteIcon.svg";
 import { getVehicleTypes } from "@/services/vehicleService";
 
@@ -28,13 +27,9 @@ export default function Electric_vehicleManager({
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Ref for the input wrapper to position the dropdown
   const inputWrapperRef = useRef<HTMLDivElement>(null);
-
-  // Ref for the dropdown itself to close when clicking outside
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Fetch vehicle types
   const fetchVehicles = async () => {
     setIsLoading(true);
     setError(null);
@@ -60,7 +55,6 @@ export default function Electric_vehicleManager({
     fetchVehicles();
   }, []);
 
-  // Effect to close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -79,12 +73,10 @@ export default function Electric_vehicleManager({
     };
   }, []);
 
-  // Filter vehicle types for UI
   const usableVehicleTypes = useMemo(() => {
     return apiVehicleTypes ? apiVehicleTypes.filter((vehicle) => vehicle.show_in_ui) : [];
   }, [apiVehicleTypes]);
 
-  // Filtered vehicles based on search term
   const filteredVehicles = useMemo(() => {
     if (!searchTerm) {
       return usableVehicleTypes;
@@ -102,16 +94,16 @@ export default function Electric_vehicleManager({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    setNewVehicle((prev) => ({ ...prev, vehicleType: value })); // Update newVehicle.vehicleType as well for validation
+    setNewVehicle((prev) => ({ ...prev, vehicleType: value }));
     setIsDropdownOpen(true);
-    setErrorMessage(null); // Clear error message when typing
+    setErrorMessage(null);
   };
 
   const handleSelectVehicle = (vehicleName: string) => {
     setNewVehicle((prev) => ({ ...prev, vehicleType: vehicleName }));
     setSearchTerm(vehicleName);
     setIsDropdownOpen(false);
-    setErrorMessage(null); // Clear error message on successful selection
+    setErrorMessage(null);
   };
 
   const addElectric_vehicle = () => {
@@ -121,11 +113,13 @@ export default function Electric_vehicleManager({
     const daily_usageNum = parseFloat(newVehicle.daily_usage);
     const vehicleTypeToValidate = newVehicle.vehicleType;
 
+    // Find the selected vehicle from usableVehicleTypes to get its category
+    const selectedVehicle = usableVehicleTypes.find(v => v.name === vehicleTypeToValidate);
+
     if (
       vehicleTypeToValidate &&
       vehicleTypeToValidate !== "" &&
-      // Check if the selected vehicle type actually exists in usableVehicleTypes
-      usableVehicleTypes.some(v => v.name === vehicleTypeToValidate) &&
+      selectedVehicle && // Ensure selectedVehicle is found
       !isNaN(no_of_unitsNum) &&
       no_of_unitsNum > 0 &&
       !isNaN(wattageNum) &&
@@ -139,6 +133,8 @@ export default function Electric_vehicleManager({
         no_of_units: no_of_unitsNum,
         wattage: wattageNum,
         daily_usage: daily_usageNum,
+        // Add the category property to the Electric_vehicle object
+        category: selectedVehicle.category,
       };
       setelectric_vehicles((prev) => [...prev, vehicle]);
       setNewVehicle({ vehicleType: "", no_of_units: "", wattage: "", daily_usage: "" });
@@ -146,7 +142,7 @@ export default function Electric_vehicleManager({
       setErrorMessage(null);
     } else {
       let message = "Please enter valid positive numbers for units, wattage, and daily usage.";
-      if (!vehicleTypeToValidate || !usableVehicleTypes.some(v => v.name === vehicleTypeToValidate)) {
+      if (!vehicleTypeToValidate || !selectedVehicle) {
         message = "Please select a valid vehicle type from the list.";
       } else if (isNaN(no_of_unitsNum) || no_of_unitsNum <= 0) {
         message = "Please enter a valid positive number for units.";
@@ -166,7 +162,6 @@ export default function Electric_vehicleManager({
     window.scrollTo(0, scrollY);
   };
 
-  // Render loading state
   if (isLoading) {
     return (
       <div className="text-center p-4">
@@ -178,7 +173,6 @@ export default function Electric_vehicleManager({
     );
   }
 
-  // Render error state with retry button
   if (error) {
     return (
       <div className="text-center p-4 text-red-600">
@@ -219,19 +213,16 @@ export default function Electric_vehicleManager({
             value={searchTerm}
             onChange={handleSearchChange}
             onFocus={() => setIsDropdownOpen(true)}
-            // No onBlur needed here as handled by global click listener
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
             aria-label="Search and select vehicle type"
           />
           {isDropdownOpen && (
             <div
               ref={dropdownRef}
-              // Changed max-h to display 2-4 options and then scroll
               className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-[8rem] overflow-y-auto shadow-lg"
             >
               {filteredVehicles.length > 0 ? (
                 <>
-                  {/* Conditionally render 'Cars' category if there are cars in filteredVehicles */}
                   {usableVehicleTypes.some(v => v.category === "Car") && filteredVehicles.filter(v => v.category === "Car").length > 0 && (
                     <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200">Cars</div>
                   )}
@@ -244,7 +235,6 @@ export default function Electric_vehicleManager({
                       {vehicle.name}
                     </div>
                   ))}
-                  {/* Conditionally render 'Scooters' category if there are scooters in filteredVehicles */}
                   {usableVehicleTypes.some(v => v.category === "Scooter") && filteredVehicles.filter(v => v.category === "Scooter").length > 0 && (
                     <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200 mt-1 pt-1">Scooters</div>
                   )}
@@ -334,7 +324,13 @@ export default function Electric_vehicleManager({
           >
             <div>
               <span className="font-semibold flex gap-2 items-center">
-                  {vehicle.device_type} × {vehicle.no_of_units}
+                <Image
+                  src={vehicle.category === "Car" ? "https://gym-manager-pull.b-cdn.net/golden_ray/icons/car.svg" : "https://gym-manager-pull.b-cdn.net/golden_ray/icons/scooter.svg"} // Dynamically choose icon based on category
+                  alt={`Icon for ${vehicle.device_type}`}
+                  width={24}
+                  height={24}
+                />
+                {vehicle.device_type} × {vehicle.no_of_units}
               </span>
               <div className="text-sm text-gray-600">
                 {vehicle.wattage} Watts | {vehicle.daily_usage}h Daily Usage

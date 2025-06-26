@@ -100,6 +100,7 @@ export interface Electronic_device {
   no_of_units: number;
   wattage: number;
   daily_usage: number;
+  icon_url:string;
 }
 
 export interface Electric_vehicle {
@@ -108,6 +109,7 @@ export interface Electric_vehicle {
   no_of_units: number;
   wattage: number;
   daily_usage: number;
+  category: "Car" | "Scooter" | string; 
 }
 
 export interface UsageDetailsFormData {
@@ -160,6 +162,7 @@ export interface DeviceType {
   show_in_ui: boolean;
   updated_at: string; 
   created_at: string; 
+  icon_url?:string;
 }
 
 export interface VehicleType {

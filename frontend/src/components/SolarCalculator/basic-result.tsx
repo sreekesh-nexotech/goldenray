@@ -25,9 +25,10 @@ ChartJS.register(
 
 interface BasicResultProps {
   data: BasicCalculatorData;
+  monthlyBill:number | "";
 }
 
-export default function BasicResult({ data }: BasicResultProps) {
+export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
   if (!data.graph_data.labels.length || !data.graph_data.datasets.length) {
     return (
       <div className="text-center text-gray-600 p-6">
@@ -136,7 +137,7 @@ export default function BasicResult({ data }: BasicResultProps) {
           <Line data={chartData} options={chartOptions} />
         </div>
         <p className="text-[#124944] text-sm md:text-base mt-4 text-center bg-[#E8FEFF] border border-[#BCE8E4] rounded-full py-2 px-1">
-          {data.financialDetails.monthlyEBReduction}
+          Reduce EB from <b>₹{monthlyBill}</b> to just <b>{data.financialDetails.monthlyEBReduction}</b>
         </p>
       </div>
 

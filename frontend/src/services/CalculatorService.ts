@@ -42,18 +42,18 @@ export async function getSolarAdvantageData(
         installation_time: `${response.installation_time_days} days`,
       },
       financialDetails: {
-        lifetime_savings: "₹10,00,000", // Replace with actual data if available
+        lifetime_savings: "₹10,00,000", 
         overall_cost: `₹${response.total_cost.toLocaleString('en-IN')}`,
         government_subsidy: `₹${response.subsidy.toLocaleString('en-IN')}`,
-        final_cost: `₹${response.total_cost.toLocaleString('en-IN')}`,
-        monthlyEBReduction: "80% reduction", // Replace with actual data
-        starting_EMI: "₹5,000", // Replace with actual data
+        final_cost: `₹${(response.total_cost - response.subsidy).toLocaleString('en-IN')}`,
+        monthlyEBReduction: "₹1,416", 
+        starting_EMI: "₹5,000", 
       },
       graph_data: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        labels: ["Year 0", "Year 5", "Year 10", "Year 15", "Year 20", "Year 25"],
         datasets: [
-          { data: [1000, 1200, 1100, 1300, 1400, 1500] },
-          { data: [2000, 2200, 2100, 2300, 2400, 2500] },
+          { data: [0, 2200, 2100, 2100, 2100, 2100] },
+          { data: [0, 500, 1005, 1480, 2000, 2500] },
         ],
       },
     };
