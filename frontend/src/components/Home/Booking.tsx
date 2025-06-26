@@ -1,7 +1,7 @@
 // golden-ray/frontend/src/components/BookingForm.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { submitContactForm, ContactFormData } from "@/services/basicContactService";
 
 export default function BookingForm() {
@@ -46,14 +46,7 @@ export default function BookingForm() {
     }
   };
 
-  // Debug scroll changes
-  useEffect(() => {
-    const handleScroll = () => {
-      console.log("Scroll position in BookingForm:", window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  
 
   return (
     <div

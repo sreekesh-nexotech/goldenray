@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { submitContactForm, ContactFormData } from "@/services/basicContactService";
 import footerLogo from "../../../public/Mask-group.png";
 import LinkedInLogo from "../../../public/LinkedinLogo.png";
@@ -60,15 +60,6 @@ export default function Footer() {
       window.scrollTo(0, scrollY);
     }
   };
-
-  // Debug scroll changes
-  useEffect(() => {
-    const handleScroll = () => {
-      console.log("Scroll position in Footer:", window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <>
