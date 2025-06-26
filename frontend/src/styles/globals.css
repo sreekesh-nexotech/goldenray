@@ -36,15 +36,6 @@ body {
             transform: translateX(0);
           }
           100% {
-            /*
-              To ensure a truly seamless loop without any visible break or gap:
-              - We now duplicate the 'logos' array *three* times in the JSX (N=3).
-              - The animation then translates by -100% / N of the total combined width.
-              - So, with N=3, we translate by -33.333%. This ensures that as the first
-                set of logos scrolls out, the second set is perfectly in place,
-                and the third set acts as a buffer. The animation resets at the
-                exact moment the first set is replaced by the second.
-            */
             transform: translateX(-33.333%);
           }
         }

@@ -39,7 +39,12 @@ export default function SolarAdvantageMain() {
       setCalculatorData(data);
       setShowResults(true);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to fetch solar advantage data. Please try again.";
+      let errorMessage = "Failed to fetch solar advantage data. Please try again.";
+      if (err instanceof Error && err.message.includes("Pincode not found in database")) {
+        errorMessage = "The provided pincode is not valid or not found. Please check and try again.";
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
       console.error("API Error:", err);
       setError(errorMessage);
     } finally {
@@ -69,7 +74,12 @@ export default function SolarAdvantageMain() {
       }
       setCalculatorData(data);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to resubmit solar advantage data. Please try again.";
+      let errorMessage = "Failed to resubmit solar advantage data. Please try again.";
+      if (err instanceof Error && err.message.includes("Pincode not found in database")) {
+        errorMessage = "The provided pincode is not valid or not found. Please check and try again.";
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
       console.error("API Error:", err);
       setError(errorMessage);
     } finally {
