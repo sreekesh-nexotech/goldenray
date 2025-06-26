@@ -6,6 +6,7 @@ class DeviceType(models.Model):
     show_in_ui = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    url = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         db_table = "device_types"
