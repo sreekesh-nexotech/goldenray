@@ -4,7 +4,7 @@ import { USE_MOCK_DATA } from '@/config';
 import { BasicCalculatorData, AdvancedCalculatorData,  SolarBasicPayload, SolarCalculatorApiResponse } from '@/types/types';
 
 // Endpoints
-const SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar/';
+const SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar-new/';
 // const ADVANCED_SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar/';
 
 // Basic calculator API call

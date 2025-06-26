@@ -29,9 +29,10 @@ export interface SolarCalculatorApiResponse {
   buffered_daily: number;
   solar_capacity_kW: number;
   area_required: number;
-  installation_time_days: number;
+  installation_time_days: string;
   total_cost: number;
   subsidy: number;
+  loan_available:string;
   pincode: string;
   property_type: string;
 }
@@ -143,9 +144,9 @@ export interface SolarAdvancedPayload {
 
 // Combined structure for the Basic Calculator API call
 export interface SolarBasicPayload {
+  monthly_bill: number;
   pincode: string;
   property_type: string;
-  monthly_bill: number;
 }
 
 
