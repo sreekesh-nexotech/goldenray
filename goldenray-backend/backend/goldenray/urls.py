@@ -7,6 +7,8 @@ from .views.evscooter_views import EVScooterAPIView
 from .views.solar_installation_views import SolarInstallationAPIView
 from .views.pincode_views import PincodeAPIView
 from .views.solar_calculator_views import SolarCalculatorAPIView
+from .views.solar_calculator_new_views import SolarCalculatorNewAPIView
+from .views.solar_installation_new_views import SolarInstallationNewAPIView
 
 
 urlpatterns = [
@@ -28,9 +30,14 @@ urlpatterns = [
     # Solar Installations
     path("solar-installations/", SolarInstallationAPIView.as_view(), name="solar-installation-list-create"),
     path("solar-installations/<int:pk>/", SolarInstallationAPIView.as_view(), name="solar-installation-retrieve-update-destroy"),
+    # Solar Installations New
+    path("solar-installations-new/", SolarInstallationNewAPIView.as_view(), name="solar-installation-new-list-create"),
+    path("solar-installations-new/<int:pk>/", SolarInstallationNewAPIView.as_view(), name="solar-installation-new-retrieve-update-destroy"),
     # Pincodes
     path("pincodes/", PincodeAPIView.as_view(), name="pincode-list-create"),
     path("pincodes/<int:pk>/", PincodeAPIView.as_view(), name="pincode-retrieve-update-destroy"),
     # Solar Calculator.
     path("calculate-solar/", SolarCalculatorAPIView.as_view(), name="calculate-solar"),
+    # Solar Calculator New
+    path("calculate-solar-new/", SolarCalculatorNewAPIView.as_view(), name="calculate-solar-new"),
 ]
