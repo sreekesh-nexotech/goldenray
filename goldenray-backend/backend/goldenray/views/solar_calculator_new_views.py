@@ -57,13 +57,14 @@ class SolarCalculatorNewAPIView(APIView):
         else:
             loan_amount = int(loan_str)
         initial_cost = float(row.total_cost)
+        subsidy = float(row.total_subsidy)
         years_to_breakeven = 10
         # Get KSEB tariff for 50 units
         tariff = KSEBTariff.objects.filter(min_units__lte=50, max_units__gte=50).first()
         if not tariff:
             tariff = KSEBTariff.objects.order_by('min_units').first()
         kseb_unit_rate = float(tariff.rate)
-        bimonthly_bill = monthly_bill  # for residential
+        bimonthly_bill = monthly_bill
         years = [0, 5, 10, 15, 20, 25]
         # Without solar: upward curve (5% increase per year)
         def calculate_without_solar(bimonthly_bill, years, rate=0.05):
@@ -75,21 +76,21 @@ class SolarCalculatorNewAPIView(APIView):
             return cumulative
         # With solar: curve for 10 years, then flat
         def calculate_with_solar(initial_cost, loan_amount, years_to_breakeven, kseb_unit_rate, years, rate=0.05):
-            units_per_bimonth = 50
-            bill_per_bimonth = units_per_bimonth * kseb_unit_rate
+            # units_per_bimonth = 50
+            bill_per_bimonth = 72
             annual_bill = bill_per_bimonth * 6
             loan_repayment_per_year = loan_amount / years_to_breakeven
             cumulative = []
             for y in years:
                 if y == 0:
-                    cumulative.append(initial_cost)
+                    cumulative.append(initial_cost - subsidy)
                 elif y <= years_to_breakeven:
                     year_bill = sum([annual_bill * ((1 + rate) ** i) for i in range(y)])
-                    total = initial_cost + year_bill + loan_repayment_per_year * y
+                    total = (initial_cost - subsidy) + year_bill + loan_repayment_per_year * y
                     cumulative.append(round(total))
                 else:
                     year_bill = sum([annual_bill * ((1 + rate) ** i) for i in range(y)])
-                    total = initial_cost + year_bill + loan_amount
+                    total = (initial_cost - subsidy) + year_bill + loan_amount
                     cumulative.append(round(total))
             return cumulative
         without_solar = calculate_without_solar(bimonthly_bill, years)
