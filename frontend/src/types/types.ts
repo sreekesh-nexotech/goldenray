@@ -44,6 +44,9 @@ export interface SolarCalculatorApiResponse {
 // Type for the API's graph_data response (Advanced Calculator)
 export interface Apigraph_data {
   labels: string[];
+  datasets: {
+    data: number[];
+}[];
   
 }
 

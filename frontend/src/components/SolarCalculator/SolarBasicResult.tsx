@@ -111,7 +111,6 @@ export default function SolarBasicResult({
             >
               <option value="residential">Residential</option>
               <option value="commercial">Commercial</option>
-              <option value="industrial">Industrial</option>
             </select>
           </div>
           {/* avg monthly bill */}

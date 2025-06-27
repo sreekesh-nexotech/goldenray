@@ -135,7 +135,6 @@ export default function SolarAdvantage({
                 </option>
                 <option value="residential">Residential</option>
                 <option value="commercial">Commercial</option>
-                <option value="industrial">Industrial</option>
               </select>
               {errors.property_type && <p className="text-red-500 text-xs mt-1 text-left">{errors.property_type}</p>}
             </div>

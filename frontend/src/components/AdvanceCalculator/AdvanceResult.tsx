@@ -72,6 +72,8 @@ export default function ResultDisplay({
     datasets: data.graph_data.datasets.map((dataset) => ({
       ...dataset,
       tension: 0.4, // Set tension for smooth curves
+      pointRadius: 0,
+
     })),
   };
 
@@ -106,6 +108,10 @@ export default function ResultDisplay({
           },
         },
       },
+    },
+     hover: {
+      mode: 'index' as const,
+      intersect: false, // Crucial: allows tooltip to trigger when mouse is near the line, not just on a point
     },
     scales: {
       x: {

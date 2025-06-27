@@ -47,7 +47,7 @@ export async function getSolarAdvantageData(
         government_subsidy: `₹${response.subsidy.toLocaleString('en-IN')}`,
         final_cost: `₹${(response.total_cost - response.subsidy).toLocaleString('en-IN')}`,
         monthlyEBReduction: "₹1,416", 
-        starting_EMI: "₹2,000", 
+        starting_EMI: "₹1,450", 
       },
       graph_data: {
         labels: ["Year 0", "Year 5", "Year 10", "Year 15", "Year 20", "Year 25"],

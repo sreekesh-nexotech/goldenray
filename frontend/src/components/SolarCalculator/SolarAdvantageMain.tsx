@@ -18,17 +18,25 @@ export default function SolarAdvantageMain() {
   const resultsRef = useRef<HTMLDivElement>(null); // Ref to the section containing results/form
 
   // Use useEffect to scroll *after* showResults state updates and component re-renders
-  useEffect(() => {
+ useEffect(() => {
+    // Only scroll when showResults becomes TRUE
     if (showResults && resultsRef.current) {
-      // Small delay to ensure the DOM has fully rendered the new content
-      // and any layout shifts have settled. Adjust delay if needed.
       const timer = setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100); // 100ms delay
+      }, 100);
 
-      return () => clearTimeout(timer); // Cleanup the timer if component unmounts or state changes again
+      return () => clearTimeout(timer);
     }
-  }, [showResults]); // Dependency array: run this effect when showResults changes
+    else if (!showResults) { // This condition means we're showing the form
+      const formElement = document.getElementById('solar-advantage');
+      if (formElement) {
+        const timer = setTimeout(() => {
+          formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [showResults]);
 
   const handleCalculateSubmit = async (
     pincode: string,
@@ -109,10 +117,7 @@ export default function SolarAdvantageMain() {
   const handleGoBackToForm = () => {
     setShowResults(false);
     setError(null);
-    // Optionally scroll back to the form if it's off-screen when going back
-    if (resultsRef.current) {
-      resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+
   };
 
   return (

@@ -261,13 +261,13 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           <input
             type="number"
             name="no_of_units"
-            placeholder="No. of Units"
+            placeholder="No. of Devices"
             value={newDevice.no_of_units}
             onChange={handleInputChange}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             min="1"
             step="1"
-            aria-label="Number of units"
+            aria-label="Number of Devices"
           />
           {errors.no_of_units && (
             <p className="text-red-500 text-sm mt-1">{errors.no_of_units}</p>

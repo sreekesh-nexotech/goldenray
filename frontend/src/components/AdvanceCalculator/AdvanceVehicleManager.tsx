@@ -261,13 +261,13 @@ export default function Electric_vehicleManager({
           <input
             type="number"
             name="no_of_units"
-            placeholder="No. of Units"
+            placeholder="No. of Vehicles"
             value={newVehicle.no_of_units}
             onChange={handleVehicleChange}
             className="p-3 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
             min="1"
             step="1"
-            aria-label="Number of units"
+            aria-label="Number of Vehicles"
           />
           {errorMessage?.includes("units") && (
             <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
