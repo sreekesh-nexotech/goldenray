@@ -38,10 +38,10 @@ export default function SolarAdvantage({
     newErrors.monthly_bill = "Electricity bill must be a positive number.";
     valid = false;
   } 
-  // else if (billValue > 7300) {
-  //   newErrors.monthly_bill = "Monthly bill cannot exceed ₹7300.";
-  //   valid = false;
-  // }
+  else if (billValue > 24000) {
+    newErrors.monthly_bill = "Monthly bill cannot exceed ₹2400.";
+    valid = false;
+  }
 
     setErrors(newErrors);
     return valid;

@@ -27,9 +27,9 @@ export default function SolarBasicResult({
   const [property_type, setproperty_type] = useState(initialproperty_type || "residential");
   const [monthly_bill, setmonthly_bill] = useState<number | "">(initialmonthly_bill);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup
-  const [monthly_label , setmonthly_label] = useState(initialproperty_type === "residential" ? "Average bi-Monthly Bill" : "Average Monthly Bill");
+  const [monthly_label, setmonthly_label] = useState(initialproperty_type === "residential" ? "Average bi-Monthly Bill" : "Average Monthly Bill");
 
-  
+
   // Prevent scrolling the body when popup is open
   useEffect(() => {
     if (isPopupOpen) {
@@ -56,7 +56,7 @@ export default function SolarBasicResult({
   const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     console.log("Property type changed to:", e.target.value);
     setproperty_type(e.target.value);
-    setmonthly_label(e.target.value === "residential"?"Average bi-Monthly Bill":"Average Monthly Bill");
+    setmonthly_label(e.target.value === "residential" ? "Average bi-Monthly Bill" : "Average Monthly Bill");
   };
 
   const handlemonthly_billChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +75,7 @@ export default function SolarBasicResult({
   };
 
   return (
-    <div className="relative py-12 mt-12 scroll-mt-30" id="solar-advantage">
+    <div className="relative py-12 mt-12 scroll-mt-30" id="solar-advantage-results">
       <PageIllustration />
       <div className="relative px-4 sm:px-6 lg:px-8 xl:px-36 ">
         {/* Heading */}
@@ -93,7 +93,7 @@ export default function SolarBasicResult({
               id="pincode-result"
               value={pincode}
               onChange={(e) => setPincode(e.target.value)}
-              className="bg-white shadow-md w-full px-4 py-2  rounded-lg  focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
+              className="bg-white shadow-md w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
             />
           </div>
           {/* property type */}
@@ -105,7 +105,7 @@ export default function SolarBasicResult({
               id="property-type-result"
               value={property_type}
               onChange={handleproperty_typeChange}
-              className={`w-full px-4 py-2  rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] shadow-md bg-white ${
+              className={`w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] shadow-md bg-white ${
                 property_type === "" ? "text-gray-400" : "text-black"
               }`}
             >
@@ -137,11 +137,11 @@ export default function SolarBasicResult({
             Resubmit Changes
           </button>
           {/* advance calculator link */}
-          <a href="/advanced-calculator" target="new" className="text-[#007E85] hover:underline text-sm px-8 py-3  md:text-base md:ml-4">
+          <a href="/advanced-calculator" target="new" className="text-[#007E85] hover:underline text-sm px-8 py-3 md:text-base md:ml-4">
             Advanced Calculator
           </a>
         </div>
-        <BasicResult data={calculatedData} monthlyBill={initialmonthly_bill}/>
+        <BasicResult data={calculatedData} monthlyBill={initialmonthly_bill} />
         <div className="flex flex-col md:flex-row justify-center gap-4 mt-10">
           {/* Get detailed quote link */}
           <Button
@@ -154,7 +154,7 @@ export default function SolarBasicResult({
             Go Back to Form
           </button>
         </div>
-         {isPopupOpen && <QuotePopup onClose={() => setIsPopupOpen(false)} />}
+        {isPopupOpen && <QuotePopup onClose={() => setIsPopupOpen(false)} />}
       </div>
     </div>
   );

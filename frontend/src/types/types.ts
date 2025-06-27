@@ -35,14 +35,16 @@ export interface SolarCalculatorApiResponse {
   loan_available:string;
   pincode: string;
   property_type: string;
+  savings:number;
+  datasets: {
+    data: number[];
+}[];
 }
 
 // Type for the API's graph_data response (Advanced Calculator)
 export interface Apigraph_data {
   labels: string[];
-  datasets: {
-    data: number[];
-  }[];
+  
 }
 
 // Type for Chart.js-compatible graph_data

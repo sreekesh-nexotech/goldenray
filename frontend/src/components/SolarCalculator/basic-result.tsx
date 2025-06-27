@@ -41,16 +41,18 @@ export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
     labels: data.graph_data.labels,
     datasets: data.graph_data.datasets.map((dataset, index) => ({
       ...dataset,
-      label: index === 0 ? "Solar Power" : "Current Source",
-      borderColor: index === 0 ? "#FBC207" : "#5958CB",
-      backgroundColor: index === 0 ? "#FBC207" : "#5958CB",
+      label: index === 0 ? "Without Solar" : "With Solar",
+      borderColor: index === 0 ? "#5958CB" : "#FBC207",
+      backgroundColor: index === 0 ? "#5958CB" : "#FBC207",
       fill: false,
       tension: 0.4, // Set tension for smooth curves
+      pointRadius: 0,
     })),
   };
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "bottom" as const,
@@ -79,6 +81,10 @@ export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
           },
         },
       },
+    },
+    hover: {
+      mode: 'index' as const,
+      intersect: false, // Crucial: allows tooltip to trigger when mouse is near the line, not just on a point
     },
     scales: {
       x: {

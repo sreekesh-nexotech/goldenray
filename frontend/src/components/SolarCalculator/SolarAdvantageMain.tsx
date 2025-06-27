@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react"; // Import useEffect
 import SolarBasicResult from "./SolarBasicResult";
 import SolarAdvantage from "./solar-advantage";
 import { BasicCalculatorData, SolarBasicPayload } from "@/types/types";
@@ -15,6 +15,20 @@ export default function SolarAdvantageMain() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const resultsRef = useRef<HTMLDivElement>(null); // Ref to the section containing results/form
+
+  // Use useEffect to scroll *after* showResults state updates and component re-renders
+  useEffect(() => {
+    if (showResults && resultsRef.current) {
+      // Small delay to ensure the DOM has fully rendered the new content
+      // and any layout shifts have settled. Adjust delay if needed.
+      const timer = setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100); // 100ms delay
+
+      return () => clearTimeout(timer); // Cleanup the timer if component unmounts or state changes again
+    }
+  }, [showResults]); // Dependency array: run this effect when showResults changes
 
   const handleCalculateSubmit = async (
     pincode: string,
@@ -37,7 +51,7 @@ export default function SolarAdvantageMain() {
         throw new Error("No data returned from the API.");
       }
       setCalculatorData(data);
-      setShowResults(true);
+      setShowResults(true); // This will trigger the useEffect for scrolling
     } catch (err) {
       let errorMessage = "Failed to fetch solar advantage data. Please try again.";
       if (err instanceof Error && err.message.includes("Pincode not found in database")) {
@@ -73,6 +87,11 @@ export default function SolarAdvantageMain() {
         throw new Error("No data returned from the API.");
       }
       setCalculatorData(data);
+      // No explicit scroll here, as resubmitting typically keeps the user on the results view.
+      // If you want to scroll to the top of the results again on resubmit, you can add:
+      // if (resultsRef.current) {
+      //   resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // }
     } catch (err) {
       let errorMessage = "Failed to resubmit solar advantage data. Please try again.";
       if (err instanceof Error && err.message.includes("Pincode not found in database")) {
@@ -90,10 +109,14 @@ export default function SolarAdvantageMain() {
   const handleGoBackToForm = () => {
     setShowResults(false);
     setError(null);
+    // Optionally scroll back to the form if it's off-screen when going back
+    if (resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
-    <section className="relative">
+    <section className="relative" ref={resultsRef}> {/* Ref attached to the common container */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
           <div className="text-xl font-semibold text-[#123532]">
