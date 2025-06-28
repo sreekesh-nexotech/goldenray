@@ -1,4 +1,5 @@
 from django.urls import path
+from .views.battery_views import BatteryAPIView
 from .views.device_type_views import DeviceTypeAPIView
 from .views.wattage_views import WattageAPIView
 from .views.kseb_tariff_views import KSEBTariffAPIView
@@ -9,9 +10,13 @@ from .views.pincode_views import PincodeAPIView
 from .views.solar_calculator_views import SolarCalculatorAPIView
 from .views.solar_calculator_new_views import SolarCalculatorNewAPIView
 from .views.solar_installation_new_views import SolarInstallationNewAPIView
+from .views.solar_advanced_calc_views import SolarAdvancedCalcAPIView
 
 
 urlpatterns = [
+    # Batteries
+    path("batteries/", BatteryAPIView.as_view(), name="battery-list-create"),
+    path("batteries/<int:pk>/", BatteryAPIView.as_view(), name="battery-retrieve-update-destroy"),
     # Device Types.
     path("device-types/", DeviceTypeAPIView.as_view(), name="device-type-list-create"),
     path("device-types/<int:pk>/", DeviceTypeAPIView.as_view(), name="device-type-retrieve-update-destroy"),
@@ -40,4 +45,5 @@ urlpatterns = [
     path("calculate-solar/", SolarCalculatorAPIView.as_view(), name="calculate-solar"),
     # Solar Calculator New
     path("calculate-solar-new/", SolarCalculatorNewAPIView.as_view(), name="calculate-solar-new"),
+    path("calculate-solar-advanced/", SolarAdvancedCalcAPIView.as_view(), name="calculate-solar-advanced"),
 ]

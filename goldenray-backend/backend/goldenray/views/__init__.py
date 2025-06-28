@@ -1,3 +1,4 @@
+from .battery_views import BatteryAPIView
 from .device_type_views import DeviceTypeAPIView
 from .wattage_views import WattageAPIView
 from .kseb_tariff_views import KSEBTariffAPIView
