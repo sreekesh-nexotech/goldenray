@@ -88,6 +88,22 @@ export interface AdvancedCalculatorData {
   };
 }
 
+// New interface for transformed Advanced Calculator response
+export interface AdvancedCalculatorTransformedData {
+  power_capacity: number;
+  time_to_complete: string;
+  total_cost: number;
+  total_subsidy: number;
+  area_required: number;
+  final_cost: number;
+  battery_capacity: number;
+  actual_backup_time: number;
+  overall_setup_cost: number;
+  graph_without_solar: number[];
+  graph_with_solar: number[];
+  savings: number;
+}
+
 // Interfaces for form data
 export interface BasicInfoFormData {
   home_type: "Existing Home" | "New Home" | null;
@@ -104,17 +120,15 @@ export interface Electronic_device {
   id: string;
   device_type: string;
   no_of_units: number;
-  wattage: number;
   daily_usage: number;
   url:string;
 }
 
 export interface Electric_vehicle {
   id: string;
-  device_type: string;
-  no_of_units: number;
-  wattage: number;
-  daily_usage: number;
+  model: string;
+  no_of_vehicles: number;
+  daily_avg_km: number;
   category: "Car" | "Scooter" | string; 
 }
 

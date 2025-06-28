@@ -63,7 +63,7 @@ export default function SolarAdvantageMain() {
     } catch (err) {
       let errorMessage = "Failed to fetch solar advantage data. Please try again.";
       if (err instanceof Error && err.message.includes("Pincode not found in database")) {
-        errorMessage = "The provided pincode is not valid or not found. Please check and try again.";
+        errorMessage = "Based on your pincode Our Service is not currently available in your area.";
       } else if (err instanceof Error) {
         errorMessage = err.message;
       }
@@ -103,7 +103,7 @@ export default function SolarAdvantageMain() {
     } catch (err) {
       let errorMessage = "Failed to resubmit solar advantage data. Please try again.";
       if (err instanceof Error && err.message.includes("Pincode not found in database")) {
-        errorMessage = "The provided pincode is not valid or not found. Please check and try again.";
+        errorMessage = "Based on your pincode Our Service is not currently available in your area.";
       } else if (err instanceof Error) {
         errorMessage = err.message;
       }

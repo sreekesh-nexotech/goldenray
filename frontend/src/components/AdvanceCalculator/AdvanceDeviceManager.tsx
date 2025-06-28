@@ -18,9 +18,8 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
   const [newDevice, setNewDevice] = useState({
     device_type: "",
     no_of_units: "",
-    wattage: "",
     daily_usage: "",
-    url: "", // Changed back to 'url'
+    url: "", 
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [apiDeviceTypes, setApiDeviceTypes] = useState<DeviceType[] | null>(null);
@@ -110,10 +109,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     if (!newDevice.no_of_units || isNaN(units) || units <= 0) {
       newErrors.no_of_units = "Number of units must be a positive number";
     }
-    const wattage = parseFloat(newDevice.wattage);
-    if (!newDevice.wattage || isNaN(wattage) || wattage <= 0) {
-      newErrors.wattage = "Wattage must be a positive number";
-    }
+    
     const daily_usage = parseFloat(newDevice.daily_usage);
     if (!newDevice.daily_usage || isNaN(daily_usage) || daily_usage < 0 || daily_usage > 24) {
       newErrors.daily_usage = "Enter a valid Usage Hours per day (0-24)";
@@ -164,12 +160,11 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
         id: uuidv4(),
         device_type: newDevice.device_type,
         no_of_units: parseFloat(newDevice.no_of_units),
-        wattage: parseFloat(newDevice.wattage),
         daily_usage: parseFloat(newDevice.daily_usage),
         url: urlToUse, // Use the determined icon URL
       };
       setDevices([...devices, device]);
-      setNewDevice({ device_type: "", no_of_units: "", wattage: "", daily_usage: "", url: "" }); // Reset url
+      setNewDevice({ device_type: "", no_of_units: "",  daily_usage: "", url: "" }); // Reset url
       setSearchTerm(""); // Clear search term after adding
       setErrors({});
        console.log('Device URL:', device.url);
@@ -273,22 +268,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
             <p className="text-red-500 text-sm mt-1">{errors.no_of_units}</p>
           )}
         </div>
-        <div className="relative">
-          <input
-            type="number"
-            name="wattage"
-            placeholder="Wattage (Watts)"
-            value={newDevice.wattage}
-            onChange={handleInputChange}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            min="1"
-            step="1"
-            aria-label="Wattage in watts"
-          />
-          {errors.wattage && (
-            <p className="text-red-500 text-sm mt-1">{errors.wattage}</p>
-          )}
-        </div>
+        
         <div className="relative">
           <input
             type="number"
@@ -331,7 +311,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
                 {device.device_type} × {device.no_of_units}
               </span>
               <div className="text-sm text-gray-600 pl-8">
-                {device.wattage} Watts | {device.daily_usage}h Daily Usage
+                {device.daily_usage}h Daily Usage
               </div>
             </div>
             <button

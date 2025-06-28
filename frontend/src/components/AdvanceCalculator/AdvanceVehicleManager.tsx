@@ -15,10 +15,9 @@ export default function Electric_vehicleManager({
   setelectric_vehicles,
 }: Electric_vehicleManagerProps) {
   const [newVehicle, setNewVehicle] = useState({
-    vehicleType: "",
-    no_of_units: "",
-    wattage: "",
-    daily_usage: "",
+    model: "",
+    no_of_vehicles: "",
+    daily_avg_km: "",
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [apiVehicleTypes, setApiVehicleTypes] = useState<VehicleType[] | null>(null);
@@ -108,10 +107,9 @@ export default function Electric_vehicleManager({
 
   const addElectric_vehicle = () => {
     const scrollY = window.scrollY;
-    const no_of_unitsNum = parseFloat(newVehicle.no_of_units);
-    const wattageNum = parseFloat(newVehicle.wattage);
-    const daily_usageNum = parseFloat(newVehicle.daily_usage);
-    const vehicleTypeToValidate = newVehicle.vehicleType;
+    const no_of_unitsNum = parseFloat(newVehicle.no_of_vehicles);
+    const daily_usageNum = parseFloat(newVehicle.daily_avg_km);
+    const vehicleTypeToValidate = newVehicle.model;
 
     // Find the selected vehicle from usableVehicleTypes to get its category
     const selectedVehicle = usableVehicleTypes.find(v => v.name === vehicleTypeToValidate);
@@ -122,22 +120,19 @@ export default function Electric_vehicleManager({
       selectedVehicle && // Ensure selectedVehicle is found
       !isNaN(no_of_unitsNum) &&
       no_of_unitsNum > 0 &&
-      !isNaN(wattageNum) &&
-      wattageNum > 0 &&
       !isNaN(daily_usageNum) &&
       daily_usageNum >= 0
     ) {
       const vehicle: Electric_vehicle = {
         id: uuidv4(),
-        device_type: vehicleTypeToValidate,
-        no_of_units: no_of_unitsNum,
-        wattage: wattageNum,
-        daily_usage: daily_usageNum,
+        model: vehicleTypeToValidate,
+        no_of_vehicles: no_of_unitsNum,
+        daily_avg_km: daily_usageNum,
         // Add the category property to the Electric_vehicle object
         category: selectedVehicle.category,
       };
       setelectric_vehicles((prev) => [...prev, vehicle]);
-      setNewVehicle({ vehicleType: "", no_of_units: "", wattage: "", daily_usage: "" });
+      setNewVehicle({ model: "", no_of_vehicles: "",  daily_avg_km: "" });
       setSearchTerm("");
       setErrorMessage(null);
     } else {
@@ -146,8 +141,6 @@ export default function Electric_vehicleManager({
         message = "Please select a valid vehicle type from the list.";
       } else if (isNaN(no_of_unitsNum) || no_of_unitsNum <= 0) {
         message = "Please enter a valid positive number for units.";
-      } else if (isNaN(wattageNum) || wattageNum <= 0) {
-        message = "Please enter a valid positive number for wattage.";
       } else if (isNaN(daily_usageNum) || daily_usageNum < 0) {
         message = "Please enter a valid non-negative number for daily usage.";
       }
@@ -262,7 +255,7 @@ export default function Electric_vehicleManager({
             type="number"
             name="no_of_units"
             placeholder="No. of Vehicles"
-            value={newVehicle.no_of_units}
+            value={newVehicle.no_of_vehicles}
             onChange={handleVehicleChange}
             className="p-3 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
             min="1"
@@ -273,28 +266,13 @@ export default function Electric_vehicleManager({
             <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
           )}
         </div>
-        <div className="relative">
-          <input
-            type="number"
-            name="wattage"
-            placeholder="Wattage (Watts)"
-            value={newVehicle.wattage}
-            onChange={handleVehicleChange}
-            className="p-3 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
-            min="1"
-            step="1"
-            aria-label="Charger wattage"
-          />
-          {errorMessage?.includes("wattage") && (
-            <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
-          )}
-        </div>
+        
         <div className="relative">
           <input
             type="number"
             name="daily_usage"
             placeholder="Daily Usage (Hours)"
-            value={newVehicle.daily_usage}
+            value={newVehicle.daily_avg_km}
             onChange={handleVehicleChange}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
             min="0"
@@ -326,20 +304,20 @@ export default function Electric_vehicleManager({
               <span className="font-semibold flex gap-2 items-center">
                 <Image
                   src={vehicle.category === "Car" ? "https://gym-manager-pull.b-cdn.net/golden_ray/icons/car.svg" : "https://gym-manager-pull.b-cdn.net/golden_ray/icons/scooter.svg"} // Dynamically choose icon based on category
-                  alt={`Icon for ${vehicle.device_type}`}
+                  alt={`Icon for ${vehicle.model}`}
                   width={24}
                   height={24}
                 />
-                {vehicle.device_type} × {vehicle.no_of_units}
+                {vehicle.model} × {vehicle.no_of_vehicles}
               </span>
               <div className="text-sm text-gray-600">
-                {vehicle.wattage} Watts | {vehicle.daily_usage}h Daily Usage
+                {vehicle.daily_avg_km}h Daily Usage
               </div>
             </div>
             <button
               onClick={() => removeVehicle(vehicle.id)}
               className="cursor-pointer"
-              aria-label={`Remove ${vehicle.device_type}`}
+              aria-label={`Remove ${vehicle.model}`}
             >
               <Image src={deleteIcon} alt="Delete" />
             </button>
