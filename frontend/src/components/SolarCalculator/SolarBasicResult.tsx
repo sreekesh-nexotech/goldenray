@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent} from "react";
 import PageIllustration from "@/components/ui/page-illustration";
 import Button from "../ui/Button";
 import BasicResult from "./basic-result";
@@ -31,27 +31,7 @@ export default function SolarBasicResult({
 
 
   // Prevent scrolling the body when popup is open
-  useEffect(() => {
-    if (isPopupOpen) {
-      document.body.style.overflow = "hidden";
-      const scrollY = window.scrollY;
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
-    } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.overflow = "auto";
-      window.scrollTo(0, parseInt(scrollY || "0") * -1);
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      window.scrollTo(0, 0);
-    };
-  }, [isPopupOpen]);
+
 
   const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     console.log("Property type changed to:", e.target.value);

@@ -93,13 +93,13 @@ export default function Electric_vehicleManager({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    setNewVehicle((prev) => ({ ...prev, vehicleType: value }));
+    setNewVehicle((prev) => ({ ...prev, model: value }));
     setIsDropdownOpen(true);
     setErrorMessage(null);
   };
 
   const handleSelectVehicle = (vehicleName: string) => {
-    setNewVehicle((prev) => ({ ...prev, vehicleType: vehicleName }));
+    setNewVehicle((prev) => ({ ...prev, model: vehicleName }));
     setSearchTerm(vehicleName);
     setIsDropdownOpen(false);
     setErrorMessage(null);
@@ -253,7 +253,7 @@ export default function Electric_vehicleManager({
         <div className="relative">
           <input
             type="number"
-            name="no_of_units"
+            name="no_of_vehicles"
             placeholder="No. of Vehicles"
             value={newVehicle.no_of_vehicles}
             onChange={handleVehicleChange}
@@ -270,7 +270,7 @@ export default function Electric_vehicleManager({
         <div className="relative">
           <input
             type="number"
-            name="daily_usage"
+            name="daily_avg_km"
             placeholder="Daily Usage (Hours)"
             value={newVehicle.daily_avg_km}
             onChange={handleVehicleChange}

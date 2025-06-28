@@ -67,6 +67,16 @@ export default function AdvancedCalculatorMain() {
         return;
       }
     }
+    if (basicInfo.average_bill && basicInfo.home_type == "Existing Home") {
+      const billAmount = parseFloat(basicInfo.average_bill.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
+      if (isNaN(billAmount)) {
+        setError("Please enter a valid number for the average bill");
+        return;
+      } else if (billAmount > 24000) {
+        setError("Maximum average bill should be less than 24,000");
+        return;
+      }
+    }
     setCurrentStep(2);
   };
 
@@ -88,6 +98,7 @@ export default function AdvancedCalculatorMain() {
       setError("Please add at least one electronic device in the 'Home Details' section.");
       return;
     }
+
 
     const finalPayload: SolarAdvancedPayload = {
       Specifications: {
@@ -113,7 +124,7 @@ export default function AdvancedCalculatorMain() {
     setLoading(true);
 
     try {
-      const apiData = await getSolarAdvancedData(/*finalPayload*/);
+      const apiData = await getSolarAdvancedData(finalPayload);
       if (apiData.graph_data.datasets.length !== 2) {
         throw new Error("Expected exactly two datasets in graph_data");
       }

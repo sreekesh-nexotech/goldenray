@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useEffect } from "react"; // Import useEffect
+import { useRef, useState} from "react"; // Import useEffect
 import SolarBasicResult from "./SolarBasicResult";
 import SolarAdvantage from "./solar-advantage";
 import { BasicCalculatorData, SolarBasicPayload } from "@/types/types";
@@ -17,26 +17,7 @@ export default function SolarAdvantageMain() {
   const [error, setError] = useState<string | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null); // Ref to the section containing results/form
 
-  // Use useEffect to scroll *after* showResults state updates and component re-renders
- useEffect(() => {
-    // Only scroll when showResults becomes TRUE
-    if (showResults && resultsRef.current) {
-      const timer = setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-    else if (!showResults) { // This condition means we're showing the form
-      const formElement = document.getElementById('solar-advantage');
-      if (formElement) {
-        const timer = setTimeout(() => {
-          formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [showResults]);
+ 
 
   const handleCalculateSubmit = async (
     pincode: string,
@@ -95,11 +76,7 @@ export default function SolarAdvantageMain() {
         throw new Error("No data returned from the API.");
       }
       setCalculatorData(data);
-      // No explicit scroll here, as resubmitting typically keeps the user on the results view.
-      // If you want to scroll to the top of the results again on resubmit, you can add:
-      // if (resultsRef.current) {
-      //   resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // }
+
     } catch (err) {
       let errorMessage = "Failed to resubmit solar advantage data. Please try again.";
       if (err instanceof Error && err.message.includes("Pincode not found in database")) {

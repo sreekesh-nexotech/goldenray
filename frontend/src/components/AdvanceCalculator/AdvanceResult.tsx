@@ -13,7 +13,7 @@ import {
 } from "chart.js";
 import Button from "../ui/Button";
 import { AdvancedCalculatorData } from "@/types/types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import QuotePopup from "@/components/SolarCalculator/QuotePopup"; // Import the new popup component
 
 ChartJS.register(
@@ -43,28 +43,7 @@ export default function ResultDisplay({
 }: ResultDisplayProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  //prevent scrolling the body when popup is open
-  useEffect(() => {
-    if (isPopupOpen) {
-      document.body.style.overflow = "hidden";
-      const scrollY = window.scrollY;
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
-    } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.overflow = "auto";
-      window.scrollTo(0, parseInt(scrollY || "0") * -1);
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      window.scrollTo(0, 0);
-    };
-  }, [isPopupOpen]);
+
 
   // Create chartData with tension for curved lines (for the Line chart)
   const chartData = {
@@ -139,7 +118,7 @@ export default function ResultDisplay({
       {
         label: "Amount Paid",
         data: [
-          data.lifetime_bill_comparison.without_solar_amount,
+          data.lifetime_bill_comparison.with_solar_amount_saved,
           data.lifetime_bill_comparison.with_solar_amount_payable,
         ],
         backgroundColor: "#FBE8DA",

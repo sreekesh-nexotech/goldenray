@@ -1,7 +1,7 @@
 import { apiCall } from './apiService';
-import { mockBasicCalculatorData} from '@/data/mock-calculator';
+import { mockAdvancedCalculatorData, mockBasicCalculatorData, } from '@/data/mock-calculator';
 import { USE_MOCK_DATA } from '@/config';
-import { BasicCalculatorData, AdvancedCalculatorData, SolarBasicPayload, SolarCalculatorApiResponse, SolarAdvancedPayload, AdvancedCalculatorTransformedData } from '@/types/types';
+import { BasicCalculatorData, AdvancedCalculatorData, SolarBasicPayload, SolarCalculatorApiResponse, SolarAdvancedPayload, AdvancedCalculatorApiResponse } from '@/types/types';
 
 // Endpoints
 const SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar-new/';
@@ -69,61 +69,68 @@ export async function getSolarAdvantageData(
 // Advanced calculator API call
 export async function getSolarAdvancedData(
   payload: SolarAdvancedPayload
-): Promise<AdvancedCalculatorTransformedData> {
+): Promise<AdvancedCalculatorData> {
   if (USE_MOCK_DATA) {
     console.log("Using mock data for getSolarAdvancedData");
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve({
-          power_capacity: 12,
-          time_to_complete: "3-18",
-          total_cost: 720000,
-          total_subsidy: 78000,
-          area_required: 960,
-          final_cost: 642000,
-          battery_capacity: 9.6,
-          actual_backup_time: 20,
-          overall_setup_cost: 776800,
-          graph_without_solar: [0, 252957, 575802, 987842, 1513722, 2184893],
-          graph_with_solar: [698800, 801187, 904234, 908122, 913084, 919418],
-          savings: 1265475
-        });
+        resolve(mockAdvancedCalculatorData);
       }, 1000);
     });
   }
 
   try {
+    
     console.log("Sending POST request to:", ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "with payload:", payload);
-    const response = await apiCall<AdvancedCalculatorData>(ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
+    const response = await apiCall<AdvancedCalculatorApiResponse>(ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
+    console.log("Raw API response:", response);
 
     if (!response) {
       throw new Error("No response received from the backend.");
     }
 
-    // Validate required fields
-    if (!response.specifications || !response.financialDetails || !response.backupDetails || !response.graph_data) {
-      console.error("Invalid response:", response);
-      throw new Error("Invalid or missing data in advanced calculator response");
-    }
+
+    // Calculate sums
+    const graph_without_solar_sum = response.graph_without_solar.reduce((sum, val) => sum + val, 0);
+    const graph_with_solar_sum = response.graph_with_solar.reduce((sum, val) => sum + val, 0);
 
     // Transform the API response
-    const transformedData = {
-      power_capacity: parseFloat(response.specifications.power_requirement) || 0,
-      time_to_complete: response.specifications.installation_time.replace(' days', '') || '0',
-      total_cost: parseFloat(response.financialDetails.overall_cost.replace('₹', '').replace(/,/g, '')) || 0,
-      total_subsidy: parseFloat(response.financialDetails.government_subsidy.replace('₹', '').replace(/,/g, '')) || 0,
-      area_required: parseFloat(response.specifications.area_requirement) || 0,
-      final_cost: parseFloat(response.financialDetails.final_cost.replace('₹', '').replace(/,/g, '')) || 0,
-      battery_capacity: parseFloat(response.backupDetails.battery_requirement) || 0,
-      actual_backup_time: parseFloat(response.backupDetails.autonomy_rate) || 0,
-      overall_setup_cost: parseFloat(response.financialDetails.overall_cost.replace('₹', '').replace(/,/g, '')) || 0,
-      graph_without_solar: response.graph_data.datasets[0]?.data || [],
-      graph_with_solar: response.graph_data.datasets[1]?.data || [],
-      savings: response.lifetime_bill_comparison?.with_solar_amount_saved || 0
+    const advancedTransformedData : AdvancedCalculatorData = {
+      specifications: {
+        power_requirement: `${response.power_capacity} kW`,
+        area_requirement: `${response.area_required} sq.ft`,
+        installation_time: `${response.time_to_complete} Days`,
+      },
+      financialDetails: {
+        lifetime_savings: `₹${response.savings}`,
+        overall_cost: `₹${response.overall_setup_cost}`,
+        government_subsidy: `₹${response.total_subsidy}`,
+        final_cost: `₹${response.final_cost}`,
+        starting_EMI: "₹1,450",
+      },
+      backupDetails: {
+        battery_requirement: `${response.battery_capacity} KWh`,
+        autonomy_rate: "85%",
+      },
+      graph_data: {
+        labels: ["Year 1", "Year 5", "Year 10", "Year 15", "Year 20", "Year 25"],
+        datasets: [
+          {
+            data: [60000, 72000, 90000, 108000, 132000, 160000],
+          },
+          {
+            data: [60000, 14400, 18000, 21600, 26400, 32000],
+          },
+        ],
+      },
+      lifetime_bill_comparison: {
+        without_solar_amount: graph_without_solar_sum, 
+        with_solar_amount_payable: graph_with_solar_sum, 
+        with_solar_amount_saved: graph_without_solar_sum - graph_with_solar_sum, 
+      },
     };
-
-    console.log("Transformed API response:", transformedData);
-    return transformedData;
+    console.log("Transformed API response:", advancedTransformedData);
+    return advancedTransformedData;
   } catch (error) {
     console.error("Error in getSolarAdvancedData:", error, "Payload:", payload);
     throw error;

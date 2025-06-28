@@ -7,7 +7,9 @@ export async function apiCall<T>(
   body?: object | null
 ): Promise<T> {
   try {
-    return await fetchApi<T>(endpoint, method, body);
+    const response =  await fetchApi<T>(endpoint, method, body);
+    console.log("apiCall raw response:", response);
+    return response;
   } catch (error) {
     console.error(`Error in apiCall for ${endpoint}:`, error);
     throw error;

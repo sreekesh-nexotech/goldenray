@@ -89,7 +89,7 @@ export interface AdvancedCalculatorData {
 }
 
 // New interface for transformed Advanced Calculator response
-export interface AdvancedCalculatorTransformedData {
+export interface AdvancedCalculatorApiResponse {
   power_capacity: number;
   time_to_complete: string;
   total_cost: number;
