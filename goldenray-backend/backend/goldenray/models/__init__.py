@@ -1,3 +1,4 @@
+from .battery import Battery
 from .device_type import DeviceType
 from .evcar import EVCar
 from .evscooter import EVScooter
