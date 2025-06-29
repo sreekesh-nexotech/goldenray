@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import EVCar, EVScooter, SolarInstallationNew, Battery, KSEBTariff
+from ..models import EVCar, EVScooter, SolarInstallationNew, Battery, KSEBTariff, DeviceType
 from ..permissions import ApiMethodPermission, non_authenticated_view
 
 class SolarAdvancedCalcAPIView(APIView):
@@ -27,7 +27,12 @@ class SolarAdvancedCalcAPIView(APIView):
         # Calculate device consumption
         total_device_kwh_per_day = 0
         for device in usage.get("usage_electronic_devices", []):
-            wattage = float(device.get("wattage", 0))
+            device_type_name = device.get("device_type")
+            if device_type_name and device_type_name.lower() == "light":
+                wattage = 15.0
+            else:
+                dt = DeviceType.objects.filter(name__iexact=device_type_name).first()
+                wattage = float(dt.watts) if dt and dt.watts else 0
             daily_usage = float(device.get("daily_usage", 0))
             no_of_units = int(device.get("no_of_units", 1))
             total_device_kwh_per_day += (wattage * daily_usage * no_of_units) / 1000
@@ -93,10 +98,21 @@ class SolarAdvancedCalcAPIView(APIView):
         if grid_type == "Hybrid":
             backup_hours = float(preference.get("backup_hours", 0))
             preference_devices = preference.get("preference_electronic_devices", [])
+            # Add default lights and fan load
+            default_devices = [
+                {"device_type": "Light", "no_of_units": 3, "daily_usage": backup_hours},
+                {"device_type": "Fan", "no_of_units": 2, "daily_usage": backup_hours},
+            ]
+            all_devices = preference_devices + default_devices
             total_required_battery_capacity = 0
             total_backup_watts = 0
-            for device in preference_devices:
-                wattage = float(device.get("wattage", 0))
+            for device in all_devices:
+                device_type_name = device.get("device_type")
+                if device_type_name.lower() == "light":
+                    wattage = 15.0
+                else:
+                    dt = DeviceType.objects.filter(name__iexact=device_type_name).first()
+                    wattage = float(dt.watts) if dt and dt.watts else 0
                 no_of_units = int(device.get("no_of_units", 1))
                 daily_usage = float(device.get("daily_usage", 0))
                 total_required_battery_capacity += (wattage * no_of_units * daily_usage) / 1000
