@@ -271,7 +271,7 @@ export default function Electric_vehicleManager({
           <input
             type="number"
             name="daily_avg_km"
-            placeholder="Daily Usage (Hours)"
+            placeholder="Daily Usage (Km)"
             value={newVehicle.daily_avg_km}
             onChange={handleVehicleChange}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
@@ -311,7 +311,7 @@ export default function Electric_vehicleManager({
                 {vehicle.model} × {vehicle.no_of_vehicles}
               </span>
               <div className="text-sm text-gray-600">
-                {vehicle.daily_avg_km}h Daily Usage
+                {vehicle.daily_avg_km}Km Daily Usage
               </div>
             </div>
             <button

@@ -26,7 +26,7 @@ export default function AdvancedCalculatorMain() {
     bill_frequency: null,
     home_size: "",
     estimated_base_load: "",
-    backup_hours: 9,
+    backup_hours: 0,
     actual_backup_time:"",
     electronic_devices: [],
   });

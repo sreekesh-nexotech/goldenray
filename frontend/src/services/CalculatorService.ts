@@ -90,9 +90,14 @@ export async function getSolarAdvancedData(
     }
 
 
-    // Calculate sums
-    const graph_without_solar_sum = response.graph_without_solar.reduce((sum, val) => sum + val, 0);
-    const graph_with_solar_sum = response.graph_with_solar.reduce((sum, val) => sum + val, 0);
+    // // Calculate sums
+    // const graph_without_solar_sum = response.graph_without_solar.reduce((sum, val) => sum + val, 0);
+    // const graph_with_solar_sum = response.graph_with_solar.reduce((sum, val) => sum + val, 0);
+
+     // Get the last two elements of the arrays
+    const graph_without_solar_last_two = response.graph_without_solar.slice(-2);
+    const graph_with_solar_last_two = response.graph_with_solar.slice(-2);
+
 
     // Transform the API response
     const advancedTransformedData : AdvancedCalculatorData = {
@@ -102,10 +107,10 @@ export async function getSolarAdvancedData(
         installation_time: `${response.time_to_complete} Days`,
       },
       financialDetails: {
-        lifetime_savings: `₹${response.savings}`,
-        overall_cost: `₹${response.overall_setup_cost}`,
-        government_subsidy: `₹${response.total_subsidy}`,
-        final_cost: `₹${response.final_cost}`,
+        lifetime_savings: `₹${response.savings.toLocaleString('en-IN')}`,
+        overall_cost: `₹${response.overall_setup_cost.toLocaleString('en-IN')}`,
+        government_subsidy: `₹${response.total_subsidy.toLocaleString('en-IN')}`,
+        final_cost: `₹${response.final_cost.toLocaleString('en-IN')}`,
         starting_EMI: "₹1,450",
       },
       backupDetails: {
@@ -117,17 +122,17 @@ export async function getSolarAdvancedData(
         labels: ["Year 1", "Year 5", "Year 10", "Year 15", "Year 20", "Year 25"],
         datasets: [
           {
-            data: [60000, 72000, 90000, 108000, 132000, 160000],
+            data: response.graph_with_solar,
           },
           {
-            data: [60000, 14400, 18000, 21600, 26400, 32000],
+            data: response.graph_without_solar,
           },
         ],
       },
       lifetime_bill_comparison: {
-        without_solar_amount: graph_without_solar_sum, 
-        with_solar_amount_payable: graph_with_solar_sum, 
-        with_solar_amount_saved: graph_without_solar_sum - graph_with_solar_sum, 
+        without_solar_amount: Number(graph_without_solar_last_two), 
+        with_solar_amount_payable: Number(graph_with_solar_last_two), 
+        with_solar_amount_saved: response.savings, 
       },
     };
     console.log("Transformed API response:", advancedTransformedData);
