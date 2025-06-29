@@ -157,6 +157,28 @@ class SolarAdvancedCalcAPIView(APIView):
         virtual_monthly_kwh = (total_device_kwh_per_day + total_ev_kwh_per_day) * 30  # 30 days for monthly
         virtual_monthly_bill = virtual_monthly_kwh * 6.67  # Always use 6.67 as per-unit rate
 
+        # Add current average bill or estimated base load to the virtual monthly bill
+        base_monthly_bill = 0
+        if home_type == "New Home":
+            estimated_base_load = specs.get("estimated_base_load")
+            if estimated_base_load:
+                try:
+                    estimated_base_load = float(estimated_base_load)
+                    # estimated_base_load is for 2 months, so divide by 2 for monthly
+                    base_monthly_bill = (estimated_base_load / 2) * 6.67
+                except (ValueError, TypeError):
+                    pass
+        else:
+            average_bill = specs.get("average_bill")
+            if average_bill:
+                try:
+                    average_bill = float(average_bill)
+                    base_monthly_bill = average_bill
+                except (ValueError, TypeError):
+                    pass
+        # The total monthly bill for the graph is the base bill plus the new devices
+        total_monthly_bill_for_graph = base_monthly_bill + virtual_monthly_bill
+
         # Graph Calculation Logic (similar to solar_calculator_new_views.py)
         years = [0, 5, 10, 15, 20, 25]
         bill_cycles_per_year = 6  # or 12 for commercial, adjust as needed
@@ -207,7 +229,7 @@ class SolarAdvancedCalcAPIView(APIView):
             except ValueError:
                 loan_amount = 0
 
-        without_solar = calculate_without_solar(virtual_monthly_bill, bill_cycles_per_year, years)
+        without_solar = calculate_without_solar(total_monthly_bill_for_graph, bill_cycles_per_year, years)
         with_solar = calculate_with_solar(initial_cost, loan_amount, years_to_breakeven, years, bill_cycles_per_year, subsidy)
         response_data["graph_without_solar"] = without_solar
         response_data["graph_with_solar"] = with_solar
