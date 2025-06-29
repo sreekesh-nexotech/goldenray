@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo} from "react";
+import { useState, useMemo, useRef, useEffect} from "react";
 import { getSolarAdvancedData } from "@/services/CalculatorService";
 import { AdvancedCalculatorData, BasicInfoFormData, UsageDetailsFormData, Chartgraph_data, SolarAdvancedPayload } from "@/types/types";
 import BasicInformationStep from "./AdvanceForm1";
@@ -18,6 +18,8 @@ export default function AdvancedCalculatorMain() {
   const [resultData, setResultData] = useState<AdvancedCalculatorData | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup
 
+  // Create a ref for the form container
+  const formContainerRef = useRef<HTMLDivElement>(null);
   
   const [basicInfo, setBasicInfo] = useState<BasicInfoFormData>({
     home_type: null,
@@ -39,6 +41,13 @@ export default function AdvancedCalculatorMain() {
   const totalFormSteps = useMemo(() => {
     return basicInfo.grid_type === "Hybrid" ? 3 : 2;
   }, [basicInfo.grid_type]);
+
+  // Scroll to top of form container when currentStep changes
+  useEffect(() => {
+    if (formContainerRef.current) {
+      formContainerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentStep]);
 
   // --- Step Navigation and Validation ---
 
@@ -232,7 +241,8 @@ export default function AdvancedCalculatorMain() {
         )}
 
         <div
-          className={`w-full ${
+          ref={formContainerRef}
+          className={`w-full scroll-mt-28 ${
             currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8]" : ""
           } bg-white transition-all duration-300`}
         >
