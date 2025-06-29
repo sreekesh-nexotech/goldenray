@@ -116,7 +116,7 @@ export default function ResultDisplay({
       {
         label: "Amount Paid",
         data: [
-          data.lifetime_bill_comparison.with_solar_amount_saved,
+          data.lifetime_bill_comparison.without_solar_amount,
           data.lifetime_bill_comparison.with_solar_amount_payable,
         ],
         backgroundColor: "#FBE8DA",
