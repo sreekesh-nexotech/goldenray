@@ -95,8 +95,8 @@ export async function getSolarAdvancedData(
     // const graph_with_solar_sum = response.graph_with_solar.reduce((sum, val) => sum + val, 0);
 
      // Get the last two elements of the arrays
-    const graph_without_solar_last_two = response.graph_without_solar.slice(-2);
-    const graph_with_solar_last_two = response.graph_with_solar.slice(-2);
+    const graph_without_solar_last = Number(response.graph_without_solar[response.graph_without_solar.length - 1]);
+    const graph_with_solar_last = Number(response.graph_with_solar[response.graph_with_solar.length - 1]);
 
 
     // Transform the API response
@@ -130,8 +130,8 @@ export async function getSolarAdvancedData(
         ],
       },
       lifetime_bill_comparison: {
-        without_solar_amount: Number(graph_without_solar_last_two), 
-        with_solar_amount_payable: Number(graph_with_solar_last_two), 
+        without_solar_amount: graph_without_solar_last, 
+        with_solar_amount_payable: graph_with_solar_last, 
         with_solar_amount_saved: response.savings, 
       },
     };
