@@ -5,6 +5,9 @@ import React, { useState} from "react";
 import { submitContactForm, ContactFormData } from "@/services/basicContactService";
 
 export default function BookingForm() {
+
+  const bgImg = "https://gym-manager-pull.b-cdn.net/golden_ray/home/Image-1-3.png";
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -51,7 +54,7 @@ export default function BookingForm() {
   return (
     <div
       className="relative xl:min-h-screen bg-cover bg-no-repeat md:bg-center bg-center scroll-mt-10"
-      style={{ backgroundImage: "url('/Image-1-3.png')" }}
+      style={{ backgroundImage: `url('${bgImg}')` }}
       id="booking"
     >
       <div className="absolute inset-0 bg-black opacity-20"></div> {/* Overlay for better text readability */}
