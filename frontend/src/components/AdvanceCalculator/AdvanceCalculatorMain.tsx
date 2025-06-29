@@ -27,6 +27,7 @@ export default function AdvancedCalculatorMain() {
     home_size: "",
     estimated_base_load: "",
     backup_hours: 9,
+    actual_backup_time:"",
     electronic_devices: [],
   });
 
@@ -174,6 +175,7 @@ export default function AdvancedCalculatorMain() {
       home_size: "",
       estimated_base_load: "",
       backup_hours: 9,
+      actual_backup_time:"",
       electronic_devices: [],
     });
     setUsageDetails({
@@ -273,7 +275,6 @@ export default function AdvancedCalculatorMain() {
               onStartOver={handleStartOver}
               onGetDetailedQuote={() => setIsPopupOpen(true)}
               grid_type={basicInfo.grid_type}
-              backup_hours={basicInfo.backup_hours}
             />
           )}
         </div>

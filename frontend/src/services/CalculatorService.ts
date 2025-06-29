@@ -109,6 +109,7 @@ export async function getSolarAdvancedData(
         starting_EMI: "₹1,450",
       },
       backupDetails: {
+        actual_backup_time: `~ ${response.actual_backup_time} hrs`,
         battery_requirement: `${response.battery_capacity} KWh`,
         autonomy_rate: "85%",
       },

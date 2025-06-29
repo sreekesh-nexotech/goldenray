@@ -32,14 +32,12 @@ interface ResultDisplayProps {
   onStartOver: () => void;
   onGetDetailedQuote: () => void;
   grid_type: string | null;
-  backup_hours: number;
 }
 
 export default function ResultDisplay({
   data,
   onStartOver,
   grid_type,
-  backup_hours,
 }: ResultDisplayProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -264,7 +262,7 @@ export default function ResultDisplay({
             <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
               <div>
                 <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                  ~{backup_hours}hrs
+                  {data.backupDetails.actual_backup_time}
                 </h2>
                 <p className="text-gray-600 text-sm md:text-base">
                   Battery Duration

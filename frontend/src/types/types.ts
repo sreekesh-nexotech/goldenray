@@ -77,6 +77,7 @@ export interface AdvancedCalculatorData {
     starting_EMI: string;
   };
   backupDetails: {
+    actual_backup_time:string;
     battery_requirement: string;
     autonomy_rate: string;
   };
@@ -114,6 +115,7 @@ export interface BasicInfoFormData {
   estimated_base_load: string;
   backup_hours: number;
   electronic_devices: Electronic_device[];
+  actual_backup_time:string;
 }
 
 export interface Electronic_device {
