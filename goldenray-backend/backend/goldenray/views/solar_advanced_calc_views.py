@@ -84,7 +84,7 @@ class SolarAdvancedCalcAPIView(APIView):
             "bill_range": solar_row.bill_range,
             "power_capacity": solar_row.power_capacity,
             "time_to_complete": solar_row.time_to_complete,
-            "total_cost": float(solar_row.total_cost),
+            "overall_setup_cost": float(solar_row.total_cost),
             "total_subsidy": float(solar_row.total_subsidy),
             "area_required": solar_row.area_required,
             "loan_available": solar_row.loan_available,
@@ -135,6 +135,9 @@ class SolarAdvancedCalcAPIView(APIView):
 
             if selected_battery:
                 total_battery_cost = float(selected_battery.battery_price + selected_battery.inverter_price)
+                overall_setup_cost = float(response_data.get("final_cost", 0)) + total_battery_cost + float(response_data.get("total_cost", 0))
+                final_cost = overall_setup_cost - float(response_data.get("total_subsidy", 0))
+
                 response_data.update({
                     "battery_capacity": float(selected_battery.battery_capacity),
                     "backup_hour": float(selected_battery.backup_hour),
@@ -144,7 +147,8 @@ class SolarAdvancedCalcAPIView(APIView):
                     "calculated_required_capacity": round(float(total_required_battery_capacity), 2),
                     "total_backup_watts": total_backup_watts,
                     "actual_backup_time": round(float(actual_backup_time), 2),
-                    "overall_setup_cost": float(response_data.get("final_cost", 0)) + total_battery_cost
+                    "overall_setup_cost": overall_setup_cost,
+                    "final_cost": final_cost
                 })
             else:
                 response_data["battery_info"] = f"No battery found that can provide {backup_hours} hours of backup with {float(total_required_battery_capacity):.2f} kWh capacity"
