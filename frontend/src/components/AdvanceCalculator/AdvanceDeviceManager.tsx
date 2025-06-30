@@ -81,11 +81,14 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     };
   }, []);
 
-  // Filter device types for UI
+    // Filter and sort device types for UI
   const usableDeviceTypes = useMemo(() => {
-    return apiDeviceTypes ? apiDeviceTypes.filter((device) => device.show_in_ui) : [];
+    return apiDeviceTypes ? 
+      apiDeviceTypes
+        .filter((device) => device.show_in_ui)
+        .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
+      : [];
   }, [apiDeviceTypes]);
-
   // Filtered devices based on search term for the custom dropdown
   const filteredDevices = useMemo(() => {
     if (!searchTerm) {
