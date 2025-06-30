@@ -1,4 +1,3 @@
-/* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceForm1.tsx */
 import React from "react";
 import Button from "../ui/Button";
 import { BasicInfoFormData } from "@/types/types";
@@ -34,6 +33,13 @@ export default function BasicInformationStep({
   ) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  // Set Bi-monthly as default if bill_frequency is not set
+  React.useEffect(() => {
+    if (formData.home_type === "Existing Home" && !formData.bill_frequency) {
+      setFormData((prev) => ({ ...prev, bill_frequency: "Bi-monthly" }));
+    }
+  }, [formData.home_type, formData.bill_frequency, setFormData]);
 
   return (
     <div className="space-y-8 md:p-6">
@@ -142,16 +148,11 @@ export default function BasicInformationStep({
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
               <div
-                className={`flex flex-col gap-2 items-center border p-6 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out ${
-                  formData.bill_frequency === "Monthly"
-                    ? "border-[#F7BA41] bg-[#FFFBEB] shadow-md"
-                    : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
-                }`}
-                onClick={() => handleCardSelect("bill_frequency", "Monthly")}
+                className="flex flex-col gap-2 items-center border p-6 rounded-2xl opacity-50 cursor-not-allowed transition-all duration-200 ease-in-out bg-gray-100 border-gray-300"
               >
                 <Image src={monthlyIcon} alt="Monthly Icon" />
-                <h3 className="font-bold text-[#123532] mb-2">Monthly</h3>
-                <p className="text-gray-600 text-sm">
+                <h3 className="font-bold text-gray-500 mb-2">Monthly</h3>
+                <p className="text-gray-500 text-sm">
                   You get your electricity bill once every month.
                 </p>
               </div>
