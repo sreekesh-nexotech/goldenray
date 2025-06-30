@@ -336,8 +336,8 @@ export default function ResultDisplay({
             Lifetime Savings
           </p>
           {isNegativeSavings && (
-            <p className="text-red-600 text-sm md:text-base mb-4 -mt-4 font-semibold">
-              Negative savings? Add more appliances—solar lets you enjoy more comfort without raising your bill!
+            <p className="text-[#FBC207] text-sm md:text-base mb-4 -mt-4">
+              Negative savings? Solar lets you add appliances without raising bills, ensuring long-term profits.
             </p>
           )}
           <div className="relative h-64 w-full flex-grow">

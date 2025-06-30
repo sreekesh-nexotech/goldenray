@@ -109,6 +109,9 @@ export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
     },
   };
 
+  // Check if lifetime savings is negative
+  const isNegativeSavings = parseFloat(data.financialDetails.lifetime_savings.replace(/[^0-9.-]+/g, '')) < 0;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 items-start xl:gap-8 mt-10">
       {/* Box 1: Power, Area, Installation */}
@@ -139,6 +142,11 @@ export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
           {data.financialDetails.lifetime_savings}
         </h2>
         <p className="text-gray-600 text-sm md:text-base mb-6">Lifetime Savings</p>
+        {isNegativeSavings && (
+          <p className="text-[#FBC207] text-xs md:text-sm mb-4 -mt-4">
+            Negative savings? Solar lets you add appliances without raising bills, ensuring long-term profits.
+          </p>
+        )}
         <div className="relative h-48 w-full flex-grow">
           <Line data={chartData} options={chartOptions} />
         </div>
