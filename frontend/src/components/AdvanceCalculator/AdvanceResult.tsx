@@ -210,6 +210,9 @@ export default function ResultDisplay({
     },
   };
 
+  // Check if lifetime savings is negative
+  const isNegativeSavings = parseFloat(data.financialDetails.lifetime_savings.replace(/[^0-9.-]+/g, '')) < 0;
+
   return (
     <div className="space-y-8 my-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch mt-10">
@@ -332,6 +335,11 @@ export default function ResultDisplay({
           <p className="text-gray-600 text-sm md:text-base mb-6">
             Lifetime Savings
           </p>
+          {isNegativeSavings && (
+            <p className="text-red-600 text-sm md:text-base mb-4 -mt-4 font-semibold">
+              Negative savings? Add more appliances—solar lets you enjoy more comfort without raising your bill!
+            </p>
+          )}
           <div className="relative h-64 w-full flex-grow">
             <Line data={chartData} options={chartOptions} />
           </div>
