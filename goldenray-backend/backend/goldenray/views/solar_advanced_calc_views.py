@@ -61,18 +61,31 @@ class SolarAdvancedCalcAPIView(APIView):
                 except (ValueError, TypeError):
                     pass
         else:
-            # Add average_bill converted to units (1 unit = 6.67 rupees)
+            # Add average_bill converted to units using KSEB tariffs
             average_bill = specs.get("average_bill")
             if average_bill:
                 try:
                     average_bill = float(average_bill)
-                    average_bill_units = average_bill / 6.75
+                    # Approximate units by dividing by an average rate, then find the correct rate.
+                    # This is an approximation as we can't perfectly reverse the non-telescopic slab tariff.
+                    estimated_units = average_bill / 8.0  # Using 8.0 as a generic mid-rate for estimation
+                    tariff_row = KSEBTariff.objects.filter(min_units__lte=estimated_units).order_by('-min_units').first()
+                    kseb_rate = 6.75  # Default fallback
+                    if tariff_row and (tariff_row.max_units is None or estimated_units <= tariff_row.max_units):
+                        kseb_rate = float(tariff_row.rate)
+                    
+                    average_bill_units = average_bill / kseb_rate if kseb_rate > 0 else 0
                     total_kwh += average_bill_units
                 except (ValueError, TypeError):
                     pass
 
-        # Convert total_kwh_for_period back to rupees
-        new_bimonthly_bill = total_kwh * 6.75
+        # Find the correct KSEB tariff rate for the calculated total_kwh
+        kseb_rate = 6.75  # Default rate
+        tariff_row = KSEBTariff.objects.filter(min_units__lte=total_kwh).order_by('-min_units').first()
+        if tariff_row and (tariff_row.max_units is None or total_kwh <= tariff_row.max_units):
+            kseb_rate = float(tariff_row.rate)
+        # Convert total_kwh_for_period back to rupees using the found rate
+        new_bimonthly_bill = total_kwh * kseb_rate
 
         # Find matching solar installation
         solar_row = SolarInstallationNew.objects.filter(bill_range__gte=new_bimonthly_bill, type__iexact='Residential').order_by('bill_range').first()
@@ -114,35 +127,30 @@ class SolarAdvancedCalcAPIView(APIView):
                     dt = DeviceType.objects.filter(name__iexact=device_type_name).first()
                     wattage = float(dt.watts) if dt and dt.watts else 0
                 no_of_units = int(device.get("no_of_units", 1))
-                daily_usage = float(device.get("daily_usage", 0))
+                daily_usage = float(device.get("daily_usage", 0)) # Hours for this device
                 total_required_battery_capacity += (wattage * no_of_units * daily_usage) / 1000
                 total_backup_watts += wattage * no_of_units
 
-            # Calculate average load (kW) during backup
-            average_load_kw = float(total_required_battery_capacity) / float(backup_hours) if backup_hours else 0
-
-            # Find the smallest battery where actual_backup_time >= backup_hours
-            selected_battery = None
-            for battery in Battery.objects.all().order_by('battery_capacity'):
-                battery_capacity = float(battery.battery_capacity)
-                if average_load_kw > 0:
-                    actual_backup_time = battery_capacity / average_load_kw
-                else:
-                    actual_backup_time = 0
-                if actual_backup_time >= backup_hours:
-                    selected_battery = battery
-                    break
-
+            # Find the smallest battery that can meet the total required energy (kWh).
+            selected_battery = Battery.objects.filter(
+                battery_capacity__gte=total_required_battery_capacity
+            ).order_by('battery_capacity').first()
+            
+            actual_backup_time = 0
             if selected_battery:
-                total_battery_cost = float(selected_battery.battery_price + selected_battery.inverter_price)
+                # Calculate what the actual backup time would be with the selected battery's capacity.
+                if total_required_battery_capacity > 0:
+                    actual_backup_time = (float(selected_battery.battery_capacity) / total_required_battery_capacity) * backup_hours
+
+                inverter_price = float(solar_row.inverter_price) if solar_row.inverter_price is not None else 0
+                total_battery_cost = float(selected_battery.battery_price) + inverter_price
                 overall_setup_cost = float(response_data.get("final_cost", 0)) + total_battery_cost + float(response_data.get("total_cost", 0))
                 final_cost = overall_setup_cost - float(response_data.get("total_subsidy", 0))
 
                 response_data.update({
                     "battery_capacity": float(selected_battery.battery_capacity),
-                    "backup_hour": float(selected_battery.backup_hour),
                     "battery_price": float(selected_battery.battery_price),
-                    "inverter_price": float(selected_battery.inverter_price),
+                    "inverter_price": inverter_price,
                     "total_battery_cost": total_battery_cost,
                     "calculated_required_capacity": round(float(total_required_battery_capacity), 2),
                     "total_backup_watts": total_backup_watts,
@@ -151,11 +159,37 @@ class SolarAdvancedCalcAPIView(APIView):
                     "final_cost": final_cost
                 })
             else:
-                response_data["battery_info"] = f"No battery found that can provide {backup_hours} hours of backup with {float(total_required_battery_capacity):.2f} kWh capacity"
+                # No battery is large enough, so select the largest available and return max backup time
+                largest_battery = Battery.objects.order_by('-battery_capacity').first()
+                if largest_battery and total_required_battery_capacity > 0:
+                    max_backup_time = float(largest_battery.battery_capacity) / (total_required_battery_capacity / backup_hours)
+                    actual_backup_time = float(largest_battery.battery_capacity) / (total_required_battery_capacity / backup_hours)
+                    inverter_price = float(solar_row.inverter_price) if solar_row.inverter_price is not None else 0
+                    total_battery_cost = float(largest_battery.battery_price) + inverter_price
+                    overall_setup_cost = float(response_data.get("final_cost", 0)) + total_battery_cost + float(response_data.get("total_cost", 0))
+                    final_cost = overall_setup_cost - float(response_data.get("total_subsidy", 0))
+                    response_data.update({
+                        "battery_capacity": float(largest_battery.battery_capacity),
+                        "battery_price": float(largest_battery.battery_price),
+                        "inverter_price": inverter_price,
+                        "total_battery_cost": total_battery_cost,
+                        "calculated_required_capacity": round(float(total_required_battery_capacity), 2),
+                        "total_backup_watts": total_backup_watts,
+                        "actual_backup_time": round(float(actual_backup_time), 2),
+                        "overall_setup_cost": overall_setup_cost,
+                        "final_cost": final_cost,
+                        "battery_info": f"No battery can provide {backup_hours} hours of backup for your specified devices (need {total_required_battery_capacity:.2f} kWh). The largest available battery can provide up to {round(float(actual_backup_time), 2)} hours of backup."
+                    })
+                else:
+                    response_data["battery_info"] = f"No battery found that can provide {backup_hours} hours of backup for your specified devices, which require {total_required_battery_capacity:.2f} kWh of energy."
 
         # Calculate the virtual monthly bill based on all planned devices and EVs
-        virtual_monthly_kwh = (total_device_kwh_per_day + total_ev_kwh_per_day) * 30  # 30 days for monthly
-        virtual_monthly_bill = virtual_monthly_kwh * 6.67  # Always use 6.67 as per-unit rate
+        virtual_monthly_kwh = (total_device_kwh_per_day + total_ev_kwh_per_day) * 30
+        tariff_row_virtual = KSEBTariff.objects.filter(min_units__lte=virtual_monthly_kwh).order_by('-min_units').first()
+        kseb_rate_virtual = 6.67 # Default
+        if tariff_row_virtual and (tariff_row_virtual.max_units is None or virtual_monthly_kwh <= tariff_row_virtual.max_units):
+            kseb_rate_virtual = float(tariff_row_virtual.rate)
+        virtual_monthly_bill = virtual_monthly_kwh * kseb_rate_virtual
 
         # Add current average bill or estimated base load to the virtual monthly bill
         base_monthly_bill = 0
@@ -164,25 +198,30 @@ class SolarAdvancedCalcAPIView(APIView):
             if estimated_base_load:
                 try:
                     estimated_base_load = float(estimated_base_load)
-                    # estimated_base_load is for 2 months, so divide by 2 for monthly
-                    base_monthly_bill = (estimated_base_load / 2) * 6.67
+                    monthly_units = estimated_base_load / 2
+                    # Find rate for estimated base load units
+                    tariff_row_base = KSEBTariff.objects.filter(min_units__lte=monthly_units).order_by('-min_units').first()
+                    kseb_rate_base = 6.67 # Default
+                    if tariff_row_base and (tariff_row_base.max_units is None or monthly_units <= tariff_row_base.max_units):
+                        kseb_rate_base = float(tariff_row_base.rate)
+                    base_monthly_bill = monthly_units * kseb_rate_base
                 except (ValueError, TypeError):
                     pass
-        else:
+        else: # Existing home
             average_bill = specs.get("average_bill")
             if average_bill:
                 try:
-                    average_bill = float(average_bill)
-                    base_monthly_bill = average_bill
+                    # The base bill is simply the average bill they already pay
+                    base_monthly_bill = float(average_bill)
                 except (ValueError, TypeError):
                     pass
         # The total monthly bill for the graph is the base bill plus the new devices
         total_monthly_bill_for_graph = base_monthly_bill + virtual_monthly_bill
 
-        # Graph Calculation Logic (similar to solar_calculator_new_views.py)
+        
         years = [0, 5, 10, 15, 20, 25]
-        bill_cycles_per_year = 6  # or 12 for commercial, adjust as needed
-        rate = 0.05  # 5% increase per year
+        bill_cycles_per_year = 6
+        rate = 0.05
 
         def calculate_without_solar(bill, cycles_per_year, years, rate=0.05):
             annual_bill = bill * cycles_per_year
@@ -193,7 +232,7 @@ class SolarAdvancedCalcAPIView(APIView):
             return cumulative
 
         def calculate_with_solar(initial_cost, loan_amount, years_to_breakeven, years, cycles_per_year, subsidy, rate=0.05):
-            bill_per_cycle = 72  # Assumed minimal bill per cycle with solar
+            bill_per_cycle = 280
             annual_bill = bill_per_cycle * cycles_per_year
             loan_repayment_per_year = loan_amount / years_to_breakeven if years_to_breakeven else 0
             cumulative = []
@@ -210,7 +249,7 @@ class SolarAdvancedCalcAPIView(APIView):
                     cumulative.append(round(total))
             return cumulative
 
-        # Use values from the selected solar_row for with_solar calculation
+        
         initial_cost = float(solar_row.total_cost)
         if grid_type == "Hybrid" and "overall_setup_cost" in response_data:
             initial_cost = float(response_data["overall_setup_cost"])
@@ -233,7 +272,7 @@ class SolarAdvancedCalcAPIView(APIView):
         with_solar = calculate_with_solar(initial_cost, loan_amount, years_to_breakeven, years, bill_cycles_per_year, subsidy)
         response_data["graph_without_solar"] = without_solar
         response_data["graph_with_solar"] = with_solar
-        # Add savings as the difference between the last values of the two graphs
+        
         if without_solar and with_solar:
             response_data["savings"] = without_solar[-1] - with_solar[-1]
 

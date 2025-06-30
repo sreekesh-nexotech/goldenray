@@ -13,6 +13,7 @@ class SolarInstallationNewSerializer(serializers.ModelSerializer):
             "total_subsidy",
             "area_required",
             "loan_available",
+            "inverter_price",
             "created_at",
             "updated_at",
         ]

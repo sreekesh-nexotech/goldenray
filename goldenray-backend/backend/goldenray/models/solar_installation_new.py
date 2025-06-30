@@ -11,6 +11,7 @@ class SolarInstallationNew(models.Model):
     per_kw_rate = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     final_cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     interest_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    inverter_price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     type = models.CharField(max_length=100, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
