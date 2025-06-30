@@ -1,5 +1,3 @@
-/* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceDeviceManager.tsx */
-// src/components/AdvanceCalculator/AdvanceDeviceManager.tsx
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
@@ -81,7 +79,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     };
   }, []);
 
-    // Filter and sort device types for UI
+  // Filter and sort device types for UI
   const usableDeviceTypes = useMemo(() => {
     return apiDeviceTypes ? 
       apiDeviceTypes
@@ -149,7 +147,6 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     setIsDropdownOpen(false); // Close dropdown
     setErrors((prev) => ({ ...prev, device_type: "" })); // Clear device_type error on selection
     console.log("Selected device icon_url:", selectedDevice?.url);
-
   };
 
   // Add a new device
@@ -167,11 +164,10 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
         url: urlToUse, // Use the determined icon URL
       };
       setDevices([...devices, device]);
-      setNewDevice({ device_type: "", no_of_units: "",  daily_usage: "", url: "" }); // Reset url
+      setNewDevice({ device_type: "", no_of_units: "", daily_usage: "", url: "" }); // Reset url
       setSearchTerm(""); // Clear search term after adding
       setErrors({});
-       console.log('Device URL:', device.url);
-
+      console.log('Device URL:', device.url);
     }
   };
 
@@ -221,8 +217,11 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
         <div className="relative" ref={inputWrapperRef}>
-          {/* Custom Searchable Dropdown Input */}
+          <label htmlFor="device_type" className="block text-sm font-medium text-[#123532] mb-1">
+            Device Type
+          </label>
           <input
+            id="device_type"
             type="text"
             placeholder="Search & Select Device Type"
             value={searchTerm}
@@ -256,7 +255,11 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           )}
         </div>
         <div className="relative">
+          <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
+            Number of Devices
+          </label>
           <input
+            id="no_of_units"
             type="number"
             name="no_of_units"
             placeholder="No. of Devices"
@@ -271,9 +274,12 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
             <p className="text-red-500 text-sm mt-1">{errors.no_of_units}</p>
           )}
         </div>
-        
         <div className="relative">
+          <label htmlFor="daily_usage" className="block text-sm font-medium text-[#123532] mb-1">
+            Daily Usage (Hours)
+          </label>
           <input
+            id="daily_usage"
             type="number"
             name="daily_usage"
             placeholder="Daily Usage (Hours)"
@@ -304,9 +310,8 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           >
             <div>
               <span className="font-semibold flex gap-2 items-center">
-                {/* Use device.url for the Image src */}
                 <Image
-                  src={device.url} // Changed to device.url
+                  src={device.url}
                   alt={`Icon for ${device.device_type}`}
                   width={24}
                   height={24}

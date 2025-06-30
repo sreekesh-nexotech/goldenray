@@ -200,6 +200,9 @@ export default function Electric_vehicleManager({
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
         <div className="relative" ref={inputWrapperRef}>
+          <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
+            Vehicle Type
+          </label>
           <input
             type="text"
             placeholder="Search & Select Vehicle Type"
@@ -251,6 +254,9 @@ export default function Electric_vehicleManager({
           )}
         </div>
         <div className="relative">
+          <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
+            Number of Vehicles
+          </label>
           <input
             type="number"
             name="no_of_vehicles"
@@ -268,6 +274,9 @@ export default function Electric_vehicleManager({
         </div>
         
         <div className="relative">
+          <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
+            Daily Usage (KM)
+          </label>
           <input
             type="number"
             name="daily_avg_km"
