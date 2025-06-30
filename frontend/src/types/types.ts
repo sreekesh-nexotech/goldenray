@@ -194,3 +194,40 @@ export interface VehicleType {
   updated_at: string;
   created_at: string;
 }
+
+
+
+// Interfaces for OTP API requests and responses
+
+export interface SendOtpRequest {
+  name: string;
+  phone_number: string;
+}
+
+export interface SendOtpResponse {
+  message: string;
+}
+
+export interface VerifyOtpRequest {
+  phone_number: string;
+  code: string;
+}
+
+export interface VerifyOtpResponse {
+  message: string;
+  status:string;
+}
+
+// Interface for API errors
+export interface CustomApiError extends Error {
+  message: string;
+}
+
+//interface for metadata
+export interface MetadataResponse {
+  title: string;
+  description: string;
+  keywords: string[];
+  imageUrl: string;
+  ogType: string;
+}
