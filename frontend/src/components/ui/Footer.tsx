@@ -255,7 +255,8 @@ export default function Footer() {
 
         {/* Copyright */}
         <p className="text-center text-xs mt-6 text-gray-300">
-          © 2025 GoldenRay. All rights reserved.
+          © 2025 GoldenRay. All rights reserved. <br/>
+          Made by <Link href="https://nexotech.cc/" target="new">Nexotech</Link>
         </p>
       </section>
     </>
