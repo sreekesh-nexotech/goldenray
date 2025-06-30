@@ -11,6 +11,7 @@ from .views.solar_calculator_views import SolarCalculatorAPIView
 from .views.solar_calculator_new_views import SolarCalculatorNewAPIView
 from .views.solar_installation_new_views import SolarInstallationNewAPIView
 from .views.solar_advanced_calc_views import SolarAdvancedCalcAPIView
+from .views.otp_views import SendOTPAPIView, VerifyOTPAPIView
 
 
 urlpatterns = [
@@ -46,4 +47,6 @@ urlpatterns = [
     # Solar Calculator New
     path("calculate-solar-new/", SolarCalculatorNewAPIView.as_view(), name="calculate-solar-new"),
     path("calculate-solar-advanced/", SolarAdvancedCalcAPIView.as_view(), name="calculate-solar-advanced"),
+    path("send-otp/", SendOTPAPIView.as_view(), name="send-otp"),
+    path("verify-otp/", VerifyOTPAPIView.as_view(), name="verify-otp"),
 ]
