@@ -49,7 +49,7 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
           // Verify OTP
           const response = await verifyOtp(phoneNumber, code);
           console.log("Verify OTP response:", response);
-          if (response.success) {
+          if (response.status == "approved") {
             setFormSubmitted(true);
             setTimeout(() => {
               onClose();
@@ -109,7 +109,7 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
 
             <div>
               <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
-                Phone Number
+                Whatsapp Number
               </label>
               <input
                 id="phoneNumber"
