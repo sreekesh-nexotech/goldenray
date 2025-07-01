@@ -1,9 +1,10 @@
+// golden-ray/frontend/src/components/ui/Footer.tsx
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { submitContactForm, ContactFormData } from "@/services/basicContactService";
+import { useState, useRef } from "react";
+import { submitContactForm} from "@/services/basicContactService";
 import footerLogo from "../../../public/Mask-group.png";
 import LinkedInLogo from "../../../public/LinkedinLogo.png";
 import FacebookLogo from "../../../public/FacebookLogo.png";
@@ -14,71 +15,75 @@ export default function Footer() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  // Form handling
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const scrollY = window.scrollY; // Preserve scroll position
+    const scrollY = window.scrollY;
     const form = e.currentTarget;
 
-    // Check form validity
-    if (form.checkValidity()) {
-      const formData = new FormData(form);
-      const name = formData.get("name") as string;
-      const mobileNumber = formData.get("mobileNumber") as string;
-
-      // Client-side validation
-      if (!name.match(/[A-Za-z\s]{3,}/)) {
-        setError("Please enter a valid name with at least 3 alphabetic characters.");
-        window.scrollTo(0, scrollY);
-        return;
-      }
-      if (!mobileNumber.match(/[0-9\s\-+]{7,15}/)) {
-        setError("Please enter a valid phone number (7-15 digits).");
-        window.scrollTo(0, scrollY);
-        return;
-      }
-
-      setIsLoading(true);
-      setError(null);
-      setSuccessMessage(null);
-
-      try {
-        const data: ContactFormData = { name, mobileNumber };
-        const response = await submitContactForm(data);
-        setSuccessMessage(response.message);
-        form.reset();
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred.";
-        setError(errorMessage);
-      } finally {
-        setIsLoading(false);
-        window.scrollTo(0, scrollY);
-      }
-    } else {
+    // Ensure the form is valid according to HTML5 constraints before custom validation
+    if (!form.checkValidity()) {
       form.reportValidity();
+      window.scrollTo(0, scrollY);
+      return;
+    }
+
+    const formData = new FormData(form);
+    const name = formData.get("name") as string;
+    const phone_number = formData.get("phone_number") as string;
+
+    // Client-side validation for name (at least 3 alphabetic characters)
+    if (!name.match(/^[A-Za-z\s]{3,}$/)) {
+      setError("Please enter a valid name with at least 3 alphabetic characters.");
+      setSuccessMessage(null); // Clear success message if there's a new error
+      window.scrollTo(0, scrollY);
+      return;
+    }
+
+    // Client-side validation for Indian mobile numbers (10 digits, starts with 6, 7, 8, or 9)
+    if (!phone_number.match(/^[6-9]\d{9}$/)) {
+      setError("Please enter a valid 10-digit Indian mobile number.");
+      setSuccessMessage(null); // Clear success message if there's a new error
+      window.scrollTo(0, scrollY);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    try {
+      // Destructure 'message' directly, no need for a 'response' variable here
+      await submitContactForm({ name, phone_number });
+      setSuccessMessage("Thank you! Your consultation request has been successfully submitted. We'll be in touch shortly!");
+      if (formRef.current) {
+        formRef.current.reset();
+      }
+    } catch (err) {
+      if (err instanceof Error && err.message.includes('HTTP error! Status: 400') && err.message.includes('phone number already exists')) {
+        setSuccessMessage("We already have your details! Our team will contact you soon.");
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+      } else {
+        const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred.";
+        setError(`Failed to submit: ${errorMessage}`);
+      }
+    } finally {
+      setIsLoading(false);
       window.scrollTo(0, scrollY);
     }
   };
-
-  // Debug scroll changes
-  useEffect(() => {
-    const handleScroll = () => {
-      console.log("Scroll position in Footer:", window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <>
       <section id="footer" className="scroll-mt-[45px]"></section>
       <section className="w-full bg-[#074A4D] rounded-t-3xl text-white py-16 px-4 sm:px-8 md:px-12 relative overflow-hidden">
-        {/* Grid Background Layer */}
         <div
-          className="absolute inset-0 z-0 opacity-50 pointer-events-none 
-            bg-[url('../../public/grid.svg')] 
-            bg-no-repeat 
+          className="absolute inset-0 z-0 opacity-50 pointer-events-none
+            bg-[url('../../public/grid.svg')]
+            bg-no-repeat
             bg-auto"
           style={{
             WebkitMaskImage: `
@@ -95,9 +100,7 @@ export default function Footer() {
             maskComposite: "intersect",
           }}
         />
-
         <div className="max-w-7xl z-10 mx-auto flex flex-col md:flex-row gap-10 justify-between">
-          {/* Left - Text Content */}
           <div>
             <h2 className="lg:text-[64px]/15 text-[40px]/9 md:text-left text-center font-bold mb-4">
               Ready to go<br /> solar with us?
@@ -106,12 +109,11 @@ export default function Footer() {
               We&apos;re just a message away!
             </p>
           </div>
-
-          {/* Right - Form */}
           <form
+            ref={formRef}
             className="flex flex-col gap-4 w-full max-w-sm max-sm:max-w-full"
             onSubmit={handleSubmit}
-            noValidate={false}
+            noValidate={true} 
             aria-label="Contact us form"
           >
             <div className="relative">
@@ -129,12 +131,12 @@ export default function Footer() {
             <div className="relative">
               <input
                 type="tel"
-                name="mobileNumber"
+                name="phone_number"
                 placeholder="Mobile Number"
                 className="px-4 py-3 rounded-xl text-black bg-white mb-3 focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
                 required
-                pattern="[0-9\s\-+]{7,15}"
-                title="Please enter a valid phone number (7-15 digits)."
+                pattern="[6-9]\d{9}" // Updated pattern for Indian mobile numbers
+                title="Please enter a valid 10-digit Indian mobile number (e.g., 9876543210)."
                 aria-label="Your mobile number"
               />
             </div>
@@ -160,11 +162,8 @@ export default function Footer() {
             )}
           </form>
         </div>
-
-        {/* Footer Section */}
         <div className="relative bg-white z-10 text-black mt-12 rounded-2xl p-6 sm:p-10">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between">
-            {/* Logo + Description */}
             <div className="w-full md:w-1/3 max-w-md mb-6 md:mb-0">
               <div className="font-bold text-xl mb-2">
                 <Image src={footerLogo} alt="Golden Ray Logo" width={120} height={40} />
@@ -187,10 +186,7 @@ export default function Footer() {
                 </Link>
               </div>
             </div>
-
-            {/* Footer Links */}
             <div className="flex flex-col md:flex-row flex-wrap gap-10 md:justify-end">
-              {/* Column 1 */}
               <div className="min-w-[150px] space-y-3">
                 <h1 className="text-[#666666] text-base font-light">Company</h1>
                 <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
@@ -216,7 +212,6 @@ export default function Footer() {
                   </li>
                 </ul>
               </div>
-              {/* Column 2 */}
               <div className="min-w-[150px] space-y-3">
                 <h1 className="text-[#666666] text-base font-light">Resources</h1>
                 <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
@@ -237,7 +232,6 @@ export default function Footer() {
                   </li>
                 </ul>
               </div>
-              {/* Column 3 */}
               <div className="min-w-[150px] space-y-3">
                 <h1 className="text-[#666666] text-base font-light">Legal</h1>
                 <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
@@ -261,10 +255,9 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
-        {/* Copyright */}
         <p className="text-center text-xs mt-6 text-gray-300">
-          © 2025 GoldenRay. All rights reserved.
+          © 2025 GoldenRay. All rights reserved. <br />
+          Made by <Link href="https://nexotech.cc/" target="new">Nexotech</Link>
         </p>
       </section>
     </>

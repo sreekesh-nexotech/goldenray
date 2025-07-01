@@ -25,9 +25,10 @@ ChartJS.register(
 
 interface BasicResultProps {
   data: BasicCalculatorData;
+  monthlyBill:number | "";
 }
 
-export default function BasicResult({ data }: BasicResultProps) {
+export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
   if (!data.graph_data.labels.length || !data.graph_data.datasets.length) {
     return (
       <div className="text-center text-gray-600 p-6">
@@ -40,16 +41,18 @@ export default function BasicResult({ data }: BasicResultProps) {
     labels: data.graph_data.labels,
     datasets: data.graph_data.datasets.map((dataset, index) => ({
       ...dataset,
-      label: index === 0 ? "Solar Power" : "Current Source",
-      borderColor: index === 0 ? "#FBC207" : "#5958CB",
-      backgroundColor: index === 0 ? "#FBC207" : "#5958CB",
+      label: index === 0 ? "Without Solar" : "With Solar",
+      borderColor: index === 0 ? "#5958CB" : "#FBC207",
+      backgroundColor: index === 0 ? "#5958CB" : "#FBC207",
       fill: false,
       tension: 0.4, // Set tension for smooth curves
+      pointRadius: 0,
     })),
   };
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "bottom" as const,
@@ -79,6 +82,10 @@ export default function BasicResult({ data }: BasicResultProps) {
         },
       },
     },
+    hover: {
+      mode: 'index' as const,
+      intersect: false, // Crucial: allows tooltip to trigger when mouse is near the line, not just on a point
+    },
     scales: {
       x: {
         grid: {
@@ -101,6 +108,9 @@ export default function BasicResult({ data }: BasicResultProps) {
       },
     },
   };
+
+  // Check if lifetime savings is negative
+  const isNegativeSavings = parseFloat(data.financialDetails.lifetime_savings.replace(/[^0-9.-]+/g, '')) < 0;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 items-start xl:gap-8 mt-10">
@@ -132,11 +142,16 @@ export default function BasicResult({ data }: BasicResultProps) {
           {data.financialDetails.lifetime_savings}
         </h2>
         <p className="text-gray-600 text-sm md:text-base mb-6">Lifetime Savings</p>
+        {isNegativeSavings && (
+          <p className="text-[#FBC207] text-xs md:text-sm mb-4 -mt-4">
+            Negative savings? Solar lets you add appliances without raising bills, ensuring long-term profits.
+          </p>
+        )}
         <div className="relative h-48 w-full flex-grow">
           <Line data={chartData} options={chartOptions} />
         </div>
         <p className="text-[#124944] text-sm md:text-base mt-4 text-center bg-[#E8FEFF] border border-[#BCE8E4] rounded-full py-2 px-1">
-          {data.financialDetails.monthlyEBReduction}
+          Reduce EB from <b>₹{monthlyBill}</b> to just <b>{data.financialDetails.monthlyEBReduction}</b>
         </p>
       </div>
 

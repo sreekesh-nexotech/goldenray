@@ -4,6 +4,7 @@ import Footer from '@/components/ui/Footer';
 import '@/styles/globals.css';
 import { DM_Sans } from 'next/font/google';
 import localFont from 'next/font/local';
+import { Metadata } from 'next';
 
 // Configure DM Sans for headers
 const dmSans = DM_Sans({
@@ -73,36 +74,37 @@ const switzer = localFont({
 });
 
 // Metadata
-export const metadata = {
-  title: 'GoldenRay - Sustainable Solar Energy Solutions',
-  description:
-    'GoldenRay provides custom solar energy solutions for homes, businesses, and industries. Save on energy bills and embrace sustainability with our expert solar installations.',
-  keywords: ['solar energy', 'renewable energy', 'solar solutions', 'sustainable energy', 'GoldenRay', 'solar panels'],
-  viewport: 'width=device-width, initial-scale=1',
-  robots: 'index, follow',
+export const metadata: Metadata = {
+  title: {
+    default: "Golden Ray - Solar Solutions",
+    template: "%s | Golden Ray",
+  },
+  description: "Empowering sustainable energy with innovative solar solutions.",
+  keywords: ["solar energy", "renewable energy", "Golden Ray"],
   openGraph: {
-    title: 'GoldenRay - Sustainable Solar Energy Solutions',
-    description:
-      'Discover custom solar solutions with GoldenRay. Save money and power your future with sustainable energy for homes and businesses.',
-    url: 'https://www.goldenray.com',
-    siteName: 'GoldenRay',
-    images: [
-      {
-        url: '/heroImg.png',
-        width: 1200,
-        height: 630,
-        alt: 'GoldenRay Solar Solutions',
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
+    title: "Golden Ray - Solar Solutions",
+    description: "Empowering sustainable energy with innovative solar solutions.",
+    url: "https://goldenray.com",
+    siteName: "Golden Ray",
+    images: [{ url: "/heroImg.png", width: 1200, height: 630, alt: "Golden Ray" }],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'GoldenRay - Sustainable Solar Energy Solutions',
-    description:
-      'Join the solar revolution with GoldenRay’s custom energy solutions for homes and businesses.',
-    images: ['/heroImg.png'],
+    card: "summary_large_image",
+    title: "Golden Ray - Solar Solutions",
+    description: "Empowering sustainable energy with innovative solar solutions.",
+    images: ["/heroImg.png"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
+  alternates: {
+    canonical: "https://goldenray.com",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

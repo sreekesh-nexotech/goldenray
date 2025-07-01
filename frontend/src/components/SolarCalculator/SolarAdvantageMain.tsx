@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState} from "react"; // Import useEffect
 import SolarBasicResult from "./SolarBasicResult";
 import SolarAdvantage from "./solar-advantage";
 import { BasicCalculatorData, SolarBasicPayload } from "@/types/types";
@@ -15,6 +15,9 @@ export default function SolarAdvantageMain() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const resultsRef = useRef<HTMLDivElement>(null); // Ref to the section containing results/form
+
+ 
 
   const handleCalculateSubmit = async (
     pincode: string,
@@ -37,9 +40,14 @@ export default function SolarAdvantageMain() {
         throw new Error("No data returned from the API.");
       }
       setCalculatorData(data);
-      setShowResults(true);
+      setShowResults(true); // This will trigger the useEffect for scrolling
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to fetch solar advantage data. Please try again.";
+      let errorMessage = "Failed to fetch solar advantage data. Please try again.";
+      if (err instanceof Error && err.message.includes("Pincode not found in database")) {
+        errorMessage = "Based on your pincode Our Service is not currently available in your area.";
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
       console.error("API Error:", err);
       setError(errorMessage);
     } finally {
@@ -68,8 +76,14 @@ export default function SolarAdvantageMain() {
         throw new Error("No data returned from the API.");
       }
       setCalculatorData(data);
+
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to resubmit solar advantage data. Please try again.";
+      let errorMessage = "Failed to resubmit solar advantage data. Please try again.";
+      if (err instanceof Error && err.message.includes("Pincode not found in database")) {
+        errorMessage = "Based on your pincode Our Service is not currently available in your area.";
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
       console.error("API Error:", err);
       setError(errorMessage);
     } finally {
@@ -80,10 +94,11 @@ export default function SolarAdvantageMain() {
   const handleGoBackToForm = () => {
     setShowResults(false);
     setError(null);
+
   };
 
   return (
-    <section className="relative">
+    <section className="relative" ref={resultsRef}> {/* Ref attached to the common container */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
           <div className="text-xl font-semibold text-[#123532]">

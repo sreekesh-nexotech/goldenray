@@ -1,9 +1,12 @@
 import Image from 'next/image'; 
-import heroImg from '../../../public/heroImg.png'
 import PageIllustration from '@/components/ui/page-illustration';
 import LinkingButton from '../ui/LinkingButton';
 
+
 export default function HeroHome() {
+
+
+  const heroImg = "https://gym-manager-pull.b-cdn.net/golden_ray/home/heroImg.png?width=500&format=webp";
   return (
     <section className="relative w-full  overflow-hidden ">
      <PageIllustration/>
@@ -33,6 +36,7 @@ export default function HeroHome() {
             alt="Solar House"
             width={500}
             height={350}
+            priority={true}
             className="rounded-xl w-full max-w-[500px] h-auto"
           />
         </div>

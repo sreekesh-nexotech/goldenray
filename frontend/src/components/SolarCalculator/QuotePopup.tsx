@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Button from "../ui/Button";
+import { sendOtp,verifyOtp } from "@/services/detailedQuoteService";
 
 interface QuotePopupProps {
   onClose: () => void;
@@ -9,47 +10,64 @@ interface QuotePopupProps {
 
 export default function QuotePopup({ onClose }: QuotePopupProps) {
   const [name, setName] = useState("");
-  const [whatsappNumber, setWhatsappNumber] = useState("");
-  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [code, setCode] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [formSubmitted, setFormSubmitted] = useState(false); // New state for submission status
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
     if (!name.trim()) newErrors.name = "Name is required.";
-    if (!whatsappNumber.trim()) {
-      newErrors.whatsappNumber = "WhatsApp number is required.";
-    } else if (!/^\d{10}$/.test(whatsappNumber.replace(/\s/g, ""))) {
-      newErrors.whatsappNumber = "Please enter a valid 10-digit WhatsApp number.";
+    if (!phoneNumber.trim()) {
+      newErrors.phoneNumber = "Phone number is required.";
+    }  else if (!/^[6-9]\d{9}$/.test(phoneNumber.replace(/\s/g, ""))) {
+      newErrors.phoneNumber = "Please enter a valid 10-digit Indian mobile number (e.g., 9447575641).";
     }
-    if (!email.trim()) {
-      newErrors.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = "Please enter a valid email address.";
+    if (showOtpInput && !code.trim()) {
+      newErrors.code = "OTP is required.";
+    } else if (showOtpInput && !/^\d{6}$/.test(code.replace(/\s/g, ""))) {
+      newErrors.code = "Please enter a valid 6-digit OTP.";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setApiError(null); // Reset API error state
+
     if (validateForm()) {
-      console.log("Quote submitted:", { name, whatsappNumber, email });
-      // In a real application, you'd send this data to your backend here.
-      // For demonstration, we'll just set the formSubmitted state to true.
-      setFormSubmitted(true);
-      
-      // Close popup after 3 seconds,
-      setTimeout(() => {
-       onClose();
-      }, 3000); 
+      try {
+        if (!showOtpInput) {
+          // Send OTP
+          const response = await sendOtp(name, phoneNumber);
+          console.log("Send OTP response:", response);
+          setShowOtpInput(true);
+        } else {
+          // Verify OTP
+          const response = await verifyOtp(name, phoneNumber, code);
+          console.log("Verify OTP response:", response);
+          if (response.status == "approved") {
+            setFormSubmitted(true);
+            setTimeout(() => {
+              onClose();
+            }, 3000);
+          } else {
+            setApiError("Invalid OTP. Please try again.");
+          }
+        }
+      } catch (error) {
+        console.error("API error:", error);
+        setApiError("Something went wrong. Please try again later.");
+      }
     }
   };
 
   return (
     <div className="fixed inset-0 backdrop-blur-lg bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white px-10 pb-10 rounded-2xl shadow-lg w-full max-w-md relative">
-        {/* Close button always visible */}
         <div className="flex items-end justify-end">
           <button
             onClick={onClose}
@@ -61,7 +79,6 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
         </div>
 
         {formSubmitted ? (
-          // Display thank you message if formSubmitted is true
           <div className="text-center py-10">
             <h2 className="text-2xl font-semibold text-[#123532] mb-4">
               Thank You!
@@ -70,12 +87,11 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
               Your request for a detailed quote has been received.
             </p>
             <p className="text-gray-700 mt-2">
-              We&apos;ll get back to you shortly on your WhatsApp number or email.
+              We&apos;ll get back to you shortly on your phone number.
             </p>
           </div>
         ) : (
-          // Display the form if formSubmitted is false
-          <form  className="space-y-4 pt-8">
+          <form className="space-y-4 pt-8" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Name
@@ -92,36 +108,42 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
             </div>
 
             <div>
-              <label htmlFor="whatsappNumber" className="block text-sm font-medium text-gray-700">
-                WhatsApp Number
+              <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+                Whatsapp Number
               </label>
               <input
-                id="whatsappNumber"
+                id="phoneNumber"
                 type="text"
-                value={whatsappNumber}
-                onChange={(e) => setWhatsappNumber(e.target.value)}
-                placeholder="e.g., 9145785412"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="e.g., 9447575641"
                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
-              {errors.whatsappNumber && <p className="mt-1 text-sm text-red-600">{errors.whatsappNumber}</p>}
+              {errors.phoneNumber && <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>}
             </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="e.g., user@test.com"
-                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              />
-              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-            </div>
+            {showOtpInput && (
+              <div>
+                <label htmlFor="code" className="block text-sm font-medium text-gray-700">
+                  OTP
+                </label>
+                <input
+                  id="code"
+                  type="text"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="Enter 6-digit OTP"
+                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                />
+                {errors.code && <p className="mt-1 text-sm text-red-600">{errors.code}</p>}
+              </div>
+            )}
 
-            <Button onClick={handleSubmit} className="w-full">Get Detailed Quote</Button>
+            {apiError && <p className="text-sm text-red-600">{apiError}</p>}
+
+            <Button onClick={handleSubmit} className="w-full">
+              {showOtpInput ? "Verify OTP" : "Get Detailed Quote"}
+            </Button>
           </form>
         )}
       </div>

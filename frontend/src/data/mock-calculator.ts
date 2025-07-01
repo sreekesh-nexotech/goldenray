@@ -44,6 +44,7 @@ export const mockAdvancedCalculatorData: AdvancedCalculatorData = {
     starting_EMI: "₹7,500",
   },
   backupDetails: {
+    actual_backup_time:"20",
     battery_requirement: "10 kWh",
     autonomy_rate: "85%",
   },

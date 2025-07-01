@@ -1,8 +1,7 @@
-// golden-ray/frontend/src/components/AdvanceCalculator/AdvanceVehicleManager.tsx
-import React, { useState, useEffect, useMemo, useRef } from "react"; // Import useRef
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
-import { Electric_vehicle, VehicleType } from "@/types/types";
+import { Electric_vehicle, VehicleType } from "@/types/types"; 
 import deleteIcon from "../../../public/deleteIcon.svg";
 import { getVehicleTypes } from "@/services/vehicleService";
 
@@ -16,10 +15,9 @@ export default function Electric_vehicleManager({
   setelectric_vehicles,
 }: Electric_vehicleManagerProps) {
   const [newVehicle, setNewVehicle] = useState({
-    vehicleType: "",
-    no_of_units: "",
-    wattage: "",
-    daily_usage: "",
+    model: "",
+    no_of_vehicles: "",
+    daily_avg_km: "",
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [apiVehicleTypes, setApiVehicleTypes] = useState<VehicleType[] | null>(null);
@@ -28,13 +26,9 @@ export default function Electric_vehicleManager({
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Ref for the input wrapper to position the dropdown
   const inputWrapperRef = useRef<HTMLDivElement>(null);
-
-  // Ref for the dropdown itself to close when clicking outside
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Fetch vehicle types
   const fetchVehicles = async () => {
     setIsLoading(true);
     setError(null);
@@ -60,7 +54,6 @@ export default function Electric_vehicleManager({
     fetchVehicles();
   }, []);
 
-  // Effect to close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -79,12 +72,10 @@ export default function Electric_vehicleManager({
     };
   }, []);
 
-  // Filter vehicle types for UI
   const usableVehicleTypes = useMemo(() => {
     return apiVehicleTypes ? apiVehicleTypes.filter((vehicle) => vehicle.show_in_ui) : [];
   }, [apiVehicleTypes]);
 
-  // Filtered vehicles based on search term
   const filteredVehicles = useMemo(() => {
     if (!searchTerm) {
       return usableVehicleTypes;
@@ -102,56 +93,54 @@ export default function Electric_vehicleManager({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    setNewVehicle((prev) => ({ ...prev, vehicleType: value })); // Update newVehicle.vehicleType as well for validation
+    setNewVehicle((prev) => ({ ...prev, model: value }));
     setIsDropdownOpen(true);
-    setErrorMessage(null); // Clear error message when typing
+    setErrorMessage(null);
   };
 
   const handleSelectVehicle = (vehicleName: string) => {
-    setNewVehicle((prev) => ({ ...prev, vehicleType: vehicleName }));
+    setNewVehicle((prev) => ({ ...prev, model: vehicleName }));
     setSearchTerm(vehicleName);
     setIsDropdownOpen(false);
-    setErrorMessage(null); // Clear error message on successful selection
+    setErrorMessage(null);
   };
 
   const addElectric_vehicle = () => {
     const scrollY = window.scrollY;
-    const no_of_unitsNum = parseFloat(newVehicle.no_of_units);
-    const wattageNum = parseFloat(newVehicle.wattage);
-    const daily_usageNum = parseFloat(newVehicle.daily_usage);
-    const vehicleTypeToValidate = newVehicle.vehicleType;
+    const no_of_unitsNum = parseFloat(newVehicle.no_of_vehicles);
+    const daily_usageNum = parseFloat(newVehicle.daily_avg_km);
+    const vehicleTypeToValidate = newVehicle.model;
+
+    // Find the selected vehicle from usableVehicleTypes to get its category
+    const selectedVehicle = usableVehicleTypes.find(v => v.name === vehicleTypeToValidate);
 
     if (
       vehicleTypeToValidate &&
       vehicleTypeToValidate !== "" &&
-      // Check if the selected vehicle type actually exists in usableVehicleTypes
-      usableVehicleTypes.some(v => v.name === vehicleTypeToValidate) &&
+      selectedVehicle && // Ensure selectedVehicle is found
       !isNaN(no_of_unitsNum) &&
       no_of_unitsNum > 0 &&
-      !isNaN(wattageNum) &&
-      wattageNum > 0 &&
       !isNaN(daily_usageNum) &&
       daily_usageNum >= 0
     ) {
       const vehicle: Electric_vehicle = {
         id: uuidv4(),
-        device_type: vehicleTypeToValidate,
-        no_of_units: no_of_unitsNum,
-        wattage: wattageNum,
-        daily_usage: daily_usageNum,
+        model: vehicleTypeToValidate,
+        no_of_vehicles: no_of_unitsNum,
+        daily_avg_km: daily_usageNum,
+        // Add the category property to the Electric_vehicle object
+        category: selectedVehicle.category,
       };
       setelectric_vehicles((prev) => [...prev, vehicle]);
-      setNewVehicle({ vehicleType: "", no_of_units: "", wattage: "", daily_usage: "" });
+      setNewVehicle({ model: "", no_of_vehicles: "",  daily_avg_km: "" });
       setSearchTerm("");
       setErrorMessage(null);
     } else {
       let message = "Please enter valid positive numbers for units, wattage, and daily usage.";
-      if (!vehicleTypeToValidate || !usableVehicleTypes.some(v => v.name === vehicleTypeToValidate)) {
+      if (!vehicleTypeToValidate || !selectedVehicle) {
         message = "Please select a valid vehicle type from the list.";
       } else if (isNaN(no_of_unitsNum) || no_of_unitsNum <= 0) {
         message = "Please enter a valid positive number for units.";
-      } else if (isNaN(wattageNum) || wattageNum <= 0) {
-        message = "Please enter a valid positive number for wattage.";
       } else if (isNaN(daily_usageNum) || daily_usageNum < 0) {
         message = "Please enter a valid non-negative number for daily usage.";
       }
@@ -166,7 +155,6 @@ export default function Electric_vehicleManager({
     window.scrollTo(0, scrollY);
   };
 
-  // Render loading state
   if (isLoading) {
     return (
       <div className="text-center p-4">
@@ -178,7 +166,6 @@ export default function Electric_vehicleManager({
     );
   }
 
-  // Render error state with retry button
   if (error) {
     return (
       <div className="text-center p-4 text-red-600">
@@ -213,25 +200,25 @@ export default function Electric_vehicleManager({
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
         <div className="relative" ref={inputWrapperRef}>
+          <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
+            Vehicle Type
+          </label>
           <input
             type="text"
             placeholder="Search & Select Vehicle Type"
             value={searchTerm}
             onChange={handleSearchChange}
             onFocus={() => setIsDropdownOpen(true)}
-            // No onBlur needed here as handled by global click listener
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
             aria-label="Search and select vehicle type"
           />
           {isDropdownOpen && (
             <div
               ref={dropdownRef}
-              // Changed max-h to display 2-4 options and then scroll
               className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-[8rem] overflow-y-auto shadow-lg"
             >
               {filteredVehicles.length > 0 ? (
                 <>
-                  {/* Conditionally render 'Cars' category if there are cars in filteredVehicles */}
                   {usableVehicleTypes.some(v => v.category === "Car") && filteredVehicles.filter(v => v.category === "Car").length > 0 && (
                     <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200">Cars</div>
                   )}
@@ -244,7 +231,6 @@ export default function Electric_vehicleManager({
                       {vehicle.name}
                     </div>
                   ))}
-                  {/* Conditionally render 'Scooters' category if there are scooters in filteredVehicles */}
                   {usableVehicleTypes.some(v => v.category === "Scooter") && filteredVehicles.filter(v => v.category === "Scooter").length > 0 && (
                     <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200 mt-1 pt-1">Scooters</div>
                   )}
@@ -268,43 +254,34 @@ export default function Electric_vehicleManager({
           )}
         </div>
         <div className="relative">
+          <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
+            Number of Vehicles
+          </label>
           <input
             type="number"
-            name="no_of_units"
-            placeholder="No. of Units"
-            value={newVehicle.no_of_units}
+            name="no_of_vehicles"
+            placeholder="No. of Vehicles"
+            value={newVehicle.no_of_vehicles}
             onChange={handleVehicleChange}
             className="p-3 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
             min="1"
             step="1"
-            aria-label="Number of units"
+            aria-label="Number of Vehicles"
           />
           {errorMessage?.includes("units") && (
             <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
           )}
         </div>
+        
         <div className="relative">
+          <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
+            Daily Usage (KM)
+          </label>
           <input
             type="number"
-            name="wattage"
-            placeholder="Wattage (Watts)"
-            value={newVehicle.wattage}
-            onChange={handleVehicleChange}
-            className="p-3 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
-            min="1"
-            step="1"
-            aria-label="Charger wattage"
-          />
-          {errorMessage?.includes("wattage") && (
-            <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
-          )}
-        </div>
-        <div className="relative">
-          <input
-            type="number"
-            name="daily_usage"
-            placeholder="Daily Usage (Hours)"
-            value={newVehicle.daily_usage}
+            name="daily_avg_km"
+            placeholder="Daily Usage (Km)"
+            value={newVehicle.daily_avg_km}
             onChange={handleVehicleChange}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
             min="0"
@@ -334,16 +311,22 @@ export default function Electric_vehicleManager({
           >
             <div>
               <span className="font-semibold flex gap-2 items-center">
-                  {vehicle.device_type} × {vehicle.no_of_units}
+                <Image
+                  src={vehicle.category === "Car" ? "https://gym-manager-pull.b-cdn.net/golden_ray/icons/car.svg" : "https://gym-manager-pull.b-cdn.net/golden_ray/icons/scooter.svg"} // Dynamically choose icon based on category
+                  alt={`Icon for ${vehicle.model}`}
+                  width={24}
+                  height={24}
+                />
+                {vehicle.model} × {vehicle.no_of_vehicles}
               </span>
               <div className="text-sm text-gray-600">
-                {vehicle.wattage} Watts | {vehicle.daily_usage}h Daily Usage
+                {vehicle.daily_avg_km}Km Daily Usage
               </div>
             </div>
             <button
               onClick={() => removeVehicle(vehicle.id)}
               className="cursor-pointer"
-              aria-label={`Remove ${vehicle.device_type}`}
+              aria-label={`Remove ${vehicle.model}`}
             >
               <Image src={deleteIcon} alt="Delete" />
             </button>

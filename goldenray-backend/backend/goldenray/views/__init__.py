@@ -1,3 +1,4 @@
+from .battery_views import BatteryAPIView
 from .device_type_views import DeviceTypeAPIView
 from .wattage_views import WattageAPIView
 from .kseb_tariff_views import KSEBTariffAPIView
@@ -6,3 +7,4 @@ from .evscooter_views import EVScooterAPIView
 from .solar_installation_views import SolarInstallationAPIView
 from .pincode_views import PincodeAPIView
 from .solar_calculator_views import SolarCalculatorAPIView
+from .lead_collection_home_views import LeadCollectionHomeAPIView

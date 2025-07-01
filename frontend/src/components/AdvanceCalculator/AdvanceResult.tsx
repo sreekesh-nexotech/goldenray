@@ -13,7 +13,7 @@ import {
 } from "chart.js";
 import Button from "../ui/Button";
 import { AdvancedCalculatorData } from "@/types/types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import QuotePopup from "@/components/SolarCalculator/QuotePopup"; // Import the new popup component
 
 ChartJS.register(
@@ -32,39 +32,16 @@ interface ResultDisplayProps {
   onStartOver: () => void;
   onGetDetailedQuote: () => void;
   grid_type: string | null;
-  backup_hours: number;
 }
 
 export default function ResultDisplay({
   data,
   onStartOver,
   grid_type,
-  backup_hours,
 }: ResultDisplayProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  //prevent scrolling the body when popup is open
-  useEffect(() => {
-    if (isPopupOpen) {
-      document.body.style.overflow = "hidden";
-      const scrollY = window.scrollY;
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
-    } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.overflow = "auto";
-      window.scrollTo(0, parseInt(scrollY || "0") * -1);
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      window.scrollTo(0, 0);
-    };
-  }, [isPopupOpen]);
+
 
   // Create chartData with tension for curved lines (for the Line chart)
   const chartData = {
@@ -72,6 +49,8 @@ export default function ResultDisplay({
     datasets: data.graph_data.datasets.map((dataset) => ({
       ...dataset,
       tension: 0.4, // Set tension for smooth curves
+      pointRadius: 0,
+
     })),
   };
 
@@ -106,6 +85,10 @@ export default function ResultDisplay({
           },
         },
       },
+    },
+     hover: {
+      mode: 'index' as const,
+      intersect: false, // Crucial: allows tooltip to trigger when mouse is near the line, not just on a point
     },
     scales: {
       x: {
@@ -227,6 +210,9 @@ export default function ResultDisplay({
     },
   };
 
+  // Check if lifetime savings is negative
+  const isNegativeSavings = parseFloat(data.financialDetails.lifetime_savings.replace(/[^0-9.-]+/g, '')) < 0;
+
   return (
     <div className="space-y-8 my-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch mt-10">
@@ -279,7 +265,7 @@ export default function ResultDisplay({
             <div className="bg-white shadow-lg rounded-xl p-6 flex-1 flex flex-col justify-between">
               <div>
                 <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
-                  ~{backup_hours}hrs
+                  {data.backupDetails.actual_backup_time}
                 </h2>
                 <p className="text-gray-600 text-sm md:text-base">
                   Battery Duration
@@ -349,6 +335,11 @@ export default function ResultDisplay({
           <p className="text-gray-600 text-sm md:text-base mb-6">
             Lifetime Savings
           </p>
+          {isNegativeSavings && (
+            <p className="text-[#FBC207] text-sm md:text-base mb-4 -mt-4">
+              Negative savings? Solar lets you add appliances without raising bills, ensuring long-term profits.
+            </p>
+          )}
           <div className="relative h-64 w-full flex-grow">
             <Line data={chartData} options={chartOptions} />
           </div>

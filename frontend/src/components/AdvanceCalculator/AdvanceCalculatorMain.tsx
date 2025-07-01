@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo} from "react";
+import { useState, useMemo, useRef, useEffect} from "react";
 import { getSolarAdvancedData } from "@/services/CalculatorService";
 import { AdvancedCalculatorData, BasicInfoFormData, UsageDetailsFormData, Chartgraph_data, SolarAdvancedPayload } from "@/types/types";
 import BasicInformationStep from "./AdvanceForm1";
@@ -18,6 +18,8 @@ export default function AdvancedCalculatorMain() {
   const [resultData, setResultData] = useState<AdvancedCalculatorData | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup
 
+  // Create a ref for the form container
+  const formContainerRef = useRef<HTMLDivElement>(null);
   
   const [basicInfo, setBasicInfo] = useState<BasicInfoFormData>({
     home_type: null,
@@ -26,7 +28,8 @@ export default function AdvancedCalculatorMain() {
     bill_frequency: null,
     home_size: "",
     estimated_base_load: "",
-    backup_hours: 9,
+    backup_hours: 0,
+    actual_backup_time:"",
     electronic_devices: [],
   });
 
@@ -38,6 +41,13 @@ export default function AdvancedCalculatorMain() {
   const totalFormSteps = useMemo(() => {
     return basicInfo.grid_type === "Hybrid" ? 3 : 2;
   }, [basicInfo.grid_type]);
+
+  // Scroll to top of form container when currentStep changes
+  useEffect(() => {
+    if (formContainerRef.current) {
+      formContainerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentStep]);
 
   // --- Step Navigation and Validation ---
 
@@ -67,14 +77,21 @@ export default function AdvancedCalculatorMain() {
         return;
       }
     }
+    if (basicInfo.average_bill && basicInfo.home_type == "Existing Home") {
+      const billAmount = parseFloat(basicInfo.average_bill.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
+      if (isNaN(billAmount)) {
+        setError("Please enter a valid number for the average bill");
+        return;
+      } else if (billAmount > 40000) {
+        setError("Maximum average bill should be less than 40,000");
+        return;
+      }
+    }
     setCurrentStep(2);
   };
 
   const handleUsageDetailsSubmit = () => {
-    if (usageDetails.electronic_devices.length === 0) {
-      setError("Please add at least one electronic device in the 'Your Usage' section.");
-      return;
-    }
+    
 
     if (basicInfo.grid_type === "Hybrid") {
       setCurrentStep(3);
@@ -84,10 +101,11 @@ export default function AdvancedCalculatorMain() {
   };
 
   const handleCalculate = async () => {
-    if (basicInfo.grid_type === "Hybrid" && basicInfo.electronic_devices.length === 0) {
-      setError("Please add at least one electronic device in the 'Home Details' section.");
-      return;
-    }
+    // if (basicInfo.grid_type === "Hybrid" && basicInfo.electronic_devices.length === 0) {
+    //   setError("Please add at least one electronic device in the 'Home Details' section.");
+    //   return;
+    // }
+
 
     const finalPayload: SolarAdvancedPayload = {
       Specifications: {
@@ -113,7 +131,7 @@ export default function AdvancedCalculatorMain() {
     setLoading(true);
 
     try {
-      const apiData = await getSolarAdvancedData(/*finalPayload*/);
+      const apiData = await getSolarAdvancedData(finalPayload);
       if (apiData.graph_data.datasets.length !== 2) {
         throw new Error("Expected exactly two datasets in graph_data");
       }
@@ -162,7 +180,8 @@ export default function AdvancedCalculatorMain() {
       bill_frequency: null,
       home_size: "",
       estimated_base_load: "",
-      backup_hours: 9,
+      backup_hours: 0,
+      actual_backup_time:"",
       electronic_devices: [],
     });
     setUsageDetails({
@@ -219,7 +238,8 @@ export default function AdvancedCalculatorMain() {
         )}
 
         <div
-          className={`w-full ${
+          ref={formContainerRef}
+          className={`w-full scroll-mt-28 ${
             currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8]" : ""
           } bg-white transition-all duration-300`}
         >
@@ -262,7 +282,6 @@ export default function AdvancedCalculatorMain() {
               onStartOver={handleStartOver}
               onGetDetailedQuote={() => setIsPopupOpen(true)}
               grid_type={basicInfo.grid_type}
-              backup_hours={basicInfo.backup_hours}
             />
           )}
         </div>

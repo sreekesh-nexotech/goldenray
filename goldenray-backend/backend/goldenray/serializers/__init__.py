@@ -1,3 +1,4 @@
+from .battery_serializer import BatterySerializer
 from .device_type_serializer import DeviceTypeSerializer
 from .wattage_serializer import WattageSerializer
 from .kseb_tariff_serializer import KSEBTariffSerializer
