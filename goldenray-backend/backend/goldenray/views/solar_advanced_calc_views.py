@@ -34,14 +34,13 @@ class SolarAdvancedCalcAPIView(APIView):
         home_type = specs.get("home_type")
         grid_type = specs.get("grid_type")
 
-        # Handle both On Grid and Hybrid
         if grid_type not in ["On Grid", "Hybrid"]:
             return Response({"error": "Only On Grid and Hybrid supported in this version."}, status=400)
 
         bill_frequency = specs.get("bill_frequency") or "BI-Monthly"
         days = 30 if bill_frequency == "Monthly" else 60
 
-        # Calculate device consumption
+        # Calculate device consumption (in units for the period)
         total_device_kwh_per_day = 0
         for device in usage.get("usage_electronic_devices", []):
             device_type_name = device.get("device_type")
@@ -53,6 +52,7 @@ class SolarAdvancedCalcAPIView(APIView):
             daily_usage = float(device.get("daily_usage", 0))
             no_of_units = int(device.get("no_of_units", 1))
             total_device_kwh_per_day += (wattage * daily_usage * no_of_units) / 1000
+        total_device_units = total_device_kwh_per_day * days
 
         # Calculate EV consumption (supporting no_of_vehicles, ensure all decimals are float)
         total_ev_kwh_per_day = 0
@@ -64,43 +64,40 @@ class SolarAdvancedCalcAPIView(APIView):
             if ev_obj and ev_obj.energy_consumption:
                 energy_consumption = float(ev_obj.energy_consumption)
                 total_ev_kwh_per_day += daily_avg_km * energy_consumption * no_of_vehicles
+        total_ev_units = total_ev_kwh_per_day * days
 
-        # Total consumption for the period
-        total_kwh = (total_device_kwh_per_day + total_ev_kwh_per_day) * days
-
+        # Calculate base units
+        base_units = 0
         if home_type == "New Home":
-            # Use estimated_base_load (units for 2 months)
             estimated_base_load = specs.get("estimated_base_load")
             if estimated_base_load:
                 try:
-                    estimated_base_load = float(estimated_base_load)
-                    total_kwh += estimated_base_load
+                    base_units = float(estimated_base_load)
                 except (ValueError, TypeError):
-                    pass
-        else:
-            # Add average_bill converted to units using KSEB tariffs
+                    base_units = 0
+        else:  # Existing Home
             average_bill = specs.get("average_bill")
             if average_bill:
                 try:
                     average_bill = float(average_bill)
-                    # Use slab-wise estimation
-                    estimated_units, kseb_rate = self.estimate_units_from_bill(average_bill)
-                    total_kwh += estimated_units
+                    base_units, _ = self.estimate_units_from_bill(average_bill)
                 except (ValueError, TypeError):
-                    pass
+                    base_units = 0
 
-        # Find the correct KSEB tariff rate for the calculated total_kwh
-        kseb_rate = 6.75  # Default rate
-        tariff_row = KSEBTariff.objects.filter(min_units__lte=total_kwh).order_by('-min_units').first()
-        if tariff_row and (tariff_row.max_units is None or total_kwh <= tariff_row.max_units):
-            kseb_rate = float(tariff_row.rate)
-        # Convert total_kwh_for_period back to rupees using the found rate
-        new_bimonthly_bill = total_kwh * kseb_rate
+        # Total units for the period (base + devices + EVs)
+        total_units = base_units + total_device_units + total_ev_units
+
+        # Convert total_units to cash using the correct slab
+        slab = KSEBTariff.objects.filter(min_units__lte=total_units).order_by('-min_units').first()
+        kseb_rate = float(slab.rate) if slab else 6.75
+        new_bimonthly_bill = total_units * kseb_rate
 
         # Find matching solar installation
         solar_row = SolarInstallationNew.objects.filter(bill_range__gte=new_bimonthly_bill, type__iexact='Residential').order_by('bill_range').first()
         if not solar_row:
-            return Response({"error": "No matching solar installation found for the calculated bill and type Residential."}, status=404)
+            solar_row = SolarInstallationNew.objects.filter(type__iexact='Residential').order_by('bill_range').first()
+            if not solar_row:
+                return Response({"error": "No matching solar installation found for the calculated bill and type Residential."}, status=404)
 
         # Prepare response data from the solar_row
         response_data = {
@@ -206,31 +203,30 @@ class SolarAdvancedCalcAPIView(APIView):
         virtual_monthly_bill = virtual_monthly_kwh * kseb_rate_virtual
 
         # Add current average bill or estimated base load to the virtual monthly bill
-        base_monthly_bill = 0
+        base_bimonthly_bill = 0
         if home_type == "New Home":
             estimated_base_load = specs.get("estimated_base_load")
             if estimated_base_load:
                 try:
-                    estimated_base_load = float(estimated_base_load)
-                    monthly_units = estimated_base_load / 2
-                    # Find rate for estimated base load units
-                    tariff_row_base = KSEBTariff.objects.filter(min_units__lte=monthly_units).order_by('-min_units').first()
-                    kseb_rate_base = 6.67 # Default
-                    if tariff_row_base and (tariff_row_base.max_units is None or monthly_units <= tariff_row_base.max_units):
-                        kseb_rate_base = float(tariff_row_base.rate)
-                    base_monthly_bill = monthly_units * kseb_rate_base
+                    base_units = float(estimated_base_load)
                 except (ValueError, TypeError):
-                    pass
+                    base_units = 0
         else: # Existing home
             average_bill = specs.get("average_bill")
             if average_bill:
                 try:
-                    # The base bill is simply the average bill they already pay
-                    base_monthly_bill = float(average_bill)
+                    average_bill = float(average_bill)
+                    base_units, _ = self.estimate_units_from_bill(average_bill)
                 except (ValueError, TypeError):
-                    pass
-        # The total monthly bill for the graph is the base bill plus the new devices
-        total_monthly_bill_for_graph = base_monthly_bill + virtual_monthly_bill
+                    base_units = 0
+
+        # For both cases, convert base_units to cash using the correct slab
+        slab = KSEBTariff.objects.filter(min_units__lte=base_units).order_by('-min_units').first()
+        kseb_rate = float(slab.rate) if slab else 6.75
+        base_bimonthly_bill = base_units * kseb_rate
+
+        # The total bi-monthly bill for the graph is the base bill plus the new devices
+        total_bimonthly_bill_for_graph = base_bimonthly_bill + (virtual_monthly_bill * 2 if virtual_monthly_bill else 0)
 
         
         years = [0, 5, 10, 15, 20, 25]
@@ -282,7 +278,7 @@ class SolarAdvancedCalcAPIView(APIView):
             except ValueError:
                 loan_amount = 0
 
-        without_solar = calculate_without_solar(total_monthly_bill_for_graph, bill_cycles_per_year, years)
+        without_solar = calculate_without_solar(total_bimonthly_bill_for_graph, bill_cycles_per_year, years)
         with_solar = calculate_with_solar(initial_cost, loan_amount, years_to_breakeven, years, bill_cycles_per_year, subsidy)
         response_data["graph_without_solar"] = without_solar
         response_data["graph_with_solar"] = with_solar
