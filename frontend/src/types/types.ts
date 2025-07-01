@@ -209,6 +209,7 @@ export interface SendOtpResponse {
 }
 
 export interface VerifyOtpRequest {
+  name:string;
   phone_number: string;
   code: string;
 }

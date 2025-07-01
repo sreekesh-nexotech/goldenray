@@ -22,8 +22,8 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
     if (!name.trim()) newErrors.name = "Name is required.";
     if (!phoneNumber.trim()) {
       newErrors.phoneNumber = "Phone number is required.";
-    } else if (!/^\+\d{10,12}$/.test(phoneNumber.replace(/\s/g, ""))) {
-      newErrors.phoneNumber = "Please enter a valid phone number with country code (e.g., +919497883832).";
+    }  else if (!/^[6-9]\d{9}$/.test(phoneNumber.replace(/\s/g, ""))) {
+      newErrors.phoneNumber = "Please enter a valid 10-digit Indian mobile number (e.g., 9447575641).";
     }
     if (showOtpInput && !code.trim()) {
       newErrors.code = "OTP is required.";
@@ -116,7 +116,7 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
                 type="text"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="e.g., +919497883832"
+                placeholder="e.g., 9447575641"
                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
               {errors.phoneNumber && <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>}
