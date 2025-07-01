@@ -88,7 +88,7 @@ class SolarAdvancedCalcAPIView(APIView):
         new_bimonthly_bill = total_kwh * kseb_rate
 
         # Find matching solar installation
-        solar_row = SolarInstallationNew.objects.filter(bill_range__lte=new_bimonthly_bill, type__iexact='Residential').order_by('-bill_range').first()
+        solar_row = SolarInstallationNew.objects.filter(bill_range__gte=new_bimonthly_bill, type__iexact='Residential').order_by('bill_range').first()
         if not solar_row:
             return Response({"error": "No matching solar installation found for the calculated bill and type Residential."}, status=404)
 
