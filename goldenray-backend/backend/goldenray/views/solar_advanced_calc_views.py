@@ -7,6 +7,23 @@ from ..permissions import ApiMethodPermission, non_authenticated_view
 class SolarAdvancedCalcAPIView(APIView):
     permission_classes = [ApiMethodPermission]
 
+    def estimate_units_from_bill(self, bill_amount):
+        slabs = KSEBTariff.objects.order_by('-min_units')
+        for slab in slabs:
+            rate = float(slab.rate)
+            min_units = int(slab.min_units)
+            max_units = int(slab.max_units) if slab.max_units is not None else None
+            estimated_units = bill_amount / rate
+            if max_units is not None:
+                if min_units <= estimated_units <= max_units:
+                    return estimated_units, rate
+            else:
+                if estimated_units >= min_units:
+                    return estimated_units, rate
+        # Fallback: use the lowest slab
+        first_slab = KSEBTariff.objects.order_by('min_units').first()
+        return bill_amount / float(first_slab.rate), float(first_slab.rate)
+
     @non_authenticated_view
     def post(self, request):
         data = request.data
@@ -66,16 +83,9 @@ class SolarAdvancedCalcAPIView(APIView):
             if average_bill:
                 try:
                     average_bill = float(average_bill)
-                    # Approximate units by dividing by an average rate, then find the correct rate.
-                    # This is an approximation as we can't perfectly reverse the non-telescopic slab tariff.
-                    estimated_units = average_bill / 8.0  # Using 8.0 as a generic mid-rate for estimation
-                    tariff_row = KSEBTariff.objects.filter(min_units__lte=estimated_units).order_by('-min_units').first()
-                    kseb_rate = 6.75  # Default fallback
-                    if tariff_row and (tariff_row.max_units is None or estimated_units <= tariff_row.max_units):
-                        kseb_rate = float(tariff_row.rate)
-                    
-                    average_bill_units = average_bill / kseb_rate if kseb_rate > 0 else 0
-                    total_kwh += average_bill_units
+                    # Use slab-wise estimation
+                    estimated_units, kseb_rate = self.estimate_units_from_bill(average_bill)
+                    total_kwh += estimated_units
                 except (ValueError, TypeError):
                     pass
 
