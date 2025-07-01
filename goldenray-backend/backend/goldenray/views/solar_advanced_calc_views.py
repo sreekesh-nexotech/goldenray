@@ -116,14 +116,28 @@ class SolarAdvancedCalcAPIView(APIView):
 
         # For Hybrid, add battery information
         if grid_type == "Hybrid":
-            backup_hours = float(preference.get("backup_hours", 0))
+            backup_hours = preference.get("backup_hours")
             preference_devices = preference.get("preference_electronic_devices", [])
-            # Add default lights and fan load
-            default_devices = [
-                {"device_type": "Light", "no_of_units": 3, "daily_usage": backup_hours},
-                {"device_type": "Fan", "no_of_units": 2, "daily_usage": backup_hours},
-            ]
-            all_devices = preference_devices + default_devices
+
+            if (not backup_hours or float(backup_hours) == 0) and not preference_devices:
+                # Fetch default backup hours from DB or use 3 if not present
+                default_row = SolarInstallationNew.objects.filter(type__iexact='Residential').order_by('bill_range').first()
+                default_backup_hours = getattr(default_row, 'default_backup_hours', 3) if default_row else 3
+                backup_hours = default_backup_hours
+                # Use default devices
+                default_devices = [
+                    {"device_type": "Light", "no_of_units": 3, "daily_usage": backup_hours},
+                    {"device_type": "Fan", "no_of_units": 2, "daily_usage": backup_hours},
+                ]
+                all_devices = default_devices
+                response_data['default_backup_hours'] = backup_hours
+            else:
+                # Use user-specified devices and backup hours, plus default devices
+                all_devices = preference_devices + [
+                    {"device_type": "Light", "no_of_units": 3, "daily_usage": float(backup_hours) if backup_hours else 0},
+                    {"device_type": "Fan", "no_of_units": 2, "daily_usage": float(backup_hours) if backup_hours else 0},
+                ]
+
             total_required_battery_capacity = 0
             total_backup_watts = 0
             for device in all_devices:
@@ -139,7 +153,7 @@ class SolarAdvancedCalcAPIView(APIView):
                 total_backup_watts += wattage * no_of_units
 
             # Calculate average load (kW) for the backup window
-            average_load_kw = total_required_battery_capacity / backup_hours if backup_hours else 0
+            average_load_kw = total_required_battery_capacity / float(backup_hours) if backup_hours and float(backup_hours) > 0 else 0
 
             # Find the smallest battery that can meet the total required energy (kWh).
             selected_battery = Battery.objects.filter(
