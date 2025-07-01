@@ -94,7 +94,7 @@ class SolarCalculatorNewAPIView(APIView):
             return cumulative
         # With solar: curve for 10 years, then flat
         def calculate_with_solar(initial_cost, loan_amount, years_to_breakeven, kseb_unit_rate, years, cycles_per_year, subsidy, rate=0.05):
-            bill_per_cycle = 72
+            bill_per_cycle = 280
             annual_bill = bill_per_cycle * cycles_per_year
             loan_repayment_per_year = loan_amount / years_to_breakeven if years_to_breakeven else 0
             cumulative = []

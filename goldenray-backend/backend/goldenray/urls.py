@@ -12,7 +12,8 @@ from .views.solar_calculator_new_views import SolarCalculatorNewAPIView
 from .views.solar_installation_new_views import SolarInstallationNewAPIView
 from .views.solar_advanced_calc_views import SolarAdvancedCalcAPIView
 from .views.otp_views import SendOTPAPIView, VerifyOTPAPIView
-
+from .views.lead_collection_home_views import LeadCollectionHomeAPIView
+from .views.metadata_views import MetadataAPIView
 
 urlpatterns = [
     # Batteries
@@ -49,4 +50,9 @@ urlpatterns = [
     path("calculate-solar-advanced/", SolarAdvancedCalcAPIView.as_view(), name="calculate-solar-advanced"),
     path("send-otp/", SendOTPAPIView.as_view(), name="send-otp"),
     path("verify-otp/", VerifyOTPAPIView.as_view(), name="verify-otp"),
+    # Lead Collection Home
+    path("lead-collection-home/", LeadCollectionHomeAPIView.as_view(), name="lead-collection-home-list-create"),
+    path("lead-collection-home/<int:pk>/", LeadCollectionHomeAPIView.as_view(), name="lead-collection-home-retrieve-update-destroy"),
+    path("metadata/", MetadataAPIView.as_view(), name="metadata-list-create"),
+    path("metadata/<int:pk>/", MetadataAPIView.as_view(), name="metadata-retrieve-update-destroy"),
 ]
