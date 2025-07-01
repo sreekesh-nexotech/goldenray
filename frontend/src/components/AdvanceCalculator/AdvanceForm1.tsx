@@ -214,7 +214,7 @@ export default function BasicInformationStep({
               </span>
             </div>
             <p className="text-sm text-gray-500 mt-1">
-              Suggested base load for 1 BHK: 300 watts
+              Suggested base load for 3 BHK: 300 units(1units = 1KWh)
             </p>
           </div>
         </>
