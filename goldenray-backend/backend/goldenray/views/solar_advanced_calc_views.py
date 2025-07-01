@@ -148,7 +148,7 @@ class SolarAdvancedCalcAPIView(APIView):
                 inverter_price = float(solar_row.inverter_price) if solar_row.inverter_price is not None else 0
                 total_battery_cost = float(selected_battery.battery_price) + inverter_price
                 overall_setup_cost = float(response_data.get("final_cost", 0)) + total_battery_cost + float(response_data.get("total_cost", 0))
-                final_cost = overall_setup_cost - float(response_data.get("total_subsidy", 0))
+                final_cost = overall_setup_cost + float(response_data.get("total_subsidy", 0))
 
                 response_data.update({
                     "battery_capacity": float(selected_battery.battery_capacity),
@@ -159,8 +159,8 @@ class SolarAdvancedCalcAPIView(APIView):
                     "total_backup_watts": total_backup_watts,
                     "average_load_kw": round(float(average_load_kw), 2),
                     "actual_backup_time": round(float(actual_backup_time), 2),
-                    "overall_setup_cost": overall_setup_cost,
-                    "final_cost": final_cost
+                    "overall_setup_cost": final_cost,
+                    "final_cost": overall_setup_cost
                 })
             else:
                 # No battery is large enough, so select the largest available and return max backup time
@@ -170,7 +170,7 @@ class SolarAdvancedCalcAPIView(APIView):
                     inverter_price = float(solar_row.inverter_price) if solar_row.inverter_price is not None else 0
                     total_battery_cost = float(largest_battery.battery_price) + inverter_price
                     overall_setup_cost = float(response_data.get("final_cost", 0)) + total_battery_cost + float(response_data.get("total_cost", 0))
-                    final_cost = overall_setup_cost - float(response_data.get("total_subsidy", 0))
+                    final_cost = overall_setup_cost+float(response_data.get("total_subsidy", 0))
                     response_data.update({
                         "battery_capacity": float(largest_battery.battery_capacity),
                         "battery_price": float(largest_battery.battery_price),
@@ -180,8 +180,8 @@ class SolarAdvancedCalcAPIView(APIView):
                         "total_backup_watts": total_backup_watts,
                         "average_load_kw": round(float(average_load_kw), 2),
                         "actual_backup_time": round(float(actual_backup_time), 2),
-                        "overall_setup_cost": overall_setup_cost,
-                        "final_cost": final_cost,
+                        "overall_setup_cost": final_cost,
+                        "final_cost": overall_setup_cost,
                         "battery_info": f"No battery can provide {backup_hours} hours of backup for your specified devices (need {total_required_battery_capacity:.2f} kWh). The largest available battery can provide up to {round(float(actual_backup_time), 2)} hours of backup."
                     })
                 else:
