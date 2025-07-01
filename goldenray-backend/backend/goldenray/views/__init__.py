@@ -7,3 +7,4 @@ from .evscooter_views import EVScooterAPIView
 from .solar_installation_views import SolarInstallationAPIView
 from .pincode_views import PincodeAPIView
 from .solar_calculator_views import SolarCalculatorAPIView
+from .lead_collection_home_views import LeadCollectionHomeAPIView

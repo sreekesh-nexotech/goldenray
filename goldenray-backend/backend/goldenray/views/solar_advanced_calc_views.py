@@ -127,9 +127,12 @@ class SolarAdvancedCalcAPIView(APIView):
                     dt = DeviceType.objects.filter(name__iexact=device_type_name).first()
                     wattage = float(dt.watts) if dt and dt.watts else 0
                 no_of_units = int(device.get("no_of_units", 1))
-                daily_usage = float(device.get("daily_usage", 0)) # Hours for this device
+                daily_usage = float(device.get("daily_usage", 0)) # Hours for this device (should be <= backup_hours)
                 total_required_battery_capacity += (wattage * no_of_units * daily_usage) / 1000
                 total_backup_watts += wattage * no_of_units
+
+            # Calculate average load (kW) for the backup window
+            average_load_kw = total_required_battery_capacity / backup_hours if backup_hours else 0
 
             # Find the smallest battery that can meet the total required energy (kWh).
             selected_battery = Battery.objects.filter(
@@ -139,8 +142,8 @@ class SolarAdvancedCalcAPIView(APIView):
             actual_backup_time = 0
             if selected_battery:
                 # Calculate what the actual backup time would be with the selected battery's capacity.
-                if total_required_battery_capacity > 0:
-                    actual_backup_time = (float(selected_battery.battery_capacity) / total_required_battery_capacity) * backup_hours
+                if average_load_kw > 0:
+                    actual_backup_time = float(selected_battery.battery_capacity) / average_load_kw
 
                 inverter_price = float(solar_row.inverter_price) if solar_row.inverter_price is not None else 0
                 total_battery_cost = float(selected_battery.battery_price) + inverter_price
@@ -154,6 +157,7 @@ class SolarAdvancedCalcAPIView(APIView):
                     "total_battery_cost": total_battery_cost,
                     "calculated_required_capacity": round(float(total_required_battery_capacity), 2),
                     "total_backup_watts": total_backup_watts,
+                    "average_load_kw": round(float(average_load_kw), 2),
                     "actual_backup_time": round(float(actual_backup_time), 2),
                     "overall_setup_cost": overall_setup_cost,
                     "final_cost": final_cost
@@ -161,9 +165,8 @@ class SolarAdvancedCalcAPIView(APIView):
             else:
                 # No battery is large enough, so select the largest available and return max backup time
                 largest_battery = Battery.objects.order_by('-battery_capacity').first()
-                if largest_battery and total_required_battery_capacity > 0:
-                    max_backup_time = float(largest_battery.battery_capacity) / (total_required_battery_capacity / backup_hours)
-                    actual_backup_time = float(largest_battery.battery_capacity) / (total_required_battery_capacity / backup_hours)
+                if largest_battery and average_load_kw > 0:
+                    actual_backup_time = float(largest_battery.battery_capacity) / average_load_kw
                     inverter_price = float(solar_row.inverter_price) if solar_row.inverter_price is not None else 0
                     total_battery_cost = float(largest_battery.battery_price) + inverter_price
                     overall_setup_cost = float(response_data.get("final_cost", 0)) + total_battery_cost + float(response_data.get("total_cost", 0))
@@ -175,6 +178,7 @@ class SolarAdvancedCalcAPIView(APIView):
                         "total_battery_cost": total_battery_cost,
                         "calculated_required_capacity": round(float(total_required_battery_capacity), 2),
                         "total_backup_watts": total_backup_watts,
+                        "average_load_kw": round(float(average_load_kw), 2),
                         "actual_backup_time": round(float(actual_backup_time), 2),
                         "overall_setup_cost": overall_setup_cost,
                         "final_cost": final_cost,
