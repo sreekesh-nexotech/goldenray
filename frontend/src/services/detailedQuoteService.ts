@@ -13,6 +13,7 @@ export const sendOtp = async (name: string, phoneNumber: string): Promise<SendOt
 
 export const verifyOtp = async (name:string, phoneNumber: string, code: string): Promise<VerifyOtpResponse> => {
   const payload: VerifyOtpRequest = {
+    name,
     phone_number: phoneNumber,
     code,
   };

@@ -101,10 +101,10 @@ export default function AdvancedCalculatorMain() {
   };
 
   const handleCalculate = async () => {
-    if (basicInfo.grid_type === "Hybrid" && basicInfo.electronic_devices.length === 0) {
-      setError("Please add at least one electronic device in the 'Home Details' section.");
-      return;
-    }
+    // if (basicInfo.grid_type === "Hybrid" && basicInfo.electronic_devices.length === 0) {
+    //   setError("Please add at least one electronic device in the 'Home Details' section.");
+    //   return;
+    // }
 
 
     const finalPayload: SolarAdvancedPayload = {
