@@ -11,7 +11,7 @@ export const sendOtp = async (name: string, phoneNumber: string): Promise<SendOt
   return await apiCall<SendOtpResponse>("send-otp/", "POST", payload);
 };
 
-export const verifyOtp = async (phoneNumber: string, code: string): Promise<VerifyOtpResponse> => {
+export const verifyOtp = async (name:string, phoneNumber: string, code: string): Promise<VerifyOtpResponse> => {
   const payload: VerifyOtpRequest = {
     phone_number: phoneNumber,
     code,

@@ -47,7 +47,7 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
           setShowOtpInput(true);
         } else {
           // Verify OTP
-          const response = await verifyOtp(phoneNumber, code);
+          const response = await verifyOtp(name, phoneNumber, code);
           console.log("Verify OTP response:", response);
           if (response.status == "approved") {
             setFormSubmitted(true);
