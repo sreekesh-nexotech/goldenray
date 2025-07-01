@@ -91,10 +91,7 @@ export default function AdvancedCalculatorMain() {
   };
 
   const handleUsageDetailsSubmit = () => {
-    if (usageDetails.electronic_devices.length === 0) {
-      setError("Please add at least one electronic device in the 'Your Usage' section.");
-      return;
-    }
+    
 
     if (basicInfo.grid_type === "Hybrid") {
       setCurrentStep(3);
