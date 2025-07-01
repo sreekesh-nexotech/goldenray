@@ -4,6 +4,8 @@ from rest_framework import status
 from ..twilio_utils import send_otp, verify_otp
 from ..serializers.otp_serializer import SendOTPSerializer, VerifyOTPSerializer
 from ..models import SentQuote
+from ..models.send_quote_junk import SendQuoteJunk
+from ..serializers.send_quote_junk_serializer import SendQuoteJunkSerializer
 import uuid
 
 class SendOTPAPIView(APIView):
@@ -14,9 +16,21 @@ class SendOTPAPIView(APIView):
         serializer = SendOTPSerializer(data=request.data)
         if serializer.is_valid():
             phone_number = serializer.validated_data['phone_number']
-            # Auto-prepend +91 if not present
             if not phone_number.startswith('+'):
                 phone_number = '+91' + phone_number.lstrip('0')
+            name = request.data.get('name', '')
+            # Generate unique quote_id
+            quote_id = f"JUNK_{uuid.uuid4().hex[:8].upper()}"
+            try:
+                SendQuoteJunk.objects.create(
+                    quote_id=quote_id,
+                    name=name,
+                    phone=phone_number,
+                    quote_url=f"/quote/{quote_id}",
+                    is_sent=False
+                )
+            except Exception as junk_error:
+                pass  # Don't block OTP sending if logging fails
             try:
                 result = send_otp(phone_number)
                 return Response({'status': result}, status=status.HTTP_200_OK)
