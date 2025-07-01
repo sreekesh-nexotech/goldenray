@@ -82,8 +82,8 @@ export default function AdvancedCalculatorMain() {
       if (isNaN(billAmount)) {
         setError("Please enter a valid number for the average bill");
         return;
-      } else if (billAmount > 24000) {
-        setError("Maximum average bill should be less than 24,000");
+      } else if (billAmount > 40000) {
+        setError("Maximum average bill should be less than 40,000");
         return;
       }
     }

@@ -54,8 +54,8 @@ export default function SolarBasicResult({
       newErrors.monthly_bill = "Monthly bill is required.";
     } else if (isNaN(billValue) || billValue <= 0) {
       newErrors.monthly_bill = "Please enter a valid  bill greater than 0.";
-    }else if(billValue>24000){
-      newErrors.monthly_bill = "Bill should be less than 24,000"
+    }else if(billValue>40000){
+      newErrors.monthly_bill = "Monthly bill cannot exceed ₹40,000"
     }
 
     setErrors(newErrors);
