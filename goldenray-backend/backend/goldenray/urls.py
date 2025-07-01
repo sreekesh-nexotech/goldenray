@@ -13,7 +13,10 @@ from .views.solar_installation_new_views import SolarInstallationNewAPIView
 from .views.solar_advanced_calc_views import SolarAdvancedCalcAPIView
 from .views.otp_views import SendOTPAPIView, VerifyOTPAPIView
 from .views.lead_collection_home_views import LeadCollectionHomeAPIView
+from .views.metadata_views import MetadataViewSet
+from rest_framework.routers import DefaultRouter
 
+router = DefaultRouter()
 
 urlpatterns = [
     # Batteries
@@ -54,3 +57,7 @@ urlpatterns = [
     path("lead-collection-home/", LeadCollectionHomeAPIView.as_view(), name="lead-collection-home-list-create"),
     path("lead-collection-home/<int:pk>/", LeadCollectionHomeAPIView.as_view(), name="lead-collection-home-retrieve-update-destroy"),
 ]
+
+router.register(r'metadata', MetadataViewSet, basename='metadata')
+
+urlpatterns = router.urls
