@@ -7,10 +7,11 @@ from ..models import SentQuote
 from ..models.send_quote_junk import SendQuoteJunk
 from ..serializers.send_quote_junk_serializer import SendQuoteJunkSerializer
 import uuid
+from rest_framework.permissions import AllowAny
 
 class SendOTPAPIView(APIView):
     authentication_classes = []
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = SendOTPSerializer(data=request.data)
@@ -40,7 +41,7 @@ class SendOTPAPIView(APIView):
 
 class VerifyOTPAPIView(APIView):
     authentication_classes = []
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = VerifyOTPSerializer(data=request.data)
