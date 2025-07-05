@@ -50,7 +50,7 @@ export default function HeroHome() {
       };
     };
 
-    // Start the cycle and repeat every 6.5s
+    // Start the cycle and repeat every 8.5s
     cycleWords();
     const interval = setInterval(cycleWords, 8500);
 
