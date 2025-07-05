@@ -21,6 +21,8 @@
     "react-dom": "^19.0.0",
     "react-intersection-observer": "^9.16.0",
     "react-player": "^2.16.0",
+    "react-swipeable": "^7.0.2",
+    "swipeable": "^1.0.5",
     "uuid": "^11.1.0",
     "v4": "^0.0.1"
   },

@@ -25,10 +25,10 @@ ChartJS.register(
 
 interface BasicResultProps {
   data: BasicCalculatorData;
-  monthlyBill:number | "";
+  monthlyBill: number | "";
 }
 
-export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
+export default function BasicResult({ data, monthlyBill }: BasicResultProps) {
   if (!data.graph_data.labels.length || !data.graph_data.datasets.length) {
     return (
       <div className="text-center text-gray-600 p-6">
@@ -113,22 +113,29 @@ export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
   const isNegativeSavings = parseFloat(data.financialDetails.lifetime_savings.replace(/[^0-9.-]+/g, '')) < 0;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 items-start xl:gap-8 mt-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 items-stretch xl:gap-8 mt-10">
+      {/*
+        The key change here is `items-stretch` on the parent grid.
+        Then, making each direct child of the grid a `flex flex-col` and letting its
+        sub-children `flex-grow` (if they are grouped) or just naturally fill.
+      */}
+
       {/* Box 1: Power, Area, Installation */}
+      {/* Added flex-col and flex-grow to inner divs */}
       <div className="flex flex-col gap-2">
-        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] rounded-t-3xl p-6">
+        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] rounded-t-3xl p-6 flex-grow">
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
             {data.specifications.power_requirement}
           </h2>
           <p className="text-gray-600 text-sm md:text-base">Power Requirement</p>
         </div>
-        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6">
+        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6 flex-grow">
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
             {data.specifications.area_requirement}
           </h2>
           <p className="text-gray-600 text-sm md:text-base">Area Requirement</p>
         </div>
-        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] rounded-b-3xl p-6">
+        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] rounded-b-3xl p-6 flex-grow">
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
             {data.specifications.installation_time}
           </h2>
@@ -136,7 +143,7 @@ export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
         </div>
       </div>
 
-      {/* Box 2: Lifetime Savings & Graph */}
+      {/* Box 2: Lifetime Savings & Graph - Already largely correct */}
       <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] rounded-3xl text-left p-6 flex flex-col">
         <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
           {data.financialDetails.lifetime_savings}
@@ -147,6 +154,7 @@ export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
             Negative savings? Solar lets you add appliances without raising bills, ensuring long-term profits.
           </p>
         )}
+        {/* The chart div has flex-grow, which is good */}
         <div className="relative h-48 w-full flex-grow">
           <Line data={chartData} options={chartOptions} />
         </div>
@@ -156,8 +164,9 @@ export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
       </div>
 
       {/* Box 3: Costs & EMI */}
-      <div className="rounded-3xl flex flex-col gap-2">
-        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6 rounded-t-3xl">
+      {/* Added flex-col and flex-grow to inner divs */}
+      <div className="flex flex-col gap-2">
+        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6 rounded-t-3xl flex-grow">
           <p className="text-gray-600 text-sm md:text-base mb-2">Your overall setup cost</p>
           <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] mb-4">
             {data.financialDetails.overall_cost}
@@ -167,14 +176,14 @@ export default function BasicResult({ data,monthlyBill }: BasicResultProps) {
             {data.financialDetails.government_subsidy}
           </h2>
         </div>
-        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6 rounded-b-3xl">
-          <div>
+        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6 rounded-b-3xl flex-grow">
+          <div> {/* This div might prevent flex-grow on its content, if you wanted the inner p/h2 to stretch. But for now, it's fine. */}
             <p className="text-gray-600 text-sm md:text-base mb-2">Your Final Cost</p>
             <h2 className="text-3xl lg:text-5xl font-semibold text-[#123532] mb-2">
               {data.financialDetails.final_cost}
             </h2>
             <p className="text-[#124944] text-sm md:text-base mt-4 text-center bg-[#E8FEFF] border border-[#BCE8E4] rounded-full py-2 px-1">
-              starting from <b>{data.financialDetails.starting_EMI}/mo</b> EMI 
+              starting from <b>{data.financialDetails.starting_EMI}/mo</b> EMI
             </p>
           </div>
         </div>

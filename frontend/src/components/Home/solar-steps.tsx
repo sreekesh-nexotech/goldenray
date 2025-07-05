@@ -46,7 +46,7 @@ export default function SolarSteps() {
           // Start a new interval
           intervalRef.current = setInterval(() => {
             setActiveCard((prev) => (prev % steps.length) + 1);
-          }, 5000); // Cycle every 5 seconds
+          }, 3000); // Cycle every 3 seconds
         } else {
           // Clear interval when section is out of view
           if (intervalRef.current) {

@@ -8,6 +8,7 @@ import line from '../../../public/Vector-6.png'
 import vector1 from '../../../public/Vector-7.png'
 import vector2 from '../../../public/Vector-8.png'
 import vector3 from '../../../public/Vector-9.png'
+import Link from 'next/link';
 
 
 // Main GroupPurchaseScheme component
@@ -27,9 +28,11 @@ export default function GroupPurchaseScheme() {
                 Join our Group Purchase Scheme and enjoy exclusive discounts when you team up with your neighbours, friends, or community to install solar panels.
               </p>
               {/* button for large devices */}
-              <button className=" hidden xl:block bg-white text-[#074A4D] px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300  cursor-pointer">
+              <div className='flex '>
+                <Link href="#booking" className=" hidden xl:block bg-white text-[#074A4D] px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300  cursor-pointer">
                 Talk To Us
-              </button>
+              </Link>
+              </div>
             </div>
 
             {/* Right content area (illustration) */}
@@ -72,9 +75,11 @@ export default function GroupPurchaseScheme() {
               description="Create a greener, more sustainable neighborhood."
             />
             {/* button for mobile  */}
-            <button className=" xl:hidden block bg-white text-[#074A4D] px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 mt-4 cursor-pointer"> 
+            <div className='text-center' >
+            <Link href="#booking" className="xl:hidden block bg-white text-[#074A4D] px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 mt-4 cursor-pointer"> 
                   Talk To Us
-            </button>
+            </Link>
+            </div>
           </div>
         </div>
       </div>

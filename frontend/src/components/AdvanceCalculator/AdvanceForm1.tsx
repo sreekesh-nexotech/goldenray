@@ -12,12 +12,14 @@ interface BasicInformationStepProps {
   formData: BasicInfoFormData;
   setFormData: React.Dispatch<React.SetStateAction<BasicInfoFormData>>;
   onNext: () => void;
+  error:string | null;
 }
 
 export default function BasicInformationStep({
   formData,
   setFormData,
   onNext,
+  error,
 }: BasicInformationStepProps) {
 
   // Handles changes for standard input fields (like text and number)
@@ -221,7 +223,13 @@ export default function BasicInformationStep({
       )}
 
       {/* --- Navigation Button --- */}
-      <div className="flex justify-end mt-8">
+      <div className="flex justify-between items-center mt-8">
+         {error && (
+            <div className=" text-red-700  relative " role="alert">
+              <strong className="font-bold">Error!</strong>
+              <span className="block sm:inline ml-2">{error}</span>
+            </div>
+          )}
         <Button onClick={onNext}>Next</Button>
       </div>
     </div>

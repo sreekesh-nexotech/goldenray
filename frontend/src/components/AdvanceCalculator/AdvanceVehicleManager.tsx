@@ -280,13 +280,13 @@ export default function Electric_vehicleManager({
           <input
             type="number"
             name="daily_avg_km"
-            placeholder="Daily Usage (Km)"
+            placeholder="Monthly Usage (Km)"
             value={newVehicle.daily_avg_km}
             onChange={handleVehicleChange}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
             min="0"
             step="0.1"
-            aria-label="Daily charging hours"
+            aria-label="Monthly Usage in KM"
           />
           {errorMessage?.includes("daily usage") && (
             <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
@@ -320,7 +320,7 @@ export default function Electric_vehicleManager({
                 {vehicle.model} × {vehicle.no_of_vehicles}
               </span>
               <div className="text-sm text-gray-600">
-                {vehicle.daily_avg_km}Km Daily Usage
+                {vehicle.daily_avg_km}Km Monthly Usage
               </div>
             </div>
             <button

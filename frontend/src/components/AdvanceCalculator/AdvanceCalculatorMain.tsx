@@ -72,10 +72,7 @@ export default function AdvancedCalculatorMain() {
         setError("Please enter a valid Home Size (e.g., a positive number in sq. ft.).");
         return;
       }
-      if (basicInfo.estimated_base_load === "" || parseFloat(basicInfo.estimated_base_load) < 0) {
-        setError("Please enter a valid Estimated Base Load (e.g., a non-negative number in kWh).");
-        return;
-      }
+      
     }
     if (basicInfo.average_bill && basicInfo.home_type == "Existing Home") {
       const billAmount = parseFloat(basicInfo.average_bill.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
@@ -243,18 +240,14 @@ export default function AdvancedCalculatorMain() {
             currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8]" : ""
           } bg-white transition-all duration-300`}
         >
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-              <strong className="font-bold">Error!</strong>
-              <span className="block sm:inline ml-2">{error}</span>
-            </div>
-          )}
+          
 
           {currentStep === 1 && (
             <BasicInformationStep
               formData={basicInfo}
               setFormData={setBasicInfo}
               onNext={handleBasicInfoSubmit}
+              error = {error}
             />
           )}
 
@@ -284,6 +277,7 @@ export default function AdvancedCalculatorMain() {
               grid_type={basicInfo.grid_type}
             />
           )}
+         
         </div>
       </div>
       {isPopupOpen && <QuotePopup onClose={() => setIsPopupOpen(false)} />}

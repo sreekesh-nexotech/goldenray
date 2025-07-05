@@ -1,13 +1,11 @@
 @import "tailwindcss";
 @tailwind utilities;
 
-
-body{
+body {
   overflow-x: hidden;
-
 }
 
-html{
+html {
   scroll-behavior: smooth;
 }
 
@@ -23,7 +21,7 @@ body {
 }
 
 .btn {
-  @apply px-4 py-[11px] ;
+  @apply px-4 py-[11px];
 }
 
 .btn-sm {
@@ -31,21 +29,65 @@ body {
 }
 
 /* logo scrolling in partners section (home page) */
- @keyframes scroll-logos {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-33.333%);
-          }
-        }
-        .animate-logo-scroll {
-          animation: scroll-logos 60s linear infinite; 
-          /* min-width: max-content ensures the container is wide enough for all its content */
-          min-width: max-content;
-        }
+@keyframes scroll-logos {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+.animate-logo-scroll {
+  animation: scroll-logos 60s linear infinite;
+  min-width: max-content;
+}
 
-        /* Pause animation on hover for better user experience */
-        .scroll-container:hover .animate-logo-scroll {
-          animation-play-state: paused;
-        }
+/* Pause animation on hover for better user experience */
+.scroll-container:hover .animate-logo-scroll {
+  animation-play-state: paused;
+}
+
+/* Strike-through and fade-in animations */
+@keyframes strikeOut {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.strike-through-animation {
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+}
+
+.strike-through-animation.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 4px;
+  background-color: currentColor;
+  transform: translateY(-50%);
+  width: 0%;
+  animation: strikeOut 0.5s ease-out forwards;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}

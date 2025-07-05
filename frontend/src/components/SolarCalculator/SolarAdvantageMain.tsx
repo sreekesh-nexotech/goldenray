@@ -1,5 +1,6 @@
+/* golden-ray/frontend/src/components/SolarCalculator/SolarAdvantageMain.tsx */
 "use client";
-import { useRef, useState} from "react"; // Import useEffect
+import { useRef, useState } from "react";
 import SolarBasicResult from "./SolarBasicResult";
 import SolarAdvantage from "./solar-advantage";
 import { BasicCalculatorData, SolarBasicPayload } from "@/types/types";
@@ -15,9 +16,7 @@ export default function SolarAdvantageMain() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const resultsRef = useRef<HTMLDivElement>(null); // Ref to the section containing results/form
-
- 
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   const handleCalculateSubmit = async (
     pincode: string,
@@ -25,7 +24,7 @@ export default function SolarAdvantageMain() {
     monthly_bill: number
   ) => {
     setIsLoading(true);
-    setError(null);
+    setError(null); // Clear any previous errors
     setFormInputs({ pincode, property_type, monthly_bill });
 
     try {
@@ -40,16 +39,21 @@ export default function SolarAdvantageMain() {
         throw new Error("No data returned from the API.");
       }
       setCalculatorData(data);
-      setShowResults(true); // This will trigger the useEffect for scrolling
+      setShowResults(true);
     } catch (err) {
-      let errorMessage = "Failed to fetch solar advantage data. Please try again.";
-      if (err instanceof Error && err.message.includes("Pincode not found in database")) {
-        errorMessage = "Based on your pincode Our Service is not currently available in your area.";
-      } else if (err instanceof Error) {
-        errorMessage = err.message;
+      let errorMessage = "Something went wrong, please try again later.";
+      if (err instanceof Error) {
+        if (err.message.includes("Pincode not found in database")) {
+          errorMessage = "Based on your pincode, our service is not currently available in your area.";
+        } else if (err.message.includes("Failed to fetch")) {
+          errorMessage = "Network error: Could not connect to the server. Please check your internet connection.";
+        } else {
+          errorMessage = err.message; // Capture more specific API errors
+        }
       }
       console.error("API Error:", err);
       setError(errorMessage);
+      setShowResults(false); // Stay on the form if there's an error
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +65,7 @@ export default function SolarAdvantageMain() {
     monthly_bill: number
   ) => {
     setIsLoading(true);
-    setError(null);
+    setError(null); // Clear errors for resubmission
     setFormInputs({ pincode, property_type, monthly_bill });
 
     try {
@@ -76,13 +80,17 @@ export default function SolarAdvantageMain() {
         throw new Error("No data returned from the API.");
       }
       setCalculatorData(data);
-
+      setError(null); // Clear any previous error on successful resubmission
     } catch (err) {
       let errorMessage = "Failed to resubmit solar advantage data. Please try again.";
-      if (err instanceof Error && err.message.includes("Pincode not found in database")) {
-        errorMessage = "Based on your pincode Our Service is not currently available in your area.";
-      } else if (err instanceof Error) {
-        errorMessage = err.message;
+      if (err instanceof Error) {
+        if (err.message.includes("Pincode not found in database")) {
+          errorMessage = "Based on your pincode, our service is not currently available in your area.";
+        } else if (err.message.includes("Failed to fetch")) {
+          errorMessage = "Network error: Could not connect to the server. Please check your internet connection.";
+        } else {
+          errorMessage = err.message; // Capture more specific API errors
+        }
       }
       console.error("API Error:", err);
       setError(errorMessage);
@@ -93,12 +101,11 @@ export default function SolarAdvantageMain() {
 
   const handleGoBackToForm = () => {
     setShowResults(false);
-    setError(null);
-
+    setError(null); // Clear errors when going back
   };
 
   return (
-    <section className="relative" ref={resultsRef}> {/* Ref attached to the common container */}
+    <section className="relative" ref={resultsRef}>
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
           <div className="text-xl font-semibold text-[#123532]">
@@ -106,21 +113,6 @@ export default function SolarAdvantageMain() {
           </div>
         </div>
       )}
-
-      {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-red-100 bg-opacity-90 z-10">
-          <div className="text-xl font-semibold text-red-700 p-6 rounded-lg shadow-lg">
-            {error}
-            <button
-              onClick={() => setError(null)}
-              className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-            >
-              Dismiss
-            </button>
-          </div>
-        </div>
-      )}
-
       {showResults && calculatorData ? (
         <SolarBasicResult
           initialPincode={formInputs.pincode}
@@ -129,6 +121,7 @@ export default function SolarAdvantageMain() {
           calculatedData={calculatorData}
           onResubmit={handleResubmitChanges}
           onGoBack={handleGoBackToForm}
+          apiError={error} 
         />
       ) : (
         <SolarAdvantage
@@ -137,6 +130,7 @@ export default function SolarAdvantageMain() {
           initialproperty_type={formInputs.property_type}
           initialmonthly_bill={formInputs.monthly_bill}
           isLoading={isLoading}
+          fetchError={error}
         />
       )}
     </section>
