@@ -8,11 +8,13 @@ import { getVehicleTypes } from "@/services/vehicleService";
 interface Electric_vehicleManagerProps {
   electric_vehicles: Electric_vehicle[];
   setelectric_vehicles: React.Dispatch<React.SetStateAction<Electric_vehicle[]>>;
+  validateInputs?: (validator: () => boolean) => void;
 }
 
 export default function Electric_vehicleManager({
   electric_vehicles,
   setelectric_vehicles,
+  validateInputs,
 }: Electric_vehicleManagerProps) {
   const [newVehicle, setNewVehicle] = useState({
     model: "",
@@ -72,10 +74,14 @@ export default function Electric_vehicleManager({
     };
   }, []);
 
+  // Ensure all vehicle types with show_in_ui: true are included
   const usableVehicleTypes = useMemo(() => {
-    return apiVehicleTypes ? apiVehicleTypes.filter((vehicle) => vehicle.show_in_ui) : [];
+    return apiVehicleTypes
+      ? apiVehicleTypes.filter((vehicle) => vehicle.show_in_ui)
+      : [];
   }, [apiVehicleTypes]);
 
+  // Filter vehicles based on search term, ensuring all matches are shown
   const filteredVehicles = useMemo(() => {
     if (!searchTerm) {
       return usableVehicleTypes;
@@ -88,6 +94,7 @@ export default function Electric_vehicleManager({
   const handleVehicleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setNewVehicle((prev) => ({ ...prev, [name]: value }));
+    setErrorMessage(null); // Clear error when user types
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,13 +118,12 @@ export default function Electric_vehicleManager({
     const daily_usageNum = parseFloat(newVehicle.daily_avg_km);
     const vehicleTypeToValidate = newVehicle.model;
 
-    // Find the selected vehicle from usableVehicleTypes to get its category
     const selectedVehicle = usableVehicleTypes.find(v => v.name === vehicleTypeToValidate);
 
     if (
       vehicleTypeToValidate &&
       vehicleTypeToValidate !== "" &&
-      selectedVehicle && // Ensure selectedVehicle is found
+      selectedVehicle &&
       !isNaN(no_of_unitsNum) &&
       no_of_unitsNum > 0 &&
       !isNaN(daily_usageNum) &&
@@ -128,15 +134,14 @@ export default function Electric_vehicleManager({
         model: vehicleTypeToValidate,
         no_of_vehicles: no_of_unitsNum,
         daily_avg_km: daily_usageNum,
-        // Add the category property to the Electric_vehicle object
         category: selectedVehicle.category,
       };
       setelectric_vehicles((prev) => [...prev, vehicle]);
-      setNewVehicle({ model: "", no_of_vehicles: "",  daily_avg_km: "" });
+      setNewVehicle({ model: "", no_of_vehicles: "", daily_avg_km: "" });
       setSearchTerm("");
       setErrorMessage(null);
     } else {
-      let message = "Please enter valid positive numbers for units, wattage, and daily usage.";
+      let message = "Please enter valid positive numbers for units and daily usage.";
       if (!vehicleTypeToValidate || !selectedVehicle) {
         message = "Please select a valid vehicle type from the list.";
       } else if (isNaN(no_of_unitsNum) || no_of_unitsNum <= 0) {
@@ -154,6 +159,24 @@ export default function Electric_vehicleManager({
     setelectric_vehicles((prev) => prev.filter((vehicle) => vehicle.id !== id));
     window.scrollTo(0, scrollY);
   };
+
+  const validateVehicleInputs = () => {
+    if (
+      newVehicle.model ||
+      newVehicle.no_of_vehicles ||
+      newVehicle.daily_avg_km
+    ) {
+      setErrorMessage("Please click 'Add Vehicle' to save your input.");
+      return false;
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    if (validateInputs) {
+      validateInputs(validateVehicleInputs);
+    }
+  }, [newVehicle, validateInputs]);
 
   if (isLoading) {
     return (
@@ -219,7 +242,7 @@ export default function Electric_vehicleManager({
             >
               {filteredVehicles.length > 0 ? (
                 <>
-                  {usableVehicleTypes.some(v => v.category === "Car") && filteredVehicles.filter(v => v.category === "Car").length > 0 && (
+                  {usableVehicleTypes.some(v => v.category === "Car") && filteredVehicles.some(v => v.category === "Car") && (
                     <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200">Cars</div>
                   )}
                   {filteredVehicles.filter(v => v.category === "Car").map((vehicle) => (
@@ -231,7 +254,7 @@ export default function Electric_vehicleManager({
                       {vehicle.name}
                     </div>
                   ))}
-                  {usableVehicleTypes.some(v => v.category === "Scooter") && filteredVehicles.filter(v => v.category === "Scooter").length > 0 && (
+                  {usableVehicleTypes.some(v => v.category === "Scooter") && filteredVehicles.some(v => v.category === "Scooter") && (
                     <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200 mt-1 pt-1">Scooters</div>
                   )}
                   {filteredVehicles.filter(v => v.category === "Scooter").map((vehicle) => (
@@ -272,10 +295,9 @@ export default function Electric_vehicleManager({
             <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
           )}
         </div>
-        
         <div className="relative">
           <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
-            Daily Usage (KM)
+            Monthly Usage (KM)
           </label>
           <input
             type="number"
@@ -312,7 +334,7 @@ export default function Electric_vehicleManager({
             <div>
               <span className="font-semibold flex gap-2 items-center">
                 <Image
-                  src={vehicle.category === "Car" ? "https://gym-manager-pull.b-cdn.net/golden_ray/icons/car.svg" : "https://gym-manager-pull.b-cdn.net/golden_ray/icons/scooter.svg"} // Dynamically choose icon based on category
+                  src={vehicle.category === "Car" ? "https://gym-manager-pull.b-cdn.net/golden_ray/icons/car.svg" : "https://gym-manager-pull.b-cdn.net/golden_ray/icons/scooter.svg"}
                   alt={`Icon for ${vehicle.model}`}
                   width={24}
                   height={24}

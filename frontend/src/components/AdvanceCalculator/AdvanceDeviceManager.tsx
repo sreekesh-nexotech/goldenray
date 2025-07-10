@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import { Electronic_device, DeviceType } from "@/types/types";
-import deviceIcon from "../../../public/icons/common-device.svg"; // This will be a fallback if API doesn't provide
+import deviceIcon from "../../../public/icons/common-device.svg";
 import deleteIcon from "../../../public/deleteIcon.svg";
 import { getDeviceTypes } from "@/services/deviceService";
 
@@ -10,29 +10,26 @@ interface DeviceManagerProps {
   devices: Electronic_device[];
   setDevices: React.Dispatch<React.SetStateAction<Electronic_device[]>>;
   title: string;
+  validateInputs?: (validator: () => boolean) => void;
 }
 
-export default function DeviceManager({ devices, setDevices, title }: DeviceManagerProps) {
+export default function DeviceManager({ devices, setDevices, title, validateInputs }: DeviceManagerProps) {
   const [newDevice, setNewDevice] = useState({
     device_type: "",
     no_of_units: "",
     daily_usage: "",
-    url: "", 
+    url: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [apiDeviceTypes, setApiDeviceTypes] = useState<DeviceType[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // States for custom searchable dropdown
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Refs for click outside detection and dropdown positioning
   const inputWrapperRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Fetch device types
   const fetchDevices = async () => {
     setIsLoading(true);
     setError(null);
@@ -40,8 +37,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     try {
       const fetchedTypes = await getDeviceTypes();
       setApiDeviceTypes(fetchedTypes);
-      console.log("Fetched device types from API:", fetchedTypes);//debugging
-
+      console.log("Fetched device types from API:", fetchedTypes);
     } catch (err: unknown) {
       console.error("Failed to fetch device types:", err);
       let errorMessage = "Failed to load device types.";
@@ -60,7 +56,6 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     fetchDevices();
   }, []);
 
-  // Effect to close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -79,15 +74,14 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     };
   }, []);
 
-  // Filter and sort device types for UI
   const usableDeviceTypes = useMemo(() => {
-    return apiDeviceTypes ? 
-      apiDeviceTypes
-        .filter((device) => device.show_in_ui)
-        .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
+    return apiDeviceTypes
+      ? apiDeviceTypes
+          .filter((device) => device.show_in_ui)
+          .sort((a, b) => a.name.localeCompare(b.name))
       : [];
   }, [apiDeviceTypes]);
-  // Filtered devices based on search term for the custom dropdown
+
   const filteredDevices = useMemo(() => {
     if (!searchTerm) {
       return usableDeviceTypes;
@@ -97,11 +91,9 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     );
   }, [usableDeviceTypes, searchTerm]);
 
-  // Validate input fields
-  const validateInputs = () => {
+  const validateDeviceInputsForAdd = () => {
     const newErrors: { [key: string]: string } = {};
 
-    // Validate device type: must be selected from the list and not just typed
     if (!newDevice.device_type || newDevice.device_type === "" || !usableDeviceTypes.some(d => d.name === newDevice.device_type)) {
       newErrors.device_type = "Please select a valid device type";
     }
@@ -110,7 +102,7 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     if (!newDevice.no_of_units || isNaN(units) || units <= 0) {
       newErrors.no_of_units = "Number of units must be a positive number";
     }
-    
+
     const daily_usage = parseFloat(newDevice.daily_usage);
     if (!newDevice.daily_usage || isNaN(daily_usage) || daily_usage < 0 || daily_usage > 24) {
       newErrors.daily_usage = "Enter a valid Usage Hours per day (0-24)";
@@ -119,64 +111,78 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle input changes (for units, wattage, daily usage)
+  const validateDeviceInputs = () => {
+    if (
+      newDevice.device_type ||
+      newDevice.no_of_units ||
+      newDevice.daily_usage
+    ) {
+      setErrors((prev) => ({
+        ...prev,
+        form: "Please click 'Add Device' to save your input.",
+      }));
+      return false;
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    if (validateInputs) {
+      validateInputs(validateDeviceInputs);
+    }
+  }, [newDevice, validateInputs]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewDevice((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear specific error on change
+    setErrors((prev) => ({ ...prev, [name]: "", form: "" }));
   };
 
-  // Handle search input change (for device type)
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    setNewDevice((prev) => ({ ...prev, device_type: value, url: '' })); // Clear url when typing new device type
-    setIsDropdownOpen(true); // Open dropdown when typing
-    setErrors((prev) => ({ ...prev, device_type: "" })); // Clear device_type error on typing
+    setNewDevice((prev) => ({ ...prev, device_type: value, url: "" }));
+    setIsDropdownOpen(true);
+    setErrors((prev) => ({ ...prev, device_type: "", form: "" }));
   };
 
-  // Handle selection from custom dropdown
   const handleSelectDevice = (deviceName: string) => {
     const selectedDevice = usableDeviceTypes.find((device) => device.name === deviceName);
     setNewDevice((prev) => ({
       ...prev,
       device_type: deviceName,
-      url: selectedDevice?.url || deviceIcon.src, // Use selected device's icon_url or a common fallback, assign to 'url'
+      url: selectedDevice?.url || deviceIcon.src,
     }));
-    setSearchTerm(deviceName); // Set search term to selected name
-    setIsDropdownOpen(false); // Close dropdown
-    setErrors((prev) => ({ ...prev, device_type: "" })); // Clear device_type error on selection
+    setSearchTerm(deviceName);
+    setIsDropdownOpen(false);
+    setErrors((prev) => ({ ...prev, device_type: "", form: "" }));
     console.log("Selected device icon_url:", selectedDevice?.url);
   };
 
-  // Add a new device
   const addElectronic_device = () => {
-    if (validateInputs()) {
-      // Find the selected device from the usableDeviceTypes to get its icon_url
+    if (validateDeviceInputsForAdd()) {
       const selectedDevice = usableDeviceTypes.find(d => d.name === newDevice.device_type);
-      const urlToUse = selectedDevice?.url || deviceIcon.src; // Fallback to common icon if not found, assign to 'url'
+      const urlToUse = selectedDevice?.url || deviceIcon.src;
 
       const device: Electronic_device = {
         id: uuidv4(),
         device_type: newDevice.device_type,
         no_of_units: parseFloat(newDevice.no_of_units),
         daily_usage: parseFloat(newDevice.daily_usage),
-        url: urlToUse, // Use the determined icon URL
+        url: urlToUse,
       };
       setDevices([...devices, device]);
-      setNewDevice({ device_type: "", no_of_units: "", daily_usage: "", url: "" }); // Reset url
-      setSearchTerm(""); // Clear search term after adding
+      setNewDevice({ device_type: "", no_of_units: "", daily_usage: "", url: "" });
+      setSearchTerm("");
       setErrors({});
       console.log('Device URL:', device.url);
     }
   };
 
-  // Remove a device
   const removeDevice = (id: string) => {
     setDevices(devices.filter((device) => device.id !== id));
   };
 
-  // Render loading state
   if (isLoading) {
     return (
       <div className="text-center p-4">
@@ -186,7 +192,6 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
     );
   }
 
-  // Render error state with retry button
   if (error) {
     return (
       <div className="text-center p-4 text-red-600">
@@ -302,6 +307,9 @@ export default function DeviceManager({ devices, setDevices, title }: DeviceMana
           + Add Device
         </button>
       </div>
+      {errors.form && (
+        <p className="text-sm text-red-600 mt-2">{errors.form}</p>
+      )}
       <div className="mt-4 space-y-3">
         {devices.map((device) => (
           <div

@@ -223,7 +223,7 @@ export default function BasicInformationStep({
       )}
 
       {/* --- Navigation Button --- */}
-      <div className="flex justify-between items-center mt-8">
+      <div className={`flex ${error ? 'justify-between':'justify-end'} items-center mt-8`}>
          {error && (
             <div className=" text-red-700  relative " role="alert">
               <strong className="font-bold">Error!</strong>

@@ -1,9 +1,7 @@
-/* golden-ray/frontend/src/components/AdvanceCalculator/AdvanceForm2.tsx */
-
+import {  useRef } from "react";
 import Button from "../ui/Button";
 import { UsageDetailsFormData, Electric_vehicle, Electronic_device } from "@/types/types";
-import DeviceManager from "./AdvanceDeviceManager"; // Import the reusable component
-
+import DeviceManager from "./AdvanceDeviceManager";
 import AdvanceVehicleManager from "./AdvanceVehicleManager";
 
 interface UsageDetailsStepProps {
@@ -21,15 +19,9 @@ export default function UsageDetailsStep({
   loading,
   grid_type,
 }: UsageDetailsStepProps) {
-  
+  const vehicleManagerValidator = useRef<(() => boolean) | null>(null);
+  const deviceManagerValidator = useRef<(() => boolean) | null>(null);
 
-
-
-  /**
-   * This is a wrapper function passed to the DeviceManager component.
-   * It allows the child component to update the `electronic_devices` array,
-   * which is part of the parent's `usageDetails` state object.
-   */
   const setelectronic_devices: React.Dispatch<React.SetStateAction<Electronic_device[]>> = (
     updater
   ) => {
@@ -39,8 +31,6 @@ export default function UsageDetailsStep({
     }));
   };
 
-
-  // Wrapper function for updating electric_vehicles in formData
   const setelectric_vehicles: React.Dispatch<React.SetStateAction<Electric_vehicle[]>> = (
     updater
   ) => {
@@ -50,26 +40,40 @@ export default function UsageDetailsStep({
     }));
   };
 
-  
+  const handleCalculate = () => {
+    let isValid = true;
+
+    // Validate DeviceManager inputs
+    if (deviceManagerValidator.current && !deviceManagerValidator.current()) {
+      isValid = false;
+    }
+
+    // Validate VehicleManager inputs
+    if (vehicleManagerValidator.current && !vehicleManagerValidator.current()) {
+      isValid = false;
+    }
+
+    if (isValid) {
+      onCalculate();
+    }
+  };
 
   return (
     <div className="space-y-12 p-0 md:p-6">
-      {/* --- Electronic Devices Section (Using Reusable Component) --- */}
+ 
       <DeviceManager
         devices={formData.electronic_devices}
         setDevices={setelectronic_devices}
         title="Tell us what electronics you want to include?"
+        validateInputs={(validator) => (deviceManagerValidator.current = validator)}
       />
-
-      {/* --- Electric Vehicles Section --- */}
       <AdvanceVehicleManager
         electric_vehicles={formData.electric_vehicles}
         setelectric_vehicles={setelectric_vehicles}
+        validateInputs={(validator) => (vehicleManagerValidator.current = validator)}
       />
-
-      {/* --- Navigation Button --- */}
       <div className="flex justify-end mt-8">
-        <Button onClick={onCalculate} disabled={loading}>
+        <Button onClick={handleCalculate} disabled={loading}>
           {loading ? "Processing..." : grid_type === "Hybrid" ? "Next" : "Calculate"}
         </Button>
       </div>
