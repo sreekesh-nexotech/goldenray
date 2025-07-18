@@ -1,3 +1,4 @@
+/* golden-ray/frontend/src/components/SolarCalculator/SolarBasicResult.tsx */
 "use client";
 
 import { useState, ChangeEvent } from "react";
@@ -14,6 +15,7 @@ interface SolarBasicResultProps {
   calculatedData: BasicCalculatorData;
   onResubmit: (pincode: string, property_type: string, monthly_bill: number) => void;
   onGoBack: () => void;
+  apiError?: string | null;
 }
 
 export default function SolarBasicResult({
@@ -23,6 +25,7 @@ export default function SolarBasicResult({
   calculatedData,
   onResubmit,
   onGoBack,
+  apiError,
 }: SolarBasicResultProps) {
   const [pincode, setPincode] = useState(initialPincode);
   const [property_type, setproperty_type] = useState(initialproperty_type || "residential");
@@ -53,9 +56,9 @@ export default function SolarBasicResult({
     if (!monthly_bill) {
       newErrors.monthly_bill = "Monthly bill is required.";
     } else if (isNaN(billValue) || billValue <= 0) {
-      newErrors.monthly_bill = "Please enter a valid  bill greater than 0.";
-    }else if(billValue>40000){
-      newErrors.monthly_bill = "Monthly bill cannot exceed ₹40,000"
+      newErrors.monthly_bill = "Please enter a valid bill greater than 0.";
+    } else if (billValue > 40000) {
+      newErrors.monthly_bill = "Monthly bill cannot exceed ₹40,000";
     }
 
     setErrors(newErrors);
@@ -91,6 +94,18 @@ export default function SolarBasicResult({
     }
   };
 
+  // Prepare all error messages for display
+  const allErrors: string[] = [];
+  if (apiError) {
+    allErrors.push(apiError);
+  }
+  Object.values(errors).forEach(errMsg => {
+    if (errMsg) { // Only add non-empty error messages
+      allErrors.push(errMsg);
+    }
+  });
+
+
   return (
     <div className="relative py-12 mt-12 scroll-mt-30" id="solar-advantage-results">
       <PageIllustration />
@@ -98,6 +113,16 @@ export default function SolarBasicResult({
         <h1 className="text-4xl text-center md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-15">
           Calculate Your Solar Advantage
         </h1>
+        {allErrors.length > 0 && ( // Display a single error message container if there are any errors
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong className="font-bold">Error!</strong>
+            <ul className="mt-2 list-disc list-inside">
+                {allErrors.map((msg, index) => (
+                    <li key={index}>{msg}</li>
+                ))}
+            </ul>
+          </div>
+        )}
         <div className="flex flex-col lg:flex-row justify-between gap-5 text-center lg:items-end mb-10">
           {/* Pincode */}
           <div>
@@ -110,12 +135,12 @@ export default function SolarBasicResult({
               value={pincode}
               onChange={handlePincodeChange}
               className={`bg-white shadow-md w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] ${
-                errors.pincode ? "border-red-600" : ""
+                errors.pincode ? "border-red-600" : "" // Keep the red border
               }`}
               placeholder="Enter 6-digit pincode"
               required
             />
-            {errors.pincode && <p className="mt-1 text-sm text-red-600">{errors.pincode}</p>}
+            {/* Specific error message removed, now part of the common list */}
           </div>
           {/* Property Type */}
           <div className="block text-left">
@@ -133,7 +158,7 @@ export default function SolarBasicResult({
               <option value="residential">Residential</option>
               <option value="commercial">Commercial</option>
             </select>
-            {errors.property_type && <p className="mt-1 text-sm text-red-600">{errors.property_type}</p>}
+            {/* Specific error message removed, now part of the common list */}
           </div>
           {/* Average Monthly/Bi-Monthly Bill */}
           <div>
@@ -148,12 +173,12 @@ export default function SolarBasicResult({
               step="0.01"
               min="0.01"
               className={`bg-white shadow-md w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] ${
-                errors.monthly_bill ? "border-red-600" : ""
+                errors.monthly_bill ? "border-red-600" : "" // Keep the red border
               }`}
               placeholder="Enter bill amount"
               required
             />
-            {errors.monthly_bill && <p className="mt-1 text-sm text-red-600">{errors.monthly_bill}</p>}
+            {/* Specific error message removed, now part of the common list */}
           </div>
           {/* Resubmit Button */}
           <button

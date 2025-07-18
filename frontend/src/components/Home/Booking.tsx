@@ -55,7 +55,7 @@ export default function BookingForm() {
         formRef.current.reset();
       }
     } catch (err) {
-     if (err instanceof Error && err.message.includes('lead collection home with this phone number already exists')) {
+     if (err instanceof Error && err.message.includes('HTTP error! Status: 400, Message: {"phone_number":["lead collection home with this phone number already exists."]}')) {
         setSuccessMessage("We already have your details! Our team will contact you soon.");
         if (formRef.current) {
           formRef.current.reset();  
@@ -129,12 +129,12 @@ export default function BookingForm() {
             </button>
           </form>
           {error && (
-            <p className="text-red-500 text-sm mt-4 text-center md:text-left" role="alert">
+            <p className="text-red-500 text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="alert">
               {error}
             </p>
           )}
           {successMessage && (
-            <p className="text-green-500 text-sm mt-4 text-center md:text-left" role="status">
+            <p className="text-green-500 text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="status">
               {successMessage}
             </p>
           )}

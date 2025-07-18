@@ -28,27 +28,27 @@ const steps = [
   },
 ];
 
-export default function SolarSteps() {
+export default function SolarStepsNoGSAP() { // Renamed component to SolarStepsNoGSAP
   const [activeCard, setActiveCard] = useState(1);
   const sectionRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // Store interval ID
 
   useEffect(() => {
-    const section = sectionRef.current; // Capture section
+    const section = sectionRef.current; // Capture section element
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
         if (entry.isIntersecting) {
-          // Clear any existing interval to prevent duplicates
+          // Clear any existing interval to prevent duplicates when re-entering view
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
           }
-          // Start a new interval
+          // Start a new interval to cycle through cards
           intervalRef.current = setInterval(() => {
-            setActiveCard((prev) => (prev % steps.length) + 1);
-          }, 5000); // Cycle every 5 seconds
+            setActiveCard((prev) => (prev % steps.length) + 1); // Cycle to the next card
+          }, 3000); // Cycle every 3 seconds
         } else {
-          // Clear interval when section is out of view
+          // Clear interval when section is out of view to stop auto-cycling
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
@@ -58,11 +58,13 @@ export default function SolarSteps() {
       { threshold: 0.5 } // Trigger when 50% of the section is visible
     );
 
+    // Observe the section if it exists
     if (section) {
       observer.observe(section);
     }
 
-    // Cleanup on unmount
+    // Cleanup function:
+    // Disconnect observer and clear interval when component unmounts
     return () => {
       if (section) {
         observer.unobserve(section);
@@ -72,12 +74,17 @@ export default function SolarSteps() {
         intervalRef.current = null;
       }
     };
-  }, []);
+  }, []); // Empty dependency array ensures this effect runs only once on mount and unmount
 
-  //clicking a card to show the card
+  // Handle click on a card to set it as the active card
   const handleCardClick = (id: number) => {
     setActiveCard(id);
-
+    // Optionally, clear the interval on manual click to stop auto-cycling
+    // if you want manual control to override auto-cycling temporarily
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
   };
 
   return (
@@ -104,6 +111,7 @@ export default function SolarSteps() {
             >
               {step.id}
             </div>
+            {/* Card Content - conditionally shown/hidden based on activeCard */}
             <div className="relative z-10 flex flex-col h-full justify-between transition-all duration-300 ease-in-out">
               {/* Title */}
               <h2

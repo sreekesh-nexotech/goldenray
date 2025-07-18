@@ -4,11 +4,12 @@ import PageIllustration from "@/components/ui/page-illustration";
 import { SolarBasicPayload } from "@/types/types";
 
 interface SolarAdvantageProps {
-  onSubmit: (pincode: string, property_type: string, monthly_bill: number) => void;
+  onSubmit: (pincode: string, property_type: string, monthly_bill: number) => Promise<void>;
   initialPincode?: string;
   initialproperty_type?: string;
   initialmonthly_bill?: number | "";
   isLoading: boolean;
+  fetchError?: string | null;
 }
 
 export default function SolarAdvantage({
@@ -17,6 +18,7 @@ export default function SolarAdvantage({
   initialproperty_type = "",
   initialmonthly_bill = "",
   isLoading,
+  fetchError,
 }: SolarAdvantageProps) {
   const [pincode, setPincode] = useState(initialPincode);
   const [property_type, setproperty_type] = useState(initialproperty_type);
@@ -26,22 +28,33 @@ export default function SolarAdvantage({
     property_type: "",
     monthly_bill: "",
   });
-  const [monthly_label , setmonthly_label] = useState("Average Monthly Bill");
+  const [monthly_label, setmonthly_label] = useState("Average Monthly Bill");
 
   const validateForm = () => {
     let valid = true;
     const newErrors = { pincode: "", property_type: "", monthly_bill: "" };
 
     // Pincode validation: Must be 6 digits
+    if (!/^\d{6}$/.test(pincode)) {
+      newErrors.pincode = "Pincode must be exactly 6 digits.";
+      valid = false;
+    }
+
+    // Property type validation
+    if (!property_type) {
+      newErrors.property_type = "Please select a property type.";
+      valid = false;
+    }
+
+    // Monthly bill validation
     const billValue = Number(monthly_bill);
-  if (isNaN(billValue) || billValue <= 0) {
-    newErrors.monthly_bill = "Electricity bill must be a positive number.";
-    valid = false;
-  } 
-  else if (billValue > 40000) {
-    newErrors.monthly_bill = "Monthly bill cannot exceed ₹40,000.";
-    valid = false;
-  }
+    if (isNaN(billValue) || billValue <= 0) {
+      newErrors.monthly_bill = "Electricity bill must be a positive number.";
+      valid = false;
+    } else if (billValue > 40000) {
+      newErrors.monthly_bill = "Monthly bill cannot exceed ₹40,000.";
+      valid = false;
+    }
 
     setErrors(newErrors);
     return valid;
@@ -50,7 +63,7 @@ export default function SolarAdvantage({
   const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setproperty_type(e.target.value);
     setErrors((prev) => ({ ...prev, property_type: "" }));
-    setmonthly_label(e.target.value === "residential"?"Average bi-Monthly Bill":"Average Monthly Bill");
+    setmonthly_label(e.target.value === "residential" ? "Average bi-Monthly Bill" : "Average Monthly Bill");
   };
 
   const handlePincodeChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +78,7 @@ export default function SolarAdvantage({
     setErrors((prev) => ({ ...prev, monthly_bill: "" }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
       const billValue = Number(monthly_bill);
@@ -75,7 +88,7 @@ export default function SolarAdvantage({
         monthly_bill: billValue,
       };
       console.log("Submitting payload to backend:", payload);
-      onSubmit(pincode, property_type, billValue);
+      await onSubmit(pincode, property_type, billValue);
     }
   };
 
@@ -87,6 +100,10 @@ export default function SolarAdvantage({
           Calculate Your Solar Advantage
         </h1>
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.2)] rounded-3xl p-10 py-12 max-w-sm mx-auto">
+          {/* Fetch Error Display */}
+          {fetchError && (
+            <p className="text-red-500 text-sm mb-4 text-center">{fetchError}</p>
+          )}
           <form className="flex flex-col" onSubmit={handleSubmit}>
             {/* Pincode Input */}
             <div className="mb-4">
@@ -109,7 +126,9 @@ export default function SolarAdvantage({
                 required
                 disabled={isLoading}
               />
-              {errors.pincode && <p className="text-red-500 text-xs mt-1 text-left">{errors.pincode}</p>}
+              {errors.pincode && (
+                <p className="text-red-500 text-xs mt-1 text-left">{errors.pincode}</p>
+              )}
             </div>
 
             {/* Property Type Dropdown */}
@@ -133,10 +152,16 @@ export default function SolarAdvantage({
                 <option value="" disabled hidden>
                   Select Property Type
                 </option>
-                <option value="residential">Residential</option>
-                <option value="commercial">Commercial</option>
+                <option value="residential" className="text-black">
+                  Residential
+                </option>
+                <option value="commercial" className="text-black">
+                  Commercial
+                </option>
               </select>
-              {errors.property_type && <p className="text-red-500 text-xs mt-1 text-left">{errors.property_type}</p>}
+              {errors.property_type && (
+                <p className="text-red-500 text-xs mt-1 text-left">{errors.property_type}</p>
+              )}
             </div>
 
             {/* Average Monthly Electricity Bill Input */}
@@ -161,7 +186,9 @@ export default function SolarAdvantage({
                 required
                 disabled={isLoading}
               />
-              {errors.monthly_bill && <p className="text-red-500 text-xs mt-1 text-left">{errors.monthly_bill}</p>}
+              {errors.monthly_bill && (
+                <p className="text-red-500 text-xs mt-1 text-left">{errors.monthly_bill}</p>
+              )}
             </div>
 
             {/* Calculate Button */}

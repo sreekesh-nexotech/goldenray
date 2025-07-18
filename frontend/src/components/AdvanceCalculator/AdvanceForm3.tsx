@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import { useRef } from "react";
 import Button from "../ui/Button";
 import { BasicInfoFormData, Electronic_device } from "@/types/types";
 import DeviceManager from "./AdvanceDeviceManager"; 
@@ -15,15 +15,13 @@ export default function NewHomeDetailsStep({
   setFormData,
   onNext,
 }: NewHomeDetailsStepProps) {
+  const deviceManagerValidator = useRef<(() => boolean) | null>(null);
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: parseInt(value) }));
   };
 
-  
-
-  // Wrapper function to update devices within the basicInfo state
   const setBackupDevices: React.Dispatch<React.SetStateAction<Electronic_device[]>> = (
     updater
   ) => {
@@ -32,14 +30,25 @@ export default function NewHomeDetailsStep({
       electronic_devices: typeof updater === "function" ? updater(prev.electronic_devices) : updater,
     }));
   };
+
+  const handleCalculate = () => {
+    let isValid = true;
+
+    // Validate DeviceManager inputs
+    if (deviceManagerValidator.current && !deviceManagerValidator.current()) {
+      isValid = false;
+    }
+
+    if (isValid) {
+      onNext();
+    }
+  };
+
   const backup_hours = formData.backup_hours;
 
   return (
-    
     <div className="space-y-8 p-0 md:p-6">
-
-
-      {/* Backup Power Hours Slider */}
+      
       <div>
         <label className="text-xl md:text-2xl font-semibold text-[#123532] mb-6">
           How many hours of backup power do you need?
@@ -63,16 +72,14 @@ export default function NewHomeDetailsStep({
           <span>24h</span>
         </div>
       </div>
-      
-      {/* Electronic Devices Section for Backup */}
       <DeviceManager
         devices={formData.electronic_devices}
         setDevices={setBackupDevices}
         title="What devices need backup power?"
+        validateInputs={(validator) => (deviceManagerValidator.current = validator)}
       />
-
       <div className="flex justify-end mt-8">
-        <Button onClick={onNext}>Calculate</Button>
+        <Button onClick={handleCalculate}>Calculate</Button>
       </div>
     </div>
   );
