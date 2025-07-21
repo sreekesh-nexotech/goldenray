@@ -139,12 +139,13 @@ else:
 if ENVIRONMENT == "production":
     CORS_ALLOW_ALL_ORIGINS = False
     CORS_ALLOWED_ORIGINS = [
-        "https://goldenray.online",
-        "https://www.goldenray.online",
+        "https://flarize.com",
+        "https://www.flarize.com"
+
     ]
     CSRF_TRUSTED_ORIGINS = [
-        "https://goldenray.online",
-        "https://www.goldenray.online",
+        "https://flarize.com",
+        "https://www.flarize.com"
     ]
 else:
     CORS_ALLOW_ALL_ORIGINS = True
