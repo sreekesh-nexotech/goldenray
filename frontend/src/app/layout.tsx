@@ -76,23 +76,23 @@ const switzer = localFont({
 // Metadata
 export const metadata: Metadata = {
   title: {
-    default: "Golden Ray - Solar Solutions",
+    default: "Flarize - Solar Solutions",
     template: "%s | Golden Ray",
   },
   description: "Empowering sustainable energy with innovative solar solutions.",
-  keywords: ["solar energy", "renewable energy", "Golden Ray"],
+  keywords: ["solar energy", "renewable energy", "Flarize"],
   openGraph: {
-    title: "Golden Ray - Solar Solutions",
+    title: "Flarize - Solar Solutions",
     description: "Empowering sustainable energy with innovative solar solutions.",
-    url: "https://goldenray.com",
-    siteName: "Golden Ray",
-    images: [{ url: "/heroImg.png", width: 1200, height: 630, alt: "Golden Ray" }],
+    url: "https://flarize.com",
+    siteName: "Flarize",
+    images: [{ url: "/heroImg.png", width: 1200, height: 630, alt: "Flarize" }],
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Golden Ray - Solar Solutions",
+    title: "Flarize - Solar Solutions",
     description: "Empowering sustainable energy with innovative solar solutions.",
     images: ["/heroImg.png"],
   },
@@ -100,7 +100,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://goldenray.com",
+    canonical: "https://www.flarize.com",
   },
   robots: {
     index: true,
