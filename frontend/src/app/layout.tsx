@@ -77,7 +77,7 @@ const switzer = localFont({
 export const metadata: Metadata = {
   title: {
     default: "Flarize - Solar Solutions",
-    template: "%s | Golden Ray",
+    template: "%s | Flarize",
   },
   description: "Empowering sustainable energy with innovative solar solutions.",
   keywords: ["solar energy", "renewable energy", "Flarize"],
