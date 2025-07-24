@@ -158,7 +158,7 @@ export default function terms(){
                     
                     {/* shipping and delivery */}
                     <div className="space-y-5">
-                        <h2 className="text-2xl font-semibold mb-4">7. Your Rights</h2>
+                        <h2 className="text-2xl font-semibold mb-4">6. Your Rights</h2>
 
                         <ul className="list-disc list-inside space-y-1 ml-4">
                             <li>Flarize will arrange the shipment and delivery of all solar hardware (e.g., panels, inverters, batteries, structures) directly to the customer&apos;s site address as provided during the order confirmation.</li>
