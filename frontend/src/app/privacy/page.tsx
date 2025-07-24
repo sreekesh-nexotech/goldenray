@@ -242,6 +242,20 @@ export default function privacy(){
                             📞 [Insert Support Phone Number]
                         </p>
                     </div>
+
+                    {/* Consent Clause */}
+                    <div>
+                        <h2 className="text-2xl font-semibold mb-4">Consent Clause</h2>
+                        <p className="mb-2">I agree to the <Link href="/terms" className="text-blue-600 hover:underline">Terms & Conditions</Link> and  <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>, and consent to Flarize contacting me via phone, email, or WhatsApp for project-related communication, including financing and support.</p>
+                    </div>
+
+                    {/* Consent Clause */}
+                    <div>
+                        <h2 className="text-2xl font-semibold mb-4">Consent Clause</h2>
+                        <p>By submitting this form, I confirm that the information provided is accurate and I consent to Flarize Technologies Private Limited collecting, storing, and processing my personal and financial information for the purposes of project execution, loan facilitation, and service coordination.</p><br/>
+                        <p>I authorize Flarize and its partners (vendors, NBFCs, banks, etc.) to contact me via phone, SMS, email, or WhatsApp for verification, updates, and related communication.</p><br/>
+                        <p className="mb-2">I have read and agreed to the <Link href="/terms" className="text-blue-600 hover:underline">Terms & Conditions</Link> and  <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>, I understand that I can withdraw my consent at any time by contacting <Link href="mailto:grievance@flarize.com" className="text-blue-600 hover:underline">grievance@flarize.com</Link>.</p>
+                    </div>
                     
                 </div>
             </div>

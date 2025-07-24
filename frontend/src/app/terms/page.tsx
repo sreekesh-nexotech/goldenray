@@ -235,7 +235,7 @@ export default function terms(){
                     {/* government law */}
                     <div className="space-y-5">
                         <h2 className="text-2xl font-semibold mb-4">12. Governing Law & Jurisdiction</h2>
-                        <p className="mb-2">These Terms are governed by the laws of India. Any disputes shall fall under the exclusive jurisdiction of courts in Alappuzha, Kerala</p>
+                        <p className="mb-2">These Terms are governed by the laws of India.Any disputes shall fall under the exclusive jurisdiction of courts in Alappuzha, Kerala</p>
                     </div>
 
                     {/* Grievance Redressal */}
