@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef } from "react";
 import { submitContactForm} from "@/services/basicContactService";
-import footerLogo from "../../../public/Mask-group.png";
+import footerLogo from "../../../public/logo_header.png";
 import LinkedInLogo from "../../../public/LinkedinLogo.png";
 import FacebookLogo from "../../../public/FacebookLogo.png";
 import InstagramLogo from "../../../public/InstagramLogo.png";
@@ -166,10 +166,10 @@ export default function Footer() {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between">
             <div className="w-full md:w-1/3 max-w-md mb-6 md:mb-0">
               <div className="font-bold text-xl mb-2">
-                <Image src={footerLogo} alt="Golden Ray Logo" width={120} height={40} />
+                <Image src={footerLogo} alt="Flarize Logo" width={120} height={40} />
               </div>
               <p className="text-sm text-[#444444] mb-4 md:mb-30">
-                Golden Ray is a company working to bring accessible energy to everyone. Our mission is to empower people to be in charge of their own power
+                Flarize is a company working to bring accessible energy to everyone. Our mission is to empower people to be in charge of their own power
               </p>
               <div className="flex gap-4">
                 <Link href="#" aria-label="LinkedIn">

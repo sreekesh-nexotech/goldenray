@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import logo from "../../../public/logo_header.png";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +16,7 @@ export default function Header() {
   return (
     <header className="flex justify-between items-center py-4 px-4 sm:px-6 lg:px-8 xl:px-36 shadow-md bg-white fixed w-full top-0 z-50">
       <div className="text-2xl font-medium text-[#123532]">
-       <Link href="/"> G<span className="text-[#FBC207]">o</span>lden Ray </Link>
+       <Link href="/"> <Image src={logo}  alt="Flaize Logo" width={130} height={130}/> </Link>
       </div>
 
       {/* Navigation Bar */}

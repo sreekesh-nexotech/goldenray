@@ -27,9 +27,9 @@ export async function getMetadataForPage(path: string): Promise<MetadataResponse
     const normalizedPath = path === "/" || path === "" ? "home" : path.replace(/^\/|\/$/g, "");
     const metadata = await apiCall<MetadataResponse>(`/metadata/${normalizedPath}`, "GET");
     return {
-      title: metadata.title || "Golden Ray - Solar Solutions",
+      title: metadata.title || "Flarize - Solar Solutions",
       description: metadata.description || "Empowering sustainable energy with innovative solar solutions.",
-      keywords: metadata.keywords || ["solar energy", "renewable energy", "Golden Ray"],
+      keywords: metadata.keywords || ["solar energy", "renewable energy", "Flarize"],
       imageUrl: metadata.imageUrl?.startsWith("http")
         ? metadata.imageUrl
         : `https://goldenray.com${metadata.imageUrl || "/heroImg.png"}`,

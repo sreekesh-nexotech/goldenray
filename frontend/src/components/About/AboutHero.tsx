@@ -17,7 +17,7 @@ export default function AboutHero() {
             Clean Energy, Made Simple
           </h1>
           <p className="hidden md:block text-base sm:text-lg md:text-2xl text-[#444444] mb-6">
-            At Golden Ray, we believe in harnessing the limitless power of the sun to create a cleaner, greener, and more sustainable future.
+            At Flarize, we believe in harnessing the limitless power of the sun to create a cleaner, greener, and more sustainable future.
           </p>
 
           <LinkingButton content="Join Our Team &#10141;" ButtonLink="#team" ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-500'/>
