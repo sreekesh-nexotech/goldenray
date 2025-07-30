@@ -86,7 +86,15 @@ export const metadata: Metadata = {
     description: "Empowering sustainable energy with innovative solar solutions.",
     url: "https://flarize.com",
     siteName: "Flarize",
-    images: [{ url: "/heroImg.png", width: 1200, height: 630, alt: "Flarize" }],
+    images: [
+      {
+        url: "https://https://flarize.com/ogImg.jpg",
+        width: 1600,
+        height: 730,
+        alt: "Blue Electronics | Smart Solutions for Electronics",
+        type: "image/jpeg",
+      },
+    ],
     locale: "en_US",
     type: "website",
   },
@@ -94,7 +102,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Flarize - Solar Solutions",
     description: "Empowering sustainable energy with innovative solar solutions.",
-    images: ["/heroImg.png"],
+    images: ["https://https://flarize.com/ogImg.jpg"],
   },
   icons: {
     icon: "/favicon.ico",
