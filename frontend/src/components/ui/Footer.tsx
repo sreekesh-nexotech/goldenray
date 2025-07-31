@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef } from "react";
 import { submitContactForm} from "@/services/basicContactService";
-import footerLogo from "../../../public/logo_header.png";
+import footerLogo from "../../../public/logoFooter.png";
 import LinkedInLogo from "../../../public/LinkedinLogo.png";
 import FacebookLogo from "../../../public/FacebookLogo.png";
 import InstagramLogo from "../../../public/InstagramLogo.png";
@@ -166,7 +166,7 @@ export default function Footer() {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between">
             <div className="w-full md:w-1/3 max-w-md mb-6 md:mb-0">
               <div className="font-bold text-xl mb-2">
-                <Image src={footerLogo} alt="Flarize Logo" width={120} height={40} />
+                <Image src={footerLogo} alt="Flarize Logo" width={120} height={120} />
               </div>
               <p className="text-sm text-[#444444] mb-4 md:mb-30">
                 Flarize is a company working to bring accessible energy to everyone. Our mission is to empower people to be in charge of their own power
@@ -251,7 +251,7 @@ export default function Footer() {
           </div>
         </div>
         <p className="text-center text-xs mt-6 text-gray-300">
-          © 2025 GoldenRay. All rights reserved. <br />
+          © 2025 Flarize. All rights reserved. <br />
           Made by <Link href="https://nexotech.cc/" target="new">Nexotech</Link>
         </p>
       </section>
