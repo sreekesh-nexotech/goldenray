@@ -88,7 +88,7 @@ export const metadata: Metadata = {
     siteName: "Flarize",
     images: [
       {
-        url: "https://https://flarize.com/ogImg.jpg",
+        url: "https://flarize.com/ogImg.jpg",
         width: 1600,
         height: 730,
         alt: "Blue Electronics | Smart Solutions for Electronics",
@@ -102,7 +102,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Flarize - Solar Solutions",
     description: "Empowering sustainable energy with innovative solar solutions.",
-    images: ["https://https://flarize.com/ogImg.jpg"],
+    images: ["https://flarize.com/ogImg.jpg"],
   },
   icons: {
     icon: "/favicon.ico",
