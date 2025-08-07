@@ -82,7 +82,7 @@ export const metadata: Metadata = {
   description: "Empowering sustainable energy with innovative solar solutions.",
   keywords: ["solar energy", "renewable energy", "Flarize"],
   openGraph: {
-    title: "Flarize - Solar Solutions",
+    title: "Flarize | Solar Solutions",
     description: "Empowering sustainable energy with innovative solar solutions.",
     url: "https://flarize.com",
     siteName: "Flarize",
@@ -91,7 +91,7 @@ export const metadata: Metadata = {
         url: "https://flarize.com/ogImg.jpg",
         width: 1600,
         height: 730,
-        alt: "Blue Electronics | Smart Solutions for Electronics",
+        alt: "Flarize | Solar Solution",
         type: "image/jpeg",
       },
     ],

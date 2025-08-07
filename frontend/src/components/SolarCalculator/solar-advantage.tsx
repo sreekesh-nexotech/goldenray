@@ -91,26 +91,20 @@ export default function SolarAdvantage({
       await onSubmit(pincode, property_type, billValue);
     }
   };
-
-  return (
-    <div className="relative bg-white py-12 mt-12 scroll-mt-30" id="solar-advantage">
+return (
+    <div className="relative bg-white py-[3rem] mt-[3rem] scroll-mt-[7.5rem]" id="solar-advantage">
       <PageIllustration isGradient={false} />
       <div className="relative max-w-7xl mx-auto text-center px-4 md:px-0">
-        <h1 className="text-4xl md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-15">
+        <h1 className="text-4xl md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-[3.75rem]">
           Calculate Your Solar Advantage
         </h1>
-        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.2)] rounded-3xl p-10 py-12 max-w-sm mx-auto">
-          {/* Fetch Error Display */}
+        <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.2)] rounded-3xl p-[2.5rem] py-[3rem] max-w-sm mx-auto">
           {fetchError && (
             <p className="text-red-500 text-sm mb-4 text-center">{fetchError}</p>
           )}
           <form className="flex flex-col" onSubmit={handleSubmit}>
-            {/* Pincode Input */}
             <div className="mb-4">
-              <label
-                htmlFor="pincode"
-                className="block text-left text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="pincode" className="block text-left text-sm font-medium text-gray-700 mb-1">
                 Pincode
               </label>
               <input
@@ -131,12 +125,8 @@ export default function SolarAdvantage({
               )}
             </div>
 
-            {/* Property Type Dropdown */}
             <div className="mb-4">
-              <label
-                htmlFor="property-type"
-                className="block text-left text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="property-type" className="block text-left text-sm font-medium text-gray-700 mb-1">
                 Property Type
               </label>
               <select
@@ -149,27 +139,17 @@ export default function SolarAdvantage({
                 required
                 disabled={isLoading}
               >
-                <option value="" disabled hidden>
-                  Select Property Type
-                </option>
-                <option value="residential" className="text-black">
-                  Residential
-                </option>
-                <option value="commercial" className="text-black">
-                  Commercial
-                </option>
+                <option value="" disabled hidden>Select Property Type</option>
+                <option value="residential" className="text-black">Residential</option>
+                <option value="commercial" className="text-black">Commercial</option>
               </select>
               {errors.property_type && (
                 <p className="text-red-500 text-xs mt-1 text-left">{errors.property_type}</p>
               )}
             </div>
 
-            {/* Average Monthly Electricity Bill Input */}
             <div className="mb-6">
-              <label
-                htmlFor="electricity-bill"
-                className="block text-left text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="electricity-bill" className="block text-left text-sm font-medium text-gray-700 mb-1">
                 {monthly_label}
               </label>
               <input
@@ -191,10 +171,9 @@ export default function SolarAdvantage({
               )}
             </div>
 
-            {/* Calculate Button */}
             <button
               type="submit"
-              className={`btn bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] ${
+              className={`btn bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] py-3 ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
               disabled={isLoading}
@@ -204,7 +183,6 @@ export default function SolarAdvantage({
           </form>
         </div>
 
-        {/* Decorative Text Elements */}
         <div className="absolute hidden xl:block top-1/2 left-1/6 transform -translate-x-1/2 -translate-y-1/2 bg-[#D0FBF7] text-[#124944] px-4 py-2 rounded-lg text-sm font-semibold rotate-[-11.87deg]">
           Upto 78,000 Subsidy
         </div>
