@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -38,73 +38,56 @@ export default function SolarStepsGSAP() {
   const sectionRef = useRef<HTMLDivElement>(null); // Ref for the main section container
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]); // Ref for individual card elements
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    const cards = cardsRef.current;
+// Use useLayoutEffect for DOM manipulations to avoid flicker
+  useLayoutEffect(() => {
+    const cards = cardsRef.current.filter(el => el !== null); // Filter out null refs
 
-    // Ensure section and all card refs are available before proceeding
-    if (!section || cards.length !== steps.length) return;
+    // Use gsap.context() for proper cleanup in React
+    const ctx = gsap.context(() => {
+      if (cards.length !== steps.length) return;
 
-    // Create a ScrollTrigger instance for the section
-    const st = ScrollTrigger.create({
-      trigger: section,
-      start: 'top top', // Start when the top of the section hits the top of the viewport
-      end: '+=300%', // End after scrolling 300% of the section's height
-      scrub: true, // Smoothly animate properties based on scroll position
-      pin: true, // Pin the section while scrolling
-      onUpdate: (self) => {
-        const progress = self.progress; // Current scroll progress (0 to 1)
-        const segment = 1 / (steps.length - 1); // Calculate the segment size for each card transition
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top top',
+        end: '+=300%',
+        scrub: true,
+        pin: true,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const segment = 1 / (steps.length - 1);
 
-        steps.forEach((step, index) => {
-          const card = cards[index];
-          if (!card) return;
+          steps.forEach((step, index) => {
+            const card = cards[index];
+            if (!card) return;
 
-          // Calculate the center point of the current card's segment
-          const center = segment * index;
-          // Calculate the absolute distance from the current scroll progress to the card's center
-          const distance = Math.abs(progress - center);
-          // Calculate scale based on distance, ensuring it doesn't go below 0
-          const scale = Math.max(0, 1 - distance * 3);
+            const center = segment * index;
+            const distance = Math.abs(progress - center);
+            const scale = Math.max(0, 1 - distance * 3);
+            const width = 20 + scale * 80;
 
-          // Calculate the width of the card, ranging from 20% to 100%
-          const width = 20 + scale * 80;
-          // Animate the width of the card using GSAP
-          gsap.to(card, { width: `${width}%`, duration: 0.2, ease: "power2.out" });
+            gsap.to(card, { width: `${width}%`, duration: 0.2, ease: "power2.out" });
 
-          // Select the content element within the card
-          const content = card.querySelector('.card-content') as HTMLElement;
-          if (content) {
-            // If the scroll progress is close to the card's center, show its content
-            if (distance < segment / 2) {
+            const content = card.querySelector('.card-content') as HTMLElement;
+            if (content) {
+              const isVisible = distance < segment / 2;
               gsap.to(content, {
-                opacity: 1,
-                y: 0,
+                opacity: isVisible ? 1 : 0,
+                y: isVisible ? 0 : -20,
                 duration: 0.3,
                 ease: "power2.out",
-                pointerEvents: 'auto' // Enable pointer events when visible
-              });
-            } else {
-              // Otherwise, hide its content
-              gsap.to(content, {
-                opacity: 0,
-                y: -20,
-                duration: 0.3,
-                ease: "power2.out",
-                pointerEvents: 'none' // Disable pointer events when hidden
+                pointerEvents: isVisible ? 'auto' : 'none'
               });
             }
-          }
-        });
-      }
-    });
+          });
+        }
+      });
+    }, sectionRef); // Scope the context to the main section
 
-    // Cleanup function to kill ScrollTrigger instances on component unmount
-    return () => {
-      st.kill(); // Kill the specific ScrollTrigger instance
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill()); // Ensure all triggers are killed
-    };
-  }, []); // Empty dependency array ensures this effect runs only once on mount
+    // Return the cleanup function from the context
+    return () => ctx.revert();
+
+  }, []); // Empty dependency array is correct
+
 
   // Handle click on a card to set it as active (though GSAP handles the primary animation)
   // This can be used for fallback or additional styling if needed
