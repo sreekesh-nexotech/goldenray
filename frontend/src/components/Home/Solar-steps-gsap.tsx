@@ -48,7 +48,7 @@ export default function SolarStepsGSAP() {
 
       ScrollTrigger.create({
         trigger: sectionRef.current,
-        start: 'top top',
+        start: 'center center',
         end: '+=300%',
         scrub: true,
         pin: true,
@@ -96,7 +96,7 @@ export default function SolarStepsGSAP() {
   };
 
   return (
-    <div ref={sectionRef} className="flex flex-col py-10 px-4 sm:px-6 lg:px-8 xl:px-36 relative mt-10">
+    <div ref={sectionRef} className="flex flex-col py-10 px-4 sm:px-6 lg:px-8 xl:px-36 relative mt-10 ">
       <h2 className="text-3xl xl:w-1/2 sm:text-4xl lg:text-[64px] font-bold text-[#123532] mb-10 text-center xl:text-left">
         Go solar in just 3 easy steps
       </h2>
