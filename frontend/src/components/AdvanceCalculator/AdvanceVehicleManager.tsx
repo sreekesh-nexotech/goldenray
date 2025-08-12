@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
-import { Electric_vehicle, VehicleType } from "@/types/types"; 
+import { Electric_vehicle, VehicleType } from "@/types/types";
 import deleteIcon from "../../../public/deleteIcon.svg";
 import { getVehicleTypes } from "@/services/vehicleService";
 
@@ -16,37 +16,28 @@ export default function Electric_vehicleManager({
   setelectric_vehicles,
   validateInputs,
 }: Electric_vehicleManagerProps) {
-  const [newVehicle, setNewVehicle] = useState({
-    model: "",
-    no_of_vehicles: "",
-    daily_avg_km: "",
-  });
+  const [newVehicle, setNewVehicle] = useState({ model: "", no_of_vehicles: "", daily_avg_km: "" });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [apiVehicleTypes, setApiVehicleTypes] = useState<VehicleType[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
   const inputWrapperRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Fetch vehicle types from API
   const fetchVehicles = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
       const fetchedTypes = await getVehicleTypes();
       setApiVehicleTypes(fetchedTypes);
     } catch (err: unknown) {
       console.error("Failed to fetch vehicle types:", err);
-      let errorMessage = "Failed to load vehicle types.";
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      } else if (typeof err === "string") {
-        errorMessage = err;
-      }
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : String(err) || "Failed to load vehicle types.");
     } finally {
       setIsLoading(false);
     }
@@ -56,6 +47,7 @@ export default function Electric_vehicleManager({
     fetchVehicles();
   }, []);
 
+  // Close dropdown if clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -65,36 +57,46 @@ export default function Electric_vehicleManager({
         !inputWrapperRef.current.contains(event.target as Node)
       ) {
         setIsDropdownOpen(false);
+        setHighlightedIndex(-1);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Ensure all vehicle types with show_in_ui: true are included
-  const usableVehicleTypes = useMemo(() => {
-    return apiVehicleTypes
-      ? apiVehicleTypes.filter((vehicle) => vehicle.show_in_ui)
-      : [];
-  }, [apiVehicleTypes]);
+  // Only show usable vehicles
+  const usableVehicleTypes = useMemo(
+    () => apiVehicleTypes?.filter((vehicle) => vehicle.show_in_ui) || [],
+    [apiVehicleTypes]
+  );
 
-  // Filter vehicles based on search term, ensuring all matches are shown
+  // Filtered search list
   const filteredVehicles = useMemo(() => {
-    if (!searchTerm) {
-      return usableVehicleTypes;
-    }
+    if (!searchTerm) return usableVehicleTypes;
     return usableVehicleTypes.filter((vehicle) =>
       vehicle.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [usableVehicleTypes, searchTerm]);
 
+  // Grouped vehicles in rendered order
+  const filteredCars = useMemo(
+    () => filteredVehicles.filter((v) => v.category === "Car"),
+    [filteredVehicles]
+  );
+  const filteredScooters = useMemo(
+    () => filteredVehicles.filter((v) => v.category === "Scooter"),
+    [filteredVehicles]
+  );
+  const displayedVehicles = useMemo(
+    () => [...filteredCars, ...filteredScooters],
+    [filteredCars, filteredScooters]
+  );
+
+  // Handle input changes
   const handleVehicleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setNewVehicle((prev) => ({ ...prev, [name]: value }));
-    setErrorMessage(null); // Clear error when user types
+    setErrorMessage(null);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,9 +104,11 @@ export default function Electric_vehicleManager({
     setSearchTerm(value);
     setNewVehicle((prev) => ({ ...prev, model: value }));
     setIsDropdownOpen(true);
+    setHighlightedIndex(0);
     setErrorMessage(null);
   };
 
+  // Select vehicle from dropdown
   const handleSelectVehicle = (vehicleName: string) => {
     setNewVehicle((prev) => ({ ...prev, model: vehicleName }));
     setSearchTerm(vehicleName);
@@ -112,60 +116,108 @@ export default function Electric_vehicleManager({
     setErrorMessage(null);
   };
 
-  const addElectric_vehicle = () => {
-    const scrollY = window.scrollY;
-    const no_of_unitsNum = parseFloat(newVehicle.no_of_vehicles);
-    const daily_usageNum = parseFloat(newVehicle.daily_avg_km);
-    const vehicleTypeToValidate = newVehicle.model;
-
-    const selectedVehicle = usableVehicleTypes.find(v => v.name === vehicleTypeToValidate);
-
-    if (
-      vehicleTypeToValidate &&
-      vehicleTypeToValidate !== "" &&
-      selectedVehicle &&
-      !isNaN(no_of_unitsNum) &&
-      no_of_unitsNum > 0 &&
-      !isNaN(daily_usageNum) &&
-      daily_usageNum >= 0
-    ) {
-      const vehicle: Electric_vehicle = {
-        id: uuidv4(),
-        model: vehicleTypeToValidate,
-        no_of_vehicles: no_of_unitsNum,
-        daily_avg_km: daily_usageNum,
-        category: selectedVehicle.category,
-      };
-      setelectric_vehicles((prev) => [...prev, vehicle]);
-      setNewVehicle({ model: "", no_of_vehicles: "", daily_avg_km: "" });
-      setSearchTerm("");
-      setErrorMessage(null);
-    } else {
-      let message = "Please enter valid positive numbers for units and daily usage.";
-      if (!vehicleTypeToValidate || !selectedVehicle) {
-        message = "Please select a valid vehicle type from the list.";
-      } else if (isNaN(no_of_unitsNum) || no_of_unitsNum <= 0) {
-        message = "Please enter a valid positive number for units.";
-      } else if (isNaN(daily_usageNum) || daily_usageNum < 0) {
-        message = "Please enter a valid non-negative number for daily usage.";
+  // Scroll to highlighted option without jitter
+  const scrollToHighlighted = (index: number) => {
+    if (dropdownRef.current) {
+      const optionEl = dropdownRef.current.querySelectorAll<HTMLDivElement>("[data-option]")[index];
+      if (optionEl) {
+        optionEl.scrollIntoView({ block: "nearest", inline: "nearest" });
       }
-      setErrorMessage(message);
     }
-    window.scrollTo(0, scrollY);
+  };
+
+  // Handle keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!isDropdownOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      setIsDropdownOpen(true);
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => {
+        const newIndex = prev < displayedVehicles.length - 1 ? prev + 1 : 0;
+        scrollToHighlighted(newIndex);
+        return newIndex;
+      });
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => {
+        const newIndex = prev > 0 ? prev - 1 : displayedVehicles.length - 1;
+        scrollToHighlighted(newIndex);
+        return newIndex;
+      });
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (isDropdownOpen && highlightedIndex >= 0) {
+        handleSelectVehicle(displayedVehicles[highlightedIndex].name);
+      } else {
+        addElectric_vehicle();
+      }
+    } else if (e.key === "Escape") {
+      setIsDropdownOpen(false);
+      setHighlightedIndex(-1);
+    }
+  };
+
+  const handleAnyFieldKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addElectric_vehicle();
+    }
+  };
+
+  // Preserve page scroll position after updates
+  const preserveScroll = (callback: () => void) => {
+    const scrollY = window.scrollY;
+    callback();
+    requestAnimationFrame(() => window.scrollTo(0, scrollY));
+  };
+
+  const addElectric_vehicle = () => {
+    preserveScroll(() => {
+      const no_of_unitsNum = parseFloat(newVehicle.no_of_vehicles);
+      const daily_usageNum = parseFloat(newVehicle.daily_avg_km);
+      const selectedVehicle = usableVehicleTypes.find((v) => v.name === newVehicle.model);
+
+      if (
+        selectedVehicle &&
+        !isNaN(no_of_unitsNum) &&
+        no_of_unitsNum > 0 &&
+        !isNaN(daily_usageNum) &&
+        daily_usageNum >= 0
+      ) {
+        const vehicle: Electric_vehicle = {
+          id: uuidv4(),
+          model: selectedVehicle.name,
+          no_of_vehicles: no_of_unitsNum,
+          daily_avg_km: daily_usageNum,
+          category: selectedVehicle.category,
+        };
+        setelectric_vehicles((prev) => [...prev, vehicle]);
+        setNewVehicle({ model: "", no_of_vehicles: "", daily_avg_km: "" });
+        setSearchTerm("");
+        setErrorMessage(null);
+      } else {
+        setErrorMessage(
+          !selectedVehicle
+            ? "Please select a valid vehicle type from the list."
+            : isNaN(no_of_unitsNum) || no_of_unitsNum <= 0
+            ? "Please enter a valid positive number for units."
+            : "Please enter a valid non-negative number for daily usage."
+        );
+      }
+    });
   };
 
   const removeVehicle = (id: string) => {
-    const scrollY = window.scrollY;
-    setelectric_vehicles((prev) => prev.filter((vehicle) => vehicle.id !== id));
-    window.scrollTo(0, scrollY);
+    preserveScroll(() => {
+      setelectric_vehicles((prev) => prev.filter((vehicle) => vehicle.id !== id));
+    });
   };
 
+  // Validate before form submission
   const validateVehicleInputs = () => {
-    if (
-      newVehicle.model ||
-      newVehicle.no_of_vehicles ||
-      newVehicle.daily_avg_km
-    ) {
+    if (newVehicle.model || newVehicle.no_of_vehicles || newVehicle.daily_avg_km) {
       setErrorMessage("Please click 'Add Vehicle' to save your input.");
       return false;
     }
@@ -173,9 +225,7 @@ export default function Electric_vehicleManager({
   };
 
   useEffect(() => {
-    if (validateInputs) {
-      validateInputs(validateVehicleInputs);
-    }
+    if (validateInputs) validateInputs(validateVehicleInputs);
   }, [newVehicle, validateInputs]);
 
   if (isLoading) {
@@ -231,7 +281,11 @@ export default function Electric_vehicleManager({
             placeholder="Search & Select Vehicle Type"
             value={searchTerm}
             onChange={handleSearchChange}
-            onFocus={() => setIsDropdownOpen(true)}
+            onFocus={() => {
+              setIsDropdownOpen(true);
+              setHighlightedIndex(0);
+            }}
+            onKeyDown={handleKeyDown}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
             aria-label="Search and select vehicle type"
           />
@@ -240,28 +294,34 @@ export default function Electric_vehicleManager({
               ref={dropdownRef}
               className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-[8rem] overflow-y-auto shadow-lg"
             >
-              {filteredVehicles.length > 0 ? (
+              {displayedVehicles.length > 0 ? (
                 <>
-                  {usableVehicleTypes.some(v => v.category === "Car") && filteredVehicles.some(v => v.category === "Car") && (
+                  {usableVehicleTypes.some(v => v.category === "Car") && filteredCars.length > 0 && (
                     <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200">Cars</div>
                   )}
-                  {filteredVehicles.filter(v => v.category === "Car").map((vehicle) => (
+                  {filteredCars.map((vehicle, index) => (
                     <div
                       key={vehicle.name}
+                      data-option
                       onMouseDown={() => handleSelectVehicle(vehicle.name)}
-                      className="p-2 cursor-pointer hover:bg-gray-100"
+                      className={`p-2 cursor-pointer ${
+                        highlightedIndex === index ? "bg-gray-200" : "hover:bg-gray-100"
+                      }`}
                     >
                       {vehicle.name}
                     </div>
                   ))}
-                  {usableVehicleTypes.some(v => v.category === "Scooter") && filteredVehicles.some(v => v.category === "Scooter") && (
+                  {usableVehicleTypes.some(v => v.category === "Scooter") && filteredScooters.length > 0 && (
                     <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200 mt-1 pt-1">Scooters</div>
                   )}
-                  {filteredVehicles.filter(v => v.category === "Scooter").map((vehicle) => (
+                  {filteredScooters.map((vehicle, index) => (
                     <div
                       key={vehicle.name}
+                      data-option
                       onMouseDown={() => handleSelectVehicle(vehicle.name)}
-                      className="p-2 cursor-pointer hover:bg-gray-100"
+                      className={`p-2 cursor-pointer ${
+                        highlightedIndex === index + filteredCars.length ? "bg-gray-200" : "hover:bg-gray-100"
+                      }`}
                     >
                       {vehicle.name}
                     </div>
@@ -287,6 +347,7 @@ export default function Electric_vehicleManager({
             value={newVehicle.no_of_vehicles}
             onChange={handleVehicleChange}
             className="p-3 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
+            onKeyDown={handleAnyFieldKeyDown}
             min="1"
             step="1"
             aria-label="Number of Vehicles"
@@ -306,6 +367,7 @@ export default function Electric_vehicleManager({
             value={newVehicle.daily_avg_km}
             onChange={handleVehicleChange}
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] w-full"
+            onKeyDown={handleAnyFieldKeyDown}
             min="0"
             step="0.1"
             aria-label="Monthly Usage in KM"
