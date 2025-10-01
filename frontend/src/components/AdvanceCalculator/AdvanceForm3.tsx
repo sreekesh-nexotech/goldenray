@@ -45,6 +45,7 @@ export default function NewHomeDetailsStep({
   };
 
   const backup_hours = formData.backup_hours;
+  const sliderPercentage = (backup_hours / 24) * 100;
 
   return (
     <div className="space-y-8 p-0 md:p-6">
@@ -56,18 +57,18 @@ export default function NewHomeDetailsStep({
         <input
           type="range"
           name="backup_hours"
-          min="3"
+          min="0"
           max="24"
           step="1"
           value={backup_hours}
           onChange={handleSliderChange}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           style={{
-            background: `linear-gradient(to right, #F7BA41 0%, #F7BA41 ${((backup_hours - 3) / 21) * 100}%, #E5E7EB ${((backup_hours - 3) / 21) * 100}%, #E5E7EB 100%)`,
+            background: `linear-gradient(to right, #F7BA41 0%, #F7BA41  ${sliderPercentage}%, #E5E7EB  ${sliderPercentage}%, #E5E7EB 100%)`,
           }}
         />
         <div className="flex justify-between text-sm text-gray-600 mt-2 px-1">
-          <span>3h</span>
+          <span>0h</span>
           <span className="font-bold text-black">{backup_hours} hrs</span>
           <span>24h</span>
         </div>

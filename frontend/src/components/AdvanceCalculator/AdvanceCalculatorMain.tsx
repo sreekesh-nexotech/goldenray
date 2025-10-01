@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect} from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { getSolarAdvancedData } from "@/services/CalculatorService";
 import { AdvancedCalculatorData, BasicInfoFormData, UsageDetailsFormData, Chartgraph_data, SolarAdvancedPayload } from "@/types/types";
 import BasicInformationStep from "./AdvanceForm1";
@@ -9,16 +9,15 @@ import NewHomeDetailsStep from "./AdvanceForm3";
 import ResultDisplay from "./AdvanceResult";
 import StepIndicator from "./StepIndicator";
 import FormHeading from "./FormHeading";
-import QuotePopup from "@/components/SolarCalculator/QuotePopup"; // Import the new popup component
+import QuotePopup from "@/components/SolarCalculator/QuotePopup";
 
 export default function AdvancedCalculatorMain() {
   const [currentStep, setCurrentStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [resultData, setResultData] = useState<AdvancedCalculatorData | null>(null);
-  const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  // Create a ref for the form container
   const formContainerRef = useRef<HTMLDivElement>(null);
   
   const [basicInfo, setBasicInfo] = useState<BasicInfoFormData>({
@@ -42,7 +41,6 @@ export default function AdvancedCalculatorMain() {
     return basicInfo.grid_type === "Hybrid" ? 3 : 2;
   }, [basicInfo.grid_type]);
 
-  // Scroll to top of form container when currentStep changes
   useEffect(() => {
     if (formContainerRef.current) {
       formContainerRef.current.scrollIntoView({ behavior: "smooth" });
@@ -50,6 +48,15 @@ export default function AdvancedCalculatorMain() {
   }, [currentStep]);
 
   // --- Step Navigation and Validation ---
+
+  // --- ADD THIS FUNCTION ---
+  // This function handles clicks on the StepIndicator components
+  const handleStepNavigation = (step: number) => {
+    // Only allow navigation to previous, completed steps
+    if (step < currentStep) {
+      setCurrentStep(step);
+    }
+  };
 
   const handleBasicInfoSubmit = () => {
     setError(null);
@@ -72,10 +79,9 @@ export default function AdvancedCalculatorMain() {
         setError("Please enter a valid Home Size (e.g., a positive number in sq. ft.).");
         return;
       }
-      
     }
     if (basicInfo.average_bill && basicInfo.home_type == "Existing Home") {
-      const billAmount = parseFloat(basicInfo.average_bill.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
+      const billAmount = parseFloat(basicInfo.average_bill.replace(/[^0-9.]/g, ''));
       if (isNaN(billAmount)) {
         setError("Please enter a valid number for the average bill");
         return;
@@ -88,8 +94,6 @@ export default function AdvancedCalculatorMain() {
   };
 
   const handleUsageDetailsSubmit = () => {
-    
-
     if (basicInfo.grid_type === "Hybrid") {
       setCurrentStep(3);
     } else {
@@ -98,12 +102,6 @@ export default function AdvancedCalculatorMain() {
   };
 
   const handleCalculate = async () => {
-    // if (basicInfo.grid_type === "Hybrid" && basicInfo.electronic_devices.length === 0) {
-    //   setError("Please add at least one electronic device in the 'Home Details' section.");
-    //   return;
-    // }
-
-
     const finalPayload: SolarAdvancedPayload = {
       Specifications: {
         home_type: basicInfo.home_type,
@@ -124,7 +122,6 @@ export default function AdvancedCalculatorMain() {
     };
 
     console.log(JSON.stringify(finalPayload, null, 2))
-
     setLoading(true);
 
     try {
@@ -177,6 +174,7 @@ export default function AdvancedCalculatorMain() {
       bill_frequency: null,
       home_size: "",
       estimated_base_load: "",
+      // --- MODIFIED ---: Reset backup_hours to 3 on start over
       backup_hours: 0,
       actual_backup_time:"",
       electronic_devices: [],
@@ -187,7 +185,7 @@ export default function AdvancedCalculatorMain() {
     });
     setResultData(null);
     setError(null);
-    setIsPopupOpen(false); // Close popup on start over
+    setIsPopupOpen(false);
   };
 
   return (
@@ -215,12 +213,16 @@ export default function AdvancedCalculatorMain() {
                 title="Basic Info"
                 currentStep={currentStep}
                 totalFormSteps={totalFormSteps}
+                // --- MODIFIED ---: Pass the handler to enable clicking
+                onStepClick={handleStepNavigation}
               />
               <StepIndicator
                 actualStepNumber={2}
                 title="Your Usage"
                 currentStep={currentStep}
                 totalFormSteps={totalFormSteps}
+                // --- MODIFIED ---: Pass the handler to enable clicking
+                onStepClick={handleStepNavigation}
               />
               {basicInfo.grid_type === "Hybrid" && (
                 <StepIndicator
@@ -228,6 +230,8 @@ export default function AdvancedCalculatorMain() {
                   title="Your Preference"
                   currentStep={currentStep}
                   totalFormSteps={totalFormSteps}
+                  // --- MODIFIED ---: Pass the handler to enable clicking
+                  onStepClick={handleStepNavigation}
                 />
               )}
             </div>
@@ -240,14 +244,12 @@ export default function AdvancedCalculatorMain() {
             currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8]" : ""
           } bg-white transition-all duration-300`}
         >
-          
-
           {currentStep === 1 && (
             <BasicInformationStep
               formData={basicInfo}
               setFormData={setBasicInfo}
               onNext={handleBasicInfoSubmit}
-              error = {error}
+              error={error}
             />
           )}
 
@@ -277,7 +279,6 @@ export default function AdvancedCalculatorMain() {
               grid_type={basicInfo.grid_type}
             />
           )}
-         
         </div>
       </div>
       {isPopupOpen && <QuotePopup onClose={() => setIsPopupOpen(false)} />}
