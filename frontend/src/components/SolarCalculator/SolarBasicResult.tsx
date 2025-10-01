@@ -189,7 +189,7 @@ export default function SolarBasicResult({
           <a
             href="/advanced-calculator"
             target="new"
-            className="text-[#007E85] hover:underline text-sm px-8,k py-3 md:text-base md:ml-4"
+            className="text-[#007E85] font-bold border border-[#007E85] rounded-2xl hover:bg-[#007E85] hover:text-white transition-all ease-in-out text-sm px-5 py-3 md:text-base md:ml-4"
           >
             Advanced Calculator
           </a>
