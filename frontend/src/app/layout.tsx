@@ -7,6 +7,7 @@ import localFont from 'next/font/local';
 import { Metadata } from 'next';
 import IdleTimeoutPopup from '@/components/common/IdleTimoutPopup';
 import ExitIntentPopup from '@/components/common/ExitIntentPopup';
+import FloatingChatButton from '@/components/common/FloatingChatBoat';
 
 // Configure DM Sans for headers
 const dmSans = DM_Sans({
@@ -132,6 +133,7 @@ export default function RootLayout({
 
         <IdleTimeoutPopup />
         <ExitIntentPopup />
+        <FloatingChatButton />
       </body>
     </html>
   );
