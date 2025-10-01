@@ -129,12 +129,12 @@ export default function BookingForm() {
             </button>
           </form>
           {error && (
-            <p className="text-red-500 text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="alert">
+            <p className="text-red-500 bg-amber-100 p-5 rounded-2xl text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="alert">
               {error}
             </p>
           )}
           {successMessage && (
-            <p className="text-green-500 text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="status">
+            <p className=" text-green-500 bg-amber-100 p-5 rounded-2xl text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="status">
               {successMessage}
             </p>
           )}
