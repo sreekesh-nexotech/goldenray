@@ -129,12 +129,18 @@ export default function BookingForm() {
             </button>
           </form>
           {error && (
-            <p className="text-red-500 bg-amber-100 p-5 rounded-2xl text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="alert">
+            <p className="text-red-500 bg-[#f9e6e6] p-5 rounded-2xl text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="alert">
               {error}
             </p>
           )}
           {successMessage && (
-            <p className=" text-green-500 bg-amber-100 p-5 rounded-2xl text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="status">
+            <p className=" text-green-500 bg-[#E6F9E6] p-5 rounded-2xl text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="status">
+              <div className="flex items-center gap-1 mb-2 ">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 48 48">
+                  <path fill="#c8e6c9" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path><path fill="#4caf50" d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z"></path>
+                </svg>
+                <span className="font-bold text-base ">Thank You</span>
+              </div>
               {successMessage}
             </p>
           )}
