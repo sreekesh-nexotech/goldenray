@@ -8,7 +8,6 @@ export async function apiCall<T>(
 ): Promise<T> {
   try {
     const response =  await fetchApi<T>(endpoint, method, body);
-    console.log("apiCall raw response:", response);
     return response;
   } catch (error) {
     console.error(`Error in apiCall for ${endpoint}:`, error);

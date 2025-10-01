@@ -33,7 +33,6 @@ export default function SolarAdvantageMain() {
         property_type,
         monthly_bill,
       };
-      console.log("Sending payload to API:", payload);
       const data = await getSolarAdvantageData(payload);
       if (!data) {
         throw new Error("No data returned from the API.");
@@ -74,7 +73,6 @@ export default function SolarAdvantageMain() {
         property_type,
         monthly_bill,
       };
-      console.log("Resubmitting payload to API:", payload);
       const data = await getSolarAdvantageData(payload);
       if (!data) {
         throw new Error("No data returned from the API.");

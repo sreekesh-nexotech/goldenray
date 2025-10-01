@@ -121,7 +121,6 @@ export default function AdvancedCalculatorMain() {
       },
     };
 
-    console.log(JSON.stringify(finalPayload, null, 2))
     setLoading(true);
 
     try {

@@ -66,7 +66,6 @@ export default function SolarBasicResult({
   };
 
   const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    console.log("Property type changed to:", e.target.value);
     setproperty_type(e.target.value);
     setmonthly_label(e.target.value === "residential" ? "Average bi-Monthly Bill" : "Average Monthly Bill");
     // Clear property type error on change
@@ -89,7 +88,6 @@ export default function SolarBasicResult({
   const handleResubmit = () => {
     if (validateForm()) {
       const billValue = Number(monthly_bill);
-      console.log("Resubmitting:", { pincode, property_type, monthly_bill: billValue });
       onResubmit(pincode, property_type, billValue);
     }
   };

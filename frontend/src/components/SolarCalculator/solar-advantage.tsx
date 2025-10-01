@@ -1,7 +1,6 @@
 "use client";
 import { ChangeEvent, useState } from "react";
 import PageIllustration from "@/components/ui/page-illustration";
-import { SolarBasicPayload } from "@/types/types";
 
 interface SolarAdvantageProps {
   onSubmit: (pincode: string, property_type: string, monthly_bill: number) => Promise<void>;
@@ -82,12 +81,7 @@ export default function SolarAdvantage({
     e.preventDefault();
     if (validateForm()) {
       const billValue = Number(monthly_bill);
-      const payload: SolarBasicPayload = {
-        pincode,
-        property_type,
-        monthly_bill: billValue,
-      };
-      console.log("Submitting payload to backend:", payload);
+     
       await onSubmit(pincode, property_type, billValue);
     }
   };

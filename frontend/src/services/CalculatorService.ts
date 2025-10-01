@@ -12,7 +12,6 @@ export async function getSolarAdvantageData(
   payload: SolarBasicPayload
 ): Promise<BasicCalculatorData> {
   if (USE_MOCK_DATA) {
-    console.log("Using mock data for getSolarAdvantageData");
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(mockBasicCalculatorData);
@@ -21,7 +20,6 @@ export async function getSolarAdvantageData(
   }
 
   try {
-    console.log("Sending POST request to:", SOLAR_CALCULATOR_ENDPOINT, "with payload:", payload);
     const response = await apiCall<SolarCalculatorApiResponse>(SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
 
     if (!response) {
@@ -58,7 +56,6 @@ export async function getSolarAdvantageData(
       },
     };
 
-    console.log("Transformed API response:", transformedData);
     return transformedData;
   } catch (error) {
     console.error("Error in getSolarAdvantageData:", error, "Payload:", payload);
@@ -71,7 +68,6 @@ export async function getSolarAdvancedData(
   payload: SolarAdvancedPayload
 ): Promise<AdvancedCalculatorData> {
   if (USE_MOCK_DATA) {
-    console.log("Using mock data for getSolarAdvancedData");
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(mockAdvancedCalculatorData);
@@ -81,9 +77,7 @@ export async function getSolarAdvancedData(
 
   try {
     
-    console.log("Sending POST request to:", ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "with payload:", payload);
     const response = await apiCall<AdvancedCalculatorApiResponse>(ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
-    console.log("Raw API response:", response);
 
     if (!response) {
       throw new Error("No response received from the backend.");
@@ -135,7 +129,6 @@ export async function getSolarAdvancedData(
         with_solar_amount_saved: response.savings, 
       },
     };
-    console.log("Transformed API response:", advancedTransformedData);
     return advancedTransformedData;
   } catch (error) {
     console.error("Error in getSolarAdvancedData:", error, "Payload:", payload);
