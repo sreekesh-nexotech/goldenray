@@ -228,7 +228,6 @@ export interface CustomApiError extends Error {
 export interface MetadataResponse {
   title: string;
   description: string;
-  keywords: string[];
   imageUrl: string;
   ogType: string;
 }

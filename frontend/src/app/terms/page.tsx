@@ -12,7 +12,6 @@ export const metadata: Metadata = {
     template: "%s | Flarize",
   },
   description: "Empowering sustainable energy with innovative solar solutions.",
-  keywords: ["solar energy", "renewable energy", "Flarize"],
   openGraph: {
     title: "Flarize - Solar Solutions",
     description: "Empowering sustainable energy with innovative solar solutions.",

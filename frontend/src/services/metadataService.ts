@@ -17,7 +17,6 @@ export async function getMetadataForPage(path: string): Promise<MetadataResponse
     return {
       title: metadata.title,
       description: metadata.description,
-      keywords: metadata.keywords,
       imageUrl: metadata.imageUrl,
       ogType: metadata.ogType,
     };
