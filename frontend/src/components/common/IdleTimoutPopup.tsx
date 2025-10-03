@@ -5,6 +5,8 @@ import React, { useState, useEffect } from 'react';
 import { useIdle } from '@/hooks/useIdle';
 import Button from '../ui/Button';
 import { useOfferTimer } from '@/hooks/userOfferTimer';
+import { useRouter } from 'next/navigation';
+
 
 const IDLE_TIMEOUT = 60 * 1000;
 
@@ -12,6 +14,9 @@ const IdleTimeoutPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
   const isIdle = useIdle(IDLE_TIMEOUT);
   const { formattedTime, startOffer,  isCooldown } = useOfferTimer();
+
+  const router = useRouter();
+
 
   useEffect(() => {
     if (isIdle) {
@@ -22,12 +27,21 @@ const IdleTimeoutPopup = () => {
   }, [isIdle, startOffer]);
 
   const handleClaimOffer = () => {
+  const currentPath = window.location.pathname;
+
+  // If already on homepage, just scroll to #booking
+  if (currentPath === '/' || currentPath === '/home') {
     const bookingSection = document.getElementById('booking');
     if (bookingSection) {
       bookingSection.scrollIntoView({ behavior: 'smooth' });
     }
-    setIsOpen(false);
-  };
+  } else {
+    // Navigate to homepage and then scroll after load
+    router.push('/#booking');
+  }
+
+  setIsOpen(false);
+};
 
   const handleClose = () => setIsOpen(false);
 
