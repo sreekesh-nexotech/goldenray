@@ -23,7 +23,7 @@ export default function Main() {
     // Function to update the screen size state
     const handleResize = () => {
       // Set isLargeScreen to true if window width is 1024px or greater
-      setIsLargeScreen(window.innerWidth > 1024);
+      setIsLargeScreen(window.innerWidth > 1024 && window.innerWidth < 2000);
     };
 
     // Set initial state on component mount
