@@ -5,13 +5,14 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import logo from "../../../public/logo_header.png";
+
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isActive = (href: string) => pathname === href;
 
+  const logo = "https://gym-manager-pull.b-cdn.net/golden_ray/home/logo_header.png";
   return (
     // The outer header is full-width, but the content inside is constrained.
     <header className="py-4 shadow-md bg-white fixed w-full top-0 z-50">

@@ -6,18 +6,21 @@ import Image from "next/image";
 import { useState, useRef } from "react";
 import { submitContactForm } from "@/services/basicContactService";
 
-// Guideline [11]: It is highly recommended to convert these PNGs to SVGs for better quality and performance.
-import footerLogo from "../../../public/logoFooter.png";
+
 import LinkedInLogo from "../../../public/LinkedinLogo.png";
 import FacebookLogo from "../../../public/FacebookLogo.png";
 import InstagramLogo from "../../../public/InstagramLogo.png";
 import YoutubeLogo from "../../../public/YoutubeLogo.png";
+
+
+
 
 export default function Footer() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const footerLogo = "https://gym-manager-pull.b-cdn.net/golden_ray/home/logoFooter.png";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -172,7 +175,7 @@ export default function Footer() {
             <div className="flex-shrink-0 md:flex-basis-1/3 max-w-md mb-6 md:mb-0">
               {/* Guideline [11]: Using SVG for logos is recommended */}
               <div className="font-bold text-xl mb-2 w-[clamp(7.5rem,10vw,9rem)]">
-                <Image src={footerLogo} alt="Flarize Logo" className="w-full h-auto" />
+                <Image src={footerLogo} alt="Flarize Logo" width={100} height={100} sizes="(max-width: 768px) 110px, 130px" className="w-full h-auto" />
               </div>
               <p className="text-sm text-[#444444] mb-4">
                 Flarize is a company working to bring accessible energy to everyone. Our mission is to empower people to be in charge of their own power
