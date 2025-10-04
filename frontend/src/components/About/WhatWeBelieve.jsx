@@ -17,7 +17,7 @@ export default function WhatWeBelieve(){
       {/* Main Content Container (Dark Green Box) */}
       <div className="max-w-7xl mx-auto bg-[#123532] rounded-2xl shadow-xl overflow-hidden p-5 lg:p-12  gap-8 flex flex-col xl:flex-row items-start ">
         <Image
-          src="/abt-believe.png"
+          src="https://gym-manager-pull.b-cdn.net/golden_ray/about/abt-believe.png"
           alt="People enjoying a sustainable event"
           width={900}
           height={400} 

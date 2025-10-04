@@ -8,42 +8,42 @@ const teamMembers = [
     title: "Founder & CEO",
     description: "With a vision to make clean energy mainstream, John leads Flarece with innovation and sustainability at the core. When he's not revolutionizing the solar industry, he's exploring new tech for a greener future.",
     linkedin: "#",
-    imageUrl: "/team1.png"
+    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team1.png"
   },
   {
     name: "Sarah Smith",
     title: "Founder & CEO",
     description: "Sarah is the mastermind behind Flarece's cutting-edge solar tech. With years of experience in renewable energy, she ensures our solutions are efficient, and future-proof.",
     twitter: "#",
-    imageUrl: "/team2.png"
+    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team2.png"
   },
   {
     name: "Mark Johnson",
     title: "Head of Operations",
     description: "From installations to customer support, Mark makes sure everything runs smoothly. His mission? A seamless, hassle-free solar experience for every customer.",
     linkedin: "#",
-    imageUrl: "/team3.png"
+    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team3.png"
   },
   {
     name: "Sarah Smith",
     title: "Founder & CEO",
     description: "Sarah is the mastermind behind Flarece's cutting-edge solar tech. With years of experience in renewable energy, she ensures our solutions are efficient, and future-proof.",
     twitter: "#",
-    imageUrl: "/team3.png"
+    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team3.png"
   },
   {
     name: "Mark Johnson",
     title: "Head of Operations",
     description: "From installations to customer support, Mark makes sure everything runs smoothly. His mission? A seamless, hassle-free solar experience for every customer.",
     linkedin: "#",
-    imageUrl: "/team1.png"
+    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team1.png"
   },
   {
     name: "John Doe",
     title: "Founder & CEO",
     description: "With a vision to make clean energy mainstream, John leads Flarece with innovation and sustainability at the core. When he's not revolutionizing the solar industry, he's exploring new tech for a greener future.",
     linkedin: "#",
-    imageUrl: "/team2.png"
+    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team2.png"
   }
 ];
 

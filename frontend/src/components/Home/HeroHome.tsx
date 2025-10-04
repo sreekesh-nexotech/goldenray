@@ -6,7 +6,7 @@ import LinkingButton from '../ui/LinkingButton';
 import { useState, useEffect } from 'react';
 
 export default function HeroHome() {
-  const heroImg = "https://gym-manager-pull.b-cdn.net/golden_ray/home/heroImg.png?width=500&format=webp";
+  const heroImg = "https://gym-manager-pull.b-cdn.net/golden_ray/home/heroImg.png";
   
   // Simplified and robust state management for the animation is retained
   const words = ['months', 'weeks', 'days!'];

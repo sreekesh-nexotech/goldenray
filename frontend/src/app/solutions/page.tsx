@@ -21,7 +21,7 @@ export default function Solutions(){
             BoxList2="Increase property value"
             BoxList3="Qualify for tax incentives and rebates"
             BoxList4="Environmentally friendly renewable energy"
-            BoxImg="/Rectangle-12153.png"
+            BoxImg="https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png"
         />
 
         <SolutionBox 
@@ -36,7 +36,7 @@ export default function Solutions(){
             BoxList2="Enhanced corporate social responsibility"
             BoxList3="Tax benefits and accelerated depreciation"
             BoxList4="Energy independence from utility providers"
-            BoxImg="/Commercial-Image-2.png"
+            BoxImg="https://gym-manager-pull.b-cdn.net/golden_ray/solution/Commercial-Image-2.png"
         />
 
         <SolutionBox 
@@ -51,7 +51,7 @@ export default function Solutions(){
             BoxList2="Reduced peak load charges"
             BoxList3="Backup power during outages"
             BoxList4="Scalable to meet growing energy needs"
-            BoxImg="/Rectangle-12155.png"
+            BoxImg="https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12155.png"
         />
 
         {/* Services offered */}

@@ -1,5 +1,4 @@
 import Image from 'next/image'; 
-import heroImg from '../../../public/aboutHeroImg.png'
 import PageIllustration from '@/components/ui/page-illustration';
 import LinkingButton from '../ui/LinkingButton';
 
@@ -27,7 +26,7 @@ export default function AboutHero() {
         {/* Right Side - Image */}
         <div className="w-full mx-auto  mt-10 md:mt-0 flex justify-center">
           <Image
-            src={heroImg}
+            src="https://gym-manager-pull.b-cdn.net/golden_ray/about/aboutHeroImg.png"
             alt="Solar House"
             width={500}
             height={350}
