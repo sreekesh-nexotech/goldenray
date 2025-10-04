@@ -20,19 +20,20 @@ export default function GroupPurchaseScheme() {
         <div className="bg-[#F7BA41] rounded-3xl p-8 sm:p-12 lg:p-16 flex flex-col gap-2 items-center xl:items-stretch">
           <div className='flex flex-col xl:flex-row justify-between items-center '>
             {/* Left content area (text and button) */}
-            <div className="flex-1  xl:max-w-xl text-center xl:text-left gap-0">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4 text-[#123532]">
-                Save more with our group purchase scheme!
+            <div className="flex-1  xl:max-w-xl text-center md:text-left gap-0">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-8 text-[#123532]">
+                Save more, Together Join your local solar group purchase
               </h2>
-              <p className="text-base xl:text-lg mb-4 text-[#444444]">
-                Join our Group Purchase Scheme and enjoy exclusive discounts when you team up with your neighbours, friends, or community to install solar panels.
-              </p>
+              
               {/* button for large devices */}
-              <div className='flex '>
-                <Link href="#booking" className=" hidden xl:block bg-white text-[#074A4D] px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300  cursor-pointer">
-                Talk To Us
-              </Link>
+              <div className='flex mb-10'>
+                <Link href="#booking" className=" hidden md:block bg-white text-[#074A4D] px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300  cursor-pointer">
+                  Reserve Your Spot Now
+                </Link>
               </div>
+              <p className="text-base xl:text-lg mb-4 text-[#444444]">
+                Neighbors in your area are teaming up for solar savings. Be the first to reserve your spot! 
+              </p>
             </div>
 
             {/* Right content area (illustration) */}
@@ -47,36 +48,47 @@ export default function GroupPurchaseScheme() {
 
 
           {/* Benefit cards section */}
-          <div className="flex flex-wrap flex-col xl:flex-row xl:justify-between align-baseline mt-12 gap-x-12 "> 
-            {/* Benefit 1: Lower Costs */}
+          <div className="flex flex-wrap flex-col md:flex-row xl:justify-between align-baseline mt-12 gap-x-5 "> 
+            {/* Benefit 1: Reserve */}
             <GroupPurchaseItem
               icon={
                 <Image src={vector1} alt='Vector1' className='w-[36px] h-[24px]'/>
               }
-                title="Lower Costs"
-                description="Bulk purchasing means better pricing for everyone."
+                title="Reserve"
+                description="Secure your spot with a small, refundable fee."
             />
 
-            {/* Benefit 2: Simplified Process */}
+            {/* Benefit 2: Invite*/}
             <GroupPurchaseItem
               icon={
                   <Image src={vector3} alt='Vector1' className='w-[30px] h-[26px]'/>
               }
-              title="Simplified Process"
-              description="We handle everything, from consultation to installation."
+              title="Invite"
+              description="Share with friends and neighbors to grow your group."
             />
 
-            {/* Benefit 3: Community Impact */}
+            {/* Benefit 3: Unlock */}
             <GroupPurchaseItem
               icon={
                 <Image src={vector2} alt='Vector1' className='w-[36px] h-[24px]'/>
               }
-              title="Community Impact"
-              description="Create a greener, more sustainable neighborhood."
+              title="Unlock"
+              description="Unlock massive discounts which are exclusive for bulk orders."
             />
+
+            {/* Benefit 4: Install */}
+            <GroupPurchaseItem
+              icon={
+                <Image src={vector2} alt='Vector1' className='w-[36px] h-[24px]'/>
+              }
+              title="Install"
+              description="Enjoy a smooth, professional solar installation."
+            />
+
+            
             {/* button for mobile  */}
             <div className='text-center' >
-            <Link href="#booking" className="xl:hidden block bg-white text-[#074A4D] px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 mt-4 cursor-pointer"> 
+            <Link href="#booking" className="md:hidden block bg-white text-[#074A4D] px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 mt-4 cursor-pointer"> 
                   Talk To Us
             </Link>
             </div>

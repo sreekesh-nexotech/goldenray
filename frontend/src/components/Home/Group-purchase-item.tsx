@@ -14,7 +14,7 @@ export default function GroupPurchaseItem({
     title,
     description }:GroupPurchaseItemProps) {
   return (
-    <div className="flex flex-row xl:flex-col justify-center items-start text-left py-4 gap-4 xl:max-w-[300px]"> 
+    <div className="flex flex-row xl:flex-col justify-center items-start text-left py-4 gap-4 max-w-[16.2rem]"> 
       <div className='pt-3'> {/* Icon color */}
         {icon}
       </div>
