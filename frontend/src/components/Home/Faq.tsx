@@ -63,6 +63,7 @@ export default function Faq() {
               <button
                 className="flex justify-between items-center w-full text-left focus:outline-none cursor-pointer"
                 onClick={() => toggleFaq(index)}
+                aria-label='toggle FAQ answer'
               >
                 <span className="text-base md:text-2xl font-semibold text-[#444444] pr-4">
                   {faq.question}

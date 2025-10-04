@@ -349,6 +349,7 @@ export default function ResultDisplay({
         <button
           onClick={onStartOver}
           className="btn cursor-pointer px-8 py-3 border-2 border-[#074A4D] bg-transparent text-black font-semibold rounded-lg hover:bg-[#074A4D] hover:text-white transition-colors duration-200"
+          aria-label="start over calculation"
         >
           Start Over
         </button>

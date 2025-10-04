@@ -90,12 +90,14 @@ export default function Carousel({ images }: CarouselProps) {
         <button
           onClick={prevImage}
           className="z-10 w-10 h-10 flex items-center justify-center absolute left-4 top-1/2 transform -translate-y-1/2 bg-[#D9D9D9A6] bg-opacity-60 text-white p-3 rounded-full hover:bg-opacity-90 transition cursor-pointer"
+          aria-label="previous image"
         >
           <Image src='/left-arrow.png' alt='left-arrow' width={10} height={10}/>
         </button>
         <button
           onClick={nextImage}
           className="z-10  w-10 h-10 flex items-center justify-center absolute right-4 top-1/2 transform -translate-y-1/2 bg-[#D9D9D9A6] bg-opacity-60 text-white p-3 rounded-full hover:bg-opacity-90 transition cursor-pointer"
+          aria-label="next image"
         >
           <Image src='/right-arrow.png' alt='right-arrow' width={10} height={10}/>
         </button>

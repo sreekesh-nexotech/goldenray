@@ -59,7 +59,7 @@ export default function Header() {
             </li>
           </ul>
           <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="p-2">
+            <button onClick={() => setIsOpen(!isOpen)} className="p-2"  aria-label="Toggle menu">
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>

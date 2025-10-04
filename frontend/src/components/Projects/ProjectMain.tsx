@@ -72,6 +72,7 @@ export default function ProjectMain(){
                   ? 'bg-white text-[#2C2821] font-semibold' // Active state: white background, dark text
                   : 'text-[#123532] hover:bg-gray-100' // Inactive state: dark text, slight hover background
                 }`}
+                aria-label='filter projects by category'
             >
               {category}
             </button>

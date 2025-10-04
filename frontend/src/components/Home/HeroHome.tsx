@@ -73,7 +73,7 @@ export default function HeroHome() {
           </p>
 
           {/* Guideline [8]: Buttons have sufficient size and spacing for touch targets */}
-          <div className="flex flex-col sm:flex-row justify-center text-xs lg:text-lg md:justify-start lg:gap-4 gap-2 ">
+          <div className="flex flex-row justify-center text-xs lg:text-lg md:justify-start lg:gap-4 gap-2 ">
             <LinkingButton content="Calculate Solar Advantage" ButtonLink="#solar-advantage" ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-500' />
             <LinkingButton content="Book Consultation" ButtonLink="#booking" ButtonBorder='border border-[#074A4D]' ButtonBg='bg-[#FFFFFF]' Buttontext='text-[#074A4D]' ButtonHover='hover:bg-[#eeeeee]' />
           </div>
@@ -88,7 +88,8 @@ export default function HeroHome() {
             width={500}
             height={350}
             priority={true}
-            className="rounded-xl w-full max-w-[500px] h-auto" // Restored from max-w-full
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="rounded-xl w-full max-w-[31.25rem] h-auto"
           />
         </div>
       </div>

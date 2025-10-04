@@ -182,6 +182,7 @@ export default function SolarBasicResult({
           <button
             onClick={handleResubmit}
             className="btn bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] px-8 py-3 rounded-lg"
+            aria-label="Resubmit Solar Advantage Calculation"
           >
             Resubmit Changes
           </button>
@@ -200,6 +201,7 @@ export default function SolarBasicResult({
           <button
             onClick={onGoBack}
             className="btn bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-3 rounded-lg"
+            aria-label="Go back to form"
           >
             Go Back to Form
           </button>

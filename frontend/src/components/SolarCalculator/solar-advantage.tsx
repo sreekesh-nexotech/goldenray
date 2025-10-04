@@ -171,6 +171,7 @@ return (
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
               disabled={isLoading}
+              aria-label="Calculate Solar Advantage"
             >
               {isLoading ? "Calculating..." : "Calculate Solar Advantage"}
             </button>

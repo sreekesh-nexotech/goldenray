@@ -351,6 +351,7 @@ export default function DeviceManager({
         <button
           onClick={addElectronic_device}
           className="block lg:hidden underline font-semibold text-[#123532] cursor-pointer"
+          aria-label="add electronic device"
         >
           + Add Device
         </button>
@@ -371,7 +372,7 @@ export default function DeviceManager({
                 {device.daily_usage}h Daily Usage
               </div>
             </div>
-            <button onClick={() => removeDevice(device.id)} className="cursor-pointer">
+            <button onClick={() => removeDevice(device.id)} className="cursor-pointer" aria-label="remove device">
               <Image src={deleteIcon} alt="" width={24} height={24} />
             </button>
           </div>

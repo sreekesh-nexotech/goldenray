@@ -9,6 +9,7 @@ const FloatingChatButton = () => {
       disabled
       title="Chat feature is coming soon!"
       className="fixed bottom-6 right-6 z-40 flex items-center gap-3 px-4 py-3 bg-[#F7BA41] text-black font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200 cursor-not-allowed opacity-90"
+      aria-label="Chat with us (Coming Soon)"
     >
       {/* Chat Icon SVG */}
       <svg

@@ -49,6 +49,7 @@ const ExitIntentPopup = () => {
           <button
             onClick={handleClose}
             className="cursor-pointer bg-gray-200 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition-colors"
+            aria-label="close popup"
           >
             No, thanks
           </button>
@@ -59,6 +60,7 @@ const ExitIntentPopup = () => {
                 handleClose();
              }}
             className="cursor-pointer px-8 py-3 bg-[#F7BA41] text-black font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200"
+            aria-label="book a consultation"
           >
             Book a Consultation
           </button>
