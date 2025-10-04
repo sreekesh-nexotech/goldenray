@@ -7,6 +7,15 @@ import onGridIcon from "../../../public/OnGrid.svg";
 import hybridIcon from "../../../public/hybrid.svg";
 import monthlyIcon from "../../../public/monthly.svg";
 import bimonthlyIcon from "../../../public/bimonthly.svg";
+import { apiCall } from "@/services/apiService";
+
+interface RoomSize {
+  id: number;
+  bhk_type: number;
+  size: number;
+  units: number;
+}
+
 
 interface BasicInformationStepProps {
   formData: BasicInfoFormData;
@@ -22,6 +31,25 @@ export default function BasicInformationStep({
   error,
 }: BasicInformationStepProps) {
 
+  const [roomSizes, setRoomSizes] = React.useState<RoomSize[]>([]);
+  const [loadingSizes, setLoadingSizes] = React.useState(false);
+
+  // Fetch room sizes from API on mount
+  React.useEffect(() => {
+    const fetchRoomSizes = async () => {
+      try {
+        setLoadingSizes(true);
+        const data = await apiCall<RoomSize[]>("room-sizes/", "GET");
+        setRoomSizes(data);
+      } catch (err) {
+        console.error("Error fetching room sizes:", err);
+      } finally {
+        setLoadingSizes(false);
+      }
+    };
+    fetchRoomSizes();
+  }, []);
+
   // Handles changes for standard input fields (like text and number)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,6 +62,18 @@ export default function BasicInformationStep({
     value: "Existing Home" | "New Home" | "On Grid" | "Hybrid" | "Monthly" | "Bi-monthly"
   ) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRoomSizeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedId = Number(e.target.value);
+    const selectedRoom = roomSizes.find((r) => r.id === selectedId);
+    if (selectedRoom) {
+      setFormData((prev) => ({
+        ...prev,
+        home_size: selectedRoom.size.toString(),
+        estimated_base_load: selectedRoom.units.toString(),
+      }));
+    }
   };
 
   // Set Bi-monthly as default if bill_frequency is not set
@@ -180,43 +220,61 @@ export default function BasicInformationStep({
       {/* --- Conditional Fields for NEW HOME --- */}
       {formData.home_type === "New Home" && (
         <>
-          {/* Input for Home Size */}
+          {/*  Dropdown for Home Size */}
           <div className="space-y-4">
-            <label htmlFor="home_size" className="text-xl md:text-2xl font-semibold text-[#123532] block">
+            <label
+              htmlFor="home_size"
+              className="text-xl md:text-2xl font-semibold text-[#123532] block"
+            >
               What size is your new home?
             </label>
-            <input
-              type="number"
+            <select
               id="home_size"
               name="home_size"
-              placeholder="Enter size in sq. ft."
-              value={formData.home_size || ""}
-              onChange={handleChange}
-              className="w-full p-4 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
-            />
+              onChange={handleRoomSizeSelect}
+              value={
+                roomSizes.find(
+                  (r) => r.size.toString() === formData.home_size?.toString()
+                )?.id || ""
+              }
+              className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
+              disabled={loadingSizes}
+            >
+              <option value="">
+                {loadingSizes ? "Loading..." : "Select Home Size (BHK)"}
+              </option>
+              {roomSizes.map((room) => (
+                <option key={room.id} value={room.id}>
+                  {room.bhk_type} BHK — {room.size} sq.ft
+                </option>
+              ))}
+            </select>
           </div>
 
-          {/* Input for Estimated Base Load */}
+          {/*Estimated Base Load */}
           <div className="space-y-4">
-            <label htmlFor="estimated_base_load" className="text-xl md:text-2xl font-semibold text-[#123532] block">
-              Want to add an estimated base load?
+            <label
+              htmlFor="estimated_base_load"
+              className="text-xl md:text-2xl font-semibold text-[#123532] block"
+            >
+              Estimated Base Load
             </label>
             <div className="relative">
               <input
                 type="number"
                 id="estimated_base_load"
                 name="estimated_base_load"
-                placeholder="Enter Estimated Base Load (kWh)"
+                placeholder="Estimated Base Load (kWh)"
                 value={formData.estimated_base_load || ""}
                 onChange={handleChange}
-                className="w-full p-4 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
+                className="w-full p-4 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
                 kWh
               </span>
             </div>
             <p className="text-sm text-gray-500 mt-1">
-              Suggested base load for 3 BHK: 300 units(1units = 1KWh)
+              Auto-calculated based on selected BHK type
             </p>
           </div>
         </>
