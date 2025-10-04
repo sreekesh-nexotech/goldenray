@@ -7,7 +7,8 @@ class DeviceType(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     url = models.CharField(max_length=255, null=True, blank=True)
-    watts = models.PositiveIntegerField(null=True, blank=True)  # Typical wattage for this device type
+    watts = models.PositiveIntegerField(null=True, blank=True)
+    k_value = models.FloatField(null=True, blank=True)
 
     class Meta:
         db_table = "device_types"
