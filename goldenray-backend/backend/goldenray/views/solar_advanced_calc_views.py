@@ -46,12 +46,14 @@ class SolarAdvancedCalcAPIView(APIView):
             device_type_name = device.get("device_type")
             if device_type_name and device_type_name.lower() == "light":
                 wattage = 15.0
+                k_value = 0.1
             else:
                 dt = DeviceType.objects.filter(name__iexact=device_type_name).first()
                 wattage = float(dt.watts) if dt and dt.watts else 0
+                k_value = float(dt.k_value) if dt and dt.k_value else 1.0
             daily_usage = float(device.get("daily_usage", 0))
             no_of_units = int(device.get("no_of_units", 1))
-            total_device_kwh_per_day += (wattage * daily_usage * no_of_units) / 1000
+            total_device_kwh_per_day += (wattage * daily_usage * no_of_units * k_value) / 1000
         total_device_units = total_device_kwh_per_day * days
 
         # Calculate EV consumption (supporting no_of_vehicles, ensure all decimals are float)
@@ -63,7 +65,8 @@ class SolarAdvancedCalcAPIView(APIView):
             ev_obj = EVCar.objects.filter(model=model).first() or EVScooter.objects.filter(model=model).first()
             if ev_obj and ev_obj.energy_consumption:
                 energy_consumption = float(ev_obj.energy_consumption)
-                total_ev_kwh_per_day += daily_avg_km * energy_consumption * no_of_vehicles
+                k_value = float(ev_obj.k_value) if ev_obj.k_value else 1.0
+                total_ev_kwh_per_day += daily_avg_km * energy_consumption * no_of_vehicles * k_value
         total_ev_units = total_ev_kwh_per_day * days
 
         # Calculate base units
@@ -144,12 +147,14 @@ class SolarAdvancedCalcAPIView(APIView):
                 device_type_name = device.get("device_type")
                 if device_type_name.lower() == "light":
                     wattage = 15.0
+                    k_value = 0.1
                 else:
                     dt = DeviceType.objects.filter(name__iexact=device_type_name).first()
                     wattage = float(dt.watts) if dt and dt.watts else 0
+                    k_value = float(dt.k_value) if dt and dt.k_value else 1.0
                 no_of_units = int(device.get("no_of_units", 1))
                 daily_usage = float(device.get("daily_usage", 0)) # Hours for this device (should be <= backup_hours)
-                total_required_battery_capacity += (wattage * no_of_units * daily_usage) / 1000
+                total_required_battery_capacity += (wattage * no_of_units * daily_usage * k_value) / 1000
                 total_backup_watts += wattage * no_of_units
 
             # Calculate average load (kW) for the backup window

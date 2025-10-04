@@ -4,6 +4,7 @@ from .evcar import EVCar
 from .evscooter import EVScooter
 from .kseb_tariff import KSEBTariff
 from .pincode import Pincode
+from .room_size import RoomSize
 from .sent_quote import SentQuote
 from .solar_installation import SolarInstallation
 from .solar_installation_new import SolarInstallationNew

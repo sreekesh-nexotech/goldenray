@@ -8,6 +8,7 @@ class EVScooter(models.Model):
     adjusted_real_world_range = models.IntegerField()
     ex_showroom_price = models.IntegerField()
     energy_consumption = models.FloatField(null=True, blank=True)
+    k_value = models.FloatField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
