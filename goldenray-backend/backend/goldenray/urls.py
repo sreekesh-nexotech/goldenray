@@ -14,6 +14,7 @@ from .views.solar_advanced_calc_views import SolarAdvancedCalcAPIView
 from .views.otp_views import SendOTPAPIView, VerifyOTPAPIView
 from .views.lead_collection_home_views import LeadCollectionHomeAPIView
 from .views.metadata_views import MetadataAPIView
+from .views.room_size_views import RoomSizeAPIView
 
 urlpatterns = [
     # Batteries
@@ -53,6 +54,10 @@ urlpatterns = [
     # Lead Collection Home
     path("lead-collection-home/", LeadCollectionHomeAPIView.as_view(), name="lead-collection-home-list-create"),
     path("lead-collection-home/<int:pk>/", LeadCollectionHomeAPIView.as_view(), name="lead-collection-home-retrieve-update-destroy"),
+    # Metadata
     path("metadata/", MetadataAPIView.as_view(), name="metadata-list-create"),
     path("metadata/<int:pk>/", MetadataAPIView.as_view(), name="metadata-retrieve-update-destroy"),
+    # Room Sizes
+    path("room-sizes/", RoomSizeAPIView.as_view(), name="room-size-list-create"),
+    path("room-sizes/<int:pk>/", RoomSizeAPIView.as_view(), name="room-size-retrieve-update-destroy"),
 ]
