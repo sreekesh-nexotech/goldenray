@@ -45,7 +45,7 @@ export default function Main() {
       <SolarAdvantageMain/>
       <HomeTestimonial />
       {/* Conditionally render SolarSteps component based on screen size */}
-      {isLargeScreen ? <SolarStepsGSAP /> : <SolarStepsNoGSAP />}
+      <SolarStepsNoGSAP />
       <Booking />
       <Services serviceTitle="We help you all the way" />
       <GroupPurchaseScheme />
