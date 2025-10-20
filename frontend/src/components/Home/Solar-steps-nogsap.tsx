@@ -45,7 +45,7 @@ export default function SolarStepsNoGSAP() {
     }
     intervalRef.current = setInterval(() => {
       setActiveCard((prev) => (prev % steps.length) + 1); // Cycle to the next card
-    }, 6000); // Cycle every 5 seconds
+    }, 3000); // Cycle every 3 seconds
   };
 
   useEffect(() => {
