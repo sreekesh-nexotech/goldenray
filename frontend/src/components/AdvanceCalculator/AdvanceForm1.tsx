@@ -257,7 +257,7 @@ export default function BasicInformationStep({
               htmlFor="estimated_base_load"
               className="text-xl md:text-2xl font-semibold text-[#123532] block"
             >
-              Estimated Base Load
+              Want to add an estimated base load? (kWh)
             </label>
             <div className="relative">
               <input
@@ -269,9 +269,6 @@ export default function BasicInformationStep({
                 onChange={handleChange}
                 className="w-full p-4 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
-                kWh
-              </span>
             </div>
             <p className="text-sm text-gray-500 mt-1">
               Auto-calculated based on selected BHK type
