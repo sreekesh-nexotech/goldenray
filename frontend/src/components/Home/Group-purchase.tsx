@@ -9,10 +9,14 @@ import familyPhoto from "../../../public/FamiliyPhoto.png";
 import Link from "next/link";
 
 // CDN URLs for icons
-const reserveIcon = "https://gym-manager-pull.b-cdn.net/golden_ray/home/reserve.png";
-const inviteFriendsIcon = "https://gym-manager-pull.b-cdn.net/golden_ray/home/invite_friends.png";
-const unlockDiscountIcon = "https://gym-manager-pull.b-cdn.net/golden_ray/home/unlock_discont.png";
-const installIcon = "https://gym-manager-pull.b-cdn.net/golden_ray/home/install.png";
+const reserveIcon =
+  "https://gym-manager-pull.b-cdn.net/golden_ray/home/reserve.png";
+const inviteFriendsIcon =
+  "https://gym-manager-pull.b-cdn.net/golden_ray/home/invite_friends.png";
+const unlockDiscountIcon =
+  "https://gym-manager-pull.b-cdn.net/golden_ray/home/unlock_discont.png";
+const installIcon =
+  "https://gym-manager-pull.b-cdn.net/golden_ray/home/install.png";
 
 // Main GroupPurchaseScheme component
 export default function GroupPurchaseScheme() {
