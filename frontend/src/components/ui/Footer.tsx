@@ -6,21 +6,18 @@ import Image from "next/image";
 import { useState, useRef } from "react";
 import { submitContactForm } from "@/services/basicContactService";
 
-
 import LinkedInLogo from "../../../public/LinkedinLogo.png";
 import FacebookLogo from "../../../public/FacebookLogo.png";
 import InstagramLogo from "../../../public/InstagramLogo.png";
 import YoutubeLogo from "../../../public/YoutubeLogo.png";
-
-
-
 
 export default function Footer() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const footerLogo = "https://gym-manager-pull.b-cdn.net/golden_ray/home/logoFooter.png";
+  const footerLogo =
+    "https://gym-manager-pull.b-cdn.net/golden_ray/home/logoFooter.png";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,7 +35,9 @@ export default function Footer() {
     const phone_number = formData.get("phone_number") as string;
 
     if (!name.match(/^[A-Za-z\s]{3,}$/)) {
-      setError("Please enter a valid name with at least 3 alphabetic characters.");
+      setError(
+        "Please enter a valid name with at least 3 alphabetic characters."
+      );
       setSuccessMessage(null);
       window.scrollTo(0, scrollY);
       return;
@@ -57,18 +56,27 @@ export default function Footer() {
 
     try {
       await submitContactForm({ name, phone_number });
-      setSuccessMessage("Thank you! Your consultation request has been successfully submitted. We'll be in touch shortly!");
+      setSuccessMessage(
+        "Thank you! Your consultation request has been successfully submitted. We'll be in touch shortly!"
+      );
       if (formRef.current) {
         formRef.current.reset();
       }
     } catch (err) {
-      if (err instanceof Error && err.message.includes('HTTP error! Status: 400') && err.message.includes('phone number already exists')) {
-        setSuccessMessage("We already have your details! Our team will contact you soon.");
+      if (
+        err instanceof Error &&
+        err.message.includes("HTTP error! Status: 400") &&
+        err.message.includes("phone number already exists")
+      ) {
+        setSuccessMessage(
+          "We already have your details! Our team will contact you soon."
+        );
         if (formRef.current) {
           formRef.current.reset();
         }
       } else {
-        const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred.";
+        const errorMessage =
+          err instanceof Error ? err.message : "An unexpected error occurred.";
         setError(`Failed to submit: ${errorMessage}`);
       }
     } finally {
@@ -84,10 +92,9 @@ export default function Footer() {
     <>
       {/* Guideline [1]: Converted px to rem (45px -> 2.8125rem) */}
       <section id="footer" className="scroll-mt-[2.8125rem]"></section>
-      
+
       {/* Guideline [3]: Using clamp, vw, and vh for fluid padding that scales on all screens */}
       <section className="w-full bg-[#074A4D] rounded-t-3xl text-white py-[clamp(4rem,8vh,8rem)] px-[clamp(1rem,6vw,12rem)] relative overflow-hidden">
-        
         {/* The background grid pattern is unchanged as it doesn't violate guidelines */}
         <div
           className="absolute inset-0 z-0 opacity-50 pointer-events-none bg-[url('../../public/grid.svg')] bg-no-repeat bg-auto"
@@ -104,7 +111,8 @@ export default function Footer() {
           <div>
             {/* Guideline [2]: Using clamp() for fluid, responsive heading font size */}
             <h2 className="text-[clamp(2.5rem,5vw,4rem)] leading-tight font-bold mb-4 md:text-left text-center">
-              Ready to go<br /> solar with us?
+              Ready to go
+              <br /> solar with us?
             </h2>
             {/* Guideline [2]: Using clamp() for fluid paragraph font size */}
             <p className="text-[clamp(1.125rem,2vw,1.5rem)] md:text-left text-center text-[#DBD8D8]">
@@ -156,12 +164,18 @@ export default function Footer() {
               {isLoading ? "Submitting..." : "Book Now"}
             </button>
             {error && (
-              <p className="text-red-500 text-sm mt-2 text-center md:text-left" role="alert">
+              <p
+                className="text-red-500 text-sm mt-2 text-center md:text-left"
+                role="alert"
+              >
                 {error}
               </p>
             )}
             {successMessage && (
-              <p className="text-green-500 text-sm mt-2 text-center md:text-left" role="status">
+              <p
+                className="text-green-500 text-[1.25rem] mt-2 text-center md:text-left"
+                role="status"
+              >
                 {successMessage}
               </p>
             )}
@@ -175,52 +189,149 @@ export default function Footer() {
             <div className="flex-shrink-0 md:flex-basis-1/3 max-w-md mb-6 md:mb-0">
               {/* Guideline [11]: Using SVG for logos is recommended */}
               <div className="font-bold text-xl mb-2 w-[clamp(7.5rem,10vw,9rem)]">
-                <Image src={footerLogo} alt="Flarize Logo" width={100} height={100} sizes="(max-width: 768px) 110px, 130px" className="w-full h-auto" />
+                <Image
+                  src={footerLogo}
+                  alt="Flarize Logo"
+                  width={100}
+                  height={100}
+                  sizes="(max-width: 768px) 110px, 130px"
+                  className="w-full h-auto"
+                />
               </div>
               <p className="text-sm text-[#444444] mb-4">
-                Flarize is a company working to bring accessible energy to everyone. Our mission is to empower people to be in charge of their own power
+                Flarize is a company working to bring accessible energy to
+                everyone. Our mission is to empower people to be in charge of
+                their own power
               </p>
               {/* Guideline [8]: Increased touch target for social media icons with padding */}
               <div className="flex gap-2">
                 <Link href="#" aria-label="LinkedIn" className="p-2">
-                  <Image src={LinkedInLogo} alt="LinkedIn Logo" width={24} height={24} />
+                  <Image
+                    src={LinkedInLogo}
+                    alt="LinkedIn Logo"
+                    width={24}
+                    height={24}
+                  />
                 </Link>
                 <Link href="#" aria-label="Facebook" className="p-2">
-                  <Image src={FacebookLogo} alt="Facebook Logo" width={24} height={24} />
+                  <Image
+                    src={FacebookLogo}
+                    alt="Facebook Logo"
+                    width={24}
+                    height={24}
+                  />
                 </Link>
                 <Link href="#" aria-label="Instagram" className="p-2">
-                  <Image src={InstagramLogo} alt="Instagram Logo" width={24} height={24} />
+                  <Image
+                    src={InstagramLogo}
+                    alt="Instagram Logo"
+                    width={24}
+                    height={24}
+                  />
                 </Link>
                 <Link href="#" aria-label="YouTube" className="p-2">
-                  <Image src={YoutubeLogo} alt="YouTube Logo" width={24} height={24} />
+                  <Image
+                    src={YoutubeLogo}
+                    alt="YouTube Logo"
+                    width={24}
+                    height={24}
+                  />
                 </Link>
               </div>
             </div>
-            
+
             <div className="flex flex-col md:flex-row flex-wrap gap-10 md:justify-end">
               {/* Guideline [1]: Converted px to rem (150px -> 9.375rem) */}
               <div className="min-w-[9.375rem] space-y-3">
                 <h3 className="text-[#666666] text-base font-light">Company</h3>
                 <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
-                  <li><Link href="/solutions" className="hover:text-gray-800 transition-all ease-in-out duration-300">Our Solutions</Link></li>
-                  <li><Link href="/projects" className="hover:text-gray-800 transition-all ease-in-out duration-300">Our Projects</Link></li>
-                  <li><Link href="/resources" className="hover:text-gray-800 transition-all ease-in-out duration-300">Resources</Link></li>
-                  <li><Link href="/about" className="hover:text-gray-800 transition-all ease-in-out duration-300">About Us</Link></li>
+                  <li>
+                    <Link
+                      href="/solutions"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Our Solutions
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/projects"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Our Projects
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/resources"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Resources
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/about"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      About Us
+                    </Link>
+                  </li>
                 </ul>
               </div>
               <div className="min-w-[9.375rem] space-y-3">
-                <h3 className="text-[#666666] text-base font-light">Resources</h3>
+                <h3 className="text-[#666666] text-base font-light">
+                  Resources
+                </h3>
                 <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
-                  <li><Link href="/faq" target="new" className="hover:text-gray-800 transition-all ease-in-out duration-300">FAQs</Link></li>
-                  <li><Link href="#" className="hover:text-gray-800 transition-all ease-in-out duration-300">Blogs</Link></li>
-                  <li><Link href="#" className="hover:text-gray-800 transition-all ease-in-out duration-300">Newsletters</Link></li>
+                  <li>
+                    <Link
+                      href="/faq"
+                      target="new"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      FAQs
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Blogs
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Newsletters
+                    </Link>
+                  </li>
                 </ul>
               </div>
               <div className="min-w-[9.375rem] space-y-3">
                 <h3 className="text-[#666666] text-base font-light">Legal</h3>
                 <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
-                  <li><Link href="/privacy" target="new" className="hover:text-gray-800 transition-all ease-in-out duration-300">Privacy Policy</Link></li>
-                  <li><Link href="/terms" target="new" className="hover:text-gray-800 transition-all ease-in-out duration-300">Terms and Conditions</Link></li>
+                  <li>
+                    <Link
+                      href="/privacy"
+                      target="new"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Privacy Policy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/terms"
+                      target="new"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Terms and Conditions
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -228,7 +339,14 @@ export default function Footer() {
         </div>
         <p className="text-center text-xs mt-6 text-gray-300">
           © 2025 Flarize. All rights reserved. <br />
-          Made by <Link href="https://nexotech.cc/" target="new" className="underline hover:text-white">Nexotech</Link>
+          Made by{" "}
+          <Link
+            href="https://nexotech.cc/"
+            target="new"
+            className="underline hover:text-white"
+          >
+            Nexotech
+          </Link>
         </p>
       </section>
     </>
