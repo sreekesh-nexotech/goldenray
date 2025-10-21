@@ -39,6 +39,10 @@ export interface SolarCalculatorApiResponse {
   datasets: {
     data: number[];
 }[];
+  emi_details: {
+    emi_per_month: number;
+    total_payment: number;
+  };
 }
 
 // Type for the API's graph_data response (Advanced Calculator)
@@ -103,6 +107,10 @@ export interface AdvancedCalculatorApiResponse {
   graph_without_solar: number[];
   graph_with_solar: number[];
   savings: number;
+  emi_details: {
+    emi_per_month: number;
+    total_payment: number;
+  };
 }
 
 // Interfaces for form data

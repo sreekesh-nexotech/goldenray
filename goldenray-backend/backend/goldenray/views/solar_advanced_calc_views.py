@@ -4,6 +4,29 @@ from rest_framework import status
 from ..models import EVCar, EVScooter, SolarInstallationNew, Battery, KSEBTariff, DeviceType
 from ..permissions import ApiMethodPermission, non_authenticated_view
 
+def emi_calc(final_cost, interest_rate, tenure_years=10):
+    if final_cost <= 0 or interest_rate <= 0:
+        return {
+            "emi_per_month": 0,
+            "total_payment": 0,
+        }
+    
+    monthly_interest_rate = interest_rate / (12 * 100)
+    tenure_months = tenure_years * 12
+    
+    # EMI formula: [P x R x (1+R)^N] / [(1+R)^N - 1]
+    # Where P = Principal loan amount, R = Monthly interest rate, N = Number of months
+    emi_numerator = final_cost * monthly_interest_rate * ((1 + monthly_interest_rate) ** tenure_months)
+    emi_denominator = ((1 + monthly_interest_rate) ** tenure_months) - 1
+    
+    emi_per_month = emi_numerator / emi_denominator
+    total_payment = emi_per_month * tenure_months
+    
+    return {
+        "emi_per_month": round(emi_per_month, 2),
+        "total_payment": round(total_payment, 2),
+    }
+
 class SolarAdvancedCalcAPIView(APIView):
     permission_classes = [ApiMethodPermission]
 
@@ -102,6 +125,11 @@ class SolarAdvancedCalcAPIView(APIView):
             if not solar_row:
                 return Response({"error": "No matching solar installation found for the calculated bill and type Residential."}, status=404)
 
+        emi_details = emi_calc(
+            final_cost=float(solar_row.final_cost),
+            interest_rate=float(solar_row.interest_rate) if solar_row.interest_rate else 0,
+            tenure_years=10
+        )
         # Prepare response data from the solar_row
         response_data = {
             "bill_range": solar_row.bill_range,
@@ -109,6 +137,7 @@ class SolarAdvancedCalcAPIView(APIView):
             "time_to_complete": solar_row.time_to_complete,
             "overall_setup_cost": float(solar_row.total_cost),
             "total_subsidy": float(solar_row.total_subsidy),
+            "emi_details": emi_details,
             "area_required": solar_row.area_required,
             "loan_available": solar_row.loan_available,
             "per_kw_rate": float(solar_row.per_kw_rate) if solar_row.per_kw_rate is not None else None,
