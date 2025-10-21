@@ -2,7 +2,13 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import { getSolarAdvancedData } from "@/services/CalculatorService";
-import { AdvancedCalculatorData, BasicInfoFormData, UsageDetailsFormData, Chartgraph_data, SolarAdvancedPayload } from "@/types/types";
+import {
+  AdvancedCalculatorData,
+  BasicInfoFormData,
+  UsageDetailsFormData,
+  Chartgraph_data,
+  SolarAdvancedPayload,
+} from "@/types/types";
 import BasicInformationStep from "./AdvanceForm1";
 import UsageDetailsStep from "./AdvanceForm2";
 import NewHomeDetailsStep from "./AdvanceForm3";
@@ -15,11 +21,13 @@ export default function AdvancedCalculatorMain() {
   const [currentStep, setCurrentStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [resultData, setResultData] = useState<AdvancedCalculatorData | null>(null);
+  const [resultData, setResultData] = useState<AdvancedCalculatorData | null>(
+    null
+  );
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const formContainerRef = useRef<HTMLDivElement>(null);
-  
+
   const [basicInfo, setBasicInfo] = useState<BasicInfoFormData>({
     home_type: null,
     grid_type: null,
@@ -28,7 +36,7 @@ export default function AdvancedCalculatorMain() {
     home_size: "",
     estimated_base_load: "",
     backup_hours: 0,
-    actual_backup_time:"",
+    actual_backup_time: "",
     electronic_devices: [],
   });
 
@@ -66,7 +74,9 @@ export default function AdvancedCalculatorMain() {
     }
     if (basicInfo.home_type === "Existing Home") {
       if (!basicInfo.average_bill || !basicInfo.bill_frequency) {
-        setError("Please provide your average electricity bill and bill frequency.");
+        setError(
+          "Please provide your average electricity bill and bill frequency."
+        );
         return;
       }
       if (parseFloat(basicInfo.average_bill) <= 0) {
@@ -76,12 +86,16 @@ export default function AdvancedCalculatorMain() {
     }
     if (basicInfo.home_type === "New Home") {
       if (!basicInfo.home_size || parseFloat(basicInfo.home_size) <= 0) {
-        setError("Please enter a valid Home Size (e.g., a positive number in sq. ft.).");
+        setError(
+          "Please enter a valid Home Size (e.g., a positive number in sq. ft.)."
+        );
         return;
       }
     }
     if (basicInfo.average_bill && basicInfo.home_type == "Existing Home") {
-      const billAmount = parseFloat(basicInfo.average_bill.replace(/[^0-9.]/g, ''));
+      const billAmount = parseFloat(
+        basicInfo.average_bill.replace(/[^0-9.]/g, "")
+      );
       if (isNaN(billAmount)) {
         setError("Please enter a valid number for the average bill");
         return;
@@ -156,7 +170,7 @@ export default function AdvancedCalculatorMain() {
     } catch (err: unknown) {
       setError(
         "Failed to calculate solar advantage. Please check your inputs and try again. " +
-        (err instanceof Error ? err.message : "An unknown error occurred.")
+          (err instanceof Error ? err.message : "An unknown error occurred.")
       );
     } finally {
       setLoading(false);
@@ -175,7 +189,7 @@ export default function AdvancedCalculatorMain() {
       estimated_base_load: "",
       // --- MODIFIED ---: Reset backup_hours to 3 on start over
       backup_hours: 0,
-      actual_backup_time:"",
+      actual_backup_time: "",
       electronic_devices: [],
     });
     setUsageDetails({
@@ -198,7 +212,7 @@ export default function AdvancedCalculatorMain() {
 
       {currentStep === totalFormSteps + 1 && resultData && (
         <FormHeading
-          title="Here's your ideal on-grid solar system recommendation"
+          title={`Here's your ideal ${basicInfo.grid_type?.toLowerCase()} solar system recommendation`}
           description="Based on your inputs, we've calculated the perfect solar solution for your needs"
         />
       )}
@@ -240,7 +254,9 @@ export default function AdvancedCalculatorMain() {
         <div
           ref={formContainerRef}
           className={`w-full scroll-mt-28 ${
-            currentStep <= totalFormSteps ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8]" : ""
+            currentStep <= totalFormSteps
+              ? "md:w-3/4 p-6 rounded-2xl border border-[#DBD8D8]"
+              : ""
           } bg-white transition-all duration-300`}
         >
           {currentStep === 1 && (

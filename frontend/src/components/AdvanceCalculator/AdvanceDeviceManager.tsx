@@ -26,7 +26,9 @@ export default function DeviceManager({
     url: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [apiDeviceTypes, setApiDeviceTypes] = useState<DeviceType[] | null>(null);
+  const [apiDeviceTypes, setApiDeviceTypes] = useState<DeviceType[] | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -76,7 +78,9 @@ export default function DeviceManager({
 
   const usableDeviceTypes = useMemo(() => {
     return apiDeviceTypes
-      ? apiDeviceTypes.filter((device) => device.show_in_ui).sort((a, b) => a.name.localeCompare(b.name))
+      ? apiDeviceTypes
+          .filter((device) => device.show_in_ui)
+          .sort((a, b) => a.name.localeCompare(b.name))
       : [];
   }, [apiDeviceTypes]);
 
@@ -100,7 +104,12 @@ export default function DeviceManager({
       newErrors.no_of_units = "Number of units must be a positive number";
     }
     const daily_usage = parseFloat(newDevice.daily_usage);
-    if (!newDevice.daily_usage || isNaN(daily_usage) || daily_usage < 0 || daily_usage > 24) {
+    if (
+      !newDevice.daily_usage ||
+      isNaN(daily_usage) ||
+      daily_usage < 0 ||
+      daily_usage > 24
+    ) {
       newErrors.daily_usage = "Enter a valid Usage Hours per day (0-24)";
     }
     setErrors(newErrors);
@@ -108,7 +117,11 @@ export default function DeviceManager({
   };
 
   const validateDeviceInputs = () => {
-    if (newDevice.device_type || newDevice.no_of_units || newDevice.daily_usage) {
+    if (
+      newDevice.device_type ||
+      newDevice.no_of_units ||
+      newDevice.daily_usage
+    ) {
       setErrors((prev) => ({
         ...prev,
         form: "Please click 'Add Device' to save your input.",
@@ -140,7 +153,9 @@ export default function DeviceManager({
   };
 
   const handleSelectDevice = (deviceName: string) => {
-    const selectedDevice = usableDeviceTypes.find((device) => device.name === deviceName);
+    const selectedDevice = usableDeviceTypes.find(
+      (device) => device.name === deviceName
+    );
     setNewDevice((prev) => ({
       ...prev,
       device_type: deviceName,
@@ -182,7 +197,11 @@ export default function DeviceManager({
       });
     } else if (e.key === "Enter") {
       e.preventDefault();
-      if (isDropdownOpen && highlightedIndex >= 0 && highlightedIndex < filteredDevices.length) {
+      if (
+        isDropdownOpen &&
+        highlightedIndex >= 0 &&
+        highlightedIndex < filteredDevices.length
+      ) {
         handleSelectDevice(filteredDevices[highlightedIndex].name);
       } else {
         addElectronic_device();
@@ -214,7 +233,12 @@ export default function DeviceManager({
         url: urlToUse,
       };
       setDevices([...devices, device]);
-      setNewDevice({ device_type: "", no_of_units: "", daily_usage: "", url: "" });
+      setNewDevice({
+        device_type: "",
+        no_of_units: "",
+        daily_usage: "",
+        url: "",
+      });
       setSearchTerm("");
       setErrors({});
     }
@@ -227,7 +251,9 @@ export default function DeviceManager({
   if (isLoading) {
     return (
       <div className="text-center p-4">
-        <h2 className="text-xl md:text-2xl font-semibold text-[#123532]">{title}</h2>
+        <h2 className="text-xl md:text-2xl font-semibold text-[#123532]">
+          {title}
+        </h2>
         <p className="mt-4 text-gray-700">Loading device types...</p>
       </div>
     );
@@ -236,7 +262,9 @@ export default function DeviceManager({
   if (error) {
     return (
       <div className="text-center p-4 text-red-600">
-        <h2 className="text-xl md:text-2xl font-semibold text-[#123532]">{title}</h2>
+        <h2 className="text-xl md:text-2xl font-semibold text-[#123532]">
+          {title}
+        </h2>
         <p className="mt-4">Error: {error}</p>
         <button
           onClick={fetchDevices}
@@ -252,16 +280,11 @@ export default function DeviceManager({
   return (
     <div className="space-y-4">
       <div className="flex flex-col lg:flex-row items-center justify-between mb-4">
-        <h2 className="text-xl md:text-2xl font-semibold text-[#123532]">{title}</h2>
-        <button
-          onClick={addElectronic_device}
-          className="hidden lg:block underline font-semibold text-[#123532] cursor-pointer"
-          aria-label="Add a new electronic device"
-        >
-          + Add Device
-        </button>
+        <h2 className="text-xl md:text-2xl font-semibold text-[#123532]">
+          {title}
+        </h2>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 items-end">
         <div className="relative" ref={inputWrapperRef}>
           <label className="block text-sm font-medium text-[#123532] mb-1">
             Device Type
@@ -291,14 +314,18 @@ export default function DeviceManager({
                     key={device.name}
                     onMouseDown={() => handleSelectDevice(device.name)}
                     className={`p-2 cursor-pointer ${
-                      highlightedIndex === index ? "bg-gray-200" : "hover:bg-gray-100"
+                      highlightedIndex === index
+                        ? "bg-gray-200"
+                        : "hover:bg-gray-100"
                     }`}
                   >
                     {device.name}
                   </div>
                 ))
               ) : (
-                <div className="p-3 text-gray-500">No devices found. Try searching.</div>
+                <div className="p-3 text-gray-500">
+                  No devices found. Try searching.
+                </div>
               )}
             </div>
           )}
@@ -348,15 +375,19 @@ export default function DeviceManager({
             <p className="text-red-500 text-sm mt-1">{errors.daily_usage}</p>
           )}
         </div>
-        <button
-          onClick={addElectronic_device}
-          className="block lg:hidden underline font-semibold text-[#123532] cursor-pointer"
-          aria-label="add electronic device"
-        >
-          + Add Device
-        </button>
+        <div className="flex items-end h-full">
+          <button
+            onClick={addElectronic_device}
+            className="text-[#007E85] font-bold border border-[#007E85] rounded-2xl hover:bg-[#007E85] hover:text-white transition-all ease-in-out text-sm px-5 py-3 md:text-base md:ml-4"
+            aria-label="Add a new electric vehicle"
+          >
+            + Add Device
+          </button>
+        </div>
       </div>
-      {errors.form && <p className="text-sm text-red-600 mt-2">{errors.form}</p>}
+      {errors.form && (
+        <p className="text-sm text-red-600 mt-2">{errors.form}</p>
+      )}
       <div className="mt-4 space-y-3">
         {devices.map((device) => (
           <div
@@ -372,7 +403,11 @@ export default function DeviceManager({
                 {device.daily_usage}h Daily Usage
               </div>
             </div>
-            <button onClick={() => removeDevice(device.id)} className="cursor-pointer" aria-label="remove device">
+            <button
+              onClick={() => removeDevice(device.id)}
+              className="cursor-pointer"
+              aria-label="remove device"
+            >
               <Image src={deleteIcon} alt="" width={24} height={24} />
             </button>
           </div>

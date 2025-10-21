@@ -1,31 +1,34 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 // Component for a single benefit item
 type GroupPurchaseItemProps = {
   icon: React.ReactNode;
   title: string;
   description: string;
-}
+};
 
 export default function GroupPurchaseItem({
-    icon,
-    title,
-    description }:GroupPurchaseItemProps) {
+  icon,
+  title,
+  description,
+}: GroupPurchaseItemProps) {
   return (
-    <div className="flex flex-row xl:flex-col justify-center items-start text-left py-4 gap-4 max-w-[16.2rem]"> 
-      <div className='pt-3'> {/* Icon color */}
+    <div className="flex flex-col md:flex-row xl:flex-col items-start text-left py-5 md:py-2 gap-5 md:gap-3 max-w-full md:max-w-[13.2rem]">
+      <div className="flex-shrink-0">
+        {" "}
+        {/* Icon color */}
         {icon}
       </div>
-      <div className='flex flex-col '>
-          <h3 className="text-xl lg:text-2xl font-semibold text-[#123532]"> 
+      <div className="flex flex-col">
+        <h3 className="text-2xl md:text-base lg:text-lg font-semibold text-[#123532] mb-3 md:mb-1">
           {title}
         </h3>
-        <p className="text-sm lg:text-lg text-[#444444] leading-relaxed line-clamp-2"> 
+        <p className="text-lg md:text-xs lg:text-sm text-[#444444] leading-relaxed md:leading-snug line-clamp-3 md:line-clamp-2">
           {description}
         </p>
       </div>
     </div>
   );
-};
+}

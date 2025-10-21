@@ -7,7 +7,9 @@ import { getVehicleTypes } from "@/services/vehicleService";
 
 interface Electric_vehicleManagerProps {
   electric_vehicles: Electric_vehicle[];
-  setelectric_vehicles: React.Dispatch<React.SetStateAction<Electric_vehicle[]>>;
+  setelectric_vehicles: React.Dispatch<
+    React.SetStateAction<Electric_vehicle[]>
+  >;
   validateInputs?: (validator: () => boolean) => void;
 }
 
@@ -16,9 +18,15 @@ export default function Electric_vehicleManager({
   setelectric_vehicles,
   validateInputs,
 }: Electric_vehicleManagerProps) {
-  const [newVehicle, setNewVehicle] = useState({ model: "", no_of_vehicles: "", daily_avg_km: "" });
+  const [newVehicle, setNewVehicle] = useState({
+    model: "",
+    no_of_vehicles: "",
+    daily_avg_km: "",
+  });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [apiVehicleTypes, setApiVehicleTypes] = useState<VehicleType[] | null>(null);
+  const [apiVehicleTypes, setApiVehicleTypes] = useState<VehicleType[] | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,7 +45,11 @@ export default function Electric_vehicleManager({
       setApiVehicleTypes(fetchedTypes);
     } catch (err: unknown) {
       console.error("Failed to fetch vehicle types:", err);
-      setError(err instanceof Error ? err.message : String(err) || "Failed to load vehicle types.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : String(err) || "Failed to load vehicle types."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -93,7 +105,9 @@ export default function Electric_vehicleManager({
   );
 
   // Handle input changes
-  const handleVehicleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleVehicleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setNewVehicle((prev) => ({ ...prev, [name]: value }));
     setErrorMessage(null);
@@ -119,7 +133,10 @@ export default function Electric_vehicleManager({
   // Scroll to highlighted option without jitter
   const scrollToHighlighted = (index: number) => {
     if (dropdownRef.current) {
-      const optionEl = dropdownRef.current.querySelectorAll<HTMLDivElement>("[data-option]")[index];
+      const optionEl =
+        dropdownRef.current.querySelectorAll<HTMLDivElement>("[data-option]")[
+          index
+        ];
       if (optionEl) {
         optionEl.scrollIntoView({ block: "nearest", inline: "nearest" });
       }
@@ -177,7 +194,9 @@ export default function Electric_vehicleManager({
     preserveScroll(() => {
       const no_of_unitsNum = parseFloat(newVehicle.no_of_vehicles);
       const daily_usageNum = parseFloat(newVehicle.daily_avg_km);
-      const selectedVehicle = usableVehicleTypes.find((v) => v.name === newVehicle.model);
+      const selectedVehicle = usableVehicleTypes.find(
+        (v) => v.name === newVehicle.model
+      );
 
       if (
         selectedVehicle &&
@@ -211,13 +230,19 @@ export default function Electric_vehicleManager({
 
   const removeVehicle = (id: string) => {
     preserveScroll(() => {
-      setelectric_vehicles((prev) => prev.filter((vehicle) => vehicle.id !== id));
+      setelectric_vehicles((prev) =>
+        prev.filter((vehicle) => vehicle.id !== id)
+      );
     });
   };
 
   // Validate before form submission
   const validateVehicleInputs = () => {
-    if (newVehicle.model || newVehicle.no_of_vehicles || newVehicle.daily_avg_km) {
+    if (
+      newVehicle.model ||
+      newVehicle.no_of_vehicles ||
+      newVehicle.daily_avg_km
+    ) {
       setErrorMessage("Please click 'Add Vehicle' to save your input.");
       return false;
     }
@@ -263,17 +288,13 @@ export default function Electric_vehicleManager({
         <h2 className="text-xl md:text-2xl font-semibold text-[#123532]">
           Add your electric vehicle (if any)
         </h2>
-        <button
-          onClick={addElectric_vehicle}
-          className="hidden lg:block underline font-semibold text-[#123532] cursor-pointer whitespace-nowrap"
-          aria-label="Add a new electric vehicle"
-        >
-          + Add Vehicle
-        </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 items-end">
         <div className="relative" ref={inputWrapperRef}>
-          <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
+          <label
+            htmlFor="no_of_units"
+            className="block text-sm font-medium text-[#123532] mb-1"
+          >
             Vehicle Type
           </label>
           <input
@@ -296,31 +317,41 @@ export default function Electric_vehicleManager({
             >
               {displayedVehicles.length > 0 ? (
                 <>
-                  {usableVehicleTypes.some(v => v.category === "Car") && filteredCars.length > 0 && (
-                    <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200">Cars</div>
-                  )}
+                  {usableVehicleTypes.some((v) => v.category === "Car") &&
+                    filteredCars.length > 0 && (
+                      <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200">
+                        Cars
+                      </div>
+                    )}
                   {filteredCars.map((vehicle, index) => (
                     <div
                       key={vehicle.name}
                       data-option
                       onMouseDown={() => handleSelectVehicle(vehicle.name)}
                       className={`p-2 cursor-pointer ${
-                        highlightedIndex === index ? "bg-gray-200" : "hover:bg-gray-100"
+                        highlightedIndex === index
+                          ? "bg-gray-200"
+                          : "hover:bg-gray-100"
                       }`}
                     >
                       {vehicle.name}
                     </div>
                   ))}
-                  {usableVehicleTypes.some(v => v.category === "Scooter") && filteredScooters.length > 0 && (
-                    <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200 mt-1 pt-1">Scooters</div>
-                  )}
+                  {usableVehicleTypes.some((v) => v.category === "Scooter") &&
+                    filteredScooters.length > 0 && (
+                      <div className="p-2 text-gray-500 font-semibold text-sm sticky top-0 bg-white border-b border-gray-200 mt-1 pt-1">
+                        Scooters
+                      </div>
+                    )}
                   {filteredScooters.map((vehicle, index) => (
                     <div
                       key={vehicle.name}
                       data-option
                       onMouseDown={() => handleSelectVehicle(vehicle.name)}
                       className={`p-2 cursor-pointer ${
-                        highlightedIndex === index + filteredCars.length ? "bg-gray-200" : "hover:bg-gray-100"
+                        highlightedIndex === index + filteredCars.length
+                          ? "bg-gray-200"
+                          : "hover:bg-gray-100"
                       }`}
                     >
                       {vehicle.name}
@@ -328,7 +359,9 @@ export default function Electric_vehicleManager({
                   ))}
                 </>
               ) : (
-                <div className="p-3 text-gray-500">No vehicles found. Try searching.</div>
+                <div className="p-3 text-gray-500">
+                  No vehicles found. Try searching.
+                </div>
               )}
             </div>
           )}
@@ -337,7 +370,10 @@ export default function Electric_vehicleManager({
           )}
         </div>
         <div className="relative">
-          <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
+          <label
+            htmlFor="no_of_units"
+            className="block text-sm font-medium text-[#123532] mb-1"
+          >
             Number of Vehicles
           </label>
           <input
@@ -357,7 +393,10 @@ export default function Electric_vehicleManager({
           )}
         </div>
         <div className="relative">
-          <label htmlFor="no_of_units" className="block text-sm font-medium text-[#123532] mb-1">
+          <label
+            htmlFor="no_of_units"
+            className="block text-sm font-medium text-[#123532] mb-1"
+          >
             Monthly Usage (KM)
           </label>
           <input
@@ -376,17 +415,24 @@ export default function Electric_vehicleManager({
             <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
           )}
         </div>
-        <button
-          onClick={addElectric_vehicle}
-          className="block lg:hidden underline font-semibold text-[#123532] cursor-pointer whitespace-nowrap"
-          aria-label="Add a new electric vehicle"
-        >
-          + Add Vehicle
-        </button>
+        <div className="flex items-end h-full">
+          <button
+            onClick={addElectric_vehicle}
+            // target="new"
+            className="text-[#007E85] font-bold border border-[#007E85] rounded-2xl hover:bg-[#007E85] hover:text-white transition-all ease-in-out text-sm px-5 py-3 md:text-base md:ml-4"
+            aria-label="Add a new electric vehicle"
+          >
+            + Add Vehicle
+          </button>
+        </div>
       </div>
-      {errorMessage && !errorMessage.includes("vehicle type") && !errorMessage.includes("units") && !errorMessage.includes("wattage") && !errorMessage.includes("daily usage") && (
-        <p className="text-sm text-red-600 mt-2">{errorMessage}</p>
-      )}
+      {errorMessage &&
+        !errorMessage.includes("vehicle type") &&
+        !errorMessage.includes("units") &&
+        !errorMessage.includes("wattage") &&
+        !errorMessage.includes("daily usage") && (
+          <p className="text-sm text-red-600 mt-2">{errorMessage}</p>
+        )}
       <div className="mt-4 space-y-3">
         {electric_vehicles.map((vehicle) => (
           <div
@@ -396,7 +442,11 @@ export default function Electric_vehicleManager({
             <div>
               <span className="font-semibold flex gap-2 items-center">
                 <Image
-                  src={vehicle.category === "Car" ? "https://gym-manager-pull.b-cdn.net/golden_ray/icons/car.svg" : "https://gym-manager-pull.b-cdn.net/golden_ray/icons/scooter.svg"}
+                  src={
+                    vehicle.category === "Car"
+                      ? "https://gym-manager-pull.b-cdn.net/golden_ray/icons/car.svg"
+                      : "https://gym-manager-pull.b-cdn.net/golden_ray/icons/scooter.svg"
+                  }
                   alt={`Icon for ${vehicle.model}`}
                   width={24}
                   height={24}

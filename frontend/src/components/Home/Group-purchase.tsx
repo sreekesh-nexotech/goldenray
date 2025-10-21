@@ -1,100 +1,167 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import GroupPurchaseItem from './Group-purchase-item';
-import people from '../../../public/People-1.png'
-import line from '../../../public/Vector-6.png'
-import vector1 from '../../../public/Vector-7.png'
-import vector2 from '../../../public/Vector-8.png'
-import vector3 from '../../../public/Vector-9.png'
-import Link from 'next/link';
+import React from "react";
+import Image from "next/image";
+import GroupPurchaseItem from "./Group-purchase-item";
+// import people from "../../../public/People-1.png";
+import familyPhoto from "../../../public/FamiliyPhoto.png";
+// import line from "../../../public/Vector-6.png";
+import Link from "next/link";
 
+// CDN URLs for icons
+const reserveIcon =
+  "https://gym-manager-pull.b-cdn.net/golden_ray/home/reserve.png";
+const inviteFriendsIcon =
+  "https://gym-manager-pull.b-cdn.net/golden_ray/home/invite_friends.png";
+const unlockDiscountIcon =
+  "https://gym-manager-pull.b-cdn.net/golden_ray/home/unlock_discont.png";
+const installIcon =
+  "https://gym-manager-pull.b-cdn.net/golden_ray/home/install.png";
 
 // Main GroupPurchaseScheme component
 export default function GroupPurchaseScheme() {
+  const familiesJoined = 32;
+  const spotsLeft = 8;
+  const totalSpots = familiesJoined + spotsLeft;
+  const progressPercentage = (familiesJoined / totalSpots) * 100;
+
   return (
-    <section className=' mb-10 px-4 sm:px-6 lg:px-8 xl:px-36'>
-      <div>
-        {/* Main content card */}
-        <div className="bg-[#F7BA41] rounded-3xl p-8 sm:p-12 lg:p-16 flex flex-col gap-2 items-center xl:items-stretch">
-          <div className='flex flex-col xl:flex-row justify-between items-center '>
-            {/* Left content area (text and button) */}
-            <div className="flex-1  xl:max-w-xl text-center md:text-left gap-0">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-8 text-[#123532]">
-                Save more, Together Join your local solar group purchase
-              </h2>
-              
-              {/* button for large devices */}
-              <div className='flex mb-10'>
-                <Link href="#booking" className=" hidden md:block bg-white text-[#074A4D] px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300  cursor-pointer">
-                  Reserve Your Spot Now
-                </Link>
-              </div>
-              <p className="text-base xl:text-lg mb-4 text-[#444444]">
-                Neighbors in your area are teaming up for solar savings. Be the first to reserve your spot! 
-              </p>
-            </div>
+    <div className="w-[95%] mx-auto">
+      <section
+        className="rounded-3xl overflow-hidden relative"
+        style={{
+          background: "linear-gradient(180deg, #F7BA41 0%, #FCD042 100%)",
+        }}
+      >
+        <div className="relative">
+          {/* Main content card */}
+          <div className="rounded-3xl  p-4 sm:p-8 lg:p-12 flex flex-col gap-2">
+            {/* Heading */}
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-light leading-tight mb-8 text-[#123532]">
+              Save more with our group
+              <br className="hidden sm:block" /> purchase scheme!
+            </h2>
 
-            {/* Right content area (illustration) */}
-            <div className="flex-1 flex justify-center xl:justify-end min-w-[200px] max-w-full">
-              <div className='flex flex-col'>
-                {/* SVG Illustration of people */}
-                <Image src={people} alt='people line art' width={347} height={208}/>
-                <Image src={line} alt='line vector' width={354} height={63}/>
-              </div>
-            </div>
-          </div>
-
-
-          {/* Benefit cards section */}
-          <div className="flex flex-wrap flex-col md:flex-row xl:justify-between align-baseline mt-12 gap-x-5 "> 
-            {/* Benefit 1: Reserve */}
-            <GroupPurchaseItem
-              icon={
-                <Image src={vector1} alt='Vector1' className='w-[36px] h-[24px]'/>
-              }
+            {/* Benefit cards section */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-3 mt-4 mb-8 md:mb-42">
+              {/* Benefit 1: Reserve */}
+              <GroupPurchaseItem
+                icon={
+                  <Image
+                    src={reserveIcon}
+                    alt="Reserve"
+                    width={48}
+                    height={32}
+                    className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
+                  />
+                }
                 title="Reserve"
                 description="Secure your spot with a small, refundable fee."
-            />
+              />
 
-            {/* Benefit 2: Invite*/}
-            <GroupPurchaseItem
-              icon={
-                  <Image src={vector3} alt='Vector1' className='w-[30px] h-[26px]'/>
-              }
-              title="Invite"
-              description="Share with friends and neighbors to grow your group."
-            />
+              {/* Benefit 2: Invite*/}
+              <GroupPurchaseItem
+                icon={
+                  <Image
+                    src={inviteFriendsIcon}
+                    alt="Invite Friends"
+                    width={42}
+                    height={32}
+                    className="w-[42px] h-[32px] md:w-[28px] md:h-[22px]"
+                  />
+                }
+                title="Invite Friends"
+                description="Share with friends and grow your group."
+              />
 
-            {/* Benefit 3: Unlock */}
-            <GroupPurchaseItem
-              icon={
-                <Image src={vector2} alt='Vector1' className='w-[36px] h-[24px]'/>
-              }
-              title="Unlock"
-              description="Unlock massive discounts which are exclusive for bulk orders."
-            />
+              {/* Benefit 3: Unlock */}
+              <GroupPurchaseItem
+                icon={
+                  <Image
+                    src={unlockDiscountIcon}
+                    alt="Unlock Discount"
+                    width={48}
+                    height={32}
+                    className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
+                  />
+                }
+                title="Unlock Discount"
+                description="Unlock massive discounts exclusive for bulk orders."
+              />
 
-            {/* Benefit 4: Install */}
-            <GroupPurchaseItem
-              icon={
-                <Image src={vector2} alt='Vector1' className='w-[36px] h-[24px]'/>
-              }
-              title="Install"
-              description="Enjoy a smooth, professional solar installation."
-            />
+              {/* Benefit 4: Install */}
+              <GroupPurchaseItem
+                icon={
+                  <Image
+                    src={installIcon}
+                    alt="Install"
+                    width={48}
+                    height={32}
+                    className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
+                  />
+                }
+                title="Install"
+                description="Enjoy a smooth, professional installation."
+              />
+            </div>
 
-            
-            {/* button for mobile  */}
-            <div className='text-center' >
-            <Link href="#booking" className="md:hidden block bg-white text-[#074A4D] px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 mt-4 cursor-pointer"> 
-                  Talk To Us
-            </Link>
+            {/* Progress Bar Section */}
+            <div className="mt-1 mb-3 md:max-w-md">
+              {/* Progress Bar */}
+              <div className="w-full bg-gray-300 rounded-full h-4 mb-4 overflow-hidden relative">
+                <div
+                  className="h-4 rounded-full transition-all duration-700 ease-in-out relative"
+                  style={{
+                    width: `${progressPercentage}%`,
+                    background: `#FE7903`,
+                  }}
+                >
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#FE7903] rounded-full border-4 border-white shadow-lg transition-all duration-700"></div>
+                </div>
+              </div>
+
+              {/* Progress Text */}
+              <p className="text-sm md:text-base text-[#123532] mb-8">
+                Neighbours in your are are teaming up for more savings.
+                <br />
+                <span className="font-base">
+                  {familiesJoined} families joined, only {spotsLeft} spots left!
+                </span>
+              </p>
+
+              {/* Reserve Button */}
+              <Link
+                href="#booking"
+                className="inline-block bg-white text-[#074A4D] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
+              >
+                Reserve your spot
+              </Link>
             </div>
           </div>
+
+          {/* Family Photo for mobile/tablet - shown at top */}
+          <div className="lg:hidden mb-6 px-4">
+            <Image
+              src={familyPhoto}
+              alt="Happy family"
+              width={737}
+              height={492}
+              className="w-full h-auto object-cover rounded-lg"
+            />
+          </div>
+
+          {/* Family Photo for desktop - positioned at bottom right */}
+          <div className="hidden lg:block absolute bottom-0 right-0 w-[35vw] max-w-[35rem]">
+            <Image
+              src={familyPhoto}
+              alt="Happy family"
+              width={737}
+              height={492}
+              className="w-full h-auto object-cover"
+            />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
