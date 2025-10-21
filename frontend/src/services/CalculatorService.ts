@@ -20,10 +20,10 @@ export async function getSolarAdvantageData(
   }
 
   try {
-    console.log('🔵 Calling API:', SOLAR_CALCULATOR_ENDPOINT, 'with payload:', payload);
+    // console.log('🔵 Calling API:', SOLAR_CALCULATOR_ENDPOINT, 'with payload:', payload);
     const response = await apiCall<SolarCalculatorApiResponse>(SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
 
-    console.log('🟢 API Response received:', response);
+    // console.log('🟢 API Response received:', response);
     if (!response) {
       throw new Error("No response received from the backend.");
     }
@@ -35,13 +35,13 @@ export async function getSolarAdvantageData(
     }
 
     // Transform the API response
-    console.log('💰 EMI Details from backend:', response.emi_details);
-    console.log('💰 EMI per month (raw):', response.emi_details?.emi_per_month);
-    console.log('💰 Total Cost:', response.total_cost);
-    console.log('💰 Subsidy:', response.subsidy);
+    // console.log('💰 EMI Details from backend:', response.emi_details);
+    // console.log('💰 EMI per month (raw):', response.emi_details?.emi_per_month);
+    // console.log('💰 Total Cost:', response.total_cost);
+    // console.log('💰 Subsidy:', response.subsidy);
     
-    const emiFormatted = `₹${response.emi_details.emi_per_month.toLocaleString('en-IN')}`;
-    console.log('💰 EMI formatted:', emiFormatted);
+    // const emiFormatted = `₹${response.emi_details.emi_per_month.toLocaleString('en-IN')}`;
+    // console.log('💰 EMI formatted:', emiFormatted);
     
     const transformedData: BasicCalculatorData = {
       specifications: {
@@ -66,7 +66,7 @@ export async function getSolarAdvantageData(
       },
     };
 
-    console.log('✅ Transformed Data - starting_EMI:', transformedData.financialDetails.starting_EMI);
+    // console.log('✅ Transformed Data - starting_EMI:', transformedData.financialDetails.starting_EMI);
     return transformedData;
   } catch (error) {
     console.error("Error in getSolarAdvantageData:", error, "Payload:", payload);
@@ -87,10 +87,10 @@ export async function getSolarAdvancedData(
   }
 
   try {
-    console.log('🔵 [Advanced] Calling API:', ADVANCED_SOLAR_CALCULATOR_ENDPOINT, 'with payload:', payload);
+    // console.log('🔵 [Advanced] Calling API:', ADVANCED_SOLAR_CALCULATOR_ENDPOINT, 'with payload:', payload);
     const response = await apiCall<AdvancedCalculatorApiResponse>(ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
 
-    console.log('🟢 [Advanced] API Response received:', response);
+    // console.log('🟢 [Advanced] API Response received:', response);
     if (!response) {
       throw new Error("No response received from the backend.");
     }
@@ -106,13 +106,13 @@ export async function getSolarAdvancedData(
 
 
     // Transform the API response
-    console.log('💰 [Advanced] EMI Details from backend:', response.emi_details);
-    console.log('💰 [Advanced] EMI per month (raw):', response.emi_details?.emi_per_month);
-    console.log('💰 [Advanced] Final Cost:', response.final_cost);
-    console.log('💰 [Advanced] Overall Setup Cost:', response.overall_setup_cost);
+    // console.log('💰 [Advanced] EMI Details from backend:', response.emi_details);
+    // console.log('💰 [Advanced] EMI per month (raw):', response.emi_details?.emi_per_month);
+    // console.log('💰 [Advanced] Final Cost:', response.final_cost);
+    // console.log('💰 [Advanced] Overall Setup Cost:', response.overall_setup_cost);
     
-    const advancedEmiFormatted = `₹${response.emi_details.emi_per_month.toLocaleString('en-IN')}`;
-    console.log('💰 [Advanced] EMI formatted:', advancedEmiFormatted);
+    // const advancedEmiFormatted = `₹${response.emi_details.emi_per_month.toLocaleString('en-IN')}`;
+    // console.log('💰 [Advanced] EMI formatted:', advancedEmiFormatted);
     
     const advancedTransformedData : AdvancedCalculatorData = {
       specifications: {
@@ -150,7 +150,7 @@ export async function getSolarAdvancedData(
       },
     };
     
-    console.log('✅ [Advanced] Transformed Data - starting_EMI:', advancedTransformedData.financialDetails.starting_EMI);
+    // console.log('✅ [Advanced] Transformed Data - starting_EMI:', advancedTransformedData.financialDetails.starting_EMI);
     return advancedTransformedData;
   } catch (error) {
     console.error("Error in getSolarAdvancedData:", error, "Payload:", payload);
