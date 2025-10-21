@@ -6,9 +6,10 @@ import GroupPurchaseItem from "./Group-purchase-item";
 // import people from "../../../public/People-1.png";
 import familyPhoto from "../../../public/FamiliyPhoto.png";
 // import line from "../../../public/Vector-6.png";
-import vector1 from "../../../public/Vector-7.png";
-import vector2 from "../../../public/Vector-8.png";
-import vector3 from "../../../public/Vector-9.png";
+import reserveIcon from "../../../public/reserve.png";
+import inviteFriendsIcon from "../../../public/invite_friends.png";
+import unlockDiscountIcon from "../../../public/unlock_discont.png";
+import installIcon from "../../../public/install.png";
 import Link from "next/link";
 
 // Main GroupPurchaseScheme component
@@ -19,132 +20,134 @@ export default function GroupPurchaseScheme() {
   const progressPercentage = (familiesJoined / totalSpots) * 100;
 
   return (
-    <section
-      className="rounded-3xl overflow-hidden relative"
-      style={{
-        background: "linear-gradient(180deg, #F7BA41 0%, #FCD042 100%)",
-      }}
-    >
-      <div className="relative">
-        {/* Main content card */}
-        <div className="rounded-3xl  p-4 sm:p-8 lg:p-12 flex flex-col gap-2">
-          {/* Heading */}
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-light leading-tight mb-8 text-[#123532]">
-            Save more with our group
-            <br className="hidden sm:block" /> purchase scheme!
-          </h2>
+    <div className="w-[95%] mx-auto">
+      <section
+        className="rounded-3xl overflow-hidden relative"
+        style={{
+          background: "linear-gradient(180deg, #F7BA41 0%, #FCD042 100%)",
+        }}
+      >
+        <div className="relative">
+          {/* Main content card */}
+          <div className="rounded-3xl  p-4 sm:p-8 lg:p-12 flex flex-col gap-2">
+            {/* Heading */}
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-light leading-tight mb-8 text-[#123532]">
+              Save more with our group
+              <br className="hidden sm:block" /> purchase scheme!
+            </h2>
 
-          {/* Benefit cards section */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-3 mt-4 mb-42">
-            {/* Benefit 1: Reserve */}
-            <GroupPurchaseItem
-              icon={
-                <Image
-                  src={vector1}
-                  alt="Vector1"
-                  className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
-                />
-              }
-              title="Reserve"
-              description="Secure your spot with a small, refundable fee."
-            />
+            {/* Benefit cards section */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-3 mt-4 mb-8 md:mb-42">
+              {/* Benefit 1: Reserve */}
+              <GroupPurchaseItem
+                icon={
+                  <Image
+                    src={reserveIcon}
+                    alt="Reserve"
+                    className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
+                  />
+                }
+                title="Reserve"
+                description="Secure your spot with a small, refundable fee."
+              />
 
-            {/* Benefit 2: Invite*/}
-            <GroupPurchaseItem
-              icon={
-                <Image
-                  src={vector3}
-                  alt="Vector1"
-                  className="w-[42px] h-[32px] md:w-[28px] md:h-[22px]"
-                />
-              }
-              title="Invite Friends"
-              description="Share with friends and grow your group."
-            />
+              {/* Benefit 2: Invite*/}
+              <GroupPurchaseItem
+                icon={
+                  <Image
+                    src={inviteFriendsIcon}
+                    alt="Invite Friends"
+                    className="w-[42px] h-[32px] md:w-[28px] md:h-[22px]"
+                  />
+                }
+                title="Invite Friends"
+                description="Share with friends and grow your group."
+              />
 
-            {/* Benefit 3: Unlock */}
-            <GroupPurchaseItem
-              icon={
-                <Image
-                  src={vector2}
-                  alt="Vector1"
-                  className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
-                />
-              }
-              title="Unlock Discount"
-              description="Unlock massive discounts exclusive for bulk orders."
-            />
+              {/* Benefit 3: Unlock */}
+              <GroupPurchaseItem
+                icon={
+                  <Image
+                    src={unlockDiscountIcon}
+                    alt="Unlock Discount"
+                    className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
+                  />
+                }
+                title="Unlock Discount"
+                description="Unlock massive discounts exclusive for bulk orders."
+              />
 
-            {/* Benefit 4: Install */}
-            <GroupPurchaseItem
-              icon={
-                <Image
-                  src={vector2}
-                  alt="Vector1"
-                  className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
-                />
-              }
-              title="Install"
-              description="Enjoy a smooth, professional installation."
-            />
-          </div>
-
-          {/* Progress Bar Section */}
-          <div className="mt-1 mb-3 md:max-w-md">
-            {/* Progress Bar */}
-            <div className="w-full bg-gray-300 rounded-full h-4 mb-4 overflow-hidden relative">
-              <div
-                className="h-4 rounded-full transition-all duration-700 ease-in-out relative"
-                style={{
-                  width: `${progressPercentage}%`,
-                  background: `#FE7903`,
-                }}
-              >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#FE7903] rounded-full border-4 border-white shadow-lg transition-all duration-700"></div>
-              </div>
+              {/* Benefit 4: Install */}
+              <GroupPurchaseItem
+                icon={
+                  <Image
+                    src={installIcon}
+                    alt="Install"
+                    className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
+                  />
+                }
+                title="Install"
+                description="Enjoy a smooth, professional installation."
+              />
             </div>
 
-            {/* Progress Text */}
-            <p className="text-sm md:text-base text-[#123532] mb-8">
-              Neighbours in your are are teaming up for more savings.
-              <br />
-              <span className="font-base">
-                {familiesJoined} families joined, only {spotsLeft} spots left!
-              </span>
-            </p>
+            {/* Progress Bar Section */}
+            <div className="mt-1 mb-3 md:max-w-md">
+              {/* Progress Bar */}
+              <div className="w-full bg-gray-300 rounded-full h-4 mb-4 overflow-hidden relative">
+                <div
+                  className="h-4 rounded-full transition-all duration-700 ease-in-out relative"
+                  style={{
+                    width: `${progressPercentage}%`,
+                    background: `#FE7903`,
+                  }}
+                >
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#FE7903] rounded-full border-4 border-white shadow-lg transition-all duration-700"></div>
+                </div>
+              </div>
 
-            {/* Reserve Button */}
-            <Link
-              href="#booking"
-              className="inline-block bg-white text-[#074A4D] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
-            >
-              Reserve your spot
-            </Link>
+              {/* Progress Text */}
+              <p className="text-sm md:text-base text-[#123532] mb-8">
+                Neighbours in your are are teaming up for more savings.
+                <br />
+                <span className="font-base">
+                  {familiesJoined} families joined, only {spotsLeft} spots left!
+                </span>
+              </p>
+
+              {/* Reserve Button */}
+              <Link
+                href="#booking"
+                className="inline-block bg-white text-[#074A4D] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
+              >
+                Reserve your spot
+              </Link>
+            </div>
+          </div>
+
+          {/* Family Photo for mobile/tablet - shown at top */}
+          <div className="lg:hidden mb-6 px-4">
+            <Image
+              src={familyPhoto}
+              alt="Happy family"
+              width={737}
+              height={492}
+              className="w-full h-auto object-cover rounded-lg"
+            />
+          </div>
+
+          {/* Family Photo for desktop - positioned at bottom right */}
+          <div className="hidden lg:block absolute bottom-0 right-0 w-[35vw] max-w-[35rem]">
+            <Image
+              src={familyPhoto}
+              alt="Happy family"
+              width={737}
+              height={492}
+              className="w-full h-auto object-cover"
+            />
           </div>
         </div>
-
-        {/* Family Photo for mobile/tablet - shown at top */}
-        <div className="lg:hidden mb-6 px-4">
-          <Image
-            src={familyPhoto}
-            alt="Happy family"
-            width={737}
-            height={492}
-            className="w-full h-auto object-cover rounded-lg"
-          />
-        </div>
-
-        {/* Family Photo for desktop - positioned at bottom right */}
-        <div className="hidden lg:block absolute bottom-0 right-0 w-[35vw] max-w-[35rem]">
-          <Image
-            src={familyPhoto}
-            alt="Happy family"
-            width={737}
-            height={492}
-            className="w-full h-auto object-cover"
-          />
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
