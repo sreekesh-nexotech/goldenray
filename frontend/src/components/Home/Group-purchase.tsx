@@ -6,11 +6,13 @@ import GroupPurchaseItem from "./Group-purchase-item";
 // import people from "../../../public/People-1.png";
 import familyPhoto from "../../../public/FamiliyPhoto.png";
 // import line from "../../../public/Vector-6.png";
-import reserveIcon from "../../../public/reserve.png";
-import inviteFriendsIcon from "../../../public/invite_friends.png";
-import unlockDiscountIcon from "../../../public/unlock_discont.png";
-import installIcon from "../../../public/install.png";
 import Link from "next/link";
+
+// CDN URLs for icons
+const reserveIcon = "https://gym-manager-pull.b-cdn.net/golden_ray/home/reserve.png";
+const inviteFriendsIcon = "https://gym-manager-pull.b-cdn.net/golden_ray/home/invite_friends.png";
+const unlockDiscountIcon = "https://gym-manager-pull.b-cdn.net/golden_ray/home/unlock_discont.png";
+const installIcon = "https://gym-manager-pull.b-cdn.net/golden_ray/home/install.png";
 
 // Main GroupPurchaseScheme component
 export default function GroupPurchaseScheme() {
@@ -44,6 +46,8 @@ export default function GroupPurchaseScheme() {
                   <Image
                     src={reserveIcon}
                     alt="Reserve"
+                    width={48}
+                    height={32}
                     className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
                   />
                 }
@@ -57,6 +61,8 @@ export default function GroupPurchaseScheme() {
                   <Image
                     src={inviteFriendsIcon}
                     alt="Invite Friends"
+                    width={42}
+                    height={32}
                     className="w-[42px] h-[32px] md:w-[28px] md:h-[22px]"
                   />
                 }
@@ -70,6 +76,8 @@ export default function GroupPurchaseScheme() {
                   <Image
                     src={unlockDiscountIcon}
                     alt="Unlock Discount"
+                    width={48}
+                    height={32}
                     className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
                   />
                 }
@@ -83,6 +91,8 @@ export default function GroupPurchaseScheme() {
                   <Image
                     src={installIcon}
                     alt="Install"
+                    width={48}
+                    height={32}
                     className="w-[48px] h-[32px] md:w-[32px] md:h-[22px]"
                   />
                 }
