@@ -173,7 +173,7 @@ export default function Footer() {
             )}
             {successMessage && (
               <p
-                className="text-green-500 text-[1.25rem] mt-2 text-center md:text-left"
+                className="text-green-500 text-xl mt-2 text-center md:text-left"
                 role="status"
               >
                 {successMessage}
