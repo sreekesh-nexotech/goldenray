@@ -159,7 +159,7 @@ export default function BasicResult({ data, monthlyBill }: BasicResultProps) {
           <Line data={chartData} options={chartOptions} />
         </div>
         <p className="text-[#124944] text-sm md:text-base mt-4 text-center bg-[#E8FEFF] border border-[#BCE8E4] rounded-full py-2 px-1">
-          Reduce EB from <b>₹{monthlyBill}</b> to just <b>{data.financialDetails.monthlyEBReduction}</b>
+          Reduce EB from <b>₹{monthlyBill}</b> to just <b>{data.financialDetails.starting_EMI}/mo</b>
         </p>
       </div>
 
