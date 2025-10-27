@@ -118,8 +118,8 @@ export default function GroupPurchaseScheme() {
 
             {/* Progress Text */}
             <p className="text-sm md:text-lg text-[#123532] mb-8">
-              Neighbours in your are are teaming up for more savings.{" "}
-              <span className="font-base"><br/>
+              Neighbours in your are are teaming up for more savings.{" "}<br/>
+              <span className="font-base">
                 {familiesJoined} families joined, only {spotsLeft} spots left!
               </span>
             </p>
