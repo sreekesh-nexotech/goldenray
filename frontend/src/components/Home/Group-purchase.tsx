@@ -51,7 +51,7 @@ export default function GroupPurchaseScheme() {
                   alt="Reserve"
                   width={48}
                   height={32}
-                  className="w-[48px] h-[32px] md:w-[35px] md:h-[24px]"
+                  className="w-[48px] h-[32px] md:w-[35px] md:h-[24px] xl:w-[56px] xl:h-[38px]"
                 />
               }
               title="Reserve"
@@ -65,7 +65,7 @@ export default function GroupPurchaseScheme() {
                   alt="Invite Friends"
                   width={42}
                   height={32}
-                  className="w-[42px] h-[32px] md:w-[31px] md:h-[24px]"
+                  className="w-[42px] h-[32px] md:w-[31px] md:h-[24px] xl:w-[50px] xl:h-[38px]"
                 />
               }
               title="Invite Friends"
@@ -79,7 +79,7 @@ export default function GroupPurchaseScheme() {
                   alt="Unlock Discount"
                   width={48}
                   height={32}
-                  className="w-[48px] h-[32px] md:w-[35px] md:h-[24px]"
+                  className="w-[48px] h-[32px] md:w-[35px] md:h-[24px] xl:w-[56px] xl:h-[38px]"
                 />
               }
               title="Unlock Discount"
@@ -93,7 +93,7 @@ export default function GroupPurchaseScheme() {
                   alt="Install"
                   width={48}
                   height={32}
-                  className="w-[48px] h-[32px] md:w-[35px] md:h-[24px]"
+                  className="w-[48px] h-[32px] md:w-[35px] md:h-[24px] xl:w-[56px] xl:h-[38px]"
                 />
               }
               title="Install"
