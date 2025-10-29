@@ -26,9 +26,9 @@ export default function GroupPurchaseScheme() {
   const progressPercentage = (familiesJoined / totalSpots) * 100;
 
   return (
-    <div className="py-10 px-4 sm:px-6 lg:px-8 xl:px-36">
+    <div className="py-10 px-4 sm:px-6 lg:px-8 xl:px-7">
       <section
-        className="rounded-3xl overflow-hidden relative min-h-[85vh] lg:min-h-[85vh]"
+        className="rounded-3xl overflow-hidden relative min-h-[85vh] lg:min-h-[85vh] xl:min-h-[85vh]"
         style={{
           background: "linear-gradient(180deg, #F7BA41 0%, #FCD042 100%)",
         }}
@@ -36,7 +36,7 @@ export default function GroupPurchaseScheme() {
         {/* Main content card */}
         <div className="rounded-3xl p-4 sm:p-8 lg:p-12 flex flex-col gap-2 relative z-10">
           {/* Heading */}
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-light leading-tight mb-8 text-[#123532]">
+          <h2 className="text-4xl sm:text-5xl lg:text-5xl md:text-6xl  font-light leading-tight mb-8 text-[#123532]">
             Save more with our group
             <br className="hidden sm:block" /> purchase scheme!
           </h2>
@@ -118,7 +118,7 @@ export default function GroupPurchaseScheme() {
 
             {/* Progress Text */}
             <p className="text-sm md:text-lg text-[#123532] mb-8">
-              Neighbours in your are are teaming up for more savings.{" "}<br/>
+              Neighbours in your area are teaming up for more savings.{" "}
               <span className="font-base">
                 {familiesJoined} families joined, only {spotsLeft} spots left!
               </span>
@@ -146,13 +146,13 @@ export default function GroupPurchaseScheme() {
         </div>
 
         {/* Family Photo for desktop - positioned at bottom right */}
-        <div className="hidden lg:block absolute bottom-0 right-0 w-[35vw] max-w-[35rem]">
+        <div className="hidden lg:block absolute bottom-0 right-0 w-[45vw] max-w-[600px] max-h-[480px] xl:w-[30vw] xl:max-w-[800px] xl:max-h-[450px] 2xl:w-[38vw] 2xl:max-w-[700px] 2xl:max-h-[480px]">
           <Image
             src={familyPhoto}
             alt="Happy family"
             width={737}
             height={492}
-            className="w-full h-auto object-cover"
+            className="w-full h-full object-cover object-top"
           />
         </div>
       </section>
