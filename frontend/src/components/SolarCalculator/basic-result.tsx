@@ -26,9 +26,14 @@ ChartJS.register(
 interface BasicResultProps {
   data: BasicCalculatorData;
   monthlyBill: number | "";
+  ownership_type?: string;
 }
 
-export default function BasicResult({ data, monthlyBill }: BasicResultProps) {
+export default function BasicResult({
+  data,
+  monthlyBill,
+  ownership_type,
+}: BasicResultProps) {
   if (!data.graph_data.labels.length || !data.graph_data.datasets.length) {
     return (
       <div className="text-center text-gray-600 p-6">
@@ -83,7 +88,7 @@ export default function BasicResult({ data, monthlyBill }: BasicResultProps) {
       },
     },
     hover: {
-      mode: 'index' as const,
+      mode: "index" as const,
       intersect: false, // Crucial: allows tooltip to trigger when mouse is near the line, not just on a point
     },
     scales: {
@@ -110,7 +115,10 @@ export default function BasicResult({ data, monthlyBill }: BasicResultProps) {
   };
 
   // Check if lifetime savings is negative
-  const isNegativeSavings = parseFloat(data.financialDetails.lifetime_savings.replace(/[^0-9.-]+/g, '')) < 0;
+  const isNegativeSavings =
+    parseFloat(
+      data.financialDetails.lifetime_savings.replace(/[^0-9.-]+/g, "")
+    ) < 0;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 items-stretch xl:gap-8 mt-10">
@@ -127,7 +135,9 @@ export default function BasicResult({ data, monthlyBill }: BasicResultProps) {
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
             {data.specifications.power_requirement}
           </h2>
-          <p className="text-gray-600 text-sm md:text-base">Power Requirement</p>
+          <p className="text-gray-600 text-sm md:text-base">
+            Power Requirement
+          </p>
         </div>
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6 flex-grow">
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
@@ -139,7 +149,9 @@ export default function BasicResult({ data, monthlyBill }: BasicResultProps) {
           <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
             {data.specifications.installation_time}
           </h2>
-          <p className="text-gray-600 text-sm md:text-base">Installation Time</p>
+          <p className="text-gray-600 text-sm md:text-base">
+            Installation Time
+          </p>
         </div>
       </div>
 
@@ -148,10 +160,13 @@ export default function BasicResult({ data, monthlyBill }: BasicResultProps) {
         <h2 className="text-4xl lg:text-[40px] font-semibold text-[#123532] mb-2">
           {data.financialDetails.lifetime_savings}
         </h2>
-        <p className="text-gray-600 text-sm md:text-base mb-6">Lifetime Savings</p>
+        <p className="text-gray-600 text-sm md:text-base mb-6">
+          Lifetime Savings
+        </p>
         {isNegativeSavings && (
           <p className="text-[#FBC207] text-xs md:text-sm mb-4 -mt-4">
-            Negative savings? Solar lets you add appliances without raising bills, ensuring long-term profits.
+            Negative savings? Solar lets you add appliances without raising
+            bills, ensuring long-term profits.
           </p>
         )}
         {/* The chart div has flex-grow, which is good */}
@@ -159,7 +174,8 @@ export default function BasicResult({ data, monthlyBill }: BasicResultProps) {
           <Line data={chartData} options={chartOptions} />
         </div>
         <p className="text-[#124944] text-sm md:text-base mt-4 text-center bg-[#E8FEFF] border border-[#BCE8E4] rounded-full py-2 px-1">
-          Reduce EB from <b>₹{monthlyBill}</b> to just <b>{data.financialDetails.starting_EMI}/mo</b>
+          Reduce EB from <b>₹{monthlyBill}</b> to just{" "}
+          <b>{data.financialDetails.starting_EMI}/mo</b>
         </p>
       </div>
 
@@ -167,18 +183,35 @@ export default function BasicResult({ data, monthlyBill }: BasicResultProps) {
       {/* Added flex-col and flex-grow to inner divs */}
       <div className="flex flex-col gap-2">
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6 rounded-t-3xl flex-grow">
-          <p className="text-gray-600 text-sm md:text-base mb-2">Your overall setup cost</p>
+          <p className="text-gray-600 text-sm md:text-base mb-2">
+            Your overall setup cost
+          </p>
           <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] mb-4">
             {data.financialDetails.overall_cost}
           </h2>
-          <p className="text-gray-600 text-sm md:text-base mb-2">Govt. Subsidy</p>
-          <h2 className="text-2xl lg:text-[32px] font-semibold text-[#123532] flex items-center">
+          <p className="text-gray-600 text-sm md:text-base mb-2">
+            Govt. Subsidy
+          </p>
+          <h2
+            className={`text-2xl lg:text-[32px] font-semibold flex items-center ${
+              ownership_type === "rented" ? "text-red-600" : "text-[#123532]"
+            }`}
+          >
             {data.financialDetails.government_subsidy}
           </h2>
+          {ownership_type === "rented" && (
+            <p className="text-red-600 text-xs md:text-sm mt-2">
+              No subsidy for rented house
+            </p>
+          )}
         </div>
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.1)] p-6 rounded-b-3xl flex-grow">
-          <div> {/* This div might prevent flex-grow on its content, if you wanted the inner p/h2 to stretch. But for now, it's fine. */}
-            <p className="text-gray-600 text-sm md:text-base mb-2">Your Final Cost</p>
+          <div>
+            {" "}
+            {/* This div might prevent flex-grow on its content, if you wanted the inner p/h2 to stretch. But for now, it's fine. */}
+            <p className="text-gray-600 text-sm md:text-base mb-2">
+              Your Final Cost
+            </p>
             <h2 className="text-3xl lg:text-5xl font-semibold text-[#123532] mb-2">
               {data.financialDetails.final_cost}
             </h2>

@@ -45,6 +45,9 @@ export default function SolarBasicResult({
   );
   const [ownership_type, setownership_type] = useState(initialownership_type);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [submittedOwnershipType, setSubmittedOwnershipType] = useState(
+    initialownership_type
+  ); // Track submitted value
   const [monthly_label, setmonthly_label] = useState(
     initialproperty_type === "residential"
       ? "Average bi-Monthly Bill"
@@ -119,6 +122,7 @@ export default function SolarBasicResult({
   const handleResubmit = () => {
     if (validateForm()) {
       const billValue = Number(monthly_bill);
+      setSubmittedOwnershipType(ownership_type); // Update submitted ownership type
       onResubmit(
         pincode,
         property_type,
@@ -272,7 +276,11 @@ export default function SolarBasicResult({
             Advanced Calculator
           </a>
         </div>
-        <BasicResult data={calculatedData} monthlyBill={initialmonthly_bill} />
+        <BasicResult
+          data={calculatedData}
+          monthlyBill={initialmonthly_bill}
+          ownership_type={submittedOwnershipType}
+        />
         <div className="flex flex-col md:flex-row justify-center gap-4 mt-10">
           <Button onClick={() => setIsPopupOpen(true)}>
             Get Detailed Quote
