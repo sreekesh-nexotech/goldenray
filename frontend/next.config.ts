@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: 'gym-manager-pull.b-cdn.net',
             },
+            {
+                protocol: 'https',
+                hostname: 'golden-ray.b-cdn.net',
+            },
         ],
     },
     reactStrictMode: true,

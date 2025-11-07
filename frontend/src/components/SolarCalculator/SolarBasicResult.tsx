@@ -12,27 +12,43 @@ interface SolarBasicResultProps {
   initialPincode: string;
   initialproperty_type: string;
   initialmonthly_bill: number | "";
+  initialownership_type?: string;
   calculatedData: BasicCalculatorData;
-  onResubmit: (pincode: string, property_type: string, monthly_bill: number) => void;
+  onResubmit: (
+    pincode: string,
+    property_type: string,
+    monthly_bill: number,
+    ownership_type?: string
+  ) => void;
   onGoBack: () => void;
   apiError?: string | null;
+  showOwnershipField?: boolean;
 }
 
 export default function SolarBasicResult({
   initialPincode,
   initialproperty_type,
   initialmonthly_bill,
+  initialownership_type = "",
   calculatedData,
   onResubmit,
   onGoBack,
   apiError,
+  showOwnershipField = false,
 }: SolarBasicResultProps) {
   const [pincode, setPincode] = useState(initialPincode);
-  const [property_type, setproperty_type] = useState(initialproperty_type || "residential");
-  const [monthly_bill, setmonthly_bill] = useState<number | "">(initialmonthly_bill);
+  const [property_type, setproperty_type] = useState(
+    initialproperty_type || "residential"
+  );
+  const [monthly_bill, setmonthly_bill] = useState<number | "">(
+    initialmonthly_bill
+  );
+  const [ownership_type, setownership_type] = useState(initialownership_type);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [monthly_label, setmonthly_label] = useState(
-    initialproperty_type === "residential" ? "Average bi-Monthly Bill" : "Average Monthly Bill"
+    initialproperty_type === "residential"
+      ? "Average bi-Monthly Bill"
+      : "Average Monthly Bill"
   );
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -51,6 +67,11 @@ export default function SolarBasicResult({
       newErrors.property_type = "Please select a property type.";
     }
 
+    // Ownership type validation (only if field is shown)
+    if (showOwnershipField && !ownership_type) {
+      newErrors.ownership_type = "Please select an ownership type.";
+    }
+
     // Monthly bill validation: must be a positive number
     const billValue = Number(monthly_bill);
     if (!monthly_bill) {
@@ -67,9 +88,19 @@ export default function SolarBasicResult({
 
   const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setproperty_type(e.target.value);
-    setmonthly_label(e.target.value === "residential" ? "Average bi-Monthly Bill" : "Average Monthly Bill");
+    setmonthly_label(
+      e.target.value === "residential"
+        ? "Average bi-Monthly Bill"
+        : "Average Monthly Bill"
+    );
     // Clear property type error on change
     setErrors((prev) => ({ ...prev, property_type: "" }));
+  };
+
+  const handleownership_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setownership_type(e.target.value);
+    // Clear ownership type error on change
+    setErrors((prev) => ({ ...prev, ownership_type: "" }));
   };
 
   const handlemonthly_billChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +119,12 @@ export default function SolarBasicResult({
   const handleResubmit = () => {
     if (validateForm()) {
       const billValue = Number(monthly_bill);
-      onResubmit(pincode, property_type, billValue);
+      onResubmit(
+        pincode,
+        property_type,
+        billValue,
+        showOwnershipField ? ownership_type : undefined
+      );
     }
   };
 
@@ -97,34 +133,43 @@ export default function SolarBasicResult({
   if (apiError) {
     allErrors.push(apiError);
   }
-  Object.values(errors).forEach(errMsg => {
-    if (errMsg) { // Only add non-empty error messages
+  Object.values(errors).forEach((errMsg) => {
+    if (errMsg) {
+      // Only add non-empty error messages
       allErrors.push(errMsg);
     }
   });
 
-
   return (
-    <div className="relative py-12 mt-12 scroll-mt-30" id="solar-advantage-results">
+    <div
+      className="relative py-12 mt-12 scroll-mt-30"
+      id="solar-advantage-results"
+    >
       <PageIllustration />
       <div className="relative px-4 sm:px-6 lg:px-8 xl:px-36">
         <h1 className="text-4xl text-center md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-15">
           Calculate Your Solar Advantage
         </h1>
         {allErrors.length > 0 && ( // Display a single error message container if there are any errors
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+            role="alert"
+          >
             <strong className="font-bold">Error!</strong>
             <ul className="mt-2 list-disc list-inside">
-                {allErrors.map((msg, index) => (
-                    <li key={index}>{msg}</li>
-                ))}
+              {allErrors.map((msg, index) => (
+                <li key={index}>{msg}</li>
+              ))}
             </ul>
           </div>
         )}
         <div className="flex flex-col lg:flex-row justify-between gap-5 text-center lg:items-end mb-10">
           {/* Pincode */}
           <div>
-            <label htmlFor="pincode-result" className="block text-left text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="pincode-result"
+              className="block text-left text-sm font-medium text-gray-700 mb-1"
+            >
               Your Property Pincode
             </label>
             <input
@@ -142,7 +187,10 @@ export default function SolarBasicResult({
           </div>
           {/* Property Type */}
           <div className="block text-left">
-            <label htmlFor="property-type-result" className="text-left text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="property-type-result"
+              className="text-left text-sm font-medium text-gray-700 mb-1"
+            >
               Your Property Type
             </label>
             <select
@@ -158,9 +206,38 @@ export default function SolarBasicResult({
             </select>
             {/* Specific error message removed, now part of the common list */}
           </div>
+          {/* Ownership Type - Conditional */}
+          {showOwnershipField && (
+            <div className="block text-left">
+              <label
+                htmlFor="ownership-type-result"
+                className="text-left text-sm font-medium text-gray-700 mb-1"
+              >
+                Ownership Type
+              </label>
+              <select
+                id="ownership-type-result"
+                value={ownership_type}
+                onChange={handleownership_typeChange}
+                className={`w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41] shadow-md bg-white ${
+                  ownership_type === "" ? "text-gray-400" : "text-black"
+                } ${errors.ownership_type ? "border-red-600" : ""}`}
+              >
+                <option value="" disabled hidden>
+                  Select Ownership Type
+                </option>
+                <option value="owned">Owned</option>
+                <option value="rented">Rented</option>
+              </select>
+              {/* Specific error message removed, now part of the common list */}
+            </div>
+          )}
           {/* Average Monthly/Bi-Monthly Bill */}
           <div>
-            <label htmlFor="electricity-bill-result" className="block text-left text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="electricity-bill-result"
+              className="block text-left text-sm font-medium text-gray-700 mb-1"
+            >
               Your {monthly_label}
             </label>
             <input
@@ -197,7 +274,9 @@ export default function SolarBasicResult({
         </div>
         <BasicResult data={calculatedData} monthlyBill={initialmonthly_bill} />
         <div className="flex flex-col md:flex-row justify-center gap-4 mt-10">
-          <Button onClick={() => setIsPopupOpen(true)}>Get Detailed Quote</Button>
+          <Button onClick={() => setIsPopupOpen(true)}>
+            Get Detailed Quote
+          </Button>
           <button
             onClick={onGoBack}
             className="btn bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-3 rounded-lg"

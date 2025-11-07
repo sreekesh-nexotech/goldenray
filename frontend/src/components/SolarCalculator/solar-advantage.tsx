@@ -3,12 +3,19 @@ import { ChangeEvent, useState } from "react";
 import PageIllustration from "@/components/ui/page-illustration";
 
 interface SolarAdvantageProps {
-  onSubmit: (pincode: string, property_type: string, monthly_bill: number) => Promise<void>;
+  onSubmit: (
+    pincode: string,
+    property_type: string,
+    monthly_bill: number,
+    ownership_type?: string
+  ) => Promise<void>;
   initialPincode?: string;
   initialproperty_type?: string;
   initialmonthly_bill?: number | "";
+  initialownership_type?: string;
   isLoading: boolean;
   fetchError?: string | null;
+  showOwnershipField?: boolean;
 }
 
 export default function SolarAdvantage({
@@ -16,22 +23,33 @@ export default function SolarAdvantage({
   initialPincode = "",
   initialproperty_type = "",
   initialmonthly_bill = "",
+  initialownership_type = "",
   isLoading,
   fetchError,
+  showOwnershipField = false,
 }: SolarAdvantageProps) {
   const [pincode, setPincode] = useState(initialPincode);
   const [property_type, setproperty_type] = useState(initialproperty_type);
-  const [monthly_bill, setmonthly_bill] = useState<number | "">(initialmonthly_bill);
+  const [monthly_bill, setmonthly_bill] = useState<number | "">(
+    initialmonthly_bill
+  );
+  const [ownership_type, setownership_type] = useState(initialownership_type);
   const [errors, setErrors] = useState({
     pincode: "",
     property_type: "",
     monthly_bill: "",
+    ownership_type: "",
   });
   const [monthly_label, setmonthly_label] = useState("Average Monthly Bill");
 
   const validateForm = () => {
     let valid = true;
-    const newErrors = { pincode: "", property_type: "", monthly_bill: "" };
+    const newErrors = {
+      pincode: "",
+      property_type: "",
+      monthly_bill: "",
+      ownership_type: "",
+    };
 
     // Pincode validation: Must be 6 digits
     if (!/^\d{6}$/.test(pincode)) {
@@ -42,6 +60,12 @@ export default function SolarAdvantage({
     // Property type validation
     if (!property_type) {
       newErrors.property_type = "Please select a property type.";
+      valid = false;
+    }
+
+    // Ownership type validation (only if field is shown)
+    if (showOwnershipField && !ownership_type) {
+      newErrors.ownership_type = "Please select an ownership type.";
       valid = false;
     }
 
@@ -62,7 +86,16 @@ export default function SolarAdvantage({
   const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setproperty_type(e.target.value);
     setErrors((prev) => ({ ...prev, property_type: "" }));
-    setmonthly_label(e.target.value === "residential" ? "Average bi-Monthly Bill" : "Average Monthly Bill");
+    setmonthly_label(
+      e.target.value === "residential"
+        ? "Average bi-Monthly Bill"
+        : "Average Monthly Bill"
+    );
+  };
+
+  const handleownership_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setownership_type(e.target.value);
+    setErrors((prev) => ({ ...prev, ownership_type: "" }));
   };
 
   const handlePincodeChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -81,12 +114,19 @@ export default function SolarAdvantage({
     e.preventDefault();
     if (validateForm()) {
       const billValue = Number(monthly_bill);
-     
-      await onSubmit(pincode, property_type, billValue);
+      await onSubmit(
+        pincode,
+        property_type,
+        billValue,
+        showOwnershipField ? ownership_type : undefined
+      );
     }
   };
-return (
-    <div className="relative bg-white py-[3rem] mt-[3rem] scroll-mt-[7.5rem]" id="solar-advantage">
+  return (
+    <div
+      className="relative bg-white py-[3rem] mt-[3rem] scroll-mt-[7.5rem]"
+      id="solar-advantage"
+    >
       <PageIllustration isGradient={false} />
       <div className="relative max-w-7xl mx-auto text-center px-4 md:px-0">
         <h1 className="text-4xl md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-[3.75rem]">
@@ -94,11 +134,16 @@ return (
         </h1>
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.2)] rounded-3xl p-[2.5rem] py-[3rem] max-w-sm mx-auto">
           {fetchError && (
-            <p className="text-red-500 text-sm mb-4 text-center">{fetchError}</p>
+            <p className="text-red-500 text-sm mb-4 text-center">
+              {fetchError}
+            </p>
           )}
           <form className="flex flex-col" onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label htmlFor="pincode" className="block text-left text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="pincode"
+                className="block text-left text-sm font-medium text-gray-700 mb-1"
+              >
                 Pincode
               </label>
               <input
@@ -109,18 +154,25 @@ return (
                 onChange={handlePincodeChange}
                 maxLength={6}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.pincode ? "border-red-500" : "border-gray-300 focus:ring-[#F7BA41]"
+                  errors.pincode
+                    ? "border-red-500"
+                    : "border-gray-300 focus:ring-[#F7BA41]"
                 }`}
                 required
                 disabled={isLoading}
               />
               {errors.pincode && (
-                <p className="text-red-500 text-xs mt-1 text-left">{errors.pincode}</p>
+                <p className="text-red-500 text-xs mt-1 text-left">
+                  {errors.pincode}
+                </p>
               )}
             </div>
 
             <div className="mb-4">
-              <label htmlFor="property-type" className="block text-left text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="property-type"
+                className="block text-left text-sm font-medium text-gray-700 mb-1"
+              >
                 Property Type
               </label>
               <select
@@ -128,22 +180,73 @@ return (
                 value={property_type}
                 onChange={handleproperty_typeChange}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.property_type ? "border-red-500" : "border-gray-300 focus:ring-[#F7BA41]"
+                  errors.property_type
+                    ? "border-red-500"
+                    : "border-gray-300 focus:ring-[#F7BA41]"
                 } ${property_type === "" ? "text-gray-400" : "text-black"}`}
                 required
                 disabled={isLoading}
               >
-                <option value="" disabled hidden>Select Property Type</option>
-                <option value="residential" className="text-black">Residential</option>
-                <option value="commercial" className="text-black">Commercial</option>
+                <option value="" disabled hidden>
+                  Select Property Type
+                </option>
+                <option value="residential" className="text-black">
+                  Residential
+                </option>
+                <option value="commercial" className="text-black">
+                  Commercial
+                </option>
               </select>
               {errors.property_type && (
-                <p className="text-red-500 text-xs mt-1 text-left">{errors.property_type}</p>
+                <p className="text-red-500 text-xs mt-1 text-left">
+                  {errors.property_type}
+                </p>
               )}
             </div>
 
+            {showOwnershipField && (
+              <div className="mb-4">
+                <label
+                  htmlFor="ownership-type"
+                  className="block text-left text-sm font-medium text-gray-700 mb-1"
+                >
+                  Ownership Type
+                </label>
+                <select
+                  id="ownership-type"
+                  value={ownership_type}
+                  onChange={handleownership_typeChange}
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                    errors.ownership_type
+                      ? "border-red-500"
+                      : "border-gray-300 focus:ring-[#F7BA41]"
+                  } ${ownership_type === "" ? "text-gray-400" : "text-black"}`}
+                  required
+                  disabled={isLoading}
+                >
+                  <option value="" disabled hidden>
+                    Select Ownership Type
+                  </option>
+                  <option value="owned" className="text-black">
+                    Owned
+                  </option>
+                  <option value="rented" className="text-black">
+                    Rented
+                  </option>
+                </select>
+                {errors.ownership_type && (
+                  <p className="text-red-500 text-xs mt-1 text-left">
+                    {errors.ownership_type}
+                  </p>
+                )}
+              </div>
+            )}
+
             <div className="mb-6">
-              <label htmlFor="electricity-bill" className="block text-left text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="electricity-bill"
+                className="block text-left text-sm font-medium text-gray-700 mb-1"
+              >
                 {monthly_label}
               </label>
               <input
@@ -155,13 +258,17 @@ return (
                 step="0.01"
                 min="0.01"
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.monthly_bill ? "border-red-500" : "border-gray-300 focus:ring-[#F7BA41]"
+                  errors.monthly_bill
+                    ? "border-red-500"
+                    : "border-gray-300 focus:ring-[#F7BA41]"
                 }`}
                 required
                 disabled={isLoading}
               />
               {errors.monthly_bill && (
-                <p className="text-red-500 text-xs mt-1 text-left">{errors.monthly_bill}</p>
+                <p className="text-red-500 text-xs mt-1 text-left">
+                  {errors.monthly_bill}
+                </p>
               )}
             </div>
 

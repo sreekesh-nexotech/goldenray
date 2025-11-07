@@ -176,6 +176,7 @@ export interface SolarBasicPayload {
   monthly_bill: number;
   pincode: string;
   property_type: string;
+  ownership_type?: string; // Optional field for subsidy page
 }
 
 
