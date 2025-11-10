@@ -4,8 +4,6 @@ import PageIllustration from "@/components/ui/page-illustration";
 import LinkingButton from "../ui/LinkingButton";
 
 export default function SubsidyHero() {
-  // NOTE: Guideline [5]: Ensure your main layout file has the viewport meta tag:
-  // <meta name="viewport" content="width=device-width, initial-scale=1">
 
   return (
     <section className="relative w-full overflow-hidden">
@@ -33,7 +31,7 @@ export default function SubsidyHero() {
             />
             <LinkingButton
               content="Talk to Solar Expert"
-              ButtonLink="#booking"
+              ButtonLink="#footer"
               ButtonBorder="border border-[#074A4D]"
               ButtonBg="bg-[#FFFFFF]"
               Buttontext="text-[#074A4D]"
