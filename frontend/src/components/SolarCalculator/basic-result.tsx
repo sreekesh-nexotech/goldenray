@@ -197,7 +197,7 @@ export default function BasicResult({
               ownership_type === "rented" ? "text-red-600" : "text-[#123532]"
             }`}
           >
-            {data.financialDetails.government_subsidy}
+            {ownership_type === "rented" ? 0 :data.financialDetails.government_subsidy }
           </h2>
           {ownership_type === "rented" && (
             <p className="text-red-600 text-xs md:text-sm mt-2">
