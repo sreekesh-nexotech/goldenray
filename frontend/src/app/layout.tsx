@@ -125,6 +125,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${dmSans.variable} ${switzer.variable}`}>
+      <head>
+        <meta name="apple-mobile-web-app-title" content="Flarize" />
+      </head>
       <body className="font-switzer">
         <Header />
         {children}
