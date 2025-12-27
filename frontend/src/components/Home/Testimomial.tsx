@@ -164,7 +164,7 @@ export default function HomeTestimonial() {
   return (
     <div
       ref={ref} // For useInView to detect section visibility
-      className="overflow-hidden py-10 px-4 sm:px-6 lg:px-8 xl:px-36 relative mt-10"
+      className="overflow-hidden py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36 relative"
     >
       <h2 className="text-4xl xl:w-1/2 sm:text-4xl lg:text-[64px] font-bold text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
         What our clients have to say

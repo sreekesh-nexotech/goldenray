@@ -26,7 +26,7 @@ export default function GroupPurchaseScheme() {
   const progressPercentage = (familiesJoined / totalSpots) * 100;
 
   return (
-    <div className="py-10 px-4 sm:px-6 lg:px-8 xl:px-7">
+    <div className="py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-7">
       <section
         className="rounded-3xl overflow-hidden relative min-h-[85vh] lg:min-h-[85vh] xl:min-h-[85vh]"
         style={{

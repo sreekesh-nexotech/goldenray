@@ -2,10 +2,11 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { submitContactForm} from "@/services/basicContactService";
+import { submitContactForm } from "@/services/basicContactService";
 
 export default function BookingForm() {
-  const bgImg = "https://gym-manager-pull.b-cdn.net/golden_ray/home/homeBooking.png";
+  const bgImg =
+    "https://gym-manager-pull.b-cdn.net/golden_ray/home/homeBooking.png";
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -29,7 +30,9 @@ export default function BookingForm() {
 
     // Client-side validation for name (at least 3 alphabetic characters)
     if (!name.match(/^[A-Za-z\s]{3,}$/)) {
-      setError("Please enter a valid name with at least 3 alphabetic characters.");
+      setError(
+        "Please enter a valid name with at least 3 alphabetic characters."
+      );
       setSuccessMessage(null); // Clear success message if there's a new error
       window.scrollTo(0, scrollY);
       return;
@@ -50,21 +53,30 @@ export default function BookingForm() {
     try {
       // Destructure 'message' directly, no need for a 'response' variable here
       await submitContactForm({ name, phone_number });
-      setSuccessMessage("Thank you! Your consultation request has been successfully submitted. We'll be in touch shortly!");
+      setSuccessMessage(
+        "Thank you! Your consultation request has been successfully submitted. We'll be in touch shortly!"
+      );
       if (formRef.current) {
         formRef.current.reset();
       }
     } catch (err) {
-     if (err instanceof Error && err.message.includes('HTTP error! Status: 400, Message: {"phone_number":["lead collection home with this phone number already exists."]}')) {
-        setSuccessMessage("We already have your details! Our team will contact you soon.");
+      if (
+        err instanceof Error &&
+        err.message.includes(
+          'HTTP error! Status: 400, Message: {"phone_number":["lead collection home with this phone number already exists."]}'
+        )
+      ) {
+        setSuccessMessage(
+          "We already have your details! Our team will contact you soon."
+        );
         if (formRef.current) {
-          formRef.current.reset();  
+          formRef.current.reset();
         }
       } else {
-        const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred.";
+        const errorMessage =
+          err instanceof Error ? err.message : "An unexpected error occurred.";
         setError(`Failed to submit: ${errorMessage}`);
       }
-      
     } finally {
       setIsLoading(false);
       window.scrollTo(0, scrollY);
@@ -84,13 +96,14 @@ export default function BookingForm() {
             Book your free consultation
           </h1>
           <p className="text-base sm:text-2xl mb-8">
-            Get expert advice and find your ideal solar solution—no obligations, just savings!
+            Get expert advice and find your ideal solar solution—no obligations,
+            just savings!
           </p>
           <form
             ref={formRef}
             className="flex flex-col gap-4 w-full max-w-sm max-sm:max-w-full"
             onSubmit={handleSubmit}
-            noValidate={true} 
+            noValidate={true}
             aria-label="Book a free consultation"
           >
             <div className="relative">
@@ -129,15 +142,35 @@ export default function BookingForm() {
             </button>
           </form>
           {error && (
-            <p className="text-red-500 bg-[#f9e6e6] p-5 rounded-2xl text-sm mt-4 text-center md:text-left w-full lg:w-2/3" role="alert">
+            <p
+              className="text-red-500 bg-[#f9e6e6] p-5 rounded-2xl text-sm mt-4 text-center md:text-left w-full lg:w-2/3"
+              role="alert"
+            >
               {error}
             </p>
           )}
           {successMessage && (
-            <p className=" text-green-500 bg-[#E6F9E6] p-5 rounded-2xl text-xl mt-4 text-center md:text-left w-full lg:w-2/3" role="status">
+            <p
+              className=" text-green-500 bg-[#E6F9E6] p-5 rounded-2xl text-xl mt-4 text-center md:text-left w-full lg:w-2/3"
+              role="status"
+            >
               <div className="flex items-center gap-1 mb-2 ">
-                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 48 48">
-                  <path fill="#c8e6c9" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path><path fill="#4caf50" d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z"></path>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  width="30"
+                  height="30"
+                  viewBox="0 0 48 48"
+                >
+                  <path
+                    fill="#c8e6c9"
+                    d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"
+                  ></path>
+                  <path
+                    fill="#4caf50"
+                    d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z"
+                  ></path>
                 </svg>
                 <span className="font-bold text-xl ">Thank You</span>
               </div>

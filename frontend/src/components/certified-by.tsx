@@ -7,7 +7,7 @@ import logo5 from "../../public/image-32.png";
 
 export default function Certified() {
   return (
-    <section className="bg-white ">
+    <section className="bg-white py-6 md:py-3 xl:py-2 2xl:py-3">
       <div className="max-w-[90%] lg:max-w-[80rem] mx-auto text-center">
         {/* Heading */}
         <h2 className="text-base md:text-xl lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold text-gray-800 uppercase tracking-wider">

@@ -130,7 +130,10 @@ export default function SolarAdvantageMain({
   };
 
   return (
-    <section className="relative" ref={resultsRef}>
+    <section
+      className="relative py-8 md:py-4 xl:py-3 2xl:py-4"
+      ref={resultsRef}
+    >
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
           <div className="text-xl font-semibold text-[#123532]">
