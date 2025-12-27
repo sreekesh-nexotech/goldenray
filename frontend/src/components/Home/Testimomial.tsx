@@ -5,7 +5,9 @@ import dynamic from "next/dynamic";
 import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable"; // Import useSwipeable for swipe functionality
 
-const ReactPlayer = dynamic(() => import("react-player/youtube"), { ssr: false });
+const ReactPlayer = dynamic(() => import("react-player/youtube"), {
+  ssr: false,
+});
 
 const testimonials = [
   {
@@ -53,7 +55,8 @@ export default function HomeTestimonial() {
   // --- Swipe Handlers using useCallback for performance ---
   const handleSwipedLeft = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-    currentIndexRef.current = (currentIndexRef.current + 1) % testimonials.length;
+    currentIndexRef.current =
+      (currentIndexRef.current + 1) % testimonials.length;
     // Clear existing autoplay interval on manual swipe
     if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
@@ -62,8 +65,11 @@ export default function HomeTestimonial() {
   }, [testimonials.length]); // Dependency: testimonials.length to re-create if testimonials change
 
   const handleSwipedRight = useCallback(() => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length);
-    currentIndexRef.current = (currentIndexRef.current - 1 + testimonials.length) % testimonials.length;
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length
+    );
+    currentIndexRef.current =
+      (currentIndexRef.current - 1 + testimonials.length) % testimonials.length;
     // Clear existing autoplay interval on manual swipe
     if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
@@ -80,7 +86,6 @@ export default function HomeTestimonial() {
     delta: 10, // Minimum pixels to travel for a swipe to be registered
   });
   // --- End Swipe Handlers ---
-
 
   // --- Autoplay Effect ---
   useEffect(() => {
@@ -106,7 +111,6 @@ export default function HomeTestimonial() {
     };
   }, [inView, isPlaying, testimonials.length]); // Dependencies for useEffect
 
-
   // --- ReactPlayer Callbacks ---
   const handlePlay = () => {
     setIsPlaying(true);
@@ -120,7 +124,8 @@ export default function HomeTestimonial() {
   const handlePause = () => {
     setIsPlaying(false);
     // Restart autoplay if video is paused and component is in view
-    if (inView && !intervalRef.current) { // Only restart if not already running
+    if (inView && !intervalRef.current) {
+      // Only restart if not already running
       intervalRef.current = window.setInterval(() => {
         const nextIndex = (currentIndexRef.current + 1) % testimonials.length;
         currentIndexRef.current = nextIndex;
@@ -132,7 +137,8 @@ export default function HomeTestimonial() {
   const handleEnded = () => {
     setIsPlaying(false);
     // Restart autoplay when video ends and component is in view
-    if (inView && !intervalRef.current) { // Only restart if not already running
+    if (inView && !intervalRef.current) {
+      // Only restart if not already running
       intervalRef.current = window.setInterval(() => {
         const nextIndex = (currentIndexRef.current + 1) % testimonials.length;
         currentIndexRef.current = nextIndex;
@@ -141,7 +147,6 @@ export default function HomeTestimonial() {
     }
   };
   // --- End ReactPlayer Callbacks ---
-
 
   // --- Dot Navigation Handler ---
   const handleDotClick = (index: number) => {
@@ -161,14 +166,16 @@ export default function HomeTestimonial() {
       ref={ref} // For useInView to detect section visibility
       className="overflow-hidden py-10 px-4 sm:px-6 lg:px-8 xl:px-36 relative mt-10"
     >
-      <h2 className="text-4xl xl:w-1/2 sm:text-4xl lg:text-[64px] font-bold text-[#123532] mb-10 text-center xl:text-left">
+      <h2 className="text-4xl xl:w-1/2 sm:text-4xl lg:text-[64px] font-bold text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
         What our clients have to say
       </h2>
 
       {/* Main container for the carousel items, where swipe gestures are detected */}
       <div
         {...swipeHandlers} // Spread the swipe handlers from useSwipeable here
-        className={`relative ${currentIndex === 0 ? "overflow-x-visible" : "overflow-x-hidden"}`}
+        className={`relative ${
+          currentIndex === 0 ? "overflow-x-visible" : "overflow-x-hidden"
+        }`}
       >
         <div
           ref={sliderRef} // Reference to the inner div that moves for animation
@@ -177,7 +184,9 @@ export default function HomeTestimonial() {
             // Dynamically set width based on number of testimonials for flex container
             width: `${testimonials.length * 100}%`,
             // Translate the container horizontally to show the current testimonial
-            transform: `translateX(-${currentIndex * (100 / testimonials.length)}%)`,
+            transform: `translateX(-${
+              currentIndex * (100 / testimonials.length)
+            }%)`,
           }}
         >
           {testimonials.map((testimonial, index) => (
@@ -200,14 +209,14 @@ export default function HomeTestimonial() {
                     onPause={handlePause}
                     onEnded={handleEnded}
                     config={{
-                        playerVars: {
-                          modestbranding: 1, // Hides YouTube logo
-                          rel: 0, // Prevents related videos at end
-                          showinfo: 0, // Hides video title and uploader info
-                          disablekb: 1, // Disables keyboard controls
-                          fs: 0, // Disables fullscreen button
-                          iv_load_policy: 3, // Hides video annotations by default
-                        },
+                      playerVars: {
+                        modestbranding: 1, // Hides YouTube logo
+                        rel: 0, // Prevents related videos at end
+                        showinfo: 0, // Hides video title and uploader info
+                        disablekb: 1, // Disables keyboard controls
+                        fs: 0, // Disables fullscreen button
+                        iv_load_policy: 3, // Hides video annotations by default
+                      },
                     }}
                   />
                 </div>
@@ -220,13 +229,19 @@ export default function HomeTestimonial() {
                       <p className="text-2xl sm:text-3xl font-semibold text-[#123532]">
                         {stat.value}
                       </p>
-                      <p className="text-sm sm:text-2xl text-[#444444] mb-4">{stat.label}</p>
+                      <p className="text-sm sm:text-2xl text-[#444444] mb-4">
+                        {stat.label}
+                      </p>
                     </div>
                   ))}
                 </div>
                 <hr className="opacity-10 mb-5" />
-                <p className="text-[#444444] mb-10 text-sm sm:text-xl">{testimonial.quote}</p>
-                <p className="text-[#123532] font-semibold text-sm sm:text-xl">{testimonial.author}</p>
+                <p className="text-[#444444] mb-10 text-sm sm:text-xl">
+                  {testimonial.quote}
+                </p>
+                <p className="text-[#123532] font-semibold text-sm sm:text-xl">
+                  {testimonial.author}
+                </p>
               </div>
             </div>
           ))}

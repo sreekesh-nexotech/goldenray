@@ -7,10 +7,10 @@ import logo5 from "../../public/image-32.png";
 
 export default function Certified() {
   return (
-    <section className="bg-white py-[clamp(2rem,5vw,3rem)]">
+    <section className="bg-white ">
       <div className="max-w-[90%] lg:max-w-[80rem] mx-auto text-center">
         {/* Heading */}
-        <h2 className="text-[clamp(0.75rem,2vw,0.875rem)] font-semibold text-gray-800 uppercase tracking-wider">
+        <h2 className="text-base md:text-xl lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold text-gray-800 uppercase tracking-wider">
           Certified by the Best
         </h2>
 
