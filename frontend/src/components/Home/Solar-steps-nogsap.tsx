@@ -24,7 +24,7 @@ const steps = [
     id: 3,
     title: "Activate Your Solar System",
     description:
-      "Once installed and approved, we'll help you activate your system and start saving on energy bills.",
+      "Once installed and approved, we'll help you activate your system and start saving on energy bills.Once installed and approved, we'll help you activate your system and start saving on energy bills.Once installed and approved, we'll help you activate your system and start saving on energy bills.Once installed and approved, we'll help you activate your system and start saving on energy bills.",
     bgColor: "bg-[#F7BA41]", // Yellow/orange
     textColor: "text-[#333333]",
     zIndex: "z-10",

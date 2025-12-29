@@ -26,23 +26,23 @@ export default function GroupPurchaseScheme() {
   const progressPercentage = (familiesJoined / totalSpots) * 100;
 
   return (
-    <div className="py-10 md:py-6 lg:py-8 xl:py-6 2xl:py-10 px-4 sm:px-6 md:px-7 lg:px-8 xl:px-7 2xl:px-12">
+    <div className="py-10 md:py-8 lg:py-10 xl:py-8 2xl:py-10 px-4 sm:px-6 md:px-7 lg:px-8 xl:px-7 2xl:px-12">
       <section
-        className="rounded-3xl overflow-hidden relative min-h-[85vh] md:min-h-[70vh] lg:min-h-[85vh] xl:min-h-[75vh] 2xl:min-h-[90vh]"
+        className="rounded-3xl overflow-hidden relative min-h-[85vh] md:min-h-[85vh] lg:min-h-[105vh] xl:min-h-[95vh] 2xl:min-h-[90vh]"
         style={{
           background: "linear-gradient(180deg, #F7BA41 0%, #FCD042 100%)",
         }}
       >
         {/* Main content card */}
-        <div className="rounded-3xl p-4 sm:p-6 md:p-6 lg:p-8 xl:p-8 2xl:p-14 flex flex-col gap-2 relative z-10">
+        <div className="rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 2xl:p-14 flex flex-col gap-2 relative z-10">
           {/* Heading */}
-          <h2 className="text-4xl sm:text-5xl md:text-4xl lg:text-3xl xl:text-4xl 2xl:text-7xl font-light leading-tight mb-6 md:mb-5 lg:mb-6 xl:mb-6 2xl:mb-10 text-[#123532]">
+          <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-4xl xl:text-4xl 2xl:text-7xl font-light leading-tight mb-6 md:mb-7 lg:mb-8 xl:mb-6 2xl:mb-10 text-[#123532]">
             Save more with our group
             <br className="hidden sm:block" /> purchase scheme!
           </h2>
 
           {/* Benefit cards section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-2 lg:gap-3 xl:gap-3 2xl:gap-6 mt-4 md:mt-2 lg:mt-3 mb-6 md:mb-6 lg:mb-8 xl:mb-8 2xl:mb-14">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-3 lg:gap-4 xl:gap-1 2xl:gap-6 mt-4 md:mt-3 lg:mt-4 mb-6 md:mb-8 lg:mb-10 xl:mb-12 2xl:mb-14">
             {/* Benefit 1: Reserve */}
             <GroupPurchaseItem
               icon={
@@ -51,12 +51,12 @@ export default function GroupPurchaseScheme() {
                   alt="Reserve"
                   width={48}
                   height={32}
-                  className="w-[48px] h-[32px] md:w-[28px] md:h-[20px] lg:w-[28px] lg:h-[20px] xl:w-[32px] xl:h-[22px]"
+                  className="w-[48px] h-[32px] md:w-[35px] md:h-[24px] xl:w-[42px] xl:h-[28px]"
                 />
               }
               title="Reserve"
               description="Secure your spot with a small, refundable fee."
-            />
+            />{" "}
             {/* Benefit 2: Invite*/}
             <GroupPurchaseItem
               icon={
@@ -65,7 +65,7 @@ export default function GroupPurchaseScheme() {
                   alt="Invite Friends"
                   width={42}
                   height={32}
-                  className="w-[42px] h-[32px] md:w-[26px] md:h-[20px] lg:w-[26px] lg:h-[20px] xl:w-[30px] xl:h-[22px]"
+                  className="w-[42px] h-[32px] md:w-[31px] md:h-[24px] xl:w-[38px] xl:h-[28px]"
                 />
               }
               title="Invite Friends"
@@ -79,7 +79,7 @@ export default function GroupPurchaseScheme() {
                   alt="Unlock Discount"
                   width={48}
                   height={32}
-                  className="w-[48px] h-[32px] md:w-[28px] md:h-[20px] lg:w-[28px] lg:h-[20px] xl:w-[32px] xl:h-[22px]"
+                  className="w-[48px] h-[32px] md:w-[35px] md:h-[24px] xl:w-[42px] xl:h-[28px]"
                 />
               }
               title="Unlock Discount"
@@ -93,7 +93,7 @@ export default function GroupPurchaseScheme() {
                   alt="Install"
                   width={48}
                   height={32}
-                  className="w-[48px] h-[32px] md:w-[28px] md:h-[20px] lg:w-[28px] lg:h-[20px] xl:w-[32px] xl:h-[22px]"
+                  className="w-[48px] h-[32px] md:w-[35px] md:h-[24px] xl:w-[42px] xl:h-[28px]"
                 />
               }
               title="Install"
@@ -102,22 +102,22 @@ export default function GroupPurchaseScheme() {
           </div>
 
           {/* Progress Bar Section */}
-          <div className="mt-1 mb-3 md:max-w-xs lg:max-w-sm xl:max-w-md 2xl:max-w-2xl">
+          <div className="mt-1 mb-3 md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl">
             {/* Progress Bar */}
-            <div className="w-full bg-gray-300 rounded-full h-4 md:h-3 lg:h-3 xl:h-4 2xl:h-6 mb-4 md:mb-3 lg:mb-3 xl:mb-4 2xl:mb-6 overflow-hidden relative">
+            <div className="w-full bg-gray-300 rounded-full h-4 md:h-5 lg:h-5 xl:h-5 2xl:h-6 mb-4 md:mb-5 lg:mb-5 xl:mb-5 2xl:mb-6 overflow-hidden relative">
               <div
-                className="h-4 md:h-3 lg:h-3 xl:h-4 2xl:h-6 rounded-full transition-all duration-700 ease-in-out relative"
+                className="h-4 md:h-5 lg:h-5 xl:h-5 2xl:h-6 rounded-full transition-all duration-700 ease-in-out relative"
                 style={{
                   width: `${progressPercentage}%`,
                   background: `#FE7903`,
                 }}
               >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 md:w-5 md:h-5 lg:w-5 lg:h-5 xl:w-6 xl:h-6 2xl:w-9 2xl:h-9 bg-[#FE7903] rounded-full border-4 border-white shadow-lg transition-all duration-700"></div>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 md:w-7 md:h-7 xl:w-7 xl:h-7 2xl:w-9 2xl:h-9 bg-[#FE7903] rounded-full border-4 border-white shadow-lg transition-all duration-700"></div>
               </div>
             </div>
 
             {/* Progress Text */}
-            <p className="text-sm md:text-sm lg:text-xs xl:text-sm 2xl:text-2xl text-[#123532] mb-6 md:mb-4 lg:mb-4 xl:mb-5 2xl:mb-10">
+            <p className="text-sm md:text-base lg:text-sm xl:text-sm 2xl:text-2xl text-[#123532] mb-6 md:mb-7 lg:mb-8 xl:mb-6 2xl:mb-10">
               Neighbours in your area are teaming up for more savings.{" "}
               <span className="font-base">
                 {familiesJoined} families joined, only {spotsLeft} spots left!
@@ -127,7 +127,7 @@ export default function GroupPurchaseScheme() {
             {/* Reserve Button */}
             <Link
               href="#booking"
-              className="inline-block bg-white text-[#074A4D] px-6 py-3 md:px-6 md:py-2 lg:px-7 lg:py-2 xl:px-8 xl:py-2.5 2xl:px-14 2xl:py-5 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer text-sm md:text-sm lg:text-xs xl:text-sm 2xl:text-2xl"
+              className="inline-block bg-white text-[#074A4D] px-6 py-3 md:px-8 md:py-3 lg:px-8 lg:py-2.5 xl:px-8 xl:py-2.5 2xl:px-14 2xl:py-5 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer text-sm md:text-base lg:text-sm xl:text-sm 2xl:text-2xl"
             >
               Reserve your spot
             </Link>
@@ -146,7 +146,7 @@ export default function GroupPurchaseScheme() {
         </div>
 
         {/* Family Photo for desktop - positioned at bottom right */}
-        <div className="hidden lg:block absolute bottom-0 right-0 w-[45vw] max-w-[550px] max-h-[420px] lg:w-[32vw] lg:max-w-[450px] lg:max-h-[340px] xl:w-[24vw] xl:max-w-[410px] xl:max-h-[330px] 2xl:w-[38vw] 2xl:max-w-[750px] 2xl:max-h-[520px]">
+        <div className="hidden lg:block absolute bottom-0 right-0 w-[45vw] max-w-[550px] max-h-[420px] lg:w-[40vw] lg:max-w-[500px] lg:max-h-[400px] xl:w-[28vw] xl:max-w-[450px] xl:max-h-[360px] 2xl:w-[38vw] 2xl:max-w-[750px] 2xl:max-h-[520px]">
           <Image
             src={familyPhoto}
             alt="Happy family"
