@@ -4,7 +4,6 @@ import PageIllustration from "@/components/ui/page-illustration";
 import LinkingButton from "../ui/LinkingButton";
 
 export default function SubsidyHero() {
-
   return (
     <section className="relative w-full overflow-hidden">
       <PageIllustration />
@@ -12,7 +11,7 @@ export default function SubsidyHero() {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-15 max-w-7xl flex items-center justify-center h-full">
         {/* Centered Text */}
-        <div className="w-full text-center mt-20">
+        <div className="w-full text-center mt-16">
           <h1 className="text-[2.5rem]/10 sm:text-5xl lg:text-6xl font-bold text-[#123532] mb-4">
             Get up to <span className="text-[#ED8723]">₹78,000</span> Back on
             Solar
