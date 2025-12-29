@@ -10,6 +10,7 @@ const steps = [
     bgColor: "bg-[#074A4D]", // Dark teal
     textColor: "text-white",
     zIndex: "z-30",
+    image: "https://golden-ray.b-cdn.net/images/slide1.jpg",
   },
   {
     id: 2,
@@ -19,6 +20,7 @@ const steps = [
     bgColor: "bg-[#ADD6D8]", // Light blue
     textColor: "text-[#333333]",
     zIndex: "z-20",
+    image: "https://golden-ray.b-cdn.net/images/slide2.jpeg",
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ const steps = [
     bgColor: "bg-[#F7BA41]", // Yellow/orange
     textColor: "text-[#333333]",
     zIndex: "z-10",
+    // image: "https://golden-ray.b-cdn.net/images/slide1.jpg",
   },
 ];
 
@@ -118,6 +121,14 @@ export default function SolarStepsNoGSAP() {
                   : "md:w-1/5 md:flex md:flex-col md:justify-end md:items-center"
               }
             `}
+
+            //comment this off if u dont need this thing(background image)
+            style={{
+              backgroundImage: `url('${step.image}')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
             onClick={() => handleCardClick(step.id)}
           >
             {/* Step Number */}

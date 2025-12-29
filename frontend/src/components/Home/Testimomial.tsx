@@ -1,17 +1,18 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable"; // Import useSwipeable for swipe functionality
 
-const ReactPlayer = dynamic(() => import("react-player/youtube"), {
-  ssr: false,
-});
+// const ReactPlayer = dynamic(() => import("react-player/youtube"), {
+//   ssr: false,
+// });
 
 const testimonials = [
   {
     videoId: "8LSt8_11wbQ",
+    image: "https://golden-ray.b-cdn.net/images/testimoal2.jpg",
     stats: [
       { value: "75%", label: "Reduction in bills" },
       { value: "2 Days", label: "Installation Time" },
@@ -22,6 +23,7 @@ const testimonials = [
   },
   {
     videoId: "8LSt8_11wbQ",
+    image: "https://golden-ray.b-cdn.net/images/testimonal1.jpg",
     stats: [
       { value: "85%", label: "Reduction in bills" },
       { value: "4 Days", label: "Installation Time" },
@@ -32,6 +34,7 @@ const testimonials = [
   },
   {
     videoId: "8LSt8_11wbQ",
+    image: "https://golden-ray.b-cdn.net/images/testimonal3.jpg",
     stats: [
       { value: "78%", label: "Reduction in bills" },
       { value: "6 Days", label: "Installation Time" },
@@ -44,7 +47,7 @@ const testimonials = [
 
 export default function HomeTestimonial() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [isPlaying, setIsPlaying] = useState(false); // Commented out - will be restored when video is enabled
   const sliderRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<number | null>(null);
   const { ref, inView } = useInView({
@@ -89,15 +92,15 @@ export default function HomeTestimonial() {
 
   // --- Autoplay Effect ---
   useEffect(() => {
-    // Start autoplay only if component is in view and no video is currently playing
-    if (inView && !isPlaying) {
+    // Start autoplay only if component is in view
+    if (inView) {
       intervalRef.current = window.setInterval(() => {
         const nextIndex = (currentIndexRef.current + 1) % testimonials.length;
         currentIndexRef.current = nextIndex;
         setCurrentIndex(nextIndex);
       }, 5000); // Change testimonial every 5 seconds
     } else if (intervalRef.current) {
-      // Clear interval if component is out of view or a video starts playing
+      // Clear interval if component is out of view
       window.clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
@@ -109,43 +112,43 @@ export default function HomeTestimonial() {
         intervalRef.current = null;
       }
     };
-  }, [inView, isPlaying, testimonials.length]); // Dependencies for useEffect
+  }, [inView, testimonials.length]); // Dependencies for useEffect
 
-  // --- ReactPlayer Callbacks ---
-  const handlePlay = () => {
-    setIsPlaying(true);
-    // Pause autoplay when video starts playing
-    if (intervalRef.current) {
-      window.clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  };
+  // --- ReactPlayer Callbacks (commented out - will be restored when video is enabled) ---
+  // const handlePlay = () => {
+  //   setIsPlaying(true);
+  //   // Pause autoplay when video starts playing
+  //   if (intervalRef.current) {
+  //     window.clearInterval(intervalRef.current);
+  //     intervalRef.current = null;
+  //   }
+  // };
 
-  const handlePause = () => {
-    setIsPlaying(false);
-    // Restart autoplay if video is paused and component is in view
-    if (inView && !intervalRef.current) {
-      // Only restart if not already running
-      intervalRef.current = window.setInterval(() => {
-        const nextIndex = (currentIndexRef.current + 1) % testimonials.length;
-        currentIndexRef.current = nextIndex;
-        setCurrentIndex(nextIndex);
-      }, 5000);
-    }
-  };
+  // const handlePause = () => {
+  //   setIsPlaying(false);
+  //   // Restart autoplay if video is paused and component is in view
+  //   if (inView && !intervalRef.current) {
+  //     // Only restart if not already running
+  //     intervalRef.current = window.setInterval(() => {
+  //       const nextIndex = (currentIndexRef.current + 1) % testimonials.length;
+  //       currentIndexRef.current = nextIndex;
+  //       setCurrentIndex(nextIndex);
+  //     }, 5000);
+  //   }
+  // };
 
-  const handleEnded = () => {
-    setIsPlaying(false);
-    // Restart autoplay when video ends and component is in view
-    if (inView && !intervalRef.current) {
-      // Only restart if not already running
-      intervalRef.current = window.setInterval(() => {
-        const nextIndex = (currentIndexRef.current + 1) % testimonials.length;
-        currentIndexRef.current = nextIndex;
-        setCurrentIndex(nextIndex);
-      }, 5000);
-    }
-  };
+  // const handleEnded = () => {
+  //   setIsPlaying(false);
+  //   // Restart autoplay when video ends and component is in view
+  //   if (inView && !intervalRef.current) {
+  //     // Only restart if not already running
+  //     intervalRef.current = window.setInterval(() => {
+  //       const nextIndex = (currentIndexRef.current + 1) % testimonials.length;
+  //       currentIndexRef.current = nextIndex;
+  //       setCurrentIndex(nextIndex);
+  //     }, 5000);
+  //   }
+  // };
   // --- End ReactPlayer Callbacks ---
 
   // --- Dot Navigation Handler ---
@@ -197,29 +200,44 @@ export default function HomeTestimonial() {
               className="w-full flex flex-col xl:flex-row items-stretch justify-baseline rounded-xl"
             >
               <div className="w-full xl:w-1/2 h-auto">
+                {/* Temporary: Background image instead of video */}
+                <div
+                  className="relative rounded-t-2xl xl:rounded-l-2xl overflow-hidden"
+                  style={{
+                    backgroundImage: `url('${testimonial.image}')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    height: "500px",
+                    width: "100%",
+                  }}
+                />
+                {/* TILL THIS PART */}
+                {/* Commented out video player - will be restored later
                 <div className="relative rounded-t-2xl xl:rounded-l-2xl overflow-hidden">
                   <ReactPlayer
-                    url={`https://www.youtube.com/watch?v=${testimonial.videoId}`} // Corrected YouTube URL format
+                    url={`https://www.youtube.com/watch?v=${testimonial.videoId}`}
                     width="100%"
                     height="500px"
                     controls={true}
-                    light={true} // Shows a thumbnail and play button before loading video
-                    playing={index === currentIndex && isPlaying && inView} // Play only if current, playing, and visible
+                    light={true}
+                    playing={index === currentIndex && isPlaying && inView}
                     onPlay={handlePlay}
                     onPause={handlePause}
                     onEnded={handleEnded}
                     config={{
                       playerVars: {
-                        modestbranding: 1, // Hides YouTube logo
-                        rel: 0, // Prevents related videos at end
-                        showinfo: 0, // Hides video title and uploader info
-                        disablekb: 1, // Disables keyboard controls
-                        fs: 0, // Disables fullscreen button
-                        iv_load_policy: 3, // Hides video annotations by default
+                        modestbranding: 1,
+                        rel: 0,
+                        showinfo: 0,
+                        disablekb: 1,
+                        fs: 0,
+                        iv_load_policy: 3,
                       },
                     }}
                   />
                 </div>
+                */}
               </div>
 
               <div className="w-full xl:w-1/2 bg-[#F7F7F2] p-6 py-10 rounded-b-2xl xl:rounded-r-2xl h-full flex flex-col justify-evenly">

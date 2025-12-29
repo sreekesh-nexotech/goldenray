@@ -17,11 +17,11 @@ export default function WhatWeBelieve(){
       {/* Main Content Container (Dark Green Box) */}
       <div className="max-w-7xl mx-auto bg-[#123532] rounded-2xl shadow-xl overflow-hidden p-5 lg:p-12  gap-8 flex flex-col xl:flex-row items-start ">
         <Image
-          src="https://gym-manager-pull.b-cdn.net/golden_ray/about/abt-believe.png"
+          src="https://golden-ray.b-cdn.net/images/AboutUs2.jpg"
           alt="People enjoying a sustainable event"
-          width={900}
+          width={350}
           height={400} 
-          className="rounded-xl max-w-full h-auto"
+          className="rounded-xl max-w-full h-auto mt-5"
         />
 
         {/* Text Content */}

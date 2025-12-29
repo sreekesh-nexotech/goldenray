@@ -36,7 +36,7 @@ export default function Solutions(){
             BoxList2="Enhanced corporate social responsibility"
             BoxList3="Tax benefits and accelerated depreciation"
             BoxList4="Energy independence from utility providers"
-            BoxImg="https://gym-manager-pull.b-cdn.net/golden_ray/solution/Commercial-Image-2.png"
+            BoxImg="https://golden-ray.b-cdn.net/images/Roof%20solar%20panel%20mounting.jpg"
         />
 
         <SolutionBox 

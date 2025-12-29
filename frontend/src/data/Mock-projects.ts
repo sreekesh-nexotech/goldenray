@@ -33,6 +33,7 @@ export type Project = {
   testimonial?: {
     quote: string;
     author: string;
+    image: string;
   };
 };
 
@@ -45,8 +46,8 @@ export const mockProjects: Project[] = [
     cardDescription:"Rooftop installation for a townhouse for a family of four in Calicut, Kerala",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
-    images: ['https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-3.png', 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-4.png', 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-2.png'],
-    imageUrl: 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-3.png',
+    images: ['https://golden-ray.b-cdn.net/images/p1%20middle%20slide%20image%20.jpg', 'https://golden-ray.b-cdn.net/images/P1%20right%20side%20slide.jpg', 'https://golden-ray.b-cdn.net/images/P1%20leftside%20slide%20.jpg' ],
+    imageUrl: 'https://golden-ray.b-cdn.net/images/p1%20middle%20slide%20image%20.jpg',
     area: '10,400 m2',
     power: '200 KW',
     usp: '1 TON CO₂ SAVED ANNUALLY',
@@ -81,8 +82,7 @@ export const mockProjects: Project[] = [
     lifestyleImpact: "Switching to solar energy was one of the best decisions our family has made. Before, we were constantly worried about rising electricity bills, especially during the summer months. After installing solar panels, not only have we seen a huge drop in our energy costs, but we also feel proud knowing we're doing our part for the environment.Daily life feels lighter — literally and financially. We no longer hesitate to run the AC or charge all our devices. Plus, explaining clean energy to our kids has made them more conscious about sustainability from a young age.",
     testimonial: {
       quote: 'Switching to solar with Flarize was the best decision for my home. The team made the entire process seamless, from consultation to installation. Not only have I reduced my electricity bills by nearly 75%, but I also feel great knowing I’m contributing to a sustainable future. Their support team is always available, and the maintenance services are top-notch. Highly recommended!',
-      author: 'Rajesh Sharma & Family, Cochin',
-    },
+      author: 'Rajesh Sharma & Family, Cochin',      image: 'https://golden-ray.b-cdn.net/images/P1below%20section%20.jpg',    },
   },
 
   //2nd project
@@ -93,8 +93,8 @@ export const mockProjects: Project[] = [
     cardDescription:"500KW solar panel installation for a 5 story office building space in Palakkad, Kerala",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
-    images: ['https://gym-manager-pull.b-cdn.net/golden_ray/projects/Commercial-1.png', 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Commercial-1.png', 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Commercial-1.png'],
-    imageUrl: 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Commercial-1.png',
+    images: ['https://golden-ray.b-cdn.net/images/p2_middle_slide.jpg', 'https://golden-ray.b-cdn.net/images/P2_right_side_slide_.jpg', 'https://golden-ray.b-cdn.net/images/P2_left_side_slide_.jpg'],
+    imageUrl: 'https://golden-ray.b-cdn.net/images/p2_middle_slide.jpg',
     area: '10,400 m2',
     power: '200 KW',
     usp: 'INSTALLATION DONE IN 1 WEEK',
@@ -131,6 +131,7 @@ export const mockProjects: Project[] = [
     testimonial: {
       quote: 'Flarize delivered an outstanding solar solution for our office. The project was completed on schedule, and the energy savings have exceeded our expectations. We are proud to be a leader in sustainable practices, thanks to their expertise.',
       author: 'CEO, GreenCorp Solutions',
+      image: 'https://golden-ray.b-cdn.net/images/P2_below_section.jpg',
     },
   },
 
@@ -142,8 +143,8 @@ export const mockProjects: Project[] = [
     cardDescription:"See how we’re transforming homes, businesses, and industries with smart solar solutions",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
-    images: ['https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-4.png', 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-2.png', 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-1.png'],
-    imageUrl: 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-4.png',
+    images: ['https://golden-ray.b-cdn.net/images/P3_middle_slide.jpg', 'https://golden-ray.b-cdn.net/images/P3_right_side_slide.jpg', 'https://golden-ray.b-cdn.net/images/P3_left_side_slide.jpg'],
+    imageUrl: 'https://golden-ray.b-cdn.net/images/P3_middle_slide.jpg',
     area: '10,400 m2',
     power: '200 KW',
     usp: '1.2L ANNUAL SAVINGS PER YEAR',
@@ -179,6 +180,7 @@ export const mockProjects: Project[] = [
     testimonial: {
       quote: 'Flarize made going solar incredibly easy. The team was professional, efficient, and the system looks great on our home. We are already seeing huge savings and feel good about our reduced carbon footprint. Highly recommend their services!',
       author: 'The Menon Family, Thrissur',
+      image: 'https://golden-ray.b-cdn.net/images/P3_below_section_image_.jpg',
     },
   },
 
@@ -190,8 +192,8 @@ export const mockProjects: Project[] = [
     cardDescription:"200KW solar panel installation for a two story house in Cochin, Kerala",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
-    images: ['https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-1.png', 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-3.png', 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-4.png'],
-    imageUrl: 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-1.png',
+    images: ['https://golden-ray.b-cdn.net/images/P4_middle_image.jpg', 'https://golden-ray.b-cdn.net/images/P4_right_slide_image.jpg', 'https://golden-ray.b-cdn.net/images/P4_leftside_image_.jpg'],
+    imageUrl: 'https://golden-ray.b-cdn.net/images/P4_middle_image.jpg',
     area: '10,400 m2',
     power: '200 KW',
     usp: 'INSTALLATION DONE IN 3 DAYS',
@@ -227,6 +229,7 @@ export const mockProjects: Project[] = [
     testimonial: {
       quote: 'We were amazed by how quickly Flarize installed our solar system. The team was incredibly professional and efficient. We are already seeing a significant drop in our electricity bills and are very happy with the results. Truly a seamless experience!',
       author: 'The Thomas Family, Cochin',
+      image: 'https://golden-ray.b-cdn.net/images/p4_below_section_image_.jpg',
     },
   },
 
@@ -276,6 +279,7 @@ export const mockProjects: Project[] = [
     testimonial: {
       quote: 'Flarize delivered a monumental solar project for our facility. The entire process, from initial design to commissioning, was handled with utmost professionalism. Our energy savings are remarkable, and we are now a beacon of green industrial practices.',
       author: 'Operations Director, EnviroFab Inc.',
+      image: 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-2.png',
     },
   },
 
@@ -324,6 +328,7 @@ export const mockProjects: Project[] = [
     testimonial: {
       quote: 'Flarize provided an excellent solar solution for our home in Madurai. The team was very professional and efficient, completing the installation quickly. We are thrilled with the savings on our electricity bills and are proud to be part of the green movement.',
       author: 'The Sharma Family, Madurai',
+      image: 'https://gym-manager-pull.b-cdn.net/golden_ray/projects/Residential-2.png',
     },
   },
 ];
