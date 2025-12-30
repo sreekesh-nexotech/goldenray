@@ -206,11 +206,11 @@ export default function HomeTestimonial() {
                   style={{
                     backgroundImage: `url('${testimonial.image}')`,
                     backgroundSize: "cover",
-                    backgroundPosition: "bottom",
+                    backgroundPosition: index === 2 ? "center" : "bottom",
                     backgroundRepeat: "no-repeat",
                     height: "500px",
                     width: "100%",
-                    borderRadius: "1rem",
+                    borderRadius: "1rem 0 0 1rem",
                   }}
                 />
                 {/* TILL THIS PART */}
@@ -241,7 +241,10 @@ export default function HomeTestimonial() {
                 */}
               </div>
 
-              <div className="w-full xl:w-1/2 bg-[#F7F7F2] p-6 py-10 rounded-b-2xl xl:rounded-r-2xl h-full flex flex-col justify-evenly">
+              <div
+                className="w-full xl:w-1/2 bg-[#F7F7F2] p-6 py-10 h-full flex flex-col justify-evenly"
+                style={{ borderRadius: "0 1rem 1rem 0" }}
+              >
                 <div className="flex flex-wrap justify-between">
                   {testimonial.stats.map((stat, i) => (
                     <div key={i} className="text-left">
