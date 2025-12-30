@@ -36,7 +36,7 @@ export default function Header() {
             <li>
               <Link
                 href="/solutions"
-                className={`relative text-[clamp(0.9rem,0.9vw,1rem)] ${
+                className={`relative lg:text-xl ${
                   isActive("/solutions") ? "font-bold before:w-1/2" : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-500 before:ease-in-out hover:before:w-1/2`}
               >
@@ -46,7 +46,7 @@ export default function Header() {
             <li>
               <Link
                 href="/projects"
-                className={`relative text-[clamp(0.9rem,0.9vw,1rem)] ${
+                className={`relative lg:text-xl ${
                   isActive("/projects") ? "font-bold before:w-1/2" : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-300 before:ease-in-out hover:before:w-1/2`}
               >
@@ -56,17 +56,17 @@ export default function Header() {
             <li>
               <Link
                 href="/resources"
-                className={`relative text-[clamp(0.9rem,0.9vw,1rem)] ${
+                className={`relative lg:text-xl ${
                   isActive("/resources") ? "font-bold before:w-1/2" : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-300 before:ease-in-out hover:before:w-1/2`}
               >
-                Resources
+                Blog
               </Link>
             </li>
             <li>
               <Link
                 href="/about"
-                className={`relative text-[clamp(0.9rem,0.9vw,1rem)] ${
+                className={`relative lg:text-xl ${
                   isActive("/about") ? "font-bold before:w-1/2" : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-300 before:ease-in-out hover:before:w-1/2`}
               >
@@ -76,7 +76,7 @@ export default function Header() {
             <li>
               <Link
                 href="#footer"
-                className="border border-[#074A4D] px-4 py-1 flex justify-center rounded-xl hover:bg-transparent text-[#074A4D] font-sans font-semibold text-base"
+                className="border border-[#074A4D] px-4 py-1 flex justify-center rounded-xl hover:bg-transparent text-[#074A4D] font-sans font-semibold lg:text-xl"
               >
                 Contact us
               </Link>
