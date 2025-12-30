@@ -65,7 +65,7 @@ export default function Faq() {
         </div>
 
         {/* FAQ Accordion */}
-        <div className="w-full max-w-4xl p-6 rounded-3xl bg-[#F6F2EF]">
+        <div className="w-full max-w-8xl p-6 rounded-3xl bg-[#F6F2EF]">
           {faqs.map((faq, index) => (
             <div
               key={index}

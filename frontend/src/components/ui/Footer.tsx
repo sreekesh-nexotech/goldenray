@@ -183,12 +183,12 @@ export default function Footer() {
         </div>
 
         {/* Guideline [1]: Using rem units for margin (mt-12 -> mt-[3rem]) */}
-        <div className="relative bg-white z-10 text-black mt-[clamp(3rem,8vh,6rem)] rounded-2xl p-[clamp(1.5rem,4vw,2.5rem)]">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between">
+        <div className="relative bg-white z-10 text-black mt-[clamp(3rem,8vh,6rem)] rounded-2xl p-8 md:p-12">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-12">
             {/* Guideline [6]: Avoid hard-coded width. Using flex-basis for better responsive control. */}
-            <div className="flex-shrink-0 md:flex-basis-1/3 max-w-md mb-6 md:mb-0">
+            <div className="flex-shrink-0 md:w-1/3 mb-6 md:mb-0">
               {/* Guideline [11]: Using SVG for logos is recommended */}
-              <div className="font-bold text-xl mb-2 w-[clamp(7.5rem,10vw,9rem)]">
+              <div className="font-bold text-xl mb-6 w-[clamp(7.5rem,10vw,9rem)]">
                 <Image
                   src={footerLogo}
                   alt="Flarize Logo"
@@ -198,13 +198,13 @@ export default function Footer() {
                   className="w-full h-auto"
                 />
               </div>
-              <p className="text-sm text-[#444444] mb-4">
+              <p className="text-base lg:text-lg text-[#444444] mb-6">
                 Flarize is a company working to bring accessible energy to
                 everyone. Our mission is to empower people to be in charge of
                 their own power
               </p>
               {/* Guideline [8]: Increased touch target for social media icons with padding */}
-              <div className="flex gap-2">
+              <div className="flex gap-4">
                 <Link href="#" aria-label="LinkedIn" className="p-2">
                   <Image
                     src={LinkedInLogo}
@@ -240,11 +240,13 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row flex-wrap gap-10 md:justify-end">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-10 lg:gap-12">
               {/* Guideline [1]: Converted px to rem (150px -> 9.375rem) */}
-              <div className="min-w-[9.375rem] space-y-3">
-                <h3 className="text-[#666666] text-base font-light">Company</h3>
-                <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
+              <div className="space-y-4">
+                <h3 className="text-[#666666] text-lg lg:text-xl font-light">
+                  Company
+                </h3>
+                <ul className="flex flex-col gap-3 text-[#444444] text-lg lg:text-xl font-medium">
                   <li>
                     <Link
                       href="/solutions"
@@ -279,11 +281,11 @@ export default function Footer() {
                   </li>
                 </ul>
               </div>
-              <div className="min-w-[9.375rem] space-y-3">
-                <h3 className="text-[#666666] text-base font-light">
+              <div className="space-y-4">
+                <h3 className="text-[#666666] text-lg lg:text-xl font-light">
                   Resources
                 </h3>
-                <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
+                <ul className="flex flex-col gap-3 text-[#444444] text-lg lg:text-xl font-medium">
                   <li>
                     <Link
                       href="/faq"
@@ -311,9 +313,11 @@ export default function Footer() {
                   </li>
                 </ul>
               </div>
-              <div className="min-w-[9.375rem] space-y-3">
-                <h3 className="text-[#666666] text-base font-light">Legal</h3>
-                <ul className="flex flex-col gap-5 text-[#444444] text-base font-medium">
+              <div className="space-y-4">
+                <h3 className="text-[#666666] text-lg lg:text-xl font-light">
+                  Legal
+                </h3>
+                <ul className="flex flex-col gap-3 text-[#444444] text-lg lg:text-xl font-medium">
                   <li>
                     <Link
                       href="/privacy"
