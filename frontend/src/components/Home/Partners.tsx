@@ -15,7 +15,7 @@ const InfiniteLogoScroll = () => {
   return (
     <section className="w-full py-12 md:py-20 xl:py-8 overflow-hidden">
       <div className="container mx-auto px-4 text-center">
-        <h1 className="text-3xl md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-15 text-center">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl  font-semibold text-[#123532] mb-15 text-center">
           Our partners in action
         </h1>
       </div>

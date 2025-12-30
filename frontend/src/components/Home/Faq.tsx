@@ -52,9 +52,9 @@ export default function Faq() {
 
   return (
     <div className="flex items-center justify-center ">
-      <div className="container mx-auto flex flex-col xl:flex-row items-start xl:items-baseline justify-center gap-8 lg:gap-16 md:p-10 rounded-xl max-w-full py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36">
-        {/* Left Section: Heading and Description */}
-        <div className="w-full xl:w-1/2 xl:text-left text-center">
+      <div className="container mx-auto flex flex-col items-center justify-center gap-8 lg:gap-12 md:p-10 rounded-xl max-w-full py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36">
+        {/* Heading and Description */}
+        <div className="w-full text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-[#123532] mb-2 leading-tight">
             Have any questions?
           </h1>
@@ -64,8 +64,8 @@ export default function Faq() {
           </p>
         </div>
 
-        {/* Right Section: FAQ Accordion */}
-        <div className="w-full xl:w-1/2  p-6 rounded-3xl bg-[#F6F2EF]">
+        {/* FAQ Accordion */}
+        <div className="w-full max-w-4xl p-6 rounded-3xl bg-[#F6F2EF]">
           {faqs.map((faq, index) => (
             <div
               key={index}

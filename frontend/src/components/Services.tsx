@@ -16,7 +16,7 @@ export default function Services({ serviceTitle }: servicesProps) {
     <section className="py-16 sm:py-20 xl:py-12 font-inter">
       <div className="container mx-auto px-4">
         {/* Section Title */}
-        <h1 className="text-3xl md:text-4xl lg:text-[64px] font-semibold text-[#123532] mb-15 text-center">
+        <h1 className="text-3xl md:text-4xl lg:text-4xl 2xl:text-6xl font-semibold text-[#123532] mb-15 text-center">
           {serviceTitle}
         </h1>
 
