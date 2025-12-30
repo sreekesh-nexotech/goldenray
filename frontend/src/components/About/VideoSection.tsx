@@ -1,9 +1,6 @@
-
-
-export default function VideoSection(){
-
-    const youtubeLink = "https://www.youtube.com/embed/tKm2-7w0U6A"
-    return(
+export default function VideoSection() {
+  const youtubeLink = "https://www.youtube.com/embed/tKm2-7w0U6A";
+  return (
     <section className="relative mx-auto px-4 sm:px-6 lg:px-8 xl:px-36 lg:py-24">
       <div className="relative w-full h-0 pb-[56.25%] rounded-lg overflow-hidden">
         <iframe
@@ -16,6 +13,5 @@ export default function VideoSection(){
         ></iframe>
       </div>
     </section>
-
-    )
+  );
 }

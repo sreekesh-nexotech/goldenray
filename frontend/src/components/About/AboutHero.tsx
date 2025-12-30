@@ -8,7 +8,7 @@ export default function AboutHero() {
       <PageIllustration />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 pt-28 max-w-7xl flex flex-col md:flex-row items-center h-full xl:gap-40 gap-0">
+      <div className="relative z-10 container mx-auto px-4 pt-28 pb-1 max-w-7xl flex flex-col md:flex-row items-center h-full xl:gap-40 gap-0">
         {/* Left Side - Text */}
         <div className="w-full  text-center md:text-left">
           <h1 className="text-[40px]/10 sm:text-5xl lg:text-7xl font-bold text-[#123532] mb-4">

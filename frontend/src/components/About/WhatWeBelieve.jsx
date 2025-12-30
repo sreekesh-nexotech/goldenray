@@ -5,7 +5,7 @@ import Image from 'next/image'; // Import Next.js Image component for optimizati
 export default function WhatWeBelieve(){
   return (
     // Main section container with responsive padding.
-    <section className="py-16 px-4 sm:px-6 lg:px-8 xl:px-36 pt-12 sm:pt-20 lg:pt-36">
+    <section className="py-16 px-4 sm:px-6 lg:px-4 xl:px-16  sm:pt-20 lg:pt-4">
       
       {/* Section Heading Container */}
       <div className="max-w-7xl mx-auto text-center mb-16"> 
