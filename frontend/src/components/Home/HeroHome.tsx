@@ -6,14 +6,26 @@ import LinkingButton from "../ui/LinkingButton";
 import { useState, useEffect } from "react";
 
 export default function HeroHome() {
-  const heroImg =
-    "https://gym-manager-pull.b-cdn.net/golden_ray/home/heroImg.png";
+  const heroImages = [
+    "https://golden-ray.b-cdn.net/images/slide1.jpg",
+    "https://golden-ray.b-cdn.net/images/slide2.jpeg",
+  ];
+  const [imageIndex, setImageIndex] = useState(0);
 
   // Simplified and robust state management for the animation is retained
   const words = ["months", "weeks", "days!"];
   const [wordIndex, setWordIndex] = useState(0);
   const [isStriking, setIsStriking] = useState(false);
   const [isFadingIn, setIsFadingIn] = useState(true);
+
+  // Image slideshow effect
+  useEffect(() => {
+    const imageInterval = setInterval(() => {
+      setImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
+    }, 4000); // Change image every 4 seconds
+
+    return () => clearInterval(imageInterval);
+  }, [heroImages.length]);
 
   useEffect(() => {
     const cycleAnimation = () => {
@@ -52,7 +64,7 @@ export default function HeroHome() {
 
       {/* Content */}
       {/* Design restored to original breakpoint-based layout as requested */}
-      <div className="relative z-10 container mx-auto px-4 py-32 md:py-20 xl:py-16 max-w-7xl flex flex-col md:flex-row items-center h-full xl:gap-40 gap-0">
+      <div className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-7xl flex flex-col md:flex-row items-center h-full xl:gap-40 gap-0">
         {/* Left Side - Text */}
         <div className="w-full text-center md:text-left">
           {/* Guideline [4]: Original responsive classes restored to preserve design */}
@@ -102,17 +114,26 @@ export default function HeroHome() {
         </div>
 
         {/* Right Side - Image */}
-        {/* Guideline [6]: Restored max-width to preserve original design constraint */}
-        <div className="w-full mx-auto mt-10 md:mt-0 flex justify-center">
-          <Image
-            src={heroImg}
-            alt="Solar House"
-            width={500}
-            height={350}
-            priority={true}
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="rounded-xl w-full max-w-[31.25rem] h-auto"
-          />
+        <div className="w-full mx-auto mt-10 md:mt-0 flex justify-center items-center mb-8">
+          <div className="relative w-full max-w-[42rem] h-[480px]">
+            {heroImages.map((image, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-1000 ${
+                  index === imageIndex ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <Image
+                  src={image}
+                  alt={`Solar House ${index + 1}`}
+                  fill
+                  priority={index === 0}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="rounded-xl object-cover"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

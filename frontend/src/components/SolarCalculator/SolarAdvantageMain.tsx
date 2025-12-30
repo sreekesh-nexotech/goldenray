@@ -131,7 +131,7 @@ export default function SolarAdvantageMain({
 
   return (
     <section
-      className="relative py-8 md:py-4 xl:py-3 2xl:py-4"
+      className="relative py-1 md:py-4 xl:py-3 2xl:py-4"
       ref={resultsRef}
     >
       {isLoading && (
