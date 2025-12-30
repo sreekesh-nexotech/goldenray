@@ -5,8 +5,7 @@ import React, { useState, useRef } from "react";
 import { submitContactForm } from "@/services/basicContactService";
 
 export default function BookingForm() {
-  const bgImg =
-    "https://golden-ray.b-cdn.net/images/bookUrConsultation.jpg";
+  const bgImg = "https://golden-ray.b-cdn.net/images/bookUrConsultation.jpg";
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -92,7 +91,7 @@ export default function BookingForm() {
       <div className="absolute inset-0 bg-black opacity-20"></div>
       <div className="relative z-10 xl:min-h-screen flex items-center justify-start py-20 md:px-12 px-4 sm:px-6 lg:px-8 xl:px-36">
         <div className="text-white max-w-xl text-center md:text-left">
-          <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-semibold leading-tight mb-4">
+          <h1 className="text-4xl sm:text-5xl lg:text-4xl font-semibold leading-tight mb-4">
             Book your free consultation
           </h1>
           <p className="text-base sm:text-2xl mb-8">

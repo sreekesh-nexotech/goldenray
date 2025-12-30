@@ -10,7 +10,6 @@ const steps = [
     bgColor: "bg-[#074A4D]", // Dark teal
     textColor: "text-white",
     zIndex: "z-30",
-
   },
   {
     id: 2,
@@ -20,7 +19,6 @@ const steps = [
     bgColor: "bg-[#ADD6D8]", // Light blue
     textColor: "text-[#333333]",
     zIndex: "z-20",
-
   },
   {
     id: 3,
@@ -30,7 +28,6 @@ const steps = [
     bgColor: "bg-[#F7BA41]", // Yellow/orange
     textColor: "text-[#333333]",
     zIndex: "z-10",
-
   },
 ];
 
@@ -103,7 +100,7 @@ export default function SolarStepsNoGSAP() {
       ref={sectionRef}
       className="flex flex-col py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36 relative"
     >
-      <h2 className="text-3xl xl:w-1/2 sm:text-4xl lg:text-[64px] font-bold text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
+      <h2 className="text-3xl xl:w-1/2 sm:text-4xl lg:text-4xl font-bold text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
         Go solar in just 3 easy steps
       </h2>
       <div className="w-full max-w-full md:flex space-y-4 md:space-y-0">
@@ -121,7 +118,6 @@ export default function SolarStepsNoGSAP() {
                   : "md:w-1/5 md:flex md:flex-col md:justify-end md:items-center"
               }
             `}
-
             onClick={() => handleCardClick(step.id)}
           >
             {/* Step Number */}

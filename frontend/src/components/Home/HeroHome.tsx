@@ -115,7 +115,7 @@ export default function HeroHome() {
 
         {/* Right Side - Image */}
         <div className="w-full mx-auto mt-10 md:mt-0 flex justify-center items-center mb-8">
-          <div className="relative w-full max-w-[42rem] h-[480px]">
+          <div className="relative w-full max-w-[42rem] h-[360px]">
             {heroImages.map((image, index) => (
               <div
                 key={index}

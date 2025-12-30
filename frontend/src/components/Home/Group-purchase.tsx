@@ -36,7 +36,7 @@ export default function GroupPurchaseScheme() {
         {/* Main content card */}
         <div className="rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 2xl:p-14 flex flex-col gap-2 relative z-10">
           {/* Heading */}
-          <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-4xl xl:text-4xl 2xl:text-7xl font-light leading-tight mb-6 md:mb-7 lg:mb-8 xl:mb-6 2xl:mb-10 text-[#123532]">
+          <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-4xl xl:text-4xl 2xl:text-4xl font-light leading-tight mb-6 md:mb-7 lg:mb-8 xl:mb-6 2xl:mb-10 text-[#123532]">
             Save more with our group
             <br className="hidden sm:block" /> purchase scheme!
           </h2>

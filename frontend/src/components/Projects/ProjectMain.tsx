@@ -1,21 +1,17 @@
-'use client'; 
+"use client";
 
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import Hero from "@/components/ui/Hero";
-import ProjectCard from '@/components/Projects/Project-card';
-
-
+import ProjectCard from "@/components/Projects/Project-card";
 
 //importing mock data
-import { Project } from '@/data/Mock-projects';
-import { mockProjects } from '@/data/Mock-projects';
+import { Project } from "@/data/Mock-projects";
+import { mockProjects } from "@/data/Mock-projects";
 
-export default function ProjectMain(){
+export default function ProjectMain() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
-  const [activeCategory, setActiveCategory] = useState<string>('All Projects');
+  const [activeCategory, setActiveCategory] = useState<string>("All Projects");
   const [loading, setLoading] = useState<boolean>(true); // Keep loading state for initial data load
 
   // Simulate fetching data
@@ -33,7 +29,7 @@ export default function ProjectMain(){
 
   // Filter projects whenever projects data or active category changes
   useEffect(() => {
-    if (activeCategory === 'All Projects') {
+    if (activeCategory === "All Projects") {
       setFilteredProjects(projects);
     } else {
       setFilteredProjects(
@@ -42,24 +38,28 @@ export default function ProjectMain(){
     }
   }, [projects, activeCategory]);
 
-  const categories = ['All Projects', 'Residential', 'Commercial', 'Industrial'];
+  const categories = ["All Projects", "Commercial", "Industrial"];
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-100">
-        <div className="text-lg font-medium text-gray-700">Loading projects...</div>
+        <div className="text-lg font-medium text-gray-700">
+          Loading projects...
+        </div>
       </div>
     );
   }
 
   return (
     <section className="relative">
-        {/* Hero section */}
-        <Hero title="Our Success Stories" description="See how we’re transforming homes, businesses, and industries with smart solar solutions"/>
-        
-        {/* project content */}
-      <div className=" mx-auto px-3 lg:px-18 xl:px-36 flex flex-col items-center mb-20">
+      {/* Hero section */}
+      <Hero
+        title="Our Success Stories"
+        description="See how we’re transforming homes, businesses, and industries with smart solar solutions"
+      />
 
+      {/* project content */}
+      <div className=" mx-auto px-3 lg:px-18 xl:px-36 flex flex-col items-center mb-20">
         {/* Category Tabs */}
         <div className="flex justify-between items-center mb-16 p-2 bg-[#F3F3F3] xl:w-3/5 max-w-full rounded-full overflow-auto ">
           {categories.map((category) => (
@@ -68,11 +68,12 @@ export default function ProjectMain(){
               onClick={() => setActiveCategory(category)}
               className={`
                 flex-1 text-center py-3 px-2 rounded-full text-xs md:text-xl font-medium transition duration-300 ease-in-out whitespace-nowrap cursor-pointer
-                ${activeCategory === category
-                  ? 'bg-white text-[#2C2821] font-semibold' // Active state: white background, dark text
-                  : 'text-[#123532] hover:bg-gray-100' // Inactive state: dark text, slight hover background
+                ${
+                  activeCategory === category
+                    ? "bg-white text-[#2C2821] font-semibold" // Active state: white background, dark text
+                    : "text-[#123532] hover:bg-gray-100" // Inactive state: dark text, slight hover background
                 }`}
-                aria-label='filter projects by category'
+              aria-label="filter projects by category"
             >
               {category}
             </button>
@@ -81,16 +82,11 @@ export default function ProjectMain(){
 
         {/* Projects Grid */}
         <div className="grid lg:grid-cols-2 gap-20">
-          {
-            filteredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))
-          }
+          {filteredProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
         </div>
-
       </div>
     </section>
   );
-};
-
-
+}
