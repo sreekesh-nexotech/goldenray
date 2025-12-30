@@ -206,10 +206,11 @@ export default function HomeTestimonial() {
                   style={{
                     backgroundImage: `url('${testimonial.image}')`,
                     backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    backgroundPosition: "bottom",
                     backgroundRepeat: "no-repeat",
                     height: "500px",
                     width: "100%",
+                    borderRadius: "1rem",
                   }}
                 />
                 {/* TILL THIS PART */}
