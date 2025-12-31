@@ -33,7 +33,7 @@ export default function AboutMain(){
             <TeamSection/>
 
             {/* Video section */}
-            <VideoSection/>
+            {/* <VideoSection/> */}
 
             {/* services*/}
             <Services serviceTitle="Why choose our solar solutions?"/>
