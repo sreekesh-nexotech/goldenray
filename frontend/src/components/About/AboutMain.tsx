@@ -5,38 +5,37 @@ import Founder from "./Founder";
 import MissionVisionGoals from "./MissionVissionGoals";
 import StatsSection from "./StatSection";
 import TeamSection from "./TeamSection";
-import VideoSection from "./VideoSection";
 import WhatWeBelieve from "./WhatWeBelieve";
 
-export default function AboutMain(){
-    return(
-        <section className="relative">
-            {/* Hero section */}
-            <AboutHero/>
+export default function AboutMain() {
+  return (
+    <section className="relative">
+      {/* Hero section */}
+      <AboutHero />
 
-            {/* statistic data */}
-            <StatsSection/>
+      {/* statistic data */}
+      <StatsSection />
 
-            {/* What we Believe */}
-            <WhatWeBelieve />
+      {/* What we Believe */}
+      <WhatWeBelieve />
 
-            {/* Mission vision goals*/}
-            <MissionVisionGoals/>
+      {/* Mission vision goals*/}
+      <MissionVisionGoals />
 
-            {/* Founder & CEO */}
-            <Founder/>
+      {/* Founder & CEO */}
+      <Founder />
 
-            {/* Certified by */}
-            <Certified/>
+      {/* Certified by */}
+      <Certified />
 
-            {/* Our Team */}
-            <TeamSection/>
+      {/* Our Team */}
+      <TeamSection />
 
-            {/* Video section */}
-            {/* <VideoSection/> */}
+      {/* Video section */}
+      {/* <VideoSection/> */}
 
-            {/* services*/}
-            <Services serviceTitle="Why choose our solar solutions?"/>
-        </section>
-    )
+      {/* services*/}
+      <Services serviceTitle="Why choose our solar solutions?" />
+    </section>
+  );
 }
