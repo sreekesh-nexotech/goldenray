@@ -47,12 +47,6 @@ export default function MissionVisionGoals() {
             number={goal.number}
             title={goal.title}
             description={goal.description}
-            // Conditionally apply a shadow to the middle card (Our Vision)
-            className={
-              goal.isHighlighted
-                ? "bg-white rounded-2xl shadow-[0_0_15px_#A98F383D]"
-                : ""
-            }
           />
         ))}
       </div>
