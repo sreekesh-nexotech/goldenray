@@ -24,28 +24,96 @@ export default function Services({ serviceTitle }: servicesProps) {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5  justify-items-center">
           {/* Service Item 1: Fastest Installation */}
           <ServiceItem
-            icon={<Image src={vector1} width={35} height={35} alt="Vector 1" />}
+            icon={
+              <>
+                <Image
+                  src={vector1}
+                  width={40}
+                  height={40}
+                  alt="Vector 1"
+                  className="lg:hidden"
+                />
+                <Image
+                  src={vector1}
+                  width={60}
+                  height={60}
+                  alt="Vector 1"
+                  className="hidden lg:block"
+                />
+              </>
+            }
             title="Fastest Installation"
             bgColor="#FDF6D2"
           />
 
           {/* Service Item 2: 10 Year Warranty period */}
           <ServiceItem
-            icon={<Image src={vector2} width={35} height={35} alt="Vector 1" />}
+            icon={
+              <>
+                <Image
+                  src={vector2}
+                  width={40}
+                  height={40}
+                  alt="Vector 2"
+                  className="lg:hidden"
+                />
+                <Image
+                  src={vector2}
+                  width={60}
+                  height={60}
+                  alt="Vector 2"
+                  className="hidden lg:block"
+                />
+              </>
+            }
             title="10 Year Warranty period"
             bgColor="#ADD6D8"
           />
 
           {/* Service Item 3: Support with getting Subsidy */}
           <ServiceItem
-            icon={<Image src={vector3} width={35} height={35} alt="Vector 1" />}
+            icon={
+              <>
+                <Image
+                  src={vector3}
+                  width={40}
+                  height={40}
+                  alt="Vector 3"
+                  className="lg:hidden"
+                />
+                <Image
+                  src={vector3}
+                  width={60}
+                  height={60}
+                  alt="Vector 3"
+                  className="hidden lg:block"
+                />
+              </>
+            }
             title="Support with getting Subsidy"
             bgColor="#FBE8DA"
           />
 
           {/* Service Item 4: Multiple EMI options */}
           <ServiceItem
-            icon={<Image src={vector4} width={35} height={35} alt="Vector 1" />}
+            icon={
+              <>
+                <Image
+                  src={vector4}
+                  width={40}
+                  height={40}
+                  alt="Vector 4"
+                  className="lg:hidden"
+                />
+                <Image
+                  src={vector4}
+                  width={60}
+                  height={60}
+                  alt="Vector 4"
+                  className="hidden lg:block"
+                />
+              </>
+            }
             title="Multiple EMI options"
             bgColor="#FBF1BD"
           />
@@ -54,7 +122,22 @@ export default function Services({ serviceTitle }: servicesProps) {
           <div className="col-span-2 md:col-span-1 justify-self-center">
             <ServiceItem
               icon={
-                <Image src={vector5} width={35} height={35} alt="Vector 5" />
+                <>
+                  <Image
+                    src={vector5}
+                    width={40}
+                    height={40}
+                    alt="Vector 5"
+                    className="lg:hidden"
+                  />
+                  <Image
+                    src={vector5}
+                    width={60}
+                    height={60}
+                    alt="Vector 5"
+                    className="hidden lg:block"
+                  />
+                </>
               }
               title="Quick Repairs & Annual checkups"
               bgColor="#C3E0BD"

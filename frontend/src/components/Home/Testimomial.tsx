@@ -258,7 +258,7 @@ export default function HomeTestimonial() {
                   ))}
                 </div>
                 <hr className="opacity-10 mb-5" />
-                <p className="text-[#444444] mb-10 text-sm sm:text-xl">
+                <p className="text-[#444444] mb-10 text-sm sm:text-lg">
                   {testimonial.quote}
                 </p>
                 <p className="text-[#123532] font-semibold text-sm sm:text-xl">
