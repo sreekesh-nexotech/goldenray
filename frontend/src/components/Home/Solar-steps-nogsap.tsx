@@ -6,7 +6,7 @@ const steps = [
     id: 1,
     title: "Get a Free Consultation & Quote",
     description:
-      "Talk to our solar experts, get a customized and a transparent quote – no commitments.",
+      "Get a free, no-obligation solar consultation with our experienced experts who analyze your electricity usage, rooftop potential, and budget. You’ll receive a fully customized and transparent quote outlining system capacity, equipment details, pricing, and estimated savings. No hidden charges, no sales pressure—just clear, honest information to help you make a confident and informed decision about going solar",
     bgColor: "bg-[#074A4D]", // Dark teal
     textColor: "text-white",
     zIndex: "z-30",
@@ -15,7 +15,7 @@ const steps = [
     id: 2,
     title: "Custom Design & Installation",
     description:
-      "Our team will design a solar system tailored to your energy needs and professionally install it.",
+      "Our team designs a solar system specifically based on your energy consumption, roof structure, and future power needs. We handle everything from system planning and equipment selection to professional installation and safety checks. The installation is carried out by trained technicians following industry standards, ensuring optimal performance, long-term reliability, and a seamless transition to clean solar energy",
     bgColor: "bg-[#ADD6D8]", // Light blue
     textColor: "text-[#333333]",
     zIndex: "z-20",
@@ -24,7 +24,7 @@ const steps = [
     id: 3,
     title: "Activate Your Solar System",
     description:
-      "Once installed and approved, we'll help you activate your system and start saving on energy bills.Once installed and approved, we'll help you activate your system and start saving on energy bills.Once installed and approved, we'll help you activate your system and start saving on energy bills.Once installed and approved, we'll help you activate your system and start saving on energy bills.",
+      "Once your solar system is fully installed and approved by the utility authorities, we take care of the complete activation process. Our team ensures proper grid connection, system testing, and performance checks before handover. We also guide you on monitoring energy generation and usage, so you can confidently start producing clean power and see measurable savings on your electricity bills from day one",
     bgColor: "bg-[#F7BA41]", // Yellow/orange
     textColor: "text-[#333333]",
     zIndex: "z-10",

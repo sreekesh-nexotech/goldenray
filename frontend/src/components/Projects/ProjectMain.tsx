@@ -38,7 +38,7 @@ export default function ProjectMain() {
     }
   }, [projects, activeCategory]);
 
-  const categories = ["All Projects", "Commercial", "Industrial"];
+  const categories = ["All Projects", "Residential", "Commercial"];
 
   if (loading) {
     return (
