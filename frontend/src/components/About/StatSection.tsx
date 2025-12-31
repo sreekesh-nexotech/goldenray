@@ -35,13 +35,25 @@ export default function StatsSection() {
       <div className="max-w-7xl mx-auto grid grid-cols-2  gap-2 sm:gap-4 sm:grid-cols-4 lg:grid-cols-4  border-gray-200">
         {/* Map through the statsData array to render each StatCard */}
         {statsData.map((stat, index) => (
-          <StatCard
-            key={index} // Unique key for each card
-            value={stat.value}
-            label={stat.label}
-            description={stat.description}
-            highlight={stat.highlight}
-          />
+          <div
+            key={index}
+            className={`${
+              // Add right border for all cards except the last one in each row
+              index !== statsData.length - 1 && index % 2 === 0
+                ? "border-r sm:border-r"
+                : ""
+            } ${
+              // For larger screens, add border to all except the last card
+              index !== statsData.length - 1 ? "sm:border-r" : ""
+            } border-gray-300`}
+          >
+            <StatCard
+              value={stat.value}
+              label={stat.label}
+              description={stat.description}
+              highlight={stat.highlight}
+            />
+          </div>
         ))}
       </div>
     </section>
