@@ -10,21 +10,21 @@ export default function ResourceMain(){
     return(
         <section className="relative mb-10">
             {/* Hero section */}
-            <Hero title="Solar Resource Hub" description="Explore guides, tips, and tools to make your solar journey easy and efficient."/>
+            <Hero title="Blog Hub" description="Explore guides, tips, and tools to make your solar journey easy and efficient."/>
             {/* Hero content left side first post of heropost data and remaining on right */}
-            <ResourceHero posts={heroPosts}/>
+            {/* <ResourceHero posts={heroPosts}/> */}
 
             {/* Recently added blogs */}
             <RecentlyAdded posts={mockBlogs}/>
 
             {/* PopularPost */}
-            <PopularPosts posts={mockBlogs}/>
+            {/* <PopularPosts posts={mockBlogs}/> */}
 
             {/* Category Blogs (solar life style for now) */}
-            <CategoryBlogs posts={mockBlogs} selectedCategory={selectedCategory}/>
+            {/* <CategoryBlogs posts={mockBlogs} selectedCategory={selectedCategory}/> */}
 
             {/* Solar advantage */}
-            <SolarAdvantageMain/>
+            {/* <SolarAdvantageMain/> */}
         </section>
     )
 }

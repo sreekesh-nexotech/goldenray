@@ -76,7 +76,7 @@ export default function Faq() {
                 onClick={() => toggleFaq(index)}
                 aria-label="toggle FAQ answer"
               >
-                <span className="text-base md:text-2xl font-semibold text-[#444444] pr-4">
+                <span className="text-base md:text-lg font-semibold text-[#444444] pr-4">
                   {faq.question}
                 </span>
                 <span
@@ -88,7 +88,7 @@ export default function Faq() {
                 </span>
               </button>
               {openIndex === index && (
-                <div className="mt-3 text-[#444444] text-sm md:text-lg leading-relaxed">
+                <div className="mt-3 text-[#444444] text-sm md:text-base leading-relaxed">
                   {faq.answer}
                 </div>
               )}

@@ -129,9 +129,14 @@ export default function SolarAdvantage({
     >
       <PageIllustration isGradient={false} />
       <div className="relative max-w-7xl mx-auto text-center px-4 md:px-0">
-        <h1 className="text-4xl md:text-4xl lg:text-4xl 2xl:text-6xl  font-semibold text-[#123532] mb-[3.75rem]">
+        <h1 className="text-4xl md:text-4xl lg:text-4xl 2xl:text-6xl  font-semibold text-[#123532] mb-4">
           Calculate Your Solar Advantage
         </h1>
+        <p className="text-lg text-[#444444] mb-[3.75rem] max-w-2xl mx-auto">
+          We help you choose the right solar system based on your electricity
+          use, roof space, and sunlight. You'll clearly see your savings,
+          payback time, and long-term benefits before deciding.
+        </p>
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.2)] rounded-3xl p-[2.5rem] py-[3rem] max-w-sm mx-auto">
           {fetchError && (
             <p className="text-red-500 text-sm mb-4 text-center">
