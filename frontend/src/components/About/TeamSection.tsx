@@ -4,7 +4,7 @@ import TeamMember from "./TeamMember";
 // Sample data structure for team members (can be replaced with API data)
 const teamMembers = [
   {
-    name: "John Doe",
+    name: "Harikrishnan",
     title: "Founder & CEO",
     // description:
     //   "With a vision to make clean energy mainstream, John leads Flarece with innovation and sustainability at the core. When he's not revolutionizing the solar industry, he's exploring new tech for a greener future.",
@@ -18,7 +18,7 @@ const teamMembers = [
     //   "Sarah is the mastermind behind Flarece's cutting-edge solar tech. With years of experience in renewable energy, she ensures our solutions are efficient, and future-proof.",
     linkedin:
       "https://www.linkedin.com/in/ananthakrishnan-g-4421b1276?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
-    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team2.png",
+    imageUrl: "https://golden-ray.b-cdn.net/images/Ananthakrishnnan%20G.jpeg",
   },
   {
     name: "JUDE JAMES",
@@ -26,7 +26,7 @@ const teamMembers = [
     // description:
     //   "From installations to customer support, Mark makes sure everything runs smoothly. His mission? A seamless, hassle-free solar experience for every customer.",
     linkedin: "https://www.linkedin.com/in/jude-james-38b45263/",
-    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team3.png",
+    imageUrl: "https://golden-ray.b-cdn.net/images/Jude%20James.jpeg",
   },
   {
     name: "AROMAL KM",
@@ -35,7 +35,7 @@ const teamMembers = [
     //   "Sarah is the mastermind behind Flarece's cutting-edge solar tech. With years of experience in renewable energy, she ensures our solutions are efficient, and future-proof.",
     linkedin:
       "https://www.linkedin.com/in/aromal-km-627ba3325/?originalSubdomain=in",
-    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team3.png",
+    imageUrl: "https://golden-ray.b-cdn.net/images/Aromal%20KM.jpg",
   },
   {
     name: " ANUPRIYA MS ",
@@ -44,16 +44,16 @@ const teamMembers = [
     //   "From installations to customer support, Mark makes sure everything runs smoothly. His mission? A seamless, hassle-free solar experience for every customer.",
     linkedin:
       "https://www.linkedin.com/in/anupriya-m-s-22b989338?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
-    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team1.png",
+    imageUrl: "https://golden-ray.b-cdn.net/images/Anupriya%20MS.jpeg",
   },
-  {
-    name: "John Doe",
-    title: "Founder & CEO",
-    // description:
-    //   "With a vision to make clean energy mainstream, John leads Flarece with innovation and sustainability at the core. When he's not revolutionizing the solar industry, he's exploring new tech for a greener future.",
-    linkedin: "#",
-    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team2.png",
-  },
+  // {
+  //   name: "John Doe",
+  //   title: "Founder & CEO",
+  //   // description:
+  //   //   "With a vision to make clean energy mainstream, John leads Flarece with innovation and sustainability at the core. When he's not revolutionizing the solar industry, he's exploring new tech for a greener future.",
+  //   linkedin: "#",
+  //   imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team2.png",
+  // },
 ];
 
 const TeamSection = ({ members = teamMembers }) => {
@@ -76,6 +76,7 @@ const TeamSection = ({ members = teamMembers }) => {
               linkedin={member.linkedin}
               // twitter={member.twitter}
               imageUrl={member.imageUrl}
+              imageScale={index === 2 ? 2 : 1}
             />
           ))}
         </div>

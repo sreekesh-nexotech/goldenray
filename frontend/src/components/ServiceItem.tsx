@@ -20,7 +20,7 @@ export default function ServiceItem({
       {/* Icon container with circular background */}
 
       <div
-        className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 2xl:w-40 2xl:h-40  rounded-full flex items-center justify-center mb-4 "
+        className="w-20 h-20 sm:w-24 sm:h-24 2xl:h-26 2xl:w-26 rounded-full flex items-center justify-center mb-4 "
         style={{ backgroundColor: bgColor }}
       >
         {" "}

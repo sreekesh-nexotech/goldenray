@@ -9,6 +9,7 @@ type TeamMemberProps = {
   linkedin?: string;
   twitter?: string;
   imageUrl?: string;
+  imageScale?: number;
 };
 
 export default function TeamMember({
@@ -18,6 +19,7 @@ export default function TeamMember({
   linkedin,
   twitter,
   imageUrl,
+  imageScale = 1,
 }: TeamMemberProps) {
   // Determine which social link to show (default to LinkedIn if both are provided)
   const socialLink = linkedin
@@ -28,7 +30,7 @@ export default function TeamMember({
 
   return (
     <div className="relative flex flex-col items-start text-left mb-4">
-      <div className="w-24 h-24 rounded-full mb-4">
+      <div className="w-24 h-24 rounded-full mb-4 overflow-hidden">
         {imageUrl && (
           <Image
             src={imageUrl}
@@ -36,6 +38,7 @@ export default function TeamMember({
             width={100}
             height={100}
             className="w-full h-full rounded-full object-cover"
+            style={{ transform: `scale(${imageScale})` }}
           />
         )}
       </div>
