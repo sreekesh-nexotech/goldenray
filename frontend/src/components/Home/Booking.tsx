@@ -5,7 +5,7 @@ import React, { useState, useRef } from "react";
 import { submitContactForm } from "@/services/basicContactService";
 
 export default function BookingForm() {
-  const bgImg = "https://golden-ray.b-cdn.net/images/bookUrConsultation.jpg";
+  const bgImg = "https://golden-ray.b-cdn.net/images/img.jpg";
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);

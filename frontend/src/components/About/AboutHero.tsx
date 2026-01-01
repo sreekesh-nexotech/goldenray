@@ -31,7 +31,7 @@ export default function AboutHero() {
         {/* Right Side - Image */}
         <div className="w-full mx-auto  mt-10 md:mt-0 flex justify-center">
           <Image
-            src="https://golden-ray.b-cdn.net/images/AboutUs1.jpg"
+            src="https://golden-ray.b-cdn.net/images/d2cc56a1-b026-4b02-a1ee-ca1e3fbf599c.png"
             alt="Solar House"
             width={500}
             height={350}

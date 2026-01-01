@@ -12,7 +12,7 @@ import { useSwipeable } from "react-swipeable"; // Import useSwipeable for swipe
 const testimonials = [
   {
     videoId: "8LSt8_11wbQ",
-    image: "https://golden-ray.b-cdn.net/images/testimoal2.jpg",
+    image: "https://golden-ray.b-cdn.net/images/test.jpeg",
     stats: [
       { value: "75%", label: "Reduction in bills" },
       { value: "2 Days", label: "Installation Time" },
@@ -202,7 +202,7 @@ export default function HomeTestimonial() {
               <div className="w-full xl:w-1/2 h-auto">
                 {/* Temporary: Background image instead of video */}
                 <div
-                  className="relative rounded-t-2xl xl:rounded-l-2xl overflow-hidden"
+                  className="relative rounded-2xl xl:rounded-l-2xl xl:rounded-r-none overflow-hidden h-[300px] sm:h-[400px] xl:h-[500px]"
                   style={{
                     backgroundImage: `url('${testimonial.image}')`,
                     backgroundSize: "cover",
@@ -213,9 +213,7 @@ export default function HomeTestimonial() {
                         ? "left bottom"
                         : "bottom",
                     backgroundRepeat: "no-repeat",
-                    height: "500px",
                     width: "100%",
-                    borderRadius: "1rem 0 0 1rem",
                   }}
                 />
                 {/* TILL THIS PART */}
