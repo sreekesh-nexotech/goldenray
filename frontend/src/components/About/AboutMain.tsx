@@ -22,11 +22,11 @@ export default function AboutMain() {
       {/* Mission vision goals*/}
       <MissionVisionGoals />
 
-      {/* Founder & CEO */}
-      <Founder />
-
       {/* Certified by */}
       <Certified />
+
+      {/* Founder & CEO */}
+      <Founder />
 
       {/* Our Team */}
       <TeamSection />

@@ -23,7 +23,7 @@ const testimonials = [
   },
   {
     videoId: "8LSt8_11wbQ",
-    image: "https://golden-ray.b-cdn.net/images/testimonal1.jpg",
+    image: "https://golden-ray.b-cdn.net/images/p2_middle_slide.jpg",
     stats: [
       { value: "85%", label: "Reduction in bills" },
       { value: "4 Days", label: "Installation Time" },
@@ -34,7 +34,7 @@ const testimonials = [
   },
   {
     videoId: "8LSt8_11wbQ",
-    image: "https://golden-ray.b-cdn.net/images/testimonal3.jpg",
+    image: "https://golden-ray.b-cdn.net/images/P3_middle_slide.jpg",
     stats: [
       { value: "78%", label: "Reduction in bills" },
       { value: "6 Days", label: "Installation Time" },
@@ -206,7 +206,12 @@ export default function HomeTestimonial() {
                   style={{
                     backgroundImage: `url('${testimonial.image}')`,
                     backgroundSize: "cover",
-                    backgroundPosition: index === 2 ? "center" : "bottom",
+                    backgroundPosition:
+                      index === 2
+                        ? "center"
+                        : index === 0
+                        ? "left bottom"
+                        : "bottom",
                     backgroundRepeat: "no-repeat",
                     height: "500px",
                     width: "100%",
