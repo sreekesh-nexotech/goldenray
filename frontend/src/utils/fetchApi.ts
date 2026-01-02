@@ -25,10 +25,23 @@ export async function fetchApi<T>(
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `HTTP error! Status: ${response.status}, Message: ${errorText}`
-      );
+      // Try to parse JSON error response from backend
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        // If JSON parsing fails, use text
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! Status: ${response.status}, Message: ${errorText}`
+        );
+      }
+
+      // Throw error with parsed JSON data
+      const error: any = new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+      error.status = response.status;
+      error.errorData = errorData;
+      throw error;
     }
     return response.json();
   } catch (error) {
