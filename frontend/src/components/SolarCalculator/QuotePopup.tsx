@@ -58,16 +58,28 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
             setApiError("Invalid OTP. Please try again.");
           }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("API error:", error);
 
-        // Check if it's a rate limiting error (429)
-        if (error.status === 429 && error.errorData) {
-          const { message, days_remaining } = error.errorData;
-          setApiError(message || `You have already requested a quote recently. Please try again after ${days_remaining} days or contact our team directly.`);
-        } else if (error.errorData?.error === 'rate_limit_exceeded') {
-          // Fallback check for rate limit error
-          setApiError(error.errorData.message || "You have already requested a quote recently. Please try again after 30 days or contact our team directly.");
+        // Type guard for error with status and errorData
+        if (
+          error &&
+          typeof error === 'object' &&
+          'status' in error &&
+          'errorData' in error
+        ) {
+          const err = error as { status: number; errorData: { message?: string; days_remaining?: number; error?: string } };
+
+          // Check if it's a rate limiting error (429)
+          if (err.status === 429 && err.errorData) {
+            const { message, days_remaining } = err.errorData;
+            setApiError(message || `You have already requested a quote recently. Please try again after ${days_remaining} days or contact our team directly.`);
+          } else if (err.errorData?.error === 'rate_limit_exceeded') {
+            // Fallback check for rate limit error
+            setApiError(err.errorData.message || "You have already requested a quote recently. Please try again after 30 days or contact our team directly.");
+          } else {
+            setApiError("Something went wrong. Please try again later.");
+          }
         } else {
           setApiError("Something went wrong. Please try again later.");
         }
