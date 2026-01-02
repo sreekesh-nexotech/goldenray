@@ -19,7 +19,7 @@ const testimonials = [
     ],
     quote:
       '"The solar panel installation process was smooth from the very beginning. The team clearly explained each stage—from understanding our energy needs to system design, installation, and final activation. All timelines were communicated in advance, and the execution stayed on track without unnecessary delays. The overall experience felt well-planned and dependable."',
-    author: "Jose VP- 3kw -VADACKKAL, ALAPUZHA- residential",
+    author: "Jose V P - 3kw - Vadakkal, Alapuzha",
   },
   {
     videoId: "8LSt8_11wbQ",
@@ -30,7 +30,7 @@ const testimonials = [
     ],
     quote:
       '"Our commercial solar installation brought better predictability to our monthly power expenses. The team maintained transparent communication throughout the project and handled the technical and approval processes professionally. The transition to solar was structured, efficient, and free from operational disruption, which made the decision feel reassuring."',
-    author: "SIRAJ K P- 3 kw-CHERTHALA, ALAPUZHA- residential",
+    author: "Siraj K P - 3 kw - Cherthala, Alapuzha",
   },
   {
     videoId: "8LSt8_11wbQ",
@@ -41,7 +41,7 @@ const testimonials = [
     ],
     quote:
       '"What stood out most was the honest guidance we received on system capacity and realistic expectations around savings. The team took time to explain what would work best for our usage rather than overselling. From planning to completion, the project felt reliable, transparent, and well managed."',
-    author: "STEPHEN V C-3kw- VATTAYAL, ALAPUZHA- residential",
+    author: "Stephen V C - 3kw - Vattayal, Alapuzha",
   },
 ];
 

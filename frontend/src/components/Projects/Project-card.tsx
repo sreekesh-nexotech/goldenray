@@ -29,7 +29,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         {/* Project Details */}
         <div className="py-3 flex flex-col gap-5 flex-1">
           {/* Project Title */}
-          <h3 className="text-[28px] font-semibold text-[#424646]">
+          <h3 className="text-[28px] font-semibold text-[#424646] ">
             {project.title}
           </h3>
           {/* Project Description */}

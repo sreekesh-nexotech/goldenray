@@ -42,7 +42,7 @@ export const mockProjects: Project[] = [
   {
     id: '1',
     category: 'Residential',
-    title: 'Jose VP -VADACKKAL, ALAPUZHA',
+    title: 'Jose V P -Vadackkal, Alapuzha',
     cardDescription:"Rooftop installation for a townhouse for a family of four in Calicut, Kerala",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
@@ -89,7 +89,7 @@ export const mockProjects: Project[] = [
   {
     id: '2',
     category: 'Residential',
-    title: 'SIRAJ K P- CHERTHALA, ALAPUZHA',
+    title: 'Siraj K P- Cherthala, Alapuzha',
     cardDescription:"500KW solar panel installation for a 5 story office building space in Palakkad, Kerala",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
@@ -139,7 +139,7 @@ export const mockProjects: Project[] = [
   {
     id: '3',
     category: 'Residential',
-    title: 'STEPHEN V C- VATTAYAL, ALAPUZHA',
+    title: 'Stephen V C- Vattayal, Alapuzha',
     cardDescription:"See how we’re transforming homes, businesses, and industries with smart solar solutions",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
@@ -188,7 +188,7 @@ export const mockProjects: Project[] = [
   {
     id: '4',
     category: 'Residential',
-    title: 'USHAVISWANATHAN - Thiruvambady, Alappuzha',
+    title: 'Ushaviswanathan - Thiruvambady, Alappuzha',
     cardDescription:"200KW solar panel installation for a two story house in Cochin, Kerala",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
