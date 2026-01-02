@@ -19,9 +19,9 @@ export default function Solutions(){
             BoxDescription="For a home in Kerala, solar is more than a power choice—it’s a long-term decision for comfort 
 and savings. Our residential solar solutions are planned around your home’s electricity usage, roof space, and local conditions like sunlight and weather. Every step, from the first discussion to system activation, is explained clearly so there are no surprises. The installation is neat, safe, and built to last, helping your household reduce electricity bills while enjoying steady, dependable power for years to come. "
             BoxList1="Independent houses"
-            BoxList2="villas"
-            BoxList3="apartment homes" 
-            BoxList4="across Kerala"
+            BoxList2="Villas"
+            BoxList3="Apartment Homes" 
+            BoxList4="Across Kerala"
             BoxImg="https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png"
         />
 
@@ -40,8 +40,8 @@ every stage. The result is a reliable solar system that supports stable energy e
 helps businesses plan better for the future. "
             BoxList1="Offices"
             BoxList2="Hospital and Schools "
-            BoxList3="hotels and shops"
-            BoxList4="commercial buildings"
+            BoxList3="Hotels and Shops"
+            BoxList4="Commercial Buildings"
             BoxImg="https://golden-ray.b-cdn.net/images/Roof%20solar%20panel%20mounting.jpg"
         />
 
@@ -60,8 +60,8 @@ with existing electrical systems. Every project is executed with precision, focu
 compliance, and consistent power generation. "
             BoxList1="Factories"
             BoxList2="Warehouses"
-            BoxList3="manufacturing units"
-            BoxList4="large industrial facilities across Kerala"
+            BoxList3="Manufacturing Units"
+            BoxList4="Large Industrial Facilities Across Kerala"
             BoxImg="https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12155.png"
         />
 

@@ -3,7 +3,6 @@ import TeamMember from "./TeamMember";
 
 // Sample data structure for team members (can be replaced with API data)
 const teamMembers = [
-
   {
     name: "ANANTHAKRISHNAN G",
     title: "Project Head",
@@ -11,7 +10,8 @@ const teamMembers = [
     //   "Sarah is the mastermind behind Flarece's cutting-edge solar tech. With years of experience in renewable energy, she ensures our solutions are efficient, and future-proof.",
     linkedin:
       "https://www.linkedin.com/in/ananthakrishnan-g-4421b1276?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
-    imageUrl: "https://golden-ray.b-cdn.net/images/Ananthakrishnnan%20G%20(1).jpeg",
+    imageUrl:
+      "https://golden-ray.b-cdn.net/images/Ananthakrishnnan%20G%20(1).jpeg",
   },
   {
     name: "JUDE JAMES",
@@ -69,7 +69,6 @@ const TeamSection = ({ members = teamMembers }) => {
               linkedin={member.linkedin}
               // twitter={member.twitter}
               imageUrl={member.imageUrl}
-              imageScale={index === 2 ? 2 : 1}
             />
           ))}
         </div>
