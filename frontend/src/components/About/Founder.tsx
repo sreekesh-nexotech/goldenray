@@ -21,11 +21,14 @@ export default function Founder(){
       {/* Left Section: Quote and Name */}
       <div className="lg:w-[34%] flex flex-col justify-between">
         <p className="text-base sm:text-xl font-normal mb-4 lg:mb-0">
-          <q>At the heart of our journey is a simple belief—clean energy should be accessible, affordable, and effortless. We started this company to empower every home and business with solar, and we’re here to guide you every step of the way</q>
+          <q>At Flarize, our team is made up of passionate solar professionals, engineers, and problem-solvers who care deeply about the
+homes and businesses we serve across Kerala. We understand the trust people place in us when they choose solar, and we take
+that responsibility seriously. Guided by honesty, quality workmanship, and long-term reliability, we work together to deliver
+solar solutions that bring real savings, peace of mind, and a cleaner future for generations to come.
+</q>
         </p>
         <div>
-          <h2 className="text-[32px] sm:text-[40px] font-bold">HARIKRISHNAN</h2>
-          <p className="text-xl sm:text-xl">Founder & CEO</p>
+          <h2 className="text-[32px] sm:text-[40px] font-bold">OUR TEAM</h2>
         </div>
       </div>
 

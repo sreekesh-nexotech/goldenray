@@ -3,14 +3,7 @@ import TeamMember from "./TeamMember";
 
 // Sample data structure for team members (can be replaced with API data)
 const teamMembers = [
-  {
-    name: "Harikrishnan",
-    title: "Founder & CEO",
-    // description:
-    //   "With a vision to make clean energy mainstream, John leads Flarece with innovation and sustainability at the core. When he's not revolutionizing the solar industry, he's exploring new tech for a greener future.",
-    linkedin: "#",
-    imageUrl: "https://gym-manager-pull.b-cdn.net/golden_ray/about/team1.png",
-  },
+
   {
     name: "ANANTHAKRISHNAN G",
     title: "Project Head",
@@ -22,7 +15,7 @@ const teamMembers = [
   },
   {
     name: "JUDE JAMES",
-    title: "Operational Manager",
+    title: "Operations Manager",
     // description:
     //   "From installations to customer support, Mark makes sure everything runs smoothly. His mission? A seamless, hassle-free solar experience for every customer.",
     linkedin: "https://www.linkedin.com/in/jude-james-38b45263/",

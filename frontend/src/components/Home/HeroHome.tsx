@@ -89,8 +89,8 @@ export default function HeroHome() {
           </h1>
           {/* Guideline [4]: Original responsive classes restored */}
           <p className="text-base sm:text-lg md:text-2xl text-[#444444] mb-6">
-            Save more, live sustainably, and enjoy a brighter future with
-            effortless solar solutions.
+            Smart solar energy solutions delivering reliable solar power and professional solar panel 
+installation for homes and businesses
           </p>
 
           {/* Guideline [8]: Buttons have sufficient size and spacing for touch targets */}

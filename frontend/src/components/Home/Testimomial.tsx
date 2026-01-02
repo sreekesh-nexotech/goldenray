@@ -18,8 +18,8 @@ const testimonials = [
       { value: "2 Days", label: "Installation Time" },
     ],
     quote:
-      '"Switching to solar with Flarize was the best decision for my home. The team made the entire process seamless, from consultation to installation. Not only have I reduced my electricity bills by nearly 75%, but I also feel great knowing I’m contributing to a sustainable future. Their support team is always available, and the maintenance services are top-notch. Highly recommended!"',
-    author: "Rajesh Sharma & Family, Cochin",
+      '"The solar panel installation process was smooth from the very beginning. The team clearly explained each stage—from understanding our energy needs to system design, installation, and final activation. All timelines were communicated in advance, and the execution stayed on track without unnecessary delays. The overall experience felt well-planned and dependable."',
+    author: "Jose VP- 3kw -VADACKKAL, ALAPUZHA- residential",
   },
   {
     videoId: "8LSt8_11wbQ",
@@ -29,8 +29,8 @@ const testimonials = [
       { value: "4 Days", label: "Installation Time" },
     ],
     quote:
-      '"Switching to solar with Flarize was the best decision for my home. The team made the entire process seamless, from consultation to installation. Not only have I reduced my electricity bills by nearly 75%, but I also feel great knowing I’m contributing to a sustainable future. Their support team is always available, and the maintenance services are top-notch. Highly recommended!"',
-    author: "Rajesh Sharma & Family, Cochin",
+      '"Our commercial solar installation brought better predictability to our monthly power expenses. The team maintained transparent communication throughout the project and handled the technical and approval processes professionally. The transition to solar was structured, efficient, and free from operational disruption, which made the decision feel reassuring."',
+    author: "SIRAJ K P- 3 kw-CHERTHALA, ALAPUZHA- residential",
   },
   {
     videoId: "8LSt8_11wbQ",
@@ -40,8 +40,8 @@ const testimonials = [
       { value: "6 Days", label: "Installation Time" },
     ],
     quote:
-      '"Switching to solar with Flarize was the best decision for my home. The team made the entire process seamless, from consultation to installation. Not only have I reduced my electricity bills by nearly 75%, but I also feel great knowing I’m contributing to a sustainable future. Their support team is always available, and the maintenance services are top-notch. Highly recommended!"',
-    author: "Rajesh Sharma & Family, Cochin",
+      '"What stood out most was the honest guidance we received on system capacity and realistic expectations around savings. The team took time to explain what would work best for our usage rather than overselling. From planning to completion, the project felt reliable, transparent, and well managed."',
+    author: "STEPHEN V C-3kw- VATTAYAL, ALAPUZHA- residential",
   },
 ];
 

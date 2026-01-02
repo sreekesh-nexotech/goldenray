@@ -15,8 +15,9 @@ export default function Solutions(){
             circleBgColor="[#F7BA41]"
             showYellowBtn={true}
             showWhiteBtn={false}
-            BoxTitle="Residential Solar Solution"
-            BoxDescription="Switch to solar and enjoy lower electricity bills, energy independence, and a greener lifestyle. Our residential solar solutions are designed for individual homes, apartments, and housing communities, ensuring a seamless and cost-effective transition to clean energy."
+            BoxTitle="Residential Solar Installation"
+            BoxDescription="For a home in Kerala, solar is more than a power choice—it’s a long-term decision for comfort 
+and savings. Our residential solar solutions are planned around your home’s electricity usage, roof space, and local conditions like sunlight and weather. Every step, from the first discussion to system activation, is explained clearly so there are no surprises. The installation is neat, safe, and built to last, helping your household reduce electricity bills while enjoying steady, dependable power for years to come. "
             BoxList1="Reduce or eliminate electricity bills"
             BoxList2="Increase property value"
             BoxList3="Qualify for tax incentives and rebates"
@@ -30,8 +31,13 @@ export default function Solutions(){
             circleBgColor="[#074A4D]"
             showYellowBtn={false}
             showWhiteBtn={true}
-            BoxTitle="Commercial Solar Solution"
-            BoxDescription="Optimize your business’s energy efficiency and reduce operational costs with our custom solar solutions for offices, retail spaces, educational institutions, and more. Enjoy government incentives, long-term savings, and a reputation for sustainability."
+            BoxTitle="Commercial Solar Installation"
+            BoxDescription="Running a business in Kerala means managing power costs without interrupting daily 
+operations. Our commercial solar installations are designed after carefully understanding your 
+working hours, power demand, and available rooftop or open space. 
+From approvals to commissioning, the process is handled smoothly with clear communication at 
+every stage. The result is a reliable solar system that supports stable energy expenses and 
+helps businesses plan better for the future. "
             BoxList1="Lower operational costs"
             BoxList2="Enhanced corporate social responsibility"
             BoxList3="Tax benefits and accelerated depreciation"
@@ -45,8 +51,13 @@ export default function Solutions(){
             circleBgColor="[#074A4D]"
             showYellowBtn={false}
             showWhiteBtn={true}
-            BoxTitle="Industrial Solar Solution"
-            BoxDescription="For factories, warehouses, and large industrial setups, our high-capacity solar systems ensure uninterrupted power supply, reduced dependency on the grid, and massive cost savings. Experience scalable solutions tailored to your energy demands."
+            BoxTitle="Industrial Solar Installation"
+            BoxDescription="Industrial facilities in Kerala need solar systems that can handle high power loads and 
+continuous operations. Our industrial solar installations are engineered with careful load 
+analysis, safety standards, and long-term performance in mind. 
+We coordinate closely with plant managers and technical teams to ensure smooth integration 
+with existing electrical systems. Every project is executed with precision, focusing on durability, 
+compliance, and consistent power generation. "
             BoxList1="High capacity energy production"
             BoxList2="Reduced peak load charges"
             BoxList3="Backup power during outages"
