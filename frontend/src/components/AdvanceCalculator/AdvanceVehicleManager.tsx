@@ -397,7 +397,7 @@ export default function Electric_vehicleManager({
             htmlFor="no_of_units"
             className="block text-sm font-medium text-[#123532] mb-1"
           >
-            Monthly Usage (KM)
+            Daily Usage (KM)
           </label>
           <input
             type="number"
