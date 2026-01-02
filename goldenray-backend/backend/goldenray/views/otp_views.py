@@ -8,6 +8,9 @@ from ..models.send_quote_junk import SendQuoteJunk
 from ..serializers.send_quote_junk_serializer import SendQuoteJunkSerializer
 import uuid
 from rest_framework.permissions import AllowAny
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Q
 
 class SendOTPAPIView(APIView):
     authentication_classes = []
@@ -20,6 +23,51 @@ class SendOTPAPIView(APIView):
             if not phone_number.startswith('+'):
                 phone_number = '+91' + phone_number.lstrip('0')
             name = request.data.get('name', '')
+
+            # Rate limiting: Check if this phone number has requested OTP in last 30 days
+            thirty_days_ago = timezone.now() - timedelta(days=30)
+
+            # Check both SendQuoteJunk (OTP requests) and SentQuote (verified requests)
+            recent_request = (
+                SendQuoteJunk.objects.filter(
+                    phone=phone_number,
+                    created_at__gte=thirty_days_ago
+                ).exists() or
+                SentQuote.objects.filter(
+                    phone=phone_number,
+                    created_at__gte=thirty_days_ago
+                ).exists()
+            )
+
+            if recent_request:
+                # Get the most recent request date for better error message
+                junk_latest = SendQuoteJunk.objects.filter(
+                    phone=phone_number,
+                    created_at__gte=thirty_days_ago
+                ).order_by('-created_at').first()
+
+                sent_latest = SentQuote.objects.filter(
+                    phone=phone_number,
+                    created_at__gte=thirty_days_ago
+                ).order_by('-created_at').first()
+
+                latest_request = None
+                if junk_latest and sent_latest:
+                    latest_request = max(junk_latest.created_at, sent_latest.created_at)
+                elif junk_latest:
+                    latest_request = junk_latest.created_at
+                elif sent_latest:
+                    latest_request = sent_latest.created_at
+
+                days_since_request = (timezone.now() - latest_request).days if latest_request else 0
+                days_remaining = max(30 - days_since_request, 1)
+
+                return Response({
+                    'error': 'rate_limit_exceeded',
+                    'message': f'You have already requested a quote recently. Please try again after {days_remaining} days or contact our team directly.',
+                    'days_remaining': days_remaining
+                }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+
             # Generate unique quote_id
             quote_id = f"JUNK_{uuid.uuid4().hex[:8].upper()}"
             try:
