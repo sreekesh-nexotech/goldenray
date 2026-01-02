@@ -58,9 +58,19 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
             setApiError("Invalid OTP. Please try again.");
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("API error:", error);
-        setApiError("Something went wrong. Please try again later.");
+
+        // Check if it's a rate limiting error (429)
+        if (error.status === 429 && error.errorData) {
+          const { message, days_remaining } = error.errorData;
+          setApiError(message || `You have already requested a quote recently. Please try again after ${days_remaining} days or contact our team directly.`);
+        } else if (error.errorData?.error === 'rate_limit_exceeded') {
+          // Fallback check for rate limit error
+          setApiError(error.errorData.message || "You have already requested a quote recently. Please try again after 30 days or contact our team directly.");
+        } else {
+          setApiError("Something went wrong. Please try again later.");
+        }
       }
     }
   };
