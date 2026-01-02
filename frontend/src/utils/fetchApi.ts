@@ -38,7 +38,10 @@ export async function fetchApi<T>(
       }
 
       // Throw error with parsed JSON data
-      const error: any = new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+      const error = new Error(errorData.message || `HTTP error! Status: ${response.status}`) as Error & {
+        status: number;
+        errorData: typeof errorData;
+      };
       error.status = response.status;
       error.errorData = errorData;
       throw error;
