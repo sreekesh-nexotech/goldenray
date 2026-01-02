@@ -56,7 +56,7 @@ const TeamSection = ({ members = teamMembers }) => {
         {/* Section Heading Container */}
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h1 className="text-3xl md:text-4xl lg:text-[64px] font-semibold text-[#123532]">
-            Meet Our Team
+            Our Team
           </h1>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-8">

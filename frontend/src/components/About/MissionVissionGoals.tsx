@@ -9,20 +9,20 @@ const goalsData = [
     number: "01",
     title: "Our Mission",
     description:
-      "We simplify solar energy adoption with seamless solutions, transparent pricing, and expert support—so homeowners and businesses can switch to renewable energy with confidence.",
+      "To make solar energy adoption simple and stress-free for homes and businesses across Kerala. We do this through clear guidance, transparent pricing, and dependable expert support—so customers can switch to renewable energy with complete confidence.",
   },
   {
     number: "02",
     title: "Our Vision",
     description:
-      "Making clean energy simple, accessible, and the standard for everyone.",
+      "To see clean solar energy become a natural part of everyday life in Kerala—accessible, reliable, and trusted by every household and business.",
     isHighlighted: true, // Flag to apply special styling (e.g., shadow)
   },
   {
     number: "03",
     title: "Our Goals",
     description:
-      "Make solar energy easy, affordable, and reliable while helping customers save money and support a greener future with full transparency.",
+      "To deliver solar solutions that are easy to understand, affordable to adopt, and reliable over the long term, helping customers reduce electricity costs while contributing to a greener, more sustainable Kerala—with full transparency at every step.",
   },
 ];
 
