@@ -3,17 +3,7 @@ import TeamMember from "./TeamMember";
 
 // Sample data structure for team members (can be replaced with API data)
 const teamMembers = [
-  {
-    name: "ANANTHAKRISHNAN G",
-    title: "Project Head",
-    // description:
-    //   "Sarah is the mastermind behind Flarece's cutting-edge solar tech. With years of experience in renewable energy, she ensures our solutions are efficient, and future-proof.",
-    linkedin:
-      "https://www.linkedin.com/in/ananthakrishnan-g-4421b1276?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
-    imageUrl:
-      "https://golden-ray.b-cdn.net/images/Ananthakrishnnan%20G%20(1).jpeg",
-  },
-  {
+    {
     name: "JUDE JAMES",
     title: "Operations Manager",
     // description:
@@ -23,12 +13,22 @@ const teamMembers = [
   },
   {
     name: "AROMAL KM",
-    title: "CTO",
+    title: "CTO - Chief Technology Officer",
     // description:
     //   "Sarah is the mastermind behind Flarece's cutting-edge solar tech. With years of experience in renewable energy, she ensures our solutions are efficient, and future-proof.",
     linkedin:
       "https://www.linkedin.com/in/aromal-km-627ba3325/?originalSubdomain=in",
     imageUrl: "https://golden-ray.b-cdn.net/images/Aromal%20KM%20(1).jpg",
+  },
+  {
+    name: "ANANTHAKRISHNAN G",
+    title: "Project Manager",
+    // description:
+    //   "Sarah is the mastermind behind Flarece's cutting-edge solar tech. With years of experience in renewable energy, she ensures our solutions are efficient, and future-proof.",
+    linkedin:
+      "https://www.linkedin.com/in/ananthakrishnan-g-4421b1276?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+    imageUrl:
+      "https://golden-ray.b-cdn.net/images/Ananthakrishnnan%20G%20(1).jpeg",
   },
   {
     name: " ANUPRIYA MS ",

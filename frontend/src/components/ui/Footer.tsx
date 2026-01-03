@@ -265,10 +265,10 @@ export default function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="/resources"
+                      href="#"
                       className="hover:text-gray-800 transition-all ease-in-out duration-300"
                     >
-                      Resources
+                      Blog
                     </Link>
                   </li>
                   <li>
