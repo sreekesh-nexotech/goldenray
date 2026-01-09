@@ -2,18 +2,20 @@
 import { useRef } from "react";
 import Button from "../ui/Button";
 import { BasicInfoFormData, Electronic_device } from "@/types/types";
-import DeviceManager from "./AdvanceDeviceManager"; 
+import DeviceManager from "./AdvanceDeviceManager";
 
 interface NewHomeDetailsStepProps {
   formData: BasicInfoFormData;
   setFormData: React.Dispatch<React.SetStateAction<BasicInfoFormData>>;
   onNext: () => void;
+  onBack: () => void;
 }
 
 export default function NewHomeDetailsStep({
   formData,
   setFormData,
   onNext,
+  onBack,
 }: NewHomeDetailsStepProps) {
   const deviceManagerValidator = useRef<(() => boolean) | null>(null);
 
@@ -22,12 +24,15 @@ export default function NewHomeDetailsStep({
     setFormData((prev) => ({ ...prev, [name]: parseInt(value) }));
   };
 
-  const setBackupDevices: React.Dispatch<React.SetStateAction<Electronic_device[]>> = (
-    updater
-  ) => {
+  const setBackupDevices: React.Dispatch<
+    React.SetStateAction<Electronic_device[]>
+  > = (updater) => {
     setFormData((prev) => ({
       ...prev,
-      electronic_devices: typeof updater === "function" ? updater(prev.electronic_devices) : updater,
+      electronic_devices:
+        typeof updater === "function"
+          ? updater(prev.electronic_devices)
+          : updater,
     }));
   };
 
@@ -49,7 +54,6 @@ export default function NewHomeDetailsStep({
 
   return (
     <div className="space-y-8 p-0 md:p-6">
-      
       <div>
         <label className="text-xl md:text-2xl font-semibold text-[#123532] mb-6">
           How many hours of backup power do you need?
@@ -77,9 +81,17 @@ export default function NewHomeDetailsStep({
         devices={formData.electronic_devices}
         setDevices={setBackupDevices}
         title="What devices need backup power?"
-        validateInputs={(validator) => (deviceManagerValidator.current = validator)}
+        validateInputs={(validator) =>
+          (deviceManagerValidator.current = validator)
+        }
       />
-      <div className="flex justify-end mt-8">
+      <div className="flex justify-between mt-8">
+        <Button
+          onClick={onBack}
+          className="bg-white border-2 border-[#F7BA41] text-[#F7BA41] hover:bg-[#FFFBEB]"
+        >
+          Back
+        </Button>
         <Button onClick={handleCalculate}>Calculate</Button>
       </div>
     </div>

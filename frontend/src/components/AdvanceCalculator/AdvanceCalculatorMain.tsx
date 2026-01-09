@@ -66,6 +66,12 @@ export default function AdvancedCalculatorMain() {
     }
   };
 
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
   const handleBasicInfoSubmit = () => {
     setError(null);
     if (!basicInfo.home_type || !basicInfo.grid_type) {
@@ -273,6 +279,7 @@ export default function AdvancedCalculatorMain() {
               formData={usageDetails}
               setFormData={setUsageDetails}
               onCalculate={handleUsageDetailsSubmit}
+              onBack={handleBack}
               loading={loading}
               grid_type={basicInfo.grid_type}
             />
@@ -283,6 +290,7 @@ export default function AdvancedCalculatorMain() {
               formData={basicInfo}
               setFormData={setBasicInfo}
               onNext={handleCalculate}
+              onBack={handleBack}
             />
           )}
 
@@ -291,6 +299,7 @@ export default function AdvancedCalculatorMain() {
               data={resultData}
               onStartOver={handleStartOver}
               onGetDetailedQuote={() => setIsPopupOpen(true)}
+              onBack={handleBack}
               grid_type={basicInfo.grid_type}
             />
           )}

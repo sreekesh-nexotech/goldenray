@@ -31,17 +31,17 @@ interface ResultDisplayProps {
   data: AdvancedCalculatorData;
   onStartOver: () => void;
   onGetDetailedQuote: () => void;
+  onBack: () => void;
   grid_type: string | null;
 }
 
 export default function ResultDisplay({
   data,
   onStartOver,
+  onBack,
   grid_type,
 }: ResultDisplayProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-
 
   // Create chartData with tension for curved lines (for the Line chart)
   const chartData = {
@@ -50,7 +50,6 @@ export default function ResultDisplay({
       ...dataset,
       tension: 0.4, // Set tension for smooth curves
       pointRadius: 0,
-
     })),
   };
 
@@ -86,8 +85,8 @@ export default function ResultDisplay({
         },
       },
     },
-     hover: {
-      mode: 'index' as const,
+    hover: {
+      mode: "index" as const,
       intersect: false, // Crucial: allows tooltip to trigger when mouse is near the line, not just on a point
     },
     scales: {
@@ -211,7 +210,10 @@ export default function ResultDisplay({
   };
 
   // Check if lifetime savings is negative
-  const isNegativeSavings = parseFloat(data.financialDetails.lifetime_savings.replace(/[^0-9.-]+/g, '')) < 0;
+  const isNegativeSavings =
+    parseFloat(
+      data.financialDetails.lifetime_savings.replace(/[^0-9.-]+/g, "")
+    ) < 0;
 
   return (
     <div className="space-y-8 my-6">
@@ -320,7 +322,10 @@ export default function ResultDisplay({
         <div className="flex flex-col gap-4">
           <div className="bg-white shadow-lg p-6 rounded-xl flex-1 flex flex-col justify-between">
             <div className="relative h-64 w-full flex-grow">
-              <Bar data={lifetimeBillChartData} options={lifetimeBillChartOptions} />
+              <Bar
+                data={lifetimeBillChartData}
+                options={lifetimeBillChartOptions}
+              />
             </div>
           </div>
         </div>
@@ -337,7 +342,8 @@ export default function ResultDisplay({
           </p>
           {isNegativeSavings && (
             <p className="text-[#FBC207] text-sm md:text-base mb-4 -mt-4">
-              Negative savings? Solar lets you add appliances without raising bills, ensuring long-term profits.
+              Negative savings? Solar lets you add appliances without raising
+              bills, ensuring long-term profits.
             </p>
           )}
           <div className="relative h-64 w-full flex-grow">
@@ -347,15 +353,20 @@ export default function ResultDisplay({
       </div>
       <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10">
         <button
+          onClick={onBack}
+          className="btn cursor-pointer px-8 py-3 min-w-[150px] bg-white border-2 border-[#F7BA41] font-semibold rounded-lg hover:bg-[#FFFBEB] transition-colors duration-200"
+          aria-label="go back to previous step"
+        >
+          Back
+        </button>
+        <button
           onClick={onStartOver}
-          className="btn cursor-pointer px-8 py-3 border-2 border-[#074A4D] bg-transparent text-black font-semibold rounded-lg hover:bg-[#074A4D] hover:text-white transition-colors duration-200"
+          className="btn cursor-pointer px-8 py-3 min-w-[150px] border-2 border-[#074A4D] bg-transparent text-black font-semibold rounded-lg hover:bg-[#074A4D] hover:text-white transition-colors duration-200"
           aria-label="start over calculation"
         >
           Start Over
         </button>
-        <Button
-          onClick={() => setIsPopupOpen(true)}
-        >Get Detailed Quote</Button>
+        <Button onClick={() => setIsPopupOpen(true)}>Get Detailed Quote</Button>
       </div>
       {isPopupOpen && <QuotePopup onClose={() => setIsPopupOpen(false)} />}
     </div>
