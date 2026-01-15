@@ -1,79 +1,80 @@
 // src/app/layout.tsx
-import Header from '@/components/ui/Header';
-import Footer from '@/components/ui/Footer';
-import '@/styles/globals.css';
-import { DM_Sans } from 'next/font/google';
-import localFont from 'next/font/local';
-import { Metadata } from 'next';
-import IdleTimeoutPopup from '@/components/common/IdleTimoutPopup';
-import ExitIntentPopup from '@/components/common/ExitIntentPopup';
-import FloatingChatButton from '@/components/common/FloatingChatBoat';
+import Header from "@/components/ui/Header";
+import Footer from "@/components/ui/Footer";
+import "@/styles/globals.css";
+import { DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
+import { Metadata } from "next";
+import IdleTimeoutPopup from "@/components/common/IdleTimoutPopup";
+import ExitIntentPopup from "@/components/common/ExitIntentPopup";
+import FloatingChatButton from "@/components/common/FloatingChatBoat";
+import FloatingPhoneButton from "@/components/common/FloatingPhoneButton";
 
 // Configure DM Sans for headers
 const dmSans = DM_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-dm-sans',
-  display: 'swap',
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-dm-sans",
+  display: "swap",
 });
 
 // Configure Switzer for body text (local font)
 const switzer = localFont({
   src: [
     {
-      path: '../../public/fonts/switzer/Switzer-Regular.woff2',
-      weight: '400',
-      style: 'normal',
+      path: "../../public/fonts/switzer/Switzer-Regular.woff2",
+      weight: "400",
+      style: "normal",
     },
     {
-      path: '../../public/fonts/switzer/Switzer-Medium.woff2',
-      weight: '500',
-      style: 'normal',
+      path: "../../public/fonts/switzer/Switzer-Medium.woff2",
+      weight: "500",
+      style: "normal",
     },
     {
-      path: '../../public/fonts/switzer/Switzer-Semibold.woff2',
-      weight: '600',
-      style: 'normal',
+      path: "../../public/fonts/switzer/Switzer-Semibold.woff2",
+      weight: "600",
+      style: "normal",
     },
     {
-      path: '../../public/fonts/switzer/Switzer-Bold.woff2',
-      weight: '700',
-      style: 'normal',
+      path: "../../public/fonts/switzer/Switzer-Bold.woff2",
+      weight: "700",
+      style: "normal",
     },
     {
-      path: '../../public/fonts/switzer/Switzer-Extrabold.woff2',
-      weight: '800',
-      style: 'normal',
+      path: "../../public/fonts/switzer/Switzer-Extrabold.woff2",
+      weight: "800",
+      style: "normal",
     },
     // Italic variants
     {
-      path: '../../public/fonts/switzer/Switzer-Italic.woff2',
-      weight: '400',
-      style: 'italic',
+      path: "../../public/fonts/switzer/Switzer-Italic.woff2",
+      weight: "400",
+      style: "italic",
     },
     {
-      path: '../../public/fonts/switzer/Switzer-MediumItalic.woff2',
-      weight: '500',
-      style: 'italic',
+      path: "../../public/fonts/switzer/Switzer-MediumItalic.woff2",
+      weight: "500",
+      style: "italic",
     },
     {
-      path: '../../public/fonts/switzer/Switzer-SemiboldItalic.woff2',
-      weight: '600',
-      style: 'italic',
+      path: "../../public/fonts/switzer/Switzer-SemiboldItalic.woff2",
+      weight: "600",
+      style: "italic",
     },
     {
-      path: '../../public/fonts/switzer/Switzer-BoldItalic.woff2',
-      weight: '700',
-      style: 'italic',
+      path: "../../public/fonts/switzer/Switzer-BoldItalic.woff2",
+      weight: "700",
+      style: "italic",
     },
     {
-      path: '../../public/fonts/switzer/Switzer-ExtraboldItalic.woff2',
-      weight: '800',
-      style: 'italic',
+      path: "../../public/fonts/switzer/Switzer-ExtraboldItalic.woff2",
+      weight: "800",
+      style: "italic",
     },
   ],
-  variable: '--font-switzer',
-  display: 'swap',
+  variable: "--font-switzer",
+  display: "swap",
 });
 
 // Metadata
@@ -85,7 +86,8 @@ export const metadata: Metadata = {
   description: "Empowering sustainable energy with innovative solar solutions.",
   openGraph: {
     title: "Flarize | Solar Solutions",
-    description: "Empowering sustainable energy with innovative solar solutions.",
+    description:
+      "Empowering sustainable energy with innovative solar solutions.",
     url: "https://flarize.com",
     siteName: "Flarize",
     images: [
@@ -103,7 +105,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Flarize - Solar Solutions",
-    description: "Empowering sustainable energy with innovative solar solutions.",
+    description:
+      "Empowering sustainable energy with innovative solar solutions.",
     images: ["https://flarize.com/ogImg.jpg"],
   },
   icons: {
@@ -135,6 +138,7 @@ export default function RootLayout({
 
         <IdleTimeoutPopup />
         <ExitIntentPopup />
+        <FloatingPhoneButton />
         <FloatingChatButton />
       </body>
     </html>
