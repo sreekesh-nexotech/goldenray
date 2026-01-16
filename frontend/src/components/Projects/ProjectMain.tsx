@@ -14,6 +14,35 @@ export default function ProjectMain() {
   const [activeCategory, setActiveCategory] = useState<string>("All Projects");
   const [loading, setLoading] = useState<boolean>(true); // Keep loading state for initial data load
 
+  // Check URL hash on mount to set initial category
+  useEffect(() => {
+    const hash = window.location.hash.substring(1); // Remove the # symbol
+    if (hash === "commercial") {
+      setActiveCategory("Commercial");
+    } else if (hash === "residential") {
+      setActiveCategory("Residential");
+    } else {
+      setActiveCategory("All Projects");
+    }
+  }, []);
+
+  // Listen for hash changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.substring(1);
+      if (hash === "commercial") {
+        setActiveCategory("Commercial");
+      } else if (hash === "residential") {
+        setActiveCategory("Residential");
+      } else {
+        setActiveCategory("All Projects");
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
   // Simulate fetching data
   useEffect(() => {
     setLoading(true);
@@ -37,6 +66,20 @@ export default function ProjectMain() {
       );
     }
   }, [projects, activeCategory]);
+
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+
+    // Update URL hash based on category
+    if (category === "Commercial") {
+      window.location.hash = "commercial";
+    } else if (category === "Residential") {
+      window.location.hash = "residential";
+    } else {
+      // Remove hash for "All Projects"
+      history.pushState("", document.title, window.location.pathname);
+    }
+  };
 
   const categories = ["All Projects", "Residential", "Commercial"];
 
@@ -65,7 +108,7 @@ export default function ProjectMain() {
           {categories.map((category) => (
             <button
               key={category}
-              onClick={() => setActiveCategory(category)}
+              onClick={() => handleCategoryChange(category)}
               className={`
                 flex-1 text-center py-3 px-2 rounded-full text-xs md:text-xl font-medium transition duration-300 ease-in-out whitespace-nowrap cursor-pointer
                 ${
