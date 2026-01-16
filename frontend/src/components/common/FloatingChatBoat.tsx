@@ -4,7 +4,7 @@
 import React from "react";
 
 const FloatingChatButton = () => {
-  const whatsappNumber = "9999999999";
+  const whatsappNumber = "6282922988";
   const message = encodeURIComponent(
     "Hi, I'd like to know more about Flarize solar solutions."
   );

@@ -4,7 +4,7 @@
 import React from "react";
 
 const FloatingPhoneButton = () => {
-  const phoneNumber = "9999999999";
+  const phoneNumber = "⁠6282922988";
   const telUrl = `tel:${phoneNumber}`;
 
   return (
