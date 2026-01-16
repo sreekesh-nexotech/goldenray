@@ -34,7 +34,7 @@ export default function Header() {
 
         <nav>
           <ul className="hidden md:flex gap-6 text-gray-600 font-medium md:justify-center md:items-center">
-            <li 
+            <li
               className="relative"
               onMouseEnter={() => setSolutionsDropdownOpen(true)}
               onMouseLeave={() => setSolutionsDropdownOpen(false)}
@@ -45,13 +45,20 @@ export default function Header() {
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-500 before:ease-in-out hover:before:w-1/2`}
               >
                 Our Solutions
-                <ChevronDown size={16} className={`transition-transform duration-200 ${solutionsDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  size={16}
+                  className={`transition-transform duration-200 ${
+                    solutionsDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
               </button>
-              
+
               {/* Dropdown Menu */}
               <div
                 className={`absolute top-full left-0 mt-2 bg-white shadow-lg rounded-lg overflow-hidden transition-all duration-200 ${
-                  solutionsDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
+                  solutionsDropdownOpen
+                    ? "opacity-100 visible translate-y-0"
+                    : "opacity-0 invisible -translate-y-2"
                 }`}
               >
                 <Link
@@ -80,7 +87,7 @@ export default function Header() {
             </li>
             <li>
               <Link
-                href="/" // Temporary: redirects to home instead of /resources 
+                href="/" // Temporary: redirects to home instead of /resources
                 className={`relative lg:text-xl ${
                   isActive("/resources") ? "font-bold before:w-1/2" : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-300 before:ease-in-out hover:before:w-1/2`}
@@ -151,7 +158,7 @@ export default function Header() {
         </li>
         <li>
           <Link
-            href="/" // Temporary: redirects to home instead of /resources 
+            href="/" // Temporary: redirects to home instead of /resources
             onClick={() => setIsOpen(false)}
             className={`relative text-gray-700 font-medium ${
               isActive("/resources") ? "font-bold" : ""
