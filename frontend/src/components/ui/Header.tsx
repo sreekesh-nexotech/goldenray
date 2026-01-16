@@ -1,13 +1,14 @@
 /* golden-ray/frontend/src/components/ui/Header.tsx */
 "use client";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [solutionsDropdownOpen, setSolutionsDropdownOpen] = useState(false);
   const pathname = usePathname();
   const isActive = (href: string) => pathname === href;
 
@@ -33,15 +34,39 @@ export default function Header() {
 
         <nav>
           <ul className="hidden md:flex gap-6 text-gray-600 font-medium md:justify-center md:items-center">
-            <li>
-              <Link
-                href="/solutions"
-                className={`relative lg:text-xl ${
+            <li 
+              className="relative"
+              onMouseEnter={() => setSolutionsDropdownOpen(true)}
+              onMouseLeave={() => setSolutionsDropdownOpen(false)}
+            >
+              <button
+                className={`relative lg:text-xl flex items-center gap-1 ${
                   isActive("/solutions") ? "font-bold before:w-1/2" : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-500 before:ease-in-out hover:before:w-1/2`}
               >
                 Our Solutions
-              </Link>
+                <ChevronDown size={16} className={`transition-transform duration-200 ${solutionsDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {/* Dropdown Menu */}
+              <div
+                className={`absolute top-full left-0 mt-2 bg-white shadow-lg rounded-lg overflow-hidden transition-all duration-200 ${
+                  solutionsDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
+                }`}
+              >
+                <Link
+                  href="/solutions#residential"
+                  className="block px-6 py-3 text-gray-700 hover:bg-gray-50 whitespace-nowrap"
+                >
+                  Residential
+                </Link>
+                <Link
+                  href="/solutions#commercial"
+                  className="block px-6 py-3 text-gray-700 hover:bg-gray-50 whitespace-nowrap"
+                >
+                  Commercial
+                </Link>
+              </div>
             </li>
             <li>
               <Link
