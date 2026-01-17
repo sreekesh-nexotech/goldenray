@@ -1,0 +1,17 @@
+# Docker Compose Override for Production
+# This file provides production-specific settings
+
+services:
+  golden-frontend:
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  golden-backend:
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

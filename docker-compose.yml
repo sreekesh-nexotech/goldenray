@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  golden-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: golden-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    depends_on:
+      - golden-backend
+    networks:
+      - goldenray-network
+
+  golden-backend:
+    build:
+      context: ./goldenray-backend/backend
+      dockerfile: Dockerfile
+    container_name: golden-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=backend.settings
+    restart: unless-stopped
+    networks:
+      - goldenray-network
+    volumes:
+      - backend-static:/app/static
+      - backend-media:/app/media
+
+networks:
+  goldenray-network:
+    driver: bridge
+
+volumes:
+  backend-static:
+  backend-media:
