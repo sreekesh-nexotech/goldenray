@@ -1,121 +1,71 @@
-import React from 'react';
-import Image from 'next/image'; 
-import LinkingButton from '../ui/LinkingButton';
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 type SolutionBoxProps = {
-    BoxBgColor:string;
-    TextColor:string;
-    circleBgColor:string;
-    showYellowBtn?:boolean;
-    showWhiteBtn?:boolean;
-    BoxTitle:string;
-    BoxDescription:string;
-    BoxList1:string;
-    BoxList2:string;
-    BoxList3:string;
-    BoxList4:string;
-    BoxImg:string;
-}
-
-
+  BoxBgColor: string;
+  TextColor: string;
+  showYellowBtn?: boolean;
+  BoxTitle: string;
+  BoxDescription: string;
+  BoxImg: string;
+};
 
 export default function SolutionBox({
-    BoxBgColor,
-    TextColor,
-    circleBgColor,
-    showYellowBtn = false,
-    showWhiteBtn = false,
-    BoxTitle,
-    BoxDescription,
-    BoxList1,
-    BoxList2,
-    BoxList3,
-    BoxList4,
-    BoxImg,
-}:SolutionBoxProps){
+  BoxBgColor,
+  TextColor,
+  showYellowBtn = false,
+  BoxTitle,
+  BoxDescription,
+  BoxImg,
+}: SolutionBoxProps) {
   return (
-    <section className="w-full py-5   flex items-center justify-center">
-        {/* Main content card with responsive layout */}
-        <div className={`bg-${BoxBgColor} rounded-2xl shadow-lg flex flex-col lg:flex-row overflow-hidden max-w-6xl mx-4 md:mx-8 xl:mx-auto justify-center items-center p-4 md:p-10`}>
-            {/* Image only visible in mobile device */}
-            <div className="w-full relative  min-h-0  lg:hidden block mb-4">
+    <section className="w-full py-6 px-4 md:px-6 lg:px-8 flex items-center justify-center">
+      {/* Main content card with responsive layout */}
+      <div
+        className={`bg-${BoxBgColor} rounded-3xl shadow-xl flex flex-col lg:flex-row-reverse max-w-7xl w-full`}
+      >
+        {/* Right Section: Image with padding - Appears first on mobile */}
+        <div className="lg:w-1/2 p-6 md:p-8 lg:p-6 flex items-center">
+          <div className="relative w-full h-[350px] md:h-[450px] lg:h-full lg:min-h-[450px] rounded-2xl overflow-hidden">
             <Image
               src={BoxImg}
-              width={300}
-              height={300}
+              fill
               alt={BoxTitle}
-              className="rounded-xl w-full h-full" 
-            />
-          </div>
-
-
-
-
-
-          {/* Left Section: Text Content */}
-          <div className={`lg:w-1/2 ${TextColor} flex flex-col justify-center`}>
-            <h2 className="text-2xl md:text-4xl font-semibold mb-4 leading-tight">
-              {BoxTitle}
-            </h2>
-            <p className="text-base md:text-lg mb-6 opacity-90">
-              {BoxDescription}
-            </p>
-            
-            {/* List of benefits */}
-            <ul className="space-y-3 mb-8">
-              <li className="flex items-center"> 
-                <div className="relative w-4 h-4 mr-3 flex-shrink-0 flex items-center justify-center"> {/* Outer circle container */}
-                  <span className={`absolute w-4 h-4 rounded-full bg-${circleBgColor} opacity-20`}></span> {/* Outer circle */}
-                  <span className={`w-2 h-2 bg-${circleBgColor}  rounded-full`}></span> {/* Inner solid circle */}
-                </div>
-                <span className="text-base md:text-lg opacity-90">{BoxList1}</span>
-              </li>
-
-              <li className="flex items-center"> 
-                <div className="relative w-4 h-4 mr-3 flex-shrink-0 flex items-center justify-center"> {/* Outer circle container */}
-                  <span className={`absolute w-4 h-4 rounded-full bg-${circleBgColor} opacity-20`}></span> {/* Outer circle */}
-                  <span className={`w-2 h-2 bg-${circleBgColor}  rounded-full`}></span> {/* Inner solid circle */}
-                </div>
-                <span className="text-base md:text-lg opacity-90">{BoxList2}</span>
-              </li>
-
-              <li className="flex items-center"> 
-                <div className="relative w-4 h-4 mr-3 flex-shrink-0 flex items-center justify-center"> {/* Outer circle container */}
-                  <span className={`absolute w-4 h-4 rounded-full bg-${circleBgColor} opacity-20`}></span> {/* Outer circle */}
-                  <span className={`w-2 h-2 bg-${circleBgColor}  rounded-full`}></span> {/* Inner solid circle */}
-                </div>
-                <span className="text-base md:text-lg opacity-90">{BoxList3}</span>
-              </li>
-
-              <li className="flex items-center"> 
-                <div className="relative w-4 h-4 mr-3 flex-shrink-0 flex items-center justify-center"> {/* Outer circle container */}
-                  <span className={`absolute w-4 h-4 rounded-full bg-${circleBgColor} opacity-20`}></span> {/* Outer circle */}
-                  <span className={`w-2 h-2 bg-${circleBgColor}  rounded-full`}></span> {/* Inner solid circle */}
-                </div>
-                <span className="text-base md:text-lg opacity-90">{BoxList4}</span>
-              </li>
-
-              
-            </ul>
-
-            {/* Call to action button */}
-            <div>
-                {showYellowBtn && <LinkingButton content="View Projects" ButtonLink='/projects' ButtonBg='bg-[#F7BA41]' Buttontext='text-[#272218]' ButtonHover='hover:bg-yellow-100'/>}
-                {showWhiteBtn && <LinkingButton content="View Projects" ButtonLink='/projects'  ButtonBg='bg-[#FFFFFF]' Buttontext='text-[#272218]' ButtonHover='hover:bg-[#eeeeee]' />}
-            </div>
-          </div>
-
-           {/* Right Section: Image only visible in larger device */}
-          <div className="lg:w-1/2 relative  lg:min-h-0 hidden lg:block">
-            <Image
-              src={BoxImg}
-              width={300}
-              height={300}
-              alt="Residential Solar Solution"
-              className="rounded-xl w-full h-full" 
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
         </div>
+
+        {/* Left Section: Text Content - Appears second on mobile */}
+        <div
+          className={`lg:w-1/2 ${TextColor} flex flex-col justify-between p-6 md:p-8 lg:p-10`}
+        >
+          <div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+              {BoxTitle}
+            </h2>
+            <p className="text-base md:text-lg leading-relaxed mb-8 opacity-95">
+              {BoxDescription}
+            </p>
+          </div>
+
+          {/* Call to action button */}
+          <div>
+            <Link
+              href="/projects"
+              className={`block w-full text-center px-12 py-5 rounded-xl font-bold text-lg md:text-xl transition-all duration-300 ${
+                showYellowBtn
+                  ? "bg-[#F7BA41] text-[#272218] hover:bg-[#e6a832]"
+                  : "bg-white text-[#272218] hover:bg-gray-100"
+              }`}
+            >
+              View Projects
+            </Link>
+          </div>
+        </div>
+      </div>
     </section>
   );
-};
+}

@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
 //importing mock data
-import { Project } from "@/data/Mock-projects";
 import { mockProjects } from "@/data/Mock-projects";
 import SolarAdvantageMain from "@/components/SolarCalculator/SolarAdvantageMain";
 
@@ -39,10 +38,10 @@ export async function generateMetadata({
         `Explore our ${project.title} solar installation project.`,
       url: `https://flarize.com/projects/${id}`,
       siteName: "Flarize",
-      images: project.mainImage
+      images: project.imageUrl
         ? [
             {
-              url: project.mainImage,
+              url: project.imageUrl,
               width: 1200,
               height: 630,
               alt: project.title,
@@ -64,7 +63,7 @@ export async function generateMetadata({
       title: `${project.title} - Flarize`,
       description:
         project.description || `Explore our ${project.title} solar project.`,
-      images: project.mainImage ? [project.mainImage] : ["/heroImg.png"],
+      images: project.imageUrl ? [project.imageUrl] : ["/heroImg.png"],
     },
     alternates: {
       canonical: `https://www.flarize.com/projects/${id}`,
