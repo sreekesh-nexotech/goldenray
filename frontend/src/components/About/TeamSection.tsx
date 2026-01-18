@@ -3,7 +3,7 @@ import TeamMember from "./TeamMember";
 
 // Sample data structure for team members (can be replaced with API data)
 const teamMembers = [
-    {
+  {
     name: "JUDE JAMES",
     title: "Operations Manager",
     // description:
@@ -52,22 +52,22 @@ const teamMembers = [
 const TeamSection = ({ members = teamMembers }) => {
   return (
     <section id="team" className="scroll-mt-[65px]">
-      <div className="relative mx-auto px-4 sm:px-6 lg:px-8 xl:px-36 py-16 ">
-        {/* Section Heading Container */}
-        <div className="max-w-7xl mx-auto text-center mb-16">
-          <h1 className="text-3xl md:text-4xl lg:text-[64px] font-semibold text-[#123532]">
-            Our Team
-          </h1>
+      <div className="relative mx-auto px-4 sm:px-6 lg:px-8 xl:px-36 py-16">
+        {/* Section Heading */}
+        <div className="max-w-7xl mx-auto text-center mb-12">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2D3748]">
+            Meet Our Team
+          </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-8">
+
+        {/* Team Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 md:gap-20 lg:gap-24 max-w-7xl mx-auto">
           {members.map((member, index) => (
             <TeamMember
               key={index}
               name={member.name}
               title={member.title}
-              // description={member.description}
               linkedin={member.linkedin}
-              // twitter={member.twitter}
               imageUrl={member.imageUrl}
             />
           ))}

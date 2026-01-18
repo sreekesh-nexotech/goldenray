@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import LinkingButton from "../ui/LinkingButton";
+import Link from "next/link";
 
 type TeamMemberProps = {
   name: string;
@@ -21,46 +21,51 @@ export default function TeamMember({
   imageUrl,
   imageScale = 1,
 }: TeamMemberProps) {
-  // Determine which social link to show (default to LinkedIn if both are provided)
-  const socialLink = linkedin
-    ? { platform: "LinkedIn", url: linkedin }
-    : twitter
-    ? { platform: "Twitter", url: twitter }
-    : null;
-
   return (
-    <div className="relative flex gap-4 md:gap-0  md:flex-col items-start text-left md:text-center md:items-center mb-4">
-      <div className="w-24 h-24 rounded-full mb-4 overflow-hidden">
+    <div className="flex flex-row bg-white rounded-lg overflow-hidden">
+      {/* Image Container - Left Side */}
+      <div className="w-1/2 flex-shrink-0 overflow-hidden max-h-[250px]">
         {imageUrl && (
           <Image
             src={imageUrl}
             alt={name}
-            width={100}
-            height={100}
-            className="w-full h-full rounded-full object-cover"
+            width={300}
+            height={250}
+            className="w-full h-full object-cover"
             style={{ transform: `scale(${imageScale})` }}
           />
         )}
       </div>
-      <div className="flex flex-col">
-        <h2 className="text-2xl font-semibold text-[#444444]">{name}</h2>
-        <p className="text-sm text-[#ED8723] mb-2 uppercase">{title}</p>
+
+      {/* Content Container - Right Side */}
+      <div className="flex flex-col justify-center items-start p-3 md:p-4 flex-1">
+        {/* Name */}
+        <h3 className="text-base md:text-lg lg:text-xl font-bold text-[#2D3748] mb-1 uppercase">
+          {name}
+        </h3>
+
+        {/* Title/Role */}
+        <p className="text-xs md:text-sm lg:text-base text-[#F7BA41] font-bold uppercase mb-3">
+          {title}
+        </p>
+
+        {/* Description if provided */}
         {description && (
-          <div className="h-full">
-            <p className="text-base text-[#666666] mb-8">{description}</p>
-          </div>
+          <p className="text-xs md:text-sm text-[#666666] mb-4 leading-relaxed">
+            {description}
+          </p>
         )}
-        {socialLink && (
-          <div>
-            <LinkingButton
-              content={`${socialLink.platform} ➝`}
-              ButtonLink={socialLink.url}
-              ButtonBorder="border border-[#074A4D]"
-              ButtonBg="bg-[#FFFFFF]"
-              Buttontext="text-[#074A4D]"
-              ButtonHover="hover:bg-[#eeeeee]"
-            />
-          </div>
+
+        {/* LinkedIn Button */}
+        {(linkedin || twitter) && (
+          <Link
+            href={linkedin || twitter || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 text-sm border-2 border-[#074A4D] text-[#074A4D] rounded-lg font-semibold hover:bg-[#074A4D] hover:text-white transition-colors duration-300"
+          >
+            LinkedIn →
+          </Link>
         )}
       </div>
     </div>
