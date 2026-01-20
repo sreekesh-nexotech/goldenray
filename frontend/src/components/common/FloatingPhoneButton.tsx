@@ -11,7 +11,7 @@ const FloatingPhoneButton = () => {
     <a
       href={telUrl}
       title="Call us now"
-      className="fixed bottom-20 right-6 sm:bottom-6 sm:left-6 z-40 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-[#F7BA41] text-black font-semibold rounded-full hover:bg-[#e6a73a] hover:scale-105 transition-all duration-200 cursor-pointer shadow-lg"
+      className="fixed bottom-6 left-6 z-40 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-[#2AB318] text-white font-semibold rounded-full hover:bg-[#25a015] hover:scale-105 transition-all duration-200 cursor-pointer shadow-lg"
       aria-label="Call us now"
     >
       {/* Phone Icon SVG */}
