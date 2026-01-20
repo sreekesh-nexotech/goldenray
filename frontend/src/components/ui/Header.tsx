@@ -107,7 +107,7 @@ export default function Header() {
             </li>
             <li>
               <Link
-                href="#footer"
+                href="/contactus"
                 className="border border-[#074A4D] px-4 py-1 flex justify-center rounded-xl hover:bg-transparent text-[#074A4D] font-sans font-semibold lg:text-xl"
               >
                 Contact us
@@ -180,7 +180,7 @@ export default function Header() {
         </li>
         <li>
           <Link
-            href="#footer"
+            href="/contactus"
             onClick={() => setIsOpen(false)}
             className="border border-[#074A4D] px-4 py-1 rounded-xl hover:bg-transparent text-[#074A4D] font-sans font-semibold"
           >

@@ -2,6 +2,7 @@
 
 import ContactHero from "./ContactHero";
 import ContactForm from "./ContactForm";
+import Services from "../Services";
 import Image from "next/image";
 
 export default function ContactMain() {
@@ -30,6 +31,9 @@ export default function ContactMain() {
           </div>
         </div>
       </div>
+
+      {/* Services */}
+      <Services serviceTitle="Why choose our solar solutions?" />
     </section>
   );
 }
