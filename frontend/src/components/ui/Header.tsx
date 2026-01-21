@@ -41,7 +41,11 @@ export default function Header() {
             >
               <button
                 className={`relative lg:text-xl flex items-center gap-1 ${
-                  isActive("/solutions") ? "font-bold before:w-1/2" : ""
+                  isActive("/solutions") ||
+                  isActive("/residential") ||
+                  isActive("/commercial")
+                    ? "font-bold before:w-1/2"
+                    : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-500 before:ease-in-out hover:before:w-1/2`}
               >
                 Our Solutions
@@ -62,13 +66,13 @@ export default function Header() {
                 }`}
               >
                 <Link
-                  href="/solutions#residential"
+                  href="/residential"
                   className="block px-6 py-3 text-gray-700 hover:bg-gray-50 whitespace-nowrap"
                 >
                   Residential
                 </Link>
                 <Link
-                  href="/solutions#commercial"
+                  href="/commercial"
                   className="block px-6 py-3 text-gray-700 hover:bg-gray-50 whitespace-nowrap"
                 >
                   Commercial
@@ -134,16 +138,51 @@ export default function Header() {
             : "opacity-0 -translate-y-4 pointer-events-none"
         }`}
       >
-        <li>
-          <Link
-            href="/solutions"
-            onClick={() => setIsOpen(false)}
-            className={`relative text-gray-700 font-medium ${
-              isActive("/solutions") ? "font-bold" : ""
+        {/* Mobile Solutions Dropdown */}
+        <li className="flex flex-col items-center">
+          <button
+            onClick={() => setSolutionsDropdownOpen(!solutionsDropdownOpen)}
+            className={`relative text-gray-700 font-medium flex items-center gap-1 ${
+              isActive("/residential") || isActive("/commercial")
+                ? "font-bold"
+                : ""
             }`}
           >
             Our Solutions
-          </Link>
+            <ChevronDown
+              size={16}
+              className={`transition-transform duration-200 ${
+                solutionsDropdownOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          {/* Mobile Dropdown Items */}
+          <div
+            className={`flex flex-col items-center gap-3 overflow-hidden transition-all duration-300 ${
+              solutionsDropdownOpen
+                ? "max-h-40 mt-3 opacity-100"
+                : "max-h-0 opacity-0"
+            }`}
+          >
+            <Link
+              href="/residential"
+              onClick={() => setIsOpen(false)}
+              className={`text-gray-600 text-sm ${
+                isActive("/residential") ? "font-bold" : ""
+              }`}
+            >
+              Residential
+            </Link>
+            <Link
+              href="/commercial"
+              onClick={() => setIsOpen(false)}
+              className={`text-gray-600 text-sm ${
+                isActive("/commercial") ? "font-bold" : ""
+              }`}
+            >
+              Commercial
+            </Link>
+          </div>
         </li>
         <li>
           <Link

@@ -1,3 +1,4 @@
+import Faq from "@/components/Home/Faq";
 import Services from "@/components/Services";
 import SolutionBox from "@/components/Solutions/Solution-box";
 import Hero from "@/components/ui/Hero";
@@ -74,6 +75,8 @@ helps businesses plan better for the future. "
 
       {/* Services offered */}
       <Services serviceTitle="Why Choose Our Solar Solutions?" />
+
+      <Faq />
     </>
   );
 }
