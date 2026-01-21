@@ -9,6 +9,7 @@ import IdleTimeoutPopup from "@/components/common/IdleTimoutPopup";
 import ExitIntentPopup from "@/components/common/ExitIntentPopup";
 import FloatingChatButton from "@/components/common/FloatingChatBoat";
 import FloatingPhoneButton from "@/components/common/FloatingPhoneButton";
+import Script from "next/script";
 
 // Configure DM Sans for headers
 const dmSans = DM_Sans({
@@ -129,18 +130,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable} ${switzer.variable}`}>
       <head>
-        {/* Google Tag Manager */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-5H47L3GM');`,
-          }}
-        />
-        {/* End Google Tag Manager */}
-
         {/* Google Search Console Verification */}
         <meta
           name="google-site-verification"
@@ -160,6 +149,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           ></iframe>
         </noscript>
         {/* End Google Tag Manager (noscript) */}
+
+        {/* Google Tag Manager - Using Next.js Script for better loading */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5H47L3GM');`,
+          }}
+        />
 
         <Header />
         {children}
