@@ -6,6 +6,7 @@ import {
   InfoSection,
   WorkSection,
   PanelTypesSection,
+  SolarTypes,
   MilestonesSection,
   BenefitsApplicationsSection,
   FinalThoughtsSection,
@@ -74,6 +75,9 @@ export default function CommercialPage() {
       {/* Types of Solar Panels - Light */}
       <PanelTypesSection panels={data.panelTypes} variant="light" />
 
+      {/* Solar Types with Background */}
+      <SolarTypes solarTypes={data.solarTypes} />
+
       {/* Our Milestones */}
       <MilestonesSection milestones={data.milestones} />
 
@@ -83,8 +87,8 @@ export default function CommercialPage() {
       {/* Final Thoughts */}
       <FinalThoughtsSection data={data.finalThoughts} />
 
-      {/* Types of Solar Panels - Dark */}
-      <PanelTypesSection panels={data.darkPanelTypes} variant="dark" />
+      {/* Solar Types with Background */}
+      <SolarTypes solarTypes={data.solarTypes} />
 
       {/* FAQ Section */}
       <SolutionFaqSection

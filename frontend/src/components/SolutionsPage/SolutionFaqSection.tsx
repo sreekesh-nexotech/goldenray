@@ -1,7 +1,6 @@
 // src/components/SolutionsPage/SolutionFaqSection.tsx
 "use client";
 import { useState } from "react";
-import { Plus } from "lucide-react";
 
 interface FaqItem {
   question: string;
@@ -64,46 +63,44 @@ export default function SolutionFaqSection({
   };
 
   return (
-    <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-white">
-      <div className="max-w-4xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+    <section className="flex items-center justify-center">
+      <div className="container mx-auto flex flex-col items-center justify-center gap-8 lg:gap-12 md:p-10 rounded-xl max-w-full py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36">
+        {/* Heading and Description */}
+        <div className="w-full text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#123532] mb-2 leading-tight">
             {title}
-          </h2>
-          <p className="text-gray-600 text-base md:text-lg">{description}</p>
+          </h1>
+          <p className="text-base md:text-xl text-[#444444]">{description}</p>
         </div>
 
-        {/* FAQ Items */}
-        <div className="space-y-4">
+        {/* FAQ Accordion */}
+        <div className="w-full max-w-8xl p-6 rounded-3xl bg-[#F6F2EF]">
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="border border-gray-200 rounded-xl overflow-hidden"
+              className="border-b border-gray-200 last:border-b-0 py-4"
             >
               <button
+                className="flex justify-between items-center w-full text-left focus:outline-none cursor-pointer"
                 onClick={() => toggleFaq(index)}
-                className="w-full flex items-center justify-between p-5 text-left bg-white hover:bg-gray-50 transition-colors duration-200"
+                aria-label="toggle FAQ answer"
               >
-                <span className="text-base md:text-lg font-medium text-gray-900 pr-4">
+                <span className="text-base md:text-lg font-semibold text-[#444444] pr-4">
                   {faq.question}
                 </span>
-                <Plus
-                  size={24}
-                  className={`flex-shrink-0 text-gray-500 transition-transform duration-300 ${
-                    openIndex === index ? "rotate-45" : ""
+                <span
+                  className={`text-2xl font-light text-[#000000] transition-transform duration-300 ${
+                    openIndex === index ? "rotate-45" : "rotate-0"
                   }`}
-                />
+                >
+                  +
+                </span>
               </button>
-              <div
-                className={`overflow-hidden transition-all duration-300 ${
-                  openIndex === index ? "max-h-96" : "max-h-0"
-                }`}
-              >
-                <p className="p-5 pt-0 text-gray-600 text-base leading-relaxed">
+              {openIndex === index && (
+                <div className="mt-3 text-[#444444] text-sm md:text-base leading-relaxed">
                   {faq.answer}
-                </p>
-              </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -48,12 +48,18 @@ export interface WorkSectionData {
   image: string;
 }
 
+export interface SolarType {
+  title: string;
+  description: string;
+}
+
 export interface SolutionPageData {
   hero: SolutionHeroData;
   whatSection: InfoSectionData;
   howSection: InfoSectionData;
   workSection: WorkSectionData;
   panelTypes: PanelType[];
+  solarTypes: SolarType[];
   milestones: Milestone[];
   benefitsApplications: BenefitsApplicationsData;
   finalThoughts: FinalThoughtsData;
@@ -111,6 +117,23 @@ export const residentialPageData: SolutionPageData = {
       description:
         "End-to-end subsidy support with zero hassle, guaranteed.",
       image: "https://golden-ray.b-cdn.net/images/hybrid-panel.png",
+    },
+  ],
+  solarTypes: [
+    {
+      title: "Monocrystalline Panels",
+      description:
+        "Fast service & regular maintenance for maximum output.",
+    },
+    {
+      title: "Polycrystalline Panels",
+      description:
+        "Long-term warranty for reliable performance & peace of mind.",
+    },
+    {
+      title: "Hybrid Panels",
+      description:
+        "End-to-end subsidy support with zero hassle, guaranteed.",
     },
   ],
   milestones: [
@@ -231,6 +254,23 @@ export const commercialPageData: SolutionPageData = {
       description:
         "End-to-end subsidy support with zero hassle, guaranteed.",
       image: "https://golden-ray.b-cdn.net/images/hybrid-panel.png",
+    },
+  ],
+  solarTypes: [
+    {
+      title: "Monocrystalline Panels",
+      description:
+        "Fast service & regular maintenance for maximum output.",
+    },
+    {
+      title: "Polycrystalline Panels",
+      description:
+        "Long-term warranty for reliable performance & peace of mind.",
+    },
+    {
+      title: "Hybrid Panels",
+      description:
+        "End-to-end subsidy support with zero hassle, guaranteed.",
     },
   ],
   milestones: [
