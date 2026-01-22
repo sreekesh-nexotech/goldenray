@@ -70,7 +70,7 @@ export default function PanelTypesSection({
 
               {/* Panel Name */}
               <h3
-                className={`text-base md:text-lg lg:text-xl font-bold mb-3 md:mb-4 ${
+                className={`text-base md:text-lg lg:text-xl 2xl:text-2xl font-bold mb-3 md:mb-4 ${
                   isDark ? "text-white" : "text-gray-900"
                 }`}
               >
@@ -79,7 +79,7 @@ export default function PanelTypesSection({
 
               {/* Panel Description */}
               <p
-                className={`text-sm md:text-base leading-relaxed ${
+                className={`text-sm md:text-base 2xl:text-lg leading-relaxed ${
                   isDark ? "text-gray-300" : "text-gray-700"
                 }`}
               >
