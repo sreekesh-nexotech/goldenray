@@ -8,4 +8,4 @@ export { default as MilestonesSection } from "./MilestonesSection";
 export { default as BenefitsApplicationsSection } from "./BenefitsApplicationsSection";
 export { default as FinalThoughtsSection } from "./FinalThoughtsSection";
 export { default as SolutionFaqSection } from "./SolutionFaqSection";
-export { default as SolutionCtaSection } from "./SolutionCtaSection";
+

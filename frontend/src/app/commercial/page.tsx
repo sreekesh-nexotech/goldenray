@@ -11,7 +11,6 @@ import {
   BenefitsApplicationsSection,
   FinalThoughtsSection,
   SolutionFaqSection,
-  SolutionCtaSection,
 } from "@/components/SolutionsPage";
 
 export const metadata: Metadata = {
@@ -95,9 +94,6 @@ export default function CommercialPage() {
         title={data.faqTitle}
         description={data.faqDescription}
       />
-
-      {/* CTA Section */}
-      <SolutionCtaSection />
     </>
   );
 }

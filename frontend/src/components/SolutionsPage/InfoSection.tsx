@@ -15,11 +15,7 @@ export default function InfoSection({
   const isBoxed = variant === "boxed";
 
   return (
-    <section
-      className={`w-full py-12 md:py-16 px-4 md:px-6 lg:px-8 ${
-        isBoxed ? "bg-gray-50" : "bg-white"
-      }`}
-    >
+    <section className="w-full py-12 md:py-16 px-4 md:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div
           className={`flex flex-col ${
