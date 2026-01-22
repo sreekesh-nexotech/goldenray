@@ -49,25 +49,25 @@ export default function SolarTypes({
               className="group relative bg-black/30 backdrop-blur-sm rounded-2xl md:rounded-3xl overflow-hidden border border-white/20 hover:border-white/40 transition-all duration-300"
             >
               {/* Card Content - Horizontal Layout */}
-              <div className="flex flex-col sm:flex-row items-center h-full">
+              <div className="flex flex-row items-stretch h-full min-h-[180px] md:min-h-[240px]">
                 {/* Text Content - Left Side */}
-                <div className="flex-1 p-6 md:p-8">
-                  <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3 md:mb-4">
+                <div className="flex-1 p-4 md:p-8 flex flex-col justify-center">
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-2 md:mb-4">
                     {type.title}
                   </h3>
-                  <p className="text-white/90 text-sm md:text-base lg:text-lg leading-relaxed">
+                  <p className="text-white/90 text-xs md:text-sm lg:text-base leading-relaxed">
                     {type.description}
                   </p>
                 </div>
 
                 {/* Card Image - Right Side */}
-                <div className="relative h-48 sm:h-full sm:w-1/2 md:h-64 lg:h-72 w-full overflow-hidden flex-shrink-0">
+                <div className="relative w-[140px] md:w-1/2 overflow-hidden flex-shrink-0">
                   <Image
                     src={cardImage}
                     alt={type.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 140px, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
               </div>
