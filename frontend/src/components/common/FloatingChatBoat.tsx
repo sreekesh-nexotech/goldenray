@@ -6,7 +6,7 @@ import React from "react";
 const FloatingChatButton = () => {
   const whatsappNumber = "6282922988";
   const message = encodeURIComponent(
-    "Hi, I'd like to know more about Flarize solar solutions."
+    "Hi, I'd like to know more about Flarize solar solutions.",
   );
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
 
@@ -16,7 +16,7 @@ const FloatingChatButton = () => {
       target="_blank"
       rel="noopener noreferrer"
       title="Chat with us on WhatsApp"
-      className="fixed bottom-6 right-6 z-40 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-[#2AB318] text-white font-semibold rounded-full hover:bg-[#25a015] hover:scale-105 transition-all duration-200 cursor-pointer shadow-lg"
+      className="fixed bottom-6 right-6 md:bottom-6 md:right-6 z-40 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-[#FDB913] text-black font-semibold rounded-full hover:bg-[#E5A712] hover:scale-105 transition-all duration-200 cursor-pointer shadow-lg"
       aria-label="Chat with us on WhatsApp"
     >
       {/* WhatsApp Icon SVG */}
