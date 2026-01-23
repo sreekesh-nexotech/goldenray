@@ -9,6 +9,7 @@ type SolutionBoxProps = {
   BoxTitle: string;
   BoxDescription: string;
   BoxImg: string;
+  flexReverse?: boolean;
 };
 
 export default function SolutionBox({
@@ -18,12 +19,13 @@ export default function SolutionBox({
   BoxTitle,
   BoxDescription,
   BoxImg,
+  flexReverse = false,
 }: SolutionBoxProps) {
   return (
     <section className="w-full py-6 px-4 md:px-6 lg:px-8 flex items-center justify-center">
       {/* Main content card with responsive layout */}
       <div
-        className={`bg-${BoxBgColor} rounded-3xl shadow-xl flex flex-col lg:flex-row-reverse max-w-7xl w-full`}
+        className={`bg-${BoxBgColor} rounded-3xl shadow-xl flex flex-col ${flexReverse ? "lg:flex-row-reverse" : "lg:flex-row"} max-w-7xl w-full`}
       >
         {/* Right Section: Image with padding - Appears first on mobile */}
         <div className="lg:w-1/2 p-6 md:p-8 lg:p-6 flex items-center">
