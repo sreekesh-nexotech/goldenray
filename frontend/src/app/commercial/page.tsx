@@ -86,8 +86,7 @@ export default function CommercialPage() {
       {/* Final Thoughts */}
       <FinalThoughtsSection data={data.finalThoughts} />
 
-      {/* Solar Types with Background */}
-      <SolarTypes solarTypes={data.solarTypes} />
+      
 
       {/* FAQ Section */}
       <SolutionFaqSection
