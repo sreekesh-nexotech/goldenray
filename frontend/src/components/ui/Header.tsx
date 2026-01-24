@@ -16,10 +16,10 @@ export default function Header() {
     "https://gym-manager-pull.b-cdn.net/golden_ray/home/logo_header.png";
   return (
     // The outer header is full-width, but the content inside is constrained.
-    <header className="py-4 shadow-md bg-white fixed w-full top-0 z-50">
+    <header className="h-16 md:h-20 grid items-center shadow-md bg-white fixed w-full top-0 z-50">
       {/* This new container div constrains the content to a max-width and centers it. */}
       <div className="w-full max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
-        <div className="w-[110px] md:w-[130px]">
+        <div className="w-[110px] md:w-[130px] flex items-center">
           <Link href="/">
             <Image
               src={logo}
@@ -27,13 +27,14 @@ export default function Header() {
               width={130}
               height={130}
               sizes="(max-width: 768px) 110px, 130px"
-              style={{ width: "100%", height: "auto" }}
+              className="w-full h-auto max-h-10 md:max-h-14 object-contain"
+              priority
             />
           </Link>
         </div>
 
         <nav>
-          <ul className="hidden md:flex gap-6 text-gray-600 font-medium md:justify-center md:items-center">
+          <ul className="hidden md:flex gap-6 text-gray-600 font-medium leading-none md:justify-center md:items-center">
             <li
               className="relative"
               onMouseEnter={() => setSolutionsDropdownOpen(true)}
@@ -132,7 +133,7 @@ export default function Header() {
 
       {/* Mobile menu remains full-width, which is correct */}
       <ul
-        className={`font-dm-sans absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-center gap-6 py-4 md:hidden transition-all duration-300 ease-in-out pb-10 ${
+        className={`font-dm-sans leading-none absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-center gap-6 py-4 md:hidden transition-all duration-300 ease-in-out pb-10 ${
           isOpen
             ? "opacity-100 translate-y-0"
             : "opacity-0 -translate-y-4 pointer-events-none"

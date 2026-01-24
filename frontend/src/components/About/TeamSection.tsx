@@ -61,7 +61,7 @@ const TeamSection = ({ members = teamMembers }) => {
         </div>
 
         {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 md:gap-20 lg:gap-24 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-20 lg:gap-24 max-w-7xl mx-auto">
           {members.map((member, index) => (
             <TeamMember
               key={index}

@@ -45,7 +45,7 @@ export default function SolutionBox({
           className={`lg:w-1/2 ${TextColor} flex flex-col justify-between p-6 md:p-8 lg:p-10`}
         >
           <div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 leading-tight">
               {BoxTitle}
             </h2>
             <p className="text-base md:text-lg leading-relaxed mb-8 opacity-95">
@@ -57,7 +57,7 @@ export default function SolutionBox({
           <div>
             <Link
               href="/projects"
-              className={`block w-full text-center px-12 py-5 rounded-xl font-bold text-lg md:text-xl transition-all duration-300 ${
+              className={`block w-full text-center py-3 md:px-12 md:py-5 rounded-xl font-bold text-lg md:text-xl transition-all duration-300 ${
                 showYellowBtn
                   ? "bg-[#F7BA41] text-[#272218] hover:bg-[#e6a832]"
                   : "bg-white text-[#272218] hover:bg-gray-100"

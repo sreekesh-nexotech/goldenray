@@ -59,7 +59,7 @@ export default function HeroHome() {
   // <meta name="viewport" content="width=device-width, initial-scale=1">
 
   return (
-    <section className="relative w-full overflow-hidden mt-20 md:mt-8 xl:mt-12 2xl:mt-16">
+    <section className="relative w-full overflow-hidden">
       <PageIllustration />
 
       {/* Content */}

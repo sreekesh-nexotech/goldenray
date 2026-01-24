@@ -9,7 +9,7 @@ import { submitContactForm } from "@/services/basicContactService";
 import LinkedInLogo from "../../../public/LinkedinLogo.png";
 import FacebookLogo from "../../../public/FacebookLogo.png";
 import InstagramLogo from "../../../public/InstagramLogo.png";
-import YoutubeLogo from "../../../public/YoutubeLogo.png";
+// import YoutubeLogo from "../../../public/YoutubeLogo.png";
 
 export default function Footer() {
   const [isLoading, setIsLoading] = useState(false);
@@ -205,7 +205,7 @@ export default function Footer() {
               </p>
               {/* Guideline [8]: Increased touch target for social media icons with padding */}
               <div className="flex gap-4">
-                <Link href="#" aria-label="LinkedIn" className="p-2">
+                <Link href="https://www.linkedin.com/showcase/flarize/" target="new" aria-label="LinkedIn" className="p-2">
                   <Image
                     src={LinkedInLogo}
                     alt="LinkedIn Logo"
@@ -213,7 +213,7 @@ export default function Footer() {
                     height={24}
                   />
                 </Link>
-                <Link href="#" aria-label="Facebook" className="p-2">
+                <Link href="https://www.facebook.com/profile.php?id=61586953048937" target="new" aria-label="Facebook" className="p-2">
                   <Image
                     src={FacebookLogo}
                     alt="Facebook Logo"
@@ -221,7 +221,7 @@ export default function Footer() {
                     height={24}
                   />
                 </Link>
-                <Link href="#" aria-label="Instagram" className="p-2">
+                <Link href="https://www.instagram.com/fla.rize?igsh=MW0zZnJueG01Mm01bQ%3D%3D&utm_source=qr" target="new" aria-label="Instagram" className="p-2">
                   <Image
                     src={InstagramLogo}
                     alt="Instagram Logo"
@@ -229,14 +229,14 @@ export default function Footer() {
                     height={24}
                   />
                 </Link>
-                <Link href="#" aria-label="YouTube" className="p-2">
+                {/* <Link href="#" aria-label="YouTube" className="p-2">
                   <Image
                     src={YoutubeLogo}
                     alt="YouTube Logo"
                     width={24}
                     height={24}
                   />
-                </Link>
+                </Link> */}
               </div>
             </div>
 
