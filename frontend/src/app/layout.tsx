@@ -7,6 +7,7 @@ import { DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Suspense } from "react";
 
 import IdleTimeoutPopup from "@/components/common/IdleTimoutPopup";
 import ExitIntentPopup from "@/components/common/ExitIntentPopup";
@@ -135,7 +136,9 @@ export default function RootLayout({
         )}
 
         {/* Tracks SPA navigation */}
-        <PageTracker />
+        <Suspense fallback={null}>
+          <PageTracker />
+        </Suspense>
 
         <Header />
         {children}
