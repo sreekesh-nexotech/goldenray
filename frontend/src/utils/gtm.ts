@@ -1,5 +1,5 @@
-// src/utils/gtm.ts
-export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "";
+import { GTM_ID } from "../config";
+
 
 export const isGtmEnabled = (): boolean => GTM_ID.length > 0;
 
