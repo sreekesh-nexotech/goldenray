@@ -5,8 +5,13 @@ import LinkingButton from "../ui/LinkingButton";
 
 export default function SubsidyHero() {
   return (
-    <section className="relative w-full overflow-hidden">
-      <PageIllustration />
+    <section 
+      className="relative w-full overflow-hidden"
+      style={{
+        background: 'radial-gradient(217.09% 47.87% at 103.46% 47.87%, #F8F2E1 0%, rgba(255, 255, 255, 0) 100%)'
+      }}
+    >
+      <PageIllustration isGradient={false} />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-15 max-w-7xl flex items-center justify-center h-full">

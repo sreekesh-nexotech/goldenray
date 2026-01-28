@@ -4,75 +4,77 @@ export default function SubsidySteps() {
       number: "01",
       title: "Check Eligibility & Get Your Free Quote",
       bgColor: "#FDF6D2",
-      iconUrl: "https://golden-ray.b-cdn.net/icons/wb_sunny1.png",
+      circleBgColor: "#EFE9C8",
+      numberColor: "#9E9467",
     },
     {
       number: "02",
-      title: "We Handle All Subsidy Paperwork for You",
+      title: "We Handle All Paperwork for You",
       bgColor: "#FBE8DA",
-      iconUrl: "https://golden-ray.b-cdn.net/icons/description.png",
+      circleBgColor: "#EDD9C8",
+      numberColor: "#957A67",
     },
     {
       number: "03",
       title: "We Install Your System",
-      bgColor: "#ADD6D8",
-      iconUrl: "https://golden-ray.b-cdn.net/icons/task_alt.png",
+      bgColor: "#D0F1F3",
+      circleBgColor: "#C5E8EA",
+      numberColor: "#43686A",
     },
     {
       number: "04",
       title: "Subsidy Credited to Your Bank",
-      bgColor: "#FBF1BD",
-      iconUrl: "https://golden-ray.b-cdn.net/icons/currency_rupee.png",
+      bgColor: "#DEF5DE",
+      circleBgColor: "#D0E8D0",
+      numberColor: "#778F71",
     },
   ];
 
   return (
     <section
-      className="py-16"
-      style={{
-        background:
-          "radial-gradient(80.96% 80.14% at 50% 8.3%, #F8F2E1 0%, rgba(255, 255, 255, 0) 100%)",
-      }}
+      className="py-12 sm:py-16 lg:py-20 bg-white"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#123532] mb-3">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#123532] mb-2 sm:mb-3">
             Get Your Solar Subsidy in 4 Simple Step
           </h2>
-          <p className="text-lg md:text-xl text-[#444444]">
+          <p className="text-base sm:text-lg md:text-xl text-[#666666]">
             Phase-by-Phase Breakdown
           </p>
         </div>
 
-        {/* Steps Container - Horizontal scroll on mobile, grid on desktop */}
-        <div className="mt-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {steps.map((step, index) => (
+        {/* Steps Container */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+          {steps.map((step, index) => (
+            <div
+              key={index}
+              className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col items-center justify-start text-center transition-transform hover:scale-105"
+              style={{ 
+                backgroundColor: step.bgColor,
+                minHeight: '280px',
+              }}
+            >
+              {/* Circular Badge with Number */}
               <div
-                key={index}
-                className="rounded-3xl p-4 md:p-10 min-h-[180px] md:min-h-[300px] flex flex-col justify-between relative overflow-hidden"
-                style={{ backgroundColor: step.bgColor }}
+                className="w-20 h-20 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full flex items-center justify-center mb-6 sm:mb-6 md:mb-6 lg:mb-8 flex-shrink-0"
+                style={{ backgroundColor: step.circleBgColor }}
               >
-                {/* Icon Image at Top Right */}
-                <img
-                  src={step.iconUrl}
-                  alt={`Step ${step.number} icon`}
-                  className="absolute mt-2 mr-1 top-0 right-0 w-20 h-20 md:w-36 md:h-36 object-contain opacity-30"
-                />
-
-                {/* Step Number */}
-                <div className="text-3xl md:text-4xl lg:text-5xl font-semibold text-[#123532] mb-3 md:mb-4">
+                <span 
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold"
+                  style={{ color: step.numberColor }}
+                >
                   {step.number}
-                </div>
-
-                {/* Step Title */}
-                <h3 className="text-base md:text-xl lg:text-2xl font-semibold text-[#123532] leading-tight">
-                  {step.title}
-                </h3>
+                </span>
               </div>
-            ))}
-          </div>
+
+              {/* Step Title */}
+              <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-[#123532] leading-tight px-2">
+                {step.title}
+              </h3>
+            </div>
+          ))}
         </div>
       </div>
     </section>
