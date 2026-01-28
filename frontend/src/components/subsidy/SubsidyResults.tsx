@@ -14,10 +14,11 @@ export default function SubsidyResults({
   onRecalculate,
 }: SubsidyResultsProps) {
   return (
-    <section 
+    <section
       className="relative py-16 overflow-hidden"
       style={{
-        background: 'radial-gradient(38.63% 65.14% at 50.97% 56.91%, #F8F2E1 0%, rgba(255, 255, 255, 0) 100%)'
+        background:
+          "radial-gradient(38.63% 65.14% at 50.97% 56.91%, #F8F2E1 0%, rgba(255, 255, 255, 0) 100%)",
       }}
     >
       <PageIllustration isGradient={false} />
@@ -44,13 +45,23 @@ export default function SubsidyResults({
                   {electricityBill === "above_2000"
                     ? "Above ₹2000"
                     : electricityBill === "1500_2000"
-                    ? "₹1500 - ₹2000"
-                    : electricityBill === "1000_1500"
-                    ? "₹1000 - ₹1500"
-                    : "Below ₹1000"}
+                      ? "₹1500 - ₹2000"
+                      : electricityBill === "1000_1500"
+                        ? "₹1000 - ₹1500"
+                        : "Below ₹1000"}
                 </p>
-                <svg className="w-4 h-4 text-[#666666]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg
+                  className="w-4 h-4 text-[#666666]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
             </div>
@@ -64,8 +75,18 @@ export default function SubsidyResults({
                 <p className="text-base font-semibold text-[#123532] capitalize">
                   {propertyType}
                 </p>
-                <svg className="w-4 h-4 text-[#666666]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg
+                  className="w-4 h-4 text-[#666666]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
             </div>
@@ -81,27 +102,37 @@ export default function SubsidyResults({
             </h2>
             <div className="space-y-5">
               <div className="flex items-start gap-3">
-                <span className="text-3xl text-[#123532] flex-shrink-0 leading-none">✓</span>
+                <span className="text-3xl text-[#123532] flex-shrink-0 leading-none">
+                  ✓
+                </span>
                 <p className="text-xl text-[#123532] pt-1">
                   <span className="font-bold">Residential</span> property
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-3xl text-[#123532] flex-shrink-0 leading-none">✓</span>
+                <span className="text-3xl text-[#123532] flex-shrink-0 leading-none">
+                  ✓
+                </span>
                 <p className="text-xl text-[#123532] pt-1">
-                  Electricity bill above <span className="font-bold">₹2,000</span>
+                  Electricity bill above{" "}
+                  <span className="font-bold">₹2,000</span>
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-3xl text-[#123532] flex-shrink-0 leading-none">✓</span>
+                <span className="text-3xl text-[#123532] flex-shrink-0 leading-none">
+                  ✓
+                </span>
                 <p className="text-xl text-[#123532] pt-1">
                   Grid-connected location
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-3xl text-[#123532] flex-shrink-0 leading-none">✓</span>
+                <span className="text-3xl text-[#123532] flex-shrink-0 leading-none">
+                  ✓
+                </span>
                 <p className="text-xl text-[#123532] pt-1">
-                  <span className="font-bold">MNRE subsidy</span> available in your area
+                  <span className="font-bold">MNRE subsidy</span> available in
+                  your area
                 </p>
               </div>
             </div>

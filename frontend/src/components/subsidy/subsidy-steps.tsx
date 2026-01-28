@@ -31,9 +31,7 @@ export default function SubsidySteps() {
   ];
 
   return (
-    <section
-      className="py-12 sm:py-16 lg:py-20 bg-white"
-    >
+    <section className="py-12 sm:py-16 lg:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
@@ -51,9 +49,9 @@ export default function SubsidySteps() {
             <div
               key={index}
               className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col items-center justify-start text-center transition-transform hover:scale-105"
-              style={{ 
+              style={{
                 backgroundColor: step.bgColor,
-                minHeight: '280px',
+                minHeight: "280px",
               }}
             >
               {/* Circular Badge with Number */}
@@ -61,7 +59,7 @@ export default function SubsidySteps() {
                 className="w-20 h-20 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full flex items-center justify-center mb-6 sm:mb-6 md:mb-6 lg:mb-8 flex-shrink-0"
                 style={{ backgroundColor: step.circleBgColor }}
               >
-                <span 
+                <span
                   className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold"
                   style={{ color: step.numberColor }}
                 >

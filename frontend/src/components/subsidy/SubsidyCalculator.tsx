@@ -57,14 +57,15 @@ export default function SubsidyCalculator({
   };
 
   return (
-    <section 
+    <section
       className="relative py-16 overflow-hidden"
       style={{
-        background: 'radial-gradient(38.63% 65.14% at 50.97% 56.91%, #F8F2E1 0%, rgba(255, 255, 255, 0) 100%)'
+        background:
+          "radial-gradient(38.63% 65.14% at 50.97% 56.91%, #F8F2E1 0%, rgba(255, 255, 255, 0) 100%)",
       }}
     >
       <PageIllustration isGradient={false} />
-      
+
       <div className="relative max-w-7xl mx-auto text-center px-4 md:px-8">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#123532] mb-4">
           Check Your Subsidy in 30 Seconds
