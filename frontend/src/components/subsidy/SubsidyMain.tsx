@@ -9,6 +9,7 @@ import WhyFlarize from "./Why-flarize";
 import FlarizeReview from "./Flarize-review";
 import Booking2 from "./Booking2";
 import SubsidyFaq from "./SubsidyFaq";
+import HomeTestimonial from "../Home/Testimomial";
 
 export default function SubsidyMain() {
   const [showResults, setShowResults] = useState(false);
@@ -49,7 +50,7 @@ export default function SubsidyMain() {
       )}
       <SubsidySteps />
       <WhyFlarize />
-      <FlarizeReview />
+      <HomeTestimonial/>
 
       <Booking2 />
 
