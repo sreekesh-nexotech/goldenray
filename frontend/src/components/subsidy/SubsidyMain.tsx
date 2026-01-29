@@ -6,7 +6,6 @@ import SubsidyCalculator from "./SubsidyCalculator";
 import SubsidyResults from "./SubsidyResults";
 import SubsidySteps from "./subsidy-steps";
 import WhyFlarize from "./Why-flarize";
-import FlarizeReview from "./Flarize-review";
 import Booking2 from "./Booking2";
 import SubsidyFaq from "./SubsidyFaq";
 import HomeTestimonial from "../Home/Testimomial";
@@ -29,10 +28,6 @@ export default function SubsidyMain() {
     }, 500);
   };
 
-  const handleRecalculate = () => {
-    setShowResults(false);
-  };
-
   return (
     <section className="font-switzer">
       <SubsidyHero />
@@ -40,7 +35,6 @@ export default function SubsidyMain() {
         <SubsidyResults
           electricityBill={calculatorData.electricityBill}
           propertyType={calculatorData.propertyType}
-          onRecalculate={handleRecalculate}
         />
       ) : (
         <SubsidyCalculator
@@ -50,7 +44,7 @@ export default function SubsidyMain() {
       )}
       <SubsidySteps />
       <WhyFlarize />
-      <HomeTestimonial/>
+      <HomeTestimonial />
 
       <Booking2 />
 

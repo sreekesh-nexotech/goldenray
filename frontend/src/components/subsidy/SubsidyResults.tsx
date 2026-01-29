@@ -5,13 +5,11 @@ import LinkingButton from "../ui/LinkingButton";
 interface SubsidyResultsProps {
   electricityBill: string;
   propertyType: string;
-  onRecalculate: () => void;
 }
 
 export default function SubsidyResults({
   electricityBill,
   propertyType,
-  onRecalculate,
 }: SubsidyResultsProps) {
   return (
     <section
