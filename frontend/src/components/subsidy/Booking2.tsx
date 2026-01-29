@@ -12,14 +12,14 @@ const Booking2 = () => {
           {/* Left Content */}
           <div className="flex-1 text-left w-full lg:w-auto lg:max-w-[60%]">
             <h2
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-bold mb-4 lg:mb-5 leading-tight"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-3xl xl:text-4xl font-bold mb-4 lg:mb-5 leading-tight"
               style={{ color: "#1F2937" }}
             >
               Claim your subsidy now,
               <br />
               upto ₹78000
             </h2>
-            <p className="text-gray-700 text-sm sm:text-base md:text-lg lg:text-xl mb-6 lg:mb-8 leading-relaxed">
+            <p className="text-gray-700 text-sm sm:text-base md:text-lg lg:text-lg xl:text-lg mb-6 lg:mb-8 leading-relaxed">
               Our expert calculates your exact savings
               <br />+ subsidy in 15 minutes
             </p>
