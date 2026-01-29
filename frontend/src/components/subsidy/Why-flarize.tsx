@@ -6,14 +6,15 @@ export default function WhyFlarize() {
       iconUrl: "https://golden-ray.b-cdn.net/icons/license.png",
     },
     {
-      title: "2-3 Day\nInstallation",
+      title: "2-3 Day Installation",
       description: "Fastest in Kerala (others take 7-10 days)",
       iconUrl: "https://golden-ray.b-cdn.net/icons/acute%20(1).png",
     },
     {
       title: "₹78K Full Subsidy Guaranteed",
       description: "Credited in 30 days—every customer gets their full amount",
-      iconUrl: "https://golden-ray.b-cdn.net/icons/account_balance_wallet%20(1).png",
+      iconUrl:
+        "https://golden-ray.b-cdn.net/icons/account_balance_wallet%20(1).png",
     },
     {
       title: "5-Year Service + 24/7 Helpline",
@@ -23,62 +24,52 @@ export default function WhyFlarize() {
   ];
 
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      className="py-12 sm:py-16 lg:py-20 xl:py-24 2xl:py-28"
+      style={{
+        background:
+          "radial-gradient(100% 100% at 50% 0%, #F8F2E1 0%, rgba(255, 255, 255, 0) 100%)",
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
         {/* Heading */}
-        <div className="text-center mb-6">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#123532] mb-4">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 xl:mb-18 2xl:mb-20">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl 2xl:text-5xl font-bold text-[#123532] mb-3 sm:mb-4 lg:mb-6">
             Why 1,200+ Kerala Families Choose Flarize
           </h2>
-          <p className="text-xl md:text-2xl font-semibold text-[#123532] mb-3">
-            Zero Hassle. Full Subsidy. Expert Support.
-          </p>
-          <p className="text-base md:text-lg text-gray-600 max-w-4xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-2xl text-[#6B7280] max-w-5xl mx-auto leading-relaxed">
             We handle all government paperwork, KSEB registration, and subsidy
             processing while you sit back and start saving on electricity.
           </p>
         </div>
 
         {/* Feature Cards */}
-        <div className="mt-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-3xl p-6 md:p-8 min-h-[260px] md:min-h-[280px] shadow-[0_4px_24px_0_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.14)] transition-shadow duration-300 relative overflow-hidden flex flex-col"
-              >
-                {/* Icon Image at Top Right */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 xl:gap-8 2xl:gap-8">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-2xl sm:rounded-3xl lg:rounded-4xl p-4 sm:p-6 lg:p-8 xl:p-8 2xl:p-10 min-h-[280px] sm:min-h-[320px] lg:min-h-[360px] xl:min-h-[380px] 2xl:min-h-[400px] shadow-[0_4px_24px_0_rgba(0,0,0,0.08)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.12)] transition-all duration-300 flex flex-col items-center text-center"
+            >
+              {/* Yellow Circle with Icon */}
+              <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 2xl:w-28 2xl:h-28 bg-[#FEF3C7] rounded-full flex items-center justify-center mb-4 sm:mb-6 lg:mb-8 xl:mb-8 2xl:mb-8 flex-shrink-0">
                 <img
                   src={feature.iconUrl}
                   alt={`${feature.title} icon`}
-                  className="absolute top-0 right-0 mt-1 mr-1 w-18 h-18 md:w-30 md:h-29 object-contain opacity-30"
+                  className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 2xl:w-14 2xl:h-14 object-contain"
                 />
-
-                {/* Icon placeholder - leave empty for now as requested */}
-                <div className="mb-4 md:mb-6 h-12 w-12 md:h-16 md:w-16 flex items-center justify-center flex-shrink-0">
-                  {/* Icon will go here */}
-                </div>
-
-                {/* Title */}
-                <h3 className="text-sm md:text-xl lg:text-2xl font-semibold text-[#6B7280]  md:leading-snug h-14 md:h-16 lg:h-20">
-                  {feature.title.split("\n").map((line, i, arr) => (
-                    <span key={i}>
-                      {line}
-                      {i < arr.length - 1 && <br />}
-                    </span>
-                  ))}
-                </h3>
-
-                {/* Description */}
-                <p
-                  className="text-xs md:text-base lg:text-lg leading-relaxed"
-                  style={{ color: "#6B7280" }}
-                >
-                  {feature.description}
-                </p>
               </div>
-            ))}
-          </div>
+
+              {/* Title */}
+              <h3 className="text-sm sm:text-base lg:text-lg xl:text-xl 2xl:text-xl font-semibold text-[#374151] mb-3 sm:mb-4 lg:mb-5 xl:mb-5 2xl:mb-5 leading-tight">
+                {feature.title}
+              </h3>
+
+              {/* Description */}
+              <p className="text-xs sm:text-sm lg:text-base xl:text-base 2xl:text-base text-[#6B7280] leading-relaxed flex-1 flex items-start">
+                {feature.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

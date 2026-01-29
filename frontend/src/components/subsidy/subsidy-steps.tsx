@@ -44,23 +44,23 @@ export default function SubsidySteps() {
         </div>
 
         {/* Steps Container */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 md:gap-6">
           {steps.map((step, index) => (
             <div
               key={index}
-              className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col items-center justify-start text-center transition-transform hover:scale-105"
+              className="rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-10 lg:p-12 flex flex-col items-center justify-start text-center transition-transform hover:scale-105"
               style={{
                 backgroundColor: step.bgColor,
-                minHeight: "280px",
+                minHeight: "240px",
               }}
             >
               {/* Circular Badge with Number */}
               <div
-                className="w-20 h-20 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full flex items-center justify-center mb-6 sm:mb-6 md:mb-6 lg:mb-8 flex-shrink-0"
+                className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full flex items-center justify-center mb-4 sm:mb-6 md:mb-6 lg:mb-8 flex-shrink-0 mt-4 sm:mt-0"
                 style={{ backgroundColor: step.circleBgColor }}
               >
                 <span
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold"
+                  className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold"
                   style={{ color: step.numberColor }}
                 >
                   {step.number}
@@ -68,7 +68,7 @@ export default function SubsidySteps() {
               </div>
 
               {/* Step Title */}
-              <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-[#123532] leading-tight px-2">
+              <h3 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-[#123532] leading-tight px-1 sm:px-2">
                 {step.title}
               </h3>
             </div>
