@@ -30,6 +30,7 @@ export default function Services({ serviceTitle }: servicesProps) {
                 width={50}
                 height={50}
                 alt="Fastest Installation"
+                className="w-6 h-6 sm:w-12 sm:h-12"
               />
             }
             title="Fastest Installation"
@@ -45,6 +46,7 @@ export default function Services({ serviceTitle }: servicesProps) {
                 width={40}
                 height={40}
                 alt="10 Year Warranty"
+                className="w-6 h-6 sm:w-10 sm:h-10"
               />
             }
             title="10 Year Warranty period"
@@ -60,6 +62,7 @@ export default function Services({ serviceTitle }: servicesProps) {
                 width={50}
                 height={50}
                 alt="Subsidy Support"
+                className="w-6 h-6 sm:w-12 sm:h-12"
               />
             }
             title="Support with getting Subsidy"
@@ -70,7 +73,13 @@ export default function Services({ serviceTitle }: servicesProps) {
           {/* Service Item 4: Multiple EMI options */}
           <ServiceItem
             icon={
-              <Image src={vector4} width={40} height={40} alt="EMI Options" />
+              <Image
+                src={vector4}
+                width={40}
+                height={40}
+                alt="EMI Options"
+                className="w-6 h-6 sm:w-10 sm:h-10"
+              />
             }
             title="Multiple EMI options"
             description="End-to-end subsidy support with zero hassle, guaranteed."
@@ -85,6 +94,7 @@ export default function Services({ serviceTitle }: servicesProps) {
                 width={40}
                 height={40}
                 alt="Repairs & Checkups"
+                className="w-6 h-6 sm:w-10 sm:h-10"
               />
             }
             title="Quick Repairs & Annual checkups"
