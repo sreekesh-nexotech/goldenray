@@ -3,28 +3,28 @@ import StatCard from "@/components/About/StatCard";
 
 const statsData = [
   {
-    value: "10+",
+    value: "8+",
     label: "YEARS OF EXPERIENCE",
-    description: "Years of Making solar simple & accessible",
-    highlight: "simple & accessible",
+    description: "Years of building solar care & mastery",
+    highlight: "solar care & mastery",
   },
   {
-    value: "5,000+",
+    value: "300+",
     label: "PROJECTS",
-    description: "Projects in powering homes & businesses",
-    highlight: "homes & businesses",
+    description: "Projects powering Kerala & beyond",
+    highlight: "Kerala & beyond",
   },
   {
     value: "4.9/5",
     label: "CUSTOMER RATING",
-    description: "Trusted by thousands for solar solutions",
-    highlight: "Trusted",
+    description: "Customer-rated solar installer",
+    highlight: "solar installer",
   },
   {
-    value: "50,000+",
-    label: "CO2 REDUCED (TONS)",
-    description: "Cutting Carbon footprints in Tonnes",
-    highlight: "Carbon footprints in Tonnes",
+    value: "3,000+",
+    label: "CAPACITY INSTALLED",
+    description: "Capacity installed across Kerala",
+    highlight: "across Kerala",
   },
 ];
 

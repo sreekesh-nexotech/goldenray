@@ -15,13 +15,23 @@ export default function AboutHero() {
             Clean Energy, Made Simple
           </h1>
           <p className="hidden md:block text-base sm:text-lg text-[#444444] mb-6">
-            At Flarize, we believe in using the abundant Kerala sunlight to power everyday life in a smarter, cleaner way. Our approach to solar energy is practical and
-transparent—designed for local homes and businesses that value reliability, long-term savings, and sustainability. By turning sunlight into dependable power,
-we help build a greener future that works naturally with Kerala’s way of living
+            Solar means running your AC without guilt. Working from home
+            comfortably. Raising kids without constantly checking the meter.
+          </p>
+          <p className="hidden md:block text-base sm:text-lg text-[#444444] mb-2">
+            But here&apos;s something most installers won&apos;t tell you:
+          </p>
+          <p className="hidden md:block text-base sm:text-lg text-[#444444] font-semibold mb-2">
+            What happens when they shut down?
+          </p>
+          <p className="hidden md:block text-base sm:text-lg text-[#444444] mb-6">
+            Most solar companies don&apos;t last. Your system needs to work for
+            25 years. That gap is the real problem—and it&apos;s exactly what we
+            built Flarize to solve.
           </p>
 
           <LinkingButton
-            content="View Our Team &#10141;"
+            content="Explore Now &#10141;"
             ButtonLink="#team"
             ButtonBg="bg-[#F7BA41]"
             Buttontext="text-[#272218]"
