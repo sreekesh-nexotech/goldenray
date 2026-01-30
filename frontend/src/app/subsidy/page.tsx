@@ -3,17 +3,26 @@ import { Metadata } from "next";
 
 // Metadata
 export const metadata: Metadata = {
-  title: {
-    default: "Solar Subsidy",
-    template: "%s | Flarize",
-  },
+  title: "About Us - Flarize | India's Trusted Solar Platform",
   description:
-    "Learn about solar subsidies and how to maximize your savings with government incentives.",
+    "Flarize delivers PM Surya Ghar–compliant solar installations with 25-year platform accountability. Backed by 8+ years, 400+ projects, 4.9★ rating. Energy freedom for Kerala homes.",
+  keywords: [
+    "Solar installation Kerala",
+    "Solar platform India",
+    "PM Surya Ghar partner",
+    "Solar installer Kerala",
+    "Rooftop solar Kerala",
+    "KSEB solar",
+    "Solar subsidy Kerala",
+    "25-year solar warranty",
+    "Reliable solar installer",
+    "Golden Ray Renewable energy",
+  ],
   openGraph: {
-    title: "Flarize - Solar Subsidy",
+    title: "About Us - Flarize | India's Trusted Solar Platform",
     description:
-      "Learn about solar subsidies and how to maximize your savings with government incentives.",
-    url: "https://flarize.com/subsidy",
+      "Flarize delivers PM Surya Ghar–compliant solar installations with 25-year platform accountability. Backed by 8+ years, 400+ projects, 4.9★ rating. Energy freedom for Kerala homes.",
+    url: "https://flarize.com/about",
     siteName: "Flarize",
     images: [{ url: "/heroImg.png", width: 1200, height: 630, alt: "Flarize" }],
     locale: "en_US",
@@ -21,16 +30,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Flarize - Solar Subsidy",
+    title: "About Us - Flarize | India's Trusted Solar Platform",
     description:
-      "Learn about solar subsidies and how to maximize your savings with government incentives.",
+      "Flarize delivers PM Surya Ghar–compliant solar installations with 25-year platform accountability. Backed by 8+ years, 400+ projects, 4.9★ rating. Energy freedom for Kerala homes.",
     images: ["/heroImg.png"],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/subsidy",
+    canonical: "https://www.flarize.com/about",
   },
   robots: {
     index: true,
