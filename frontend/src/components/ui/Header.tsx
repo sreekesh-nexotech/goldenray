@@ -133,7 +133,7 @@ export default function Header() {
 
       {/* Mobile menu remains full-width, which is correct */}
       <ul
-        className={`font-dm-sans leading-none absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-center gap-6 py-4 md:hidden transition-all duration-300 ease-in-out pb-10 ${
+        className={`font-dm-sans leading-normal text-xl absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-center gap-6 py-4 md:hidden transition-all duration-300 ease-in-out pb-10 ${
           isOpen
             ? "opacity-100 translate-y-0"
             : "opacity-0 -translate-y-4 pointer-events-none"
@@ -143,7 +143,7 @@ export default function Header() {
         <li className="flex flex-col items-center">
           <button
             onClick={() => setSolutionsDropdownOpen(!solutionsDropdownOpen)}
-            className={`relative text-gray-700 font-medium flex items-center gap-1 ${
+            className={`relative text-gray-700 font-medium text-xl flex items-center gap-1 ${
               isActive("/residential") || isActive("/commercial")
                 ? "font-bold"
                 : ""
@@ -168,7 +168,7 @@ export default function Header() {
             <Link
               href="/residential"
               onClick={() => setIsOpen(false)}
-              className={`text-gray-600 text-sm ${
+              className={`text-gray-600 text-xl ${
                 isActive("/residential") ? "font-bold" : ""
               }`}
             >
@@ -177,7 +177,7 @@ export default function Header() {
             <Link
               href="/commercial"
               onClick={() => setIsOpen(false)}
-              className={`text-gray-600 text-sm ${
+              className={`text-gray-600 text-xl ${
                 isActive("/commercial") ? "font-bold" : ""
               }`}
             >
@@ -189,7 +189,7 @@ export default function Header() {
           <Link
             href="/projects"
             onClick={() => setIsOpen(false)}
-            className={`relative text-gray-700 font-medium ${
+            className={`relative text-gray-700 font-medium text-xl ${
               isActive("/projects") ? "font-bold" : ""
             }`}
           >
@@ -200,7 +200,7 @@ export default function Header() {
           <Link
             href="/" // Temporary: redirects to home instead of /resources
             onClick={() => setIsOpen(false)}
-            className={`relative text-gray-700 font-medium ${
+            className={`relative text-gray-700 font-medium text-xl ${
               isActive("/resources") ? "font-bold" : ""
             }`}
           >
@@ -211,7 +211,7 @@ export default function Header() {
           <Link
             href="/about"
             onClick={() => setIsOpen(false)}
-            className={`relative text-gray-700 font-medium ${
+            className={`relative text-gray-700 font-medium text-xl ${
               isActive("/about") ? "font-bold" : ""
             }`}
           >
@@ -222,7 +222,7 @@ export default function Header() {
           <Link
             href="/contactus"
             onClick={() => setIsOpen(false)}
-            className="border border-[#074A4D] px-4 py-1 rounded-xl hover:bg-transparent text-[#074A4D] font-sans font-semibold"
+            className="border border-[#074A4D] px-4 py-1 rounded-xl hover:bg-transparent text-[#074A4D] font-sans font-semibold text-xl"
           >
             Contact us
           </Link>
