@@ -51,17 +51,20 @@ const teamMembers = [
 
 const TeamSection = ({ members = teamMembers }) => {
   return (
-    <section id="team" className="scroll-mt-[65px]">
-      <div className="relative mx-auto px-4 sm:px-6 lg:px-8 xl:px-36 py-16">
+    <section
+      id="team"
+      className="scroll-mt-[65px] py-16 px-4 sm:px-6 lg:px-4 xl:px-16"
+    >
+      <div className="max-w-7xl mx-auto">
         {/* Section Heading */}
-        <div className="max-w-7xl mx-auto text-center mb-12">
+        <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2D3748]">
             Meet Our Team
           </h2>
         </div>
 
         {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-20 lg:gap-24 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-20 md:gap-24 lg:gap-28 max-w-5xl mx-auto">
           {members.map((member, index) => (
             <TeamMember
               key={index}

@@ -4,13 +4,25 @@ import AboutMain from "@/components/About/AboutMain";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Flarize - Leading Solar Energy Provider in Kerala",
+  title: "About Us - Flarize | India's Trusted Solar Platform",
   description:
-    "Learn about Flarize's mission to provide clean, reliable solar energy solutions in Kerala. Discover our team, values, and commitment to sustainability.",
+    "Flarize delivers PM Surya Ghar-compliant solar installations with 25-year platform accountability. Backed by 8+ years, 400+ projects, 4.9★ rating. Energy freedom for Kerala homes.",
+  keywords: [
+    "Solar installation Kerala",
+    "Solar platform India",
+    "PM Surya Ghar partner",
+    "Solar installer Kerala",
+    "Rooftop solar Kerala",
+    "KSEB solar",
+    "Solar subsidy Kerala",
+    "25-year solar warranty",
+    "Reliable solar installer",
+    "Golden Ray Renewable energy",
+  ],
   openGraph: {
-    title: "About Flarize - Leading Solar Energy Provider in Kerala",
+    title: "About Us - Flarize | India's Trusted Solar Platform",
     description:
-      "Discover how Flarize is transforming Kerala with practical, transparent solar energy solutions for homes and businesses.",
+      "Flarize delivers PM Surya Ghar-compliant solar installations with 25-year platform accountability. Backed by 8+ years, 400+ projects, 4.9★ rating. Energy freedom for Kerala homes.",
     url: "https://flarize.com/about",
     siteName: "Flarize",
     images: [
@@ -21,9 +33,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "About Flarize - Leading Solar Energy Provider",
+    title: "About Us - Flarize | India's Trusted Solar Platform",
     description:
-      "Learn about our mission to provide clean, reliable solar energy solutions.",
+      "Flarize delivers PM Surya Ghar-compliant solar installations with 25-year platform accountability. Energy freedom for Kerala homes.",
     images: ["/heroImg.png"],
   },
   icons: {

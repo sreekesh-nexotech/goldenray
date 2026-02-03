@@ -82,7 +82,9 @@ export const mockProjects: Project[] = [
     lifestyleImpact: "Switching to solar energy was one of the best decisions our family has made. Before, we were constantly worried about rising electricity bills, especially during the summer months. After installing solar panels, not only have we seen a huge drop in our energy costs, but we also feel proud knowing we're doing our part for the environment.Daily life feels lighter — literally and financially. We no longer hesitate to run the AC or charge all our devices. Plus, explaining clean energy to our kids has made them more conscious about sustainability from a young age.",
     testimonial: {
       quote: 'Switching to solar with Flarize was the best decision for my home. The team made the entire process seamless, from consultation to installation. Not only have I reduced my electricity bills by nearly 75%, but I also feel great knowing I’m contributing to a sustainable future. Their support team is always available, and the maintenance services are top-notch. Highly recommended!',
-      author: 'Rajesh Sharma & Family, Cochin',      image: 'https://golden-ray.b-cdn.net/images/P1below%20section%20.jpg',    },
+      author: 'Jose V P & Family, Vadackkal, Alapuzha',
+      image: 'https://golden-ray.b-cdn.net/images/P1below%20section%20.jpg',
+    },
   },
 
   //2nd project
@@ -129,8 +131,8 @@ export const mockProjects: Project[] = [
     },
     lifestyleImpact: 'The commercial complex now operates with significantly reduced electricity costs, allowing for reinvestment into business growth. The company has enhanced its green credentials, appealing to environmentally conscious clients and employees. The reliable solar supply ensures uninterrupted business operations, even during peak demand periods. This project serves as a model for sustainable commercial development in the region.',
     testimonial: {
-      quote: 'Flarize delivered an outstanding solar solution for our office. The project was completed on schedule, and the energy savings have exceeded our expectations. We are proud to be a leader in sustainable practices, thanks to their expertise.',
-      author: 'CEO, GreenCorp Solutions',
+      quote: 'Flarize delivered an outstanding solar solution for our home. The project was completed on schedule, and the energy savings have exceeded our expectations. We are proud to embrace sustainable practices, thanks to their expertise.',
+      author: 'Siraj K P & Family, Cherthala, Alapuzha',
       image: 'https://golden-ray.b-cdn.net/images/P2_below_section.jpg',
     },
   },
@@ -179,7 +181,7 @@ export const mockProjects: Project[] = [
     lifestyleImpact: 'The family in Thrissur now enjoys significantly lower electricity bills, allowing them to allocate savings to other areas. They benefit from a consistent power supply, avoiding outages that were previously common. This shift has also fostered a greater environmental awareness within the family, aligning with their desire for a sustainable lifestyle. The project has become a proud feature of their home, showcasing their commitment to green living.',
     testimonial: {
       quote: 'Flarize made going solar incredibly easy. The team was professional, efficient, and the system looks great on our home. We are already seeing huge savings and feel good about our reduced carbon footprint. Highly recommend their services!',
-      author: 'The Menon Family, Thrissur',
+      author: 'Stephen V C & Family, Vattayal, Alapuzha',
       image: 'https://golden-ray.b-cdn.net/images/P3_below_section_image_.jpg',
     },
   },
@@ -228,7 +230,7 @@ export const mockProjects: Project[] = [
     lifestyleImpact: 'The Cochin family quickly realized the benefits of their new solar system, enjoying reduced electricity bills within days of installation. The rapid turnaround meant minimal disruption to their lives, and they now benefit from a consistent, clean energy supply. This project highlights Flarize’s ability to deliver efficient and impactful solar solutions on tight schedules, ensuring customer satisfaction and environmental benefit.',
     testimonial: {
       quote: 'We were amazed by how quickly Flarize installed our solar system. The team was incredibly professional and efficient. We are already seeing a significant drop in our electricity bills and are very happy with the results. Truly a seamless experience!',
-      author: 'The Thomas Family, Cochin',
+      author: 'Ushaviswanathan & Family, Thiruvambady, Alappuzha',
       image: 'https://golden-ray.b-cdn.net/images/p4_below_section_image_.jpg',
     },
   },
