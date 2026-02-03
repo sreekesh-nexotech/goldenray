@@ -17,7 +17,7 @@ export default function WhatWeBelieve() {
       <div className="max-w-7xl mx-auto bg-[#123532] rounded-2xl shadow-xl overflow-hidden p-5 lg:p-12 gap-8 flex flex-col xl:flex-row">
         <div className="w-full xl:w-[450px] h-[300px] xl:h-auto rounded-xl overflow-hidden flex-shrink-0 xl:flex-1">
           <Image
-            src="https://golden-ray.b-cdn.net/images/0a0a625a-2531-4253-bf38-27f3839b5b34%20(1).png"
+            src="https://golden-ray.b-cdn.net/About%20us/0a0a625a-2531-4253-b%20ENHANCED.jpeg"
             alt="People enjoying a sustainable event"
             width={450}
             height={400}
