@@ -47,7 +47,7 @@ export const mockProjects: Project[] = [
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
     images: ['https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(3).jpg' , 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(2).jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(4).jpg'],
-    imageUrl: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(2).jpg',
+    imageUrl: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(3).jpg',
     area: '10,400 m2',
     power: '3 kW',
     usp: '1 TON CO₂ SAVED ANNUALLY',
