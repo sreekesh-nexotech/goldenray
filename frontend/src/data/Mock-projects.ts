@@ -46,8 +46,8 @@ export const mockProjects: Project[] = [
     cardDescription:"Rooftop installation for a townhouse for a family of four in Calicut, Kerala",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
-    images: ['https://golden-ray.b-cdn.net/images/p1%20middle%20slide%20image%20.jpg', 'https://golden-ray.b-cdn.net/images/P1%20right%20side%20slide.jpg', 'https://golden-ray.b-cdn.net/images/P1%20leftside%20slide%20.jpg' ],
-    imageUrl: 'https://golden-ray.b-cdn.net/images/p1%20middle%20slide%20image%20.jpg',
+    images: ['https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(3).jpg' , 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(2).jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(4).jpg'],
+    imageUrl: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(2).jpg',
     area: '10,400 m2',
     power: '3 kW',
     usp: '1 TON CO₂ SAVED ANNUALLY',
@@ -83,7 +83,7 @@ export const mockProjects: Project[] = [
     testimonial: {
       quote: 'Switching to solar with Flarize was the best decision for my home. The team made the entire process seamless, from consultation to installation. Not only have I reduced my electricity bills by nearly 75%, but I also feel great knowing I’m contributing to a sustainable future. Their support team is always available, and the maintenance services are top-notch. Highly recommended!',
       author: 'Jose V P & Family, Vadackkal, Alapuzha',
-      image: 'https://golden-ray.b-cdn.net/images/P1below%20section%20.jpg',
+      image: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(1).jpg',
     },
   },
 
@@ -95,8 +95,8 @@ export const mockProjects: Project[] = [
     cardDescription:"500KW solar panel installation for a 5 story office building space in Palakkad, Kerala",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
-    images: ['https://golden-ray.b-cdn.net/images/p2_middle_slide.jpg', 'https://golden-ray.b-cdn.net/images/P2_right_side_slide_.jpg', 'https://golden-ray.b-cdn.net/images/P2_left_side_slide_.jpg'],
-    imageUrl: 'https://golden-ray.b-cdn.net/images/p2_middle_slide.jpg',
+    images: ['https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project2/middleslide2%20ENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project2/rightsideslide%20ENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project2/leftsideslide%20ENHANCED.jpg'],
+    imageUrl: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project2/middleslide2%20ENHANCED.jpg',
     area: '10,400 m2',
     power: '3 kW',
     usp: 'INSTALLATION DONE IN 1 WEEK',
@@ -133,7 +133,7 @@ export const mockProjects: Project[] = [
     testimonial: {
       quote: 'Flarize delivered an outstanding solar solution for our home. The project was completed on schedule, and the energy savings have exceeded our expectations. We are proud to embrace sustainable practices, thanks to their expertise.',
       author: 'Siraj K P & Family, Cherthala, Alapuzha',
-      image: 'https://golden-ray.b-cdn.net/images/P2_below_section.jpg',
+      image: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project2/belowsection%20ENHANCED.jpg',
     },
   },
 
@@ -145,8 +145,8 @@ export const mockProjects: Project[] = [
     cardDescription:"See how we’re transforming homes, businesses, and industries with smart solar solutions",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
-    images: ['https://golden-ray.b-cdn.net/images/P3_middle_slide.jpg', 'https://golden-ray.b-cdn.net/images/P3_right_side_slide.jpg', 'https://golden-ray.b-cdn.net/images/P3_left_side_slide.jpg'],
-    imageUrl: 'https://golden-ray.b-cdn.net/images/P3_middle_slide.jpg',
+    images: ['https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project3/middleslide%20ENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project3/rightsideslide%20ENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project3/leftsideslide%20ENHANCED.jpg'],
+    imageUrl: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project3/middleslide%20ENHANCED.jpg',
     area: '10,400 m2',
     power: '3 kW',
     usp: '1.2L ANNUAL SAVINGS PER YEAR',
@@ -182,7 +182,7 @@ export const mockProjects: Project[] = [
     testimonial: {
       quote: 'Flarize made going solar incredibly easy. The team was professional, efficient, and the system looks great on our home. We are already seeing huge savings and feel good about our reduced carbon footprint. Highly recommend their services!',
       author: 'Stephen V C & Family, Vattayal, Alapuzha',
-      image: 'https://golden-ray.b-cdn.net/images/P3_below_section_image_.jpg',
+      image: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project3/belowsectionimage%20ENHANCED.jpg',
     },
   },
 
@@ -194,8 +194,8 @@ export const mockProjects: Project[] = [
     cardDescription:"200KW solar panel installation for a two story house in Cochin, Kerala",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
-    images: ['https://golden-ray.b-cdn.net/images/P4_middle_image.jpg', 'https://golden-ray.b-cdn.net/images/P4_right_slide_image.jpg', 'https://golden-ray.b-cdn.net/images/P4_leftside_image_.jpg'],
-    imageUrl: 'https://golden-ray.b-cdn.net/images/P4_middle_image.jpg',
+    images: ['https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project4/middleimageENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project4/rightslideimageENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project4/leftsideimageENHANCED.jpg'],
+    imageUrl: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project4/middleimageENHANCED.jpg',
     area: '10,400 m2',
     power: '5 kW',
     usp: 'INSTALLATION DONE IN 3 DAYS',
@@ -231,7 +231,7 @@ export const mockProjects: Project[] = [
     testimonial: {
       quote: 'We were amazed by how quickly Flarize installed our solar system. The team was incredibly professional and efficient. We are already seeing a significant drop in our electricity bills and are very happy with the results. Truly a seamless experience!',
       author: 'Ushaviswanathan & Family, Thiruvambady, Alappuzha',
-      image: 'https://golden-ray.b-cdn.net/images/p4_below_section_image_.jpg',
+      image: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project4/belowsectionimageENHANCED.jpg',
     },
   },
 

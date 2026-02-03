@@ -3,28 +3,39 @@ import PageIllustration from "../ui/page-illustration";
 type ProjectHeroProps = {
   title: string;
   PublishDate: string;
-}
+};
 
-export default function ProjectHero({
-  title,
-  PublishDate,
-}:ProjectHeroProps) {
-    return(
-         <section className="relative w-full  overflow-hidden">
-              <PageIllustration/>
-        
-              {/* Content */}
-              <div className="relative z-10  mx-auto px-4 pt-32 pb-8 md:pt-48 md:pb-12 max-w-7xl flex flex-col md:flex-row  h-full lg:gap-40 gap-0">
-                {/* Title and description*/}
-                <div className="w-full lg:w-2xl text-center lg:text-left ">
-                    <h1 className="text-[40px]/10 sm:text-5xl lg:text-7xl font-medium text-[#123532] mb-4 ">
-                        {title}
-                    </h1>
-                    <p className="block md:hidden text-base sm:text-lg md:text-2xl text-[#444444]">
-                        Published On <span className="font-semibold text-[#074A4D]">{PublishDate}</span>
-                    </p>
-                </div>
-            </div>
-        </section>
-    )
+export default function ProjectHero({ title, PublishDate }: ProjectHeroProps) {
+  // Function to split title for Jose V P project
+  const renderTitle = () => {
+    if (title.includes("Jose V P")) {
+      return (
+        <>
+          <span className="block whitespace-nowrap">Jose V P -Vadackkal,</span>
+          <span className="block whitespace-nowrap">Alapuzha</span>
+        </>
+      );
+    }
+    return title;
+  };
+
+  return (
+    <section className="relative w-full  overflow-hidden">
+      <PageIllustration />
+
+      {/* Content */}
+      <div className="container mx-auto pt-24 pb-8 md:pt-32 md:pb-12 flex flex-col md:flex-row h-full lg:gap-40 gap-0">
+        {/* Title and description*/}
+        <div className="w-full text-center lg:text-left">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-medium text-[#123532] mb-2 leading-tight">
+            {renderTitle()}
+          </h1>
+          <p className="block md:hidden text-base sm:text-lg md:text-2xl text-[#444444]">
+            Published On{" "}
+            <span className="font-semibold text-[#074A4D]">{PublishDate}</span>
+          </p>
+        </div>
+      </div>
+    </section>
+  );
 }

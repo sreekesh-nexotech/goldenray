@@ -7,8 +7,8 @@ import { useState, useEffect } from "react";
 
 export default function HeroHome() {
   const heroImages = [
-    "https://golden-ray.b-cdn.net/images/slide1.jpg",
-    "https://golden-ray.b-cdn.net/images/slide2.jpeg",
+    "https://golden-ray.b-cdn.net/Home%20Page/enhanced.jpeg",
+    "https://golden-ray.b-cdn.net/Home%20Page/enhanced1.jpg",
   ];
   const [imageIndex, setImageIndex] = useState(0);
 
