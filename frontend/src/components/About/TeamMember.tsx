@@ -9,7 +9,6 @@ type TeamMemberProps = {
   linkedin?: string;
   twitter?: string;
   imageUrl?: string;
-  imageScale?: number;
 };
 
 export default function TeamMember({
@@ -19,7 +18,6 @@ export default function TeamMember({
   linkedin,
   twitter,
   imageUrl,
-  imageScale = 1,
 }: TeamMemberProps) {
   return (
     <div className="flex flex-row items-center bg-white gap-6">

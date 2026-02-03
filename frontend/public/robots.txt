@@ -1,9 +1,11 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /manifest.json
 
 # Host
-Host: https://flarize.com/
+Host: https://flarize.com
 
 # Sitemaps
 Sitemap: https://flarize.com/sitemap.xml
