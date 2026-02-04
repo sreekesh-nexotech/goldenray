@@ -43,7 +43,7 @@ export const mockProjects: Project[] = [
     id: '1',
     category: 'Residential',
     title: 'Jose V P -Vadackkal, Alapuzha',
-    cardDescription:"Rooftop installation for a townhouse for a family of four in Calicut, Kerala",
+    cardDescription:"For Jose, sustainability was a way of life. Solar was about the future, not just savings.",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
     images: ['https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(3).jpg' , 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(2).jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(4).jpg'],
@@ -55,34 +55,33 @@ export const mockProjects: Project[] = [
     uspBgColor: 'bg-[#FFF8E9]',
 
     clientOverview: {
-      ClientOverviewDescription: "Mr. Ravi Menon, a homeowner in Calicut, wanted to reduce his dependency on the grid and lower his monthly electricity bills while embracing a greener lifestyle. He lives with his wife and two kids in a townhouse with 5 bedrooms.His monthly electricity bill was incredibly high, especially in the summers where it goes above 40deg and using air conditioning becomes expensive."
+      ClientOverviewDescription: "Mr. Jose V P wanted more than just lower electricity bills. Living in Vadackkal, Alapuzha, his goal was to create a home that runs responsibly, without disturbing its calm surroundings or daily routines. Rising power costs and unreliable supply made solar the right step forward, but only if it was done right, safely, and beautifully."
     },
     projectGoals: [
-      'Achieve significant savings on electricity bills',
-      'Reduce carbon footprint and contribute to sustainability',
-      'Become energy independent with a reliable solar solution',
+      'Reduce monthly electricity expenses without compromising comfort.',
+      'Build a future-ready home powered by clean energy.',
+      'Install a system that blends seamlessly with the house\'s aesthetics.',
+      'Ensure long-term reliability with minimal maintenance.',
     ],
     challenges: [
-      'Limited rooftop space: careful layout required to maximize solar panel utilization.',
-      'Aesthetics: Integrating panels without compromising the home’s appeal.',
-      'Budget constraints: balancing cost-effectiveness with high-quality components.',
-      'Intermittent power: ensuring consistent energy supply despite varying sunlight.'
+      'Limited roof space with partial shading from nearby trees.',
+      'Maintaining the home\'s visual appeal while installing solar panels.',
+      'Ensuring consistent power output during varying weather conditions.',
+      'Selecting components that balance performance, safety, and durability.'
     ],
     solution: [
-      'Used premium-grade monocrystalline solar panels strategically positioned to maximize sun absorption throughout the day.',
-      'Designed a sleek, low-profile mounting system to merge seamlessly with the home\'s architecture, preserving its aesthetic appeal.',
-      'Installed a smart energy management system to optimize power usage, prioritize solar, and ensure a seamless power supply during outages.'
+      'We carefully assessed the roof layout and sunlight patterns before finalizing the system design. High-efficiency panels were strategically placed to maximize output even during partial shade. All wiring and components were neatly concealed to preserve the home\'s look, while a robust system configuration ensured reliable power generation throughout the year.'
     ],
     metrics: {
       systemSize: '10 kW Rooftop Solar PV',
       installationType: 'Rooftop',
-      annualGeneration: '~7,000 kWh',
-      roiPeriod: '~4.0 years',
+      annualGeneration: '4380 units',
+      roiPeriod: '~6.6 years',
     },
-    lifestyleImpact: "Switching to solar energy was one of the best decisions our family has made. Before, we were constantly worried about rising electricity bills, especially during the summer months. After installing solar panels, not only have we seen a huge drop in our energy costs, but we also feel proud knowing we're doing our part for the environment.Daily life feels lighter — literally and financially. We no longer hesitate to run the AC or charge all our devices. Plus, explaining clean energy to our kids has made them more conscious about sustainability from a young age.",
+    lifestyleImpact: "Switching to solar brought a noticeable shift in the household. Monthly electricity worries reduced, and everyday usage felt lighter and stress-free. Simple habits like running appliances without hesitation became easier. Beyond savings, there's pride in knowing their home now contributes to a cleaner, more sustainable future for the next generation.",
     testimonial: {
-      quote: 'Switching to solar with Flarize was the best decision for my home. The team made the entire process seamless, from consultation to installation. Not only have I reduced my electricity bills by nearly 75%, but I also feel great knowing I’m contributing to a sustainable future. Their support team is always available, and the maintenance services are top-notch. Highly recommended!',
-      author: 'Jose V P & Family, Vadackkal, Alapuzha',
+      quote: 'Choosing solar with Flarize was one of the best decisions for our home. From the first consultation to final installation, everything felt clear and well-managed. Our electricity bills have reduced significantly, but more than that, we feel confident knowing our home is powered responsibly. The team is always supportive, and the service quality truly stands out.',
+      author: 'Jose V P & Family, Alapuzha',
       image: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(1).jpg',
     },
   },
@@ -92,7 +91,7 @@ export const mockProjects: Project[] = [
     id: '2',
     category: 'Residential',
     title: 'Siraj K P- Cherthala, Alapuzha',
-    cardDescription:"500KW solar panel installation for a 5 story office building space in Palakkad, Kerala",
+    cardDescription:"Unpredictable electricity expenses were becoming a constant concern. Solar helped Siraj regain control, month after month.",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
     images: ['https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project2/middleslide2%20ENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project2/rightsideslide%20ENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project2/leftsideslide%20ENHANCED.jpg'],
@@ -104,35 +103,35 @@ export const mockProjects: Project[] = [
     uspBgColor: 'bg-[#EFF8F8]',
 
     clientOverview: {
-      ClientOverviewDescription: "Mr. Ravi Menon, a homeowner in Calicut, wanted to reduce his dependency on the grid and lower his monthly electricity bills while embracing a greener lifestyle. He lives with his wife and two kids in a townhouse with 5 bedrooms.His monthly electricity bill was incredibly high, especially in the summers where it goes above 40deg and using air conditioning becomes expensive."
+      ClientOverviewDescription: "Mr. Siraj KP, a business owner in Cherthala, Alappuzha, was looking for a practical solution to rising electricity costs that were directly affecting his operational expenses. With increasing energy usage and unpredictable tariffs, he wanted a dependable power source that would support business growth without adding financial stress. Solar energy emerged as the most sensible and future-proof decision."
     },
     projectGoals: [
-      'Achieve substantial savings on electricity bills for the commercial operation.',
-      'Enhance corporate social responsibility (CSR) initiatives.',
-      'Ensure a consistent and reliable power supply for business operations.',
+      'Reduce monthly electricity expenses for commercial operations.',
+      'Ensure an uninterrupted and reliable power supply.',
+      'Improve long-term cost predictability for the business.',
+      'Adopt a sustainable energy solution aligned with future growth.',
     ],
     challenges: [
-      'Integrating solar panels on a large, existing building without disrupting operations.',
-      'Optimizing panel placement for maximum energy harvest on varied roof surfaces.',
-      'Meeting stringent safety regulations for commercial installations.',
-      'Managing initial investment costs while ensuring long-term ROI.',
+      'Limited roof space and layout constraints.',
+      'Making sure panels didn’t affect the look of the home.',
+      'Completing installation without disturbing the family’s routine.',
     ],
     solution: [
-      'Implemented a comprehensive rooftop solar array covering all available space, using high-efficiency panels.',
-      'Utilized advanced monitoring systems to track energy production and consumption in real-time.',
-      'Phased installation approach to minimize disruption to daily business activities.',
-      'Provided robust safety protocols and training for all personnel involved in the project.'
+      'Designed a custom rooftop solar system that used every usable inch wisely.',
+      'Selected high-efficiency panels suited for Kerala’s climate.',
+      'Planned installation carefully to keep noise and disruption minimal.',
+      'Set up a simple monitoring system so the family can track power generation easily.',
     ],
     metrics: {
       systemSize: '500 kW Commercial Solar PV',
       installationType: 'Rooftop',
-      annualGeneration: '~350,000 kWh',
-      roiPeriod: '~3.5 years',
+      annualGeneration: '4380 units',
+      roiPeriod: '~6.9 years',
     },
-    lifestyleImpact: 'The commercial complex now operates with significantly reduced electricity costs, allowing for reinvestment into business growth. The company has enhanced its green credentials, appealing to environmentally conscious clients and employees. The reliable solar supply ensures uninterrupted business operations, even during peak demand periods. This project serves as a model for sustainable commercial development in the region.',
+    lifestyleImpact: 'The shift to solar significantly reduced operational costs, allowing better financial planning and stability. Energy expenses became predictable, and reliance on the grid reduced noticeably. Beyond savings, the business now operates with the confidence of using clean energy—strengthening its reputation as a responsible and forward-thinking enterprise.',
     testimonial: {
-      quote: 'Flarize delivered an outstanding solar solution for our home. The project was completed on schedule, and the energy savings have exceeded our expectations. We are proud to embrace sustainable practices, thanks to their expertise.',
-      author: 'Siraj K P & Family, Cherthala, Alapuzha',
+      quote: 'Flarize delivered an excellent solar solution for our facility. The project was completed on time, and the system performance has been consistent. Our electricity expenses have reduced more than expected, and the entire process—from planning to installation—was handled professionally. We\'re proud to take a step toward sustainable energy with their support.',
+      author: 'Siraj KP, Cherthala',
       image: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project2/belowsection%20ENHANCED.jpg',
     },
   },
@@ -142,7 +141,7 @@ export const mockProjects: Project[] = [
     id: '3',
     category: 'Residential',
     title: 'Stephen V C- Vattayal, Alapuzha',
-    cardDescription:"See how we’re transforming homes, businesses, and industries with smart solar solutions",
+    cardDescription:"For Stephen and his family, comfort came from consistency. Solar brought that calm back into everyday living.",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
     images: ['https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project3/middleslide%20ENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project3/rightsideslide%20ENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project3/leftsideslide%20ENHANCED.jpg'],
@@ -154,12 +153,13 @@ export const mockProjects: Project[] = [
     uspBgColor: 'bg-[#E9F8FF]',
 
     clientOverview: {
-      ClientOverviewDescription: "Mr. Ravi Menon, a homeowner in Calicut, wanted to reduce his dependency on the grid and lower his monthly electricity bills while embracing a greener lifestyle. He lives with his wife and two kids in a townhouse with 5 bedrooms.His monthly electricity bill was incredibly high, especially in the summers where it goes above 40deg and using air conditioning becomes expensive."
+      ClientOverviewDescription: "Stephen and his family live a simple, close-knit life in Vattayal, Alappuzha. Like most Kerala homes, electricity is part of everything — lights, fans, water motor, and daily comfort. Over time, monthly electricity bills kept climbing, especially during hot months. Power cuts were another worry. Stephen wanted a solution that felt practical, long-term, and peaceful, not complicated or risky. Solar felt right — but only if it was done properly."
     },
     projectGoals: [
-      'Achieve substantial savings on electricity bills',
-      'Transition to renewable energy for a greener household',
+      'Reduce monthly electricity bills without changing daily habits.',
+      'Move to clean, renewable energy suitable for a Kerala home.',
       'Ensure uninterrupted power supply for daily needs',
+      'You can just install a system that blends well with the house, not spoils it',
     ],
     challenges: [
       'Limited roof space and specific architectural design to consider for panel placement.',
@@ -175,12 +175,13 @@ export const mockProjects: Project[] = [
     metrics: {
       systemSize: '15 kW Residential Solar PV',
       installationType: 'Rooftop',
-      annualGeneration: '~10,000 kWh',
-      roiPeriod: '~4.5 years',
+      annualGeneration: '4380 units',
+      roiPeriod: '~6.9 years',
     },
-    lifestyleImpact: 'The family in Thrissur now enjoys significantly lower electricity bills, allowing them to allocate savings to other areas. They benefit from a consistent power supply, avoiding outages that were previously common. This shift has also fostered a greater environmental awareness within the family, aligning with their desire for a sustainable lifestyle. The project has become a proud feature of their home, showcasing their commitment to green living.',
+    lifestyleImpact: 
+      'Today, the family enjoys noticeably lower electricity bills and fewer worries during power cuts. Appliances run smoothly, and daily routines stay uninterrupted, and there’s a quiet satisfaction in knowing the home is powered by the sun. Solar didn’t just reduce expenses — it brought peace of mind. And a small sense of pride, too.',
     testimonial: {
-      quote: 'Flarize made going solar incredibly easy. The team was professional, efficient, and the system looks great on our home. We are already seeing huge savings and feel good about our reduced carbon footprint. Highly recommend their services!',
+      quote: 'Flarize made going solar incredibly easy. The team was professional, clear in communication, and respectful of our home. The system looks neat, and we can already see the difference in our bills. It feels good knowing we’re saving money and doing something positive for the environment',
       author: 'Stephen V C & Family, Vattayal, Alapuzha',
       image: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project3/belowsectionimage%20ENHANCED.jpg',
     },
@@ -191,7 +192,7 @@ export const mockProjects: Project[] = [
     id: '4',
     category: 'Residential',
     title: 'Ushaviswanathan - Thiruvambady, Alappuzha',
-    cardDescription:"200KW solar panel installation for a two story house in Cochin, Kerala",
+    cardDescription:"A rooftop that offers shade, comfort, and reliable power—without overspending. Solar that quietly improved life, one evening at a time.",
     description: 'Published Completed',
     PublishDate: 'January 23, 2025',
     images: ['https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project4/middleimageENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project4/rightslideimageENHANCED.jpg', 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project4/leftsideimageENHANCED.jpg'],
@@ -203,34 +204,32 @@ export const mockProjects: Project[] = [
     uspBgColor: 'bg-[#EFF8F8]',
 
     clientOverview: {
-      ClientOverviewDescription: "Mr. Ravi Menon, a homeowner in Calicut, wanted to reduce his dependency on the grid and lower his monthly electricity bills while embracing a greener lifestyle. He lives with his wife and two kids in a townhouse with 5 bedrooms.His monthly electricity bill was incredibly high, especially in the summers where it goes above 40deg and using air conditioning becomes expensive."
+      ClientOverviewDescription: "This family from Thiruvambady, Alappuzha, has always believed in living within their means. Their household runs on careful planning, where every expense matters, but their hopes were simple. They wanted a calm, shaded space on the rooftop where their son could spend time in the evenings—somewhere peaceful and comfortable after a long day. High electricity bills made things harder every month. Instead of postponing their plans, they chose solar as a smart step forward—not as a luxury, but as a practical decision for the future."
     },
     projectGoals: [
-      'Achieve quick installation to immediately start generating solar power.',
-      'Maximize energy independence for the household.',
-      'Reduce long-term energy costs and environmental impact.',
+      'Reduce monthly electricity expenses and gain better control over household spending.',
+      'Use the limited rooftop space efficiently without losing its everyday usability.',
+      'Create a shaded, comfortable rooftop area suitable for regular evening use.',
     ],
     challenges: [
-      'Short installation timeline requiring precise planning and execution.',
-      'Ensuring minimal disturbance to the household during the installation process.',
-      'Optimizing panel layout on a two-story roof for maximum sun exposure.',
+      'The budget was limited, so every expense had to be justified.',
+      'The rooftop space was small and had to be used wisely.',
+      'The family wanted the rooftop to remain usable—not just filled with panels.',
+      'Reliable power in the evenings was important for daily comfort. They needed clear answers without technical confusion or unrealistic promises.',
     ],
     solution: [
-      'Pre-fabricated components and streamlined logistics for rapid deployment.',
-      'Utilized a highly skilled installation team to ensure efficiency and safety.',
-      'Conducted thorough site assessment to plan optimal panel placement and wiring.',
-      'Implemented a user-friendly monitoring system for homeowners to track daily energy production.'
+      'We planned a compact solar system that delivered maximum output without overspending. The solar structure was designed to function as a shaded rooftop space, allowing comfortable use in the evenings. Panels were carefully positioned to ensure good sunlight exposure while keeping the area open and functional. Every step was explained in simple terms, helping the family feel confident and stress-free throughout the process.'
     ],
     metrics: {
       systemSize: '8 kW Residential Solar PV',
       installationType: 'Rooftop',
-      annualGeneration: '~6,000 kWh',
-      roiPeriod: '~4.0 years',
+      annualGeneration: '4380 units',
+      roiPeriod: '~6.4 years',
     },
-    lifestyleImpact: 'The Cochin family quickly realized the benefits of their new solar system, enjoying reduced electricity bills within days of installation. The rapid turnaround meant minimal disruption to their lives, and they now benefit from a consistent, clean energy supply. This project highlights Flarize’s ability to deliver efficient and impactful solar solutions on tight schedules, ensuring customer satisfaction and environmental benefit.',
+    lifestyleImpact: 'Life gradually became easier. Monthly electricity bills came down. Evenings felt calmer and more relaxed. Today, their rooftop is more than just a roof—it is a comfortable space where their son spends time under the solar shade as the lights glow on. There is no worry about power cuts and no fear of high bills. Solar did not change their lifestyle overnight, but it delivered something more valuable: stability, peace of mind, and a home that feels balanced every day.',
     testimonial: {
-      quote: 'We were amazed by how quickly Flarize installed our solar system. The team was incredibly professional and efficient. We are already seeing a significant drop in our electricity bills and are very happy with the results. Truly a seamless experience!',
-      author: 'Ushaviswanathan & Family, Thiruvambady, Alappuzha',
+      quote: 'We were surprised by how quickly everything was completed. The team was professional, well-organized, and respectful of our home. We can already see a clear reduction in our electricity bills, and the entire experience felt smooth from start to finish.',
+      author: 'Ushaviswanathan, Thiruvambady, Alappuzha',
       image: 'https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project4/belowsectionimageENHANCED.jpg',
     },
   },
