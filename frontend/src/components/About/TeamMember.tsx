@@ -23,37 +23,39 @@ export default function TeamMember({
     <div className="flex flex-row items-center bg-white gap-6">
       {/* Circular Image Container - Left Side */}
       <div className="relative flex-shrink-0">
-        <div className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full bg-gradient-to-br from-[#F7BA41] to-[#E6A835] p-2 shadow-lg">
+        <div className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full overflow-hidden shadow-lg">
           {imageUrl && (
             <Image
               src={imageUrl}
               alt={name}
               width={192}
               height={192}
-              className="w-full h-full object-cover rounded-full"
+              className="w-full h-full object-cover"
             />
           )}
         </div>
       </div>
 
       {/* Content Container - Right Side */}
-      <div className="flex flex-col justify-center items-start flex-1">
-        {/* Name */}
-        <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D3748] mb-2 uppercase tracking-wide">
-          {name}
-        </h3>
+      <div className="flex flex-col items-start flex-1">
+        <div>
+          {/* Name */}
+          <h3 className="text-sm md:text-base lg:text-lg font-semibold text-[#2D3748] mb-1 uppercase tracking-wide">
+            {name}
+          </h3>
 
-        {/* Title/Role */}
-        <p className="text-sm md:text-base text-[#F7BA41] font-bold uppercase mb-4 tracking-wider">
-          {title}
-        </p>
-
-        {/* Description if provided */}
-        {description && (
-          <p className="text-sm text-[#666666] mb-4 leading-relaxed">
-            {description}
+          {/* Title/Role */}
+          <p className="text-xs md:text-sm text-[#F7BA41] font-semibold uppercase tracking-wider">
+            {title}
           </p>
-        )}
+
+          {/* Description if provided */}
+          {description && (
+            <p className="text-sm text-[#666666] mt-3 leading-relaxed">
+              {description}
+            </p>
+          )}
+        </div>
 
         {/* LinkedIn Button */}
         {(linkedin || twitter) && (
@@ -61,7 +63,7 @@ export default function TeamMember({
             href={linkedin || twitter || "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-4 py-2 text-sm border-2 border-[#074A4D] text-[#074A4D] rounded-lg font-semibold hover:bg-[#074A4D] hover:text-white transition-colors duration-300"
+            className="inline-flex items-center px-4 py-2 text-sm border-2 border-[#074A4D] text-[#074A4D] rounded-lg font-semibold hover:bg-[#074A4D] hover:text-white transition-colors duration-300 mt-14"
           >
             LinkedIn →
           </Link>
