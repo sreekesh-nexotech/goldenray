@@ -2,15 +2,20 @@ import ProjectMain from "@/components/Projects/ProjectMain";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title:
-    "Solar Projects Portfolio - Residential & Commercial Installations | Flarize",
+  title: "Solar Installation Projects in Kerala | Flarize",
   description:
-    "Explore Flarize's portfolio of successful solar projects across Kerala. View residential, commercial, and industrial solar installations with detailed case studies.",
+    "Explore completed solar projects across Kerala. Trusted residential and commercial installations delivered by Flarize experts.",
+  keywords: [
+    "solar installation projects kerala",
+    "residential solar projects kerala",
+    "commercial solar projects kerala",
+    "rooftop solar installations kerala",
+  ],
   openGraph: {
-    title: "Solar Projects Portfolio - Flarize",
+    title: "Solar Installation Projects in Kerala | Flarize",
     description:
-      "Browse our successful solar energy projects and installations across Kerala.",
-    url: "https://flarize.com/projects",
+      "Explore completed solar projects across Kerala. Trusted residential and commercial installations delivered by Flarize experts.",
+    url: "https://flarize.com/solar-projects-kerala",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Solar Projects" },
@@ -20,15 +25,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Solar Projects Portfolio - Flarize",
-    description: "Browse our successful solar energy projects across Kerala.",
+    title: "Solar Installation Projects in Kerala | Flarize",
+    description:
+      "Explore completed solar projects across Kerala. Trusted residential and commercial installations delivered by Flarize experts.",
     images: ["/heroImg.png"],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/projects",
+    canonical: "https://www.flarize.com/solar-projects-kerala",
   },
   robots: {
     index: true,

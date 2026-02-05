@@ -14,15 +14,21 @@ import {
 } from "@/components/SolutionsPage";
 
 export const metadata: Metadata = {
-  title:
-    "Commercial Solar Installation - Business Solar Solutions | Flarize Kerala",
+  title: "Commercial Solar Panel Installation in Kerala | Flarize",
   description:
-    "Power your business with Flarize's commercial solar solutions in Kerala. Reduce operational costs, ensure reliable energy, and enhance your brand's sustainability. Contact us for a custom quote!",
+    "Cut operating costs with commercial solar solutions in Kerala. High-performance systems for offices, shops, and industries.",
+  keywords: [
+    "commercial solar installation kerala",
+    "commercial solar panels kerala",
+    "solar for offices kerala",
+    "solar power for shops kerala",
+    "rooftop solar commercial kerala",
+  ],
   openGraph: {
-    title: "Commercial Solar Installation - Business Solar Solutions",
+    title: "Commercial Solar Panel Installation in Kerala | Flarize",
     description:
-      "Reduce operational costs and boost your business sustainability with our commercial solar installations.",
-    url: "https://flarize.com/commercial",
+      "Cut operating costs with commercial solar solutions in Kerala. High-performance systems for offices, shops, and industries.",
+    url: "https://flarize.com/commercial-solar-installation-kerala",
     siteName: "Flarize",
     images: [
       {
@@ -37,16 +43,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Commercial Solar Solutions - Flarize",
+    title: "Commercial Solar Panel Installation in Kerala | Flarize",
     description:
-      "Reduce operational costs and enhance your business sustainability with solar.",
+      "Cut operating costs with commercial solar solutions in Kerala. High-performance systems for offices, shops, and industries.",
     images: [commercialPageData.hero.image],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/commercial",
+    canonical: "https://www.flarize.com/commercial-solar-installation-kerala",
   },
   robots: {
     index: true,
@@ -85,8 +91,6 @@ export default function CommercialPage() {
 
       {/* Final Thoughts */}
       <FinalThoughtsSection data={data.finalThoughts} />
-
-      
 
       {/* FAQ Section */}
       <SolutionFaqSection

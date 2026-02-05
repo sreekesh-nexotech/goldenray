@@ -4,15 +4,21 @@ import { Metadata } from "next";
 
 // Metadata
 export const metadata: Metadata = {
-  title:
-    "Advanced Solar Calculator - Calculate Savings, System Size & ROI | Flarize",
+  title: "Solar Savings Calculator for Kerala Homes | Flarize",
   description:
-    "Use Flarize's advanced solar calculator to get detailed estimates of your solar savings, system size, payback period, and ROI. Customize your solar solution for Kerala.",
+    "Estimate your solar power cost and savings in Kerala. Use our solar calculator to plan the right system for your home or business.",
+  keywords: [
+    "solar calculator kerala",
+    "solar cost estimate kerala",
+    "rooftop solar price kerala",
+    "solar savings calculator india",
+    "solar ROI calculator kerala",
+  ],
   openGraph: {
-    title: "Advanced Solar Calculator - Flarize",
+    title: "Solar Savings Calculator for Kerala Homes | Flarize",
     description:
-      "Calculate your solar savings, system size, and ROI with our advanced solar calculator tailored for Kerala.",
-    url: "https://flarize.com/advanced-calculator",
+      "Estimate your solar power cost and savings in Kerala. Use our solar calculator to plan the right system for your home or business.",
+    url: "https://flarize.com/solar-calculator",
     siteName: "Flarize",
     images: [
       {
@@ -27,16 +33,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Advanced Solar Calculator - Flarize",
+    title: "Solar Savings Calculator for Kerala Homes | Flarize",
     description:
-      "Get detailed estimates of your solar savings and system size.",
+      "Estimate your solar power cost and savings in Kerala. Use our solar calculator to plan the right system for your home or business.",
     images: ["/heroImg.png"],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/advanced-calculator",
+    canonical: "https://www.flarize.com/solar-calculator",
   },
   robots: {
     index: true,

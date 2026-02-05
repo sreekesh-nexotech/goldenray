@@ -5,15 +5,21 @@ import Hero from "@/components/ui/Hero";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title:
-    "Solar Solutions - Residential, Commercial & Industrial | Flarize Kerala",
+  title: "Residential & Commercial Solar Solutions in Kerala | Flarize",
   description:
-    "Flarize offers customized solar solutions for homes, businesses, and industries in Kerala. Expert installation, maintenance, and support for all your solar needs.",
+    "Discover custom solar solutions in Kerala for homes and businesses. Expert installation, high-efficiency panels, and trusted support.",
+  keywords: [
+    "residential solar installation kerala",
+    "commercial solar installation kerala",
+    "home solar panels kerala",
+    "rooftop solar solutions kerala",
+    "solar EPC company kerala",
+  ],
   openGraph: {
-    title: "Solar Solutions - Residential, Commercial & Industrial",
+    title: "Residential & Commercial Solar Solutions in Kerala | Flarize",
     description:
-      "Custom solar solutions designed to meet the unique energy needs of homes, businesses, and industries in Kerala.",
-    url: "https://flarize.com/solutions",
+      "Discover custom solar solutions in Kerala for homes and businesses. Expert installation, high-efficiency panels, and trusted support.",
+    url: "https://flarize.com/solar-solutions-kerala",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Solar Solutions" },
@@ -23,16 +29,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Solar Solutions - Flarize",
+    title: "Residential & Commercial Solar Solutions in Kerala | Flarize",
     description:
-      "Custom solar solutions for residential, commercial, and industrial needs.",
+      "Discover custom solar solutions in Kerala for homes and businesses. Expert installation, high-efficiency panels, and trusted support.",
     images: ["/heroImg.png"],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/solutions",
+    canonical: "https://www.flarize.com/solar-solutions-kerala",
   },
   robots: {
     index: true,

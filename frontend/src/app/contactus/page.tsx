@@ -4,14 +4,20 @@ import ContactMain from "@/components/ContactUs/ContactMain";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact Flarize - Get in Touch for Solar Solutions in Kerala",
+  title: "Contact Solar Experts in Kerala | Flarize",
   description:
-    "Contact Flarize for expert solar energy solutions. Reach out via phone, email, or visit our office in Alappuzha, Kerala. Book your free consultation today!",
+    "Speak with Kerala's solar installation experts. Contact Flarize for site visits, system design, pricing, and support.",
+  keywords: [
+    "solar installation kerala contact",
+    "solar company kerala contact",
+    "solar experts kerala",
+    "rooftop solar consultation kerala",
+  ],
   openGraph: {
-    title: "Contact Flarize - Solar Energy Experts in Kerala",
+    title: "Contact Solar Experts in Kerala | Flarize",
     description:
-      "Get in touch with Flarize for residential and commercial solar solutions. Free consultations available.",
-    url: "https://flarize.com/contactus",
+      "Speak with Kerala's solar installation experts. Contact Flarize for site visits, system design, pricing, and support.",
+    url: "https://flarize.com/contact-flarize-solar",
     siteName: "Flarize",
     images: [
       {
@@ -26,16 +32,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Contact Flarize - Solar Energy Experts",
+    title: "Contact Solar Experts in Kerala | Flarize",
     description:
-      "Reach out to us for solar energy solutions in Kerala. Free consultations available.",
+      "Speak with Kerala's solar installation experts. Contact Flarize for site visits, system design, pricing, and support.",
     images: ["/heroImg.png"],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/contactus",
+    canonical: "https://www.flarize.com/contact-flarize-solar",
   },
   robots: {
     index: true,

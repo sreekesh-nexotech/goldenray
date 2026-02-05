@@ -2,14 +2,21 @@ import Hero from "@/components/ui/Hero";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Solar Energy FAQ - Your Questions Answered | Flarize",
+  title: "Solar Subsidy & Rooftop Solar FAQs in Kerala",
   description:
-    "Find answers to common questions about solar panel installation, maintenance, costs, savings, and more. Get expert advice from Flarize's solar energy specialists.",
+    "Find answers on solar subsidies, pricing, net metering, and rooftop solar systems in Kerala before going solar.",
+  keywords: [
+    "solar subsidy kerala",
+    "rooftop solar FAQ kerala",
+    "net metering kerala solar",
+    "solar panel price kerala FAQ",
+    "on grid solar subsidy kerala",
+  ],
   openGraph: {
-    title: "Solar Energy FAQ - Your Questions Answered",
+    title: "Solar Subsidy & Rooftop Solar FAQs in Kerala",
     description:
-      "Get expert answers to common questions about solar energy, installation, and savings in Kerala.",
-    url: "https://flarize.com/faq",
+      "Find answers on solar subsidies, pricing, net metering, and rooftop solar systems in Kerala before going solar.",
+    url: "https://flarize.com/solar-faq",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Solar FAQ" },
@@ -19,15 +26,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Solar Energy FAQ - Flarize",
-    description: "Find answers to common questions about solar energy.",
+    title: "Solar Subsidy & Rooftop Solar FAQs in Kerala",
+    description:
+      "Find answers on solar subsidies, pricing, net metering, and rooftop solar systems in Kerala before going solar.",
     images: ["/heroImg.png"],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/faq",
+    canonical: "https://www.flarize.com/solar-faq",
   },
   robots: {
     index: true,

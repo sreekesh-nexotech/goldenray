@@ -2,14 +2,21 @@ import Main from "@/components/Home/home";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title:
-    "Flarize - Solar Energy Solutions in Kerala | Residential & Commercial Solar Installation",
+  title: "Solar Power Systems in Kerala for Homes & Businesses | Flarize",
   description:
-    "Flarize provides reliable and sustainable solar energy solutions for homes and businesses in Kerala. Get expert solar panel installation, maintenance, and support for long-term savings.",
+    "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
+  keywords: [
+    "solar power system for home kerala",
+    "solar panel price in kerala",
+    "rooftop solar kerala",
+    "on grid solar system kerala",
+    "off grid solar kerala",
+    "best solar company in kerala",
+  ],
   openGraph: {
-    title: "Flarize - Solar Energy Solutions in Kerala",
+    title: "Solar Power Systems in Kerala for Homes & Businesses | Flarize",
     description:
-      "Empowering sustainable energy with innovative solar solutions for homes and businesses in Kerala.",
+      "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
     url: "https://flarize.com",
     siteName: "Flarize",
     images: [
@@ -25,9 +32,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Flarize - Solar Energy Solutions in Kerala",
+    title: "Solar Power Systems in Kerala for Homes & Businesses | Flarize",
     description:
-      "Empowering sustainable energy with innovative solar solutions.",
+      "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
     images: ["/heroImg.png"],
   },
   icons: {

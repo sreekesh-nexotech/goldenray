@@ -2,14 +2,21 @@ import ResourceMain from "@/components/Resources/ResourceMain";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Solar Energy Blog & Resources - Guides, Tips & Insights | Flarize",
+  title: "Solar Energy Blog Kerala | Tips, Guides & Updates",
   description:
-    "Explore Flarize's blog for expert guides, tips, and insights on solar energy, installation, maintenance, and sustainability in Kerala.",
+    "Read expert insights on solar power in Kerala. Get updates on panels, subsidies, savings, and smart energy solutions.",
+  keywords: [
+    "solar blog kerala",
+    "solar energy tips kerala",
+    "solar subsidy updates kerala",
+    "rooftop solar guides kerala",
+    "renewable energy blog india",
+  ],
   openGraph: {
-    title: "Solar Energy Blog & Resources - Flarize",
+    title: "Solar Energy Blog Kerala | Tips, Guides & Updates",
     description:
-      "Discover helpful guides, tips, and tools to make your solar journey easy and efficient.",
-    url: "https://flarize.com/resources",
+      "Read expert insights on solar power in Kerala. Get updates on panels, subsidies, savings, and smart energy solutions.",
+    url: "https://flarize.com/solar-blog",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Solar Resources" },
@@ -19,15 +26,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Solar Energy Blog & Resources - Flarize",
-    description: "Expert guides and tips for your solar energy journey.",
+    title: "Solar Energy Blog Kerala | Tips, Guides & Updates",
+    description:
+      "Read expert insights on solar power in Kerala. Get updates on panels, subsidies, savings, and smart energy solutions.",
     images: ["/heroImg.png"],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/resources",
+    canonical: "https://www.flarize.com/solar-blog",
   },
   robots: {
     index: true,

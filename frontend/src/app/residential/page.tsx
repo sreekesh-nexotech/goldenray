@@ -14,15 +14,21 @@ import {
 } from "@/components/SolutionsPage";
 
 export const metadata: Metadata = {
-  title:
-    "Residential Solar Installation - Home Solar Solutions | Flarize Kerala",
+  title: "Residential Solar Installation in Kerala | Rooftop Experts",
   description:
-    "Transform your home with Flarize's residential solar solutions in Kerala. Expert installation, long-term savings, and reliable power for your household. Get a free consultation today!",
+    "Install rooftop solar panels for your Kerala home. Reduce electricity bills with safe, efficient residential solar systems by Flarize.",
+  keywords: [
+    "residential solar installation kerala",
+    "rooftop solar for home kerala",
+    "home solar system kerala",
+    "on grid solar for home kerala",
+    "solar panels for house kerala",
+  ],
   openGraph: {
-    title: "Residential Solar Installation - Home Solar Solutions",
+    title: "Residential Solar Installation in Kerala | Rooftop Experts",
     description:
-      "Transform your home with clean solar energy. Expert installation, long-term savings, and reliable power for your household.",
-    url: "https://flarize.com/residential",
+      "Install rooftop solar panels for your Kerala home. Reduce electricity bills with safe, efficient residential solar systems by Flarize.",
+    url: "https://flarize.com/residential-solar-installation-kerala",
     siteName: "Flarize",
     images: [
       {
@@ -37,16 +43,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Residential Solar Solutions - Flarize",
+    title: "Residential Solar Installation in Kerala | Rooftop Experts",
     description:
-      "Transform your home with clean solar energy and enjoy significant savings.",
+      "Install rooftop solar panels for your Kerala home. Reduce electricity bills with safe, efficient residential solar systems by Flarize.",
     images: [residentialPageData.hero.image],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/residential",
+    canonical: "https://www.flarize.com/residential-solar-installation-kerala",
   },
   robots: {
     index: true,
@@ -74,8 +80,6 @@ export default function ResidentialPage() {
       {/* Types of Solar Panels - Light */}
       <PanelTypesSection panels={data.panelTypes} variant="light" />
 
-
-
       {/* Our Milestones */}
       <MilestonesSection milestones={data.milestones} />
 
@@ -85,7 +89,6 @@ export default function ResidentialPage() {
       {/* Final Thoughts */}
       <FinalThoughtsSection data={data.finalThoughts} />
 
-      
       {/* Solar Types with Background */}
       <SolarTypes solarTypes={data.solarTypes} />
 
