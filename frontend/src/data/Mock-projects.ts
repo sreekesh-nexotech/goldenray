@@ -73,7 +73,7 @@ export const mockProjects: Project[] = [
       'We carefully assessed the roof layout and sunlight patterns before finalizing the system design. High-efficiency panels were strategically placed to maximize output even during partial shade. All wiring and components were neatly concealed to preserve the home\'s look, while a robust system configuration ensured reliable power generation throughout the year.'
     ],
     metrics: {
-      systemSize: '10 kW Rooftop Solar PV',
+      systemSize: '3kw residential solar PV',
       installationType: 'Rooftop',
       annualGeneration: '4380 units',
       roiPeriod: '~6.6 years',
@@ -123,7 +123,7 @@ export const mockProjects: Project[] = [
       'Set up a simple monitoring system so the family can track power generation easily.',
     ],
     metrics: {
-      systemSize: '500 kW Commercial Solar PV',
+      systemSize: '3kw residential solar PV',
       installationType: 'Rooftop',
       annualGeneration: '4380 units',
       roiPeriod: '~6.9 years',
@@ -173,7 +173,7 @@ export const mockProjects: Project[] = [
       'Provided a user-friendly monitoring system for homeowners to track energy production and consumption.'
     ],
     metrics: {
-      systemSize: '15 kW Residential Solar PV',
+      systemSize: '3kw residential solar PV',
       installationType: 'Rooftop',
       annualGeneration: '4380 units',
       roiPeriod: '~6.9 years',
@@ -221,7 +221,7 @@ export const mockProjects: Project[] = [
       'We planned a compact solar system that delivered maximum output without overspending. The solar structure was designed to function as a shaded rooftop space, allowing comfortable use in the evenings. Panels were carefully positioned to ensure good sunlight exposure while keeping the area open and functional. Every step was explained in simple terms, helping the family feel confident and stress-free throughout the process.'
     ],
     metrics: {
-      systemSize: '8 kW Residential Solar PV',
+      systemSize: '3kw residential solar PV',
       installationType: 'Rooftop',
       annualGeneration: '4380 units',
       roiPeriod: '~6.4 years',

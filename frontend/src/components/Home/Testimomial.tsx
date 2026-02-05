@@ -15,7 +15,7 @@ const testimonials = [
     image: "https://golden-ray.b-cdn.net/images/test.jpeg",
     stats: [
       { value: "75%", label: "Reduction in bills" },
-      { value: "2 Days", label: "Installation Time" },
+      { value: "1 Days", label: "Installation Time" },
     ],
     quote:
       '"The solar panel installation process was smooth from the very beginning. The team clearly explained each stage—from understanding our energy needs to system design, installation, and final activation. All timelines were communicated in advance, and the execution stayed on track without unnecessary delays. The overall experience felt well-planned and dependable."',
@@ -26,7 +26,7 @@ const testimonials = [
     image: "https://golden-ray.b-cdn.net/images/p2_middle_slide.jpg",
     stats: [
       { value: "85%", label: "Reduction in bills" },
-      { value: "4 Days", label: "Installation Time" },
+      { value: "1 Days", label: "Installation Time" },
     ],
     quote:
       '"Our commercial solar installation brought better predictability to our monthly power expenses. The team maintained transparent communication throughout the project and handled the technical and approval processes professionally. The transition to solar was structured, efficient, and free from operational disruption, which made the decision feel reassuring."',
@@ -37,7 +37,7 @@ const testimonials = [
     image: "https://golden-ray.b-cdn.net/images/P3_middle_slide.jpg",
     stats: [
       { value: "78%", label: "Reduction in bills" },
-      { value: "6 Days", label: "Installation Time" },
+      { value: "1 Days", label: "Installation Time" },
     ],
     quote:
       '"What stood out most was the honest guidance we received on system capacity and realistic expectations around savings. The team took time to explain what would work best for our usage rather than overselling. From planning to completion, the project felt reliable, transparent, and well managed."',
