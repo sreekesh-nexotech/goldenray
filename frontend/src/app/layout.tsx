@@ -1,5 +1,7 @@
 /* src/app/layout.tsx */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Header from "@/components/ui/Header";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Footer from "@/components/ui/Footer";
 import "@/styles/globals.css";
 
@@ -9,13 +11,18 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Suspense } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import IdleTimeoutPopup from "@/components/common/IdleTimoutPopup";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import ExitIntentPopup from "@/components/common/ExitIntentPopup";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import FloatingChatButton from "@/components/common/FloatingChatBoat";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import FloatingPhoneButton from "@/components/common/FloatingPhoneButton";
+import ConditionalLayout from "@/components/common/ConditionalLayout";
 
 import PageTracker from "@/components/analytics/PageTracker";
-import {  isGtmEnabled } from "@/utils/gtm";
+import { isGtmEnabled } from "@/utils/gtm";
 import { GTM_ID } from "@/config";
 
 /* -------------------- Fonts -------------------- */
@@ -31,14 +38,40 @@ const switzer = localFont({
   src: [
     { path: "../../public/fonts/switzer/Switzer-Regular.woff2", weight: "400" },
     { path: "../../public/fonts/switzer/Switzer-Medium.woff2", weight: "500" },
-    { path: "../../public/fonts/switzer/Switzer-Semibold.woff2", weight: "600" },
+    {
+      path: "../../public/fonts/switzer/Switzer-Semibold.woff2",
+      weight: "600",
+    },
     { path: "../../public/fonts/switzer/Switzer-Bold.woff2", weight: "700" },
-    { path: "../../public/fonts/switzer/Switzer-Extrabold.woff2", weight: "800" },
-    { path: "../../public/fonts/switzer/Switzer-Italic.woff2", weight: "400", style: "italic" },
-    { path: "../../public/fonts/switzer/Switzer-MediumItalic.woff2", weight: "500", style: "italic" },
-    { path: "../../public/fonts/switzer/Switzer-SemiboldItalic.woff2", weight: "600", style: "italic" },
-    { path: "../../public/fonts/switzer/Switzer-BoldItalic.woff2", weight: "700", style: "italic" },
-    { path: "../../public/fonts/switzer/Switzer-ExtraboldItalic.woff2", weight: "800", style: "italic" },
+    {
+      path: "../../public/fonts/switzer/Switzer-Extrabold.woff2",
+      weight: "800",
+    },
+    {
+      path: "../../public/fonts/switzer/Switzer-Italic.woff2",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../../public/fonts/switzer/Switzer-MediumItalic.woff2",
+      weight: "500",
+      style: "italic",
+    },
+    {
+      path: "../../public/fonts/switzer/Switzer-SemiboldItalic.woff2",
+      weight: "600",
+      style: "italic",
+    },
+    {
+      path: "../../public/fonts/switzer/Switzer-BoldItalic.woff2",
+      weight: "700",
+      style: "italic",
+    },
+    {
+      path: "../../public/fonts/switzer/Switzer-ExtraboldItalic.woff2",
+      weight: "800",
+      style: "italic",
+    },
   ],
   variable: "--font-switzer",
   display: "swap",
@@ -54,7 +87,8 @@ export const metadata: Metadata = {
   description: "Empowering sustainable energy with innovative solar solutions.",
   openGraph: {
     title: "Flarize | Solar Solutions",
-    description: "Empowering sustainable energy with innovative solar solutions.",
+    description:
+      "Empowering sustainable energy with innovative solar solutions.",
     url: "https://flarize.com",
     siteName: "Flarize",
     images: [
@@ -71,7 +105,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Flarize - Solar Solutions",
-    description: "Empowering sustainable energy with innovative solar solutions.",
+    description:
+      "Empowering sustainable energy with innovative solar solutions.",
     images: ["https://flarize.com/ogImg.jpg"],
   },
   icons: {
@@ -142,14 +177,7 @@ export default function RootLayout({
           <PageTracker />
         </Suspense>
 
-        <Header />
-        {children}
-        <Footer />
-
-        <IdleTimeoutPopup />
-        <ExitIntentPopup />
-        <FloatingPhoneButton />
-        <FloatingChatButton />
+        <ConditionalLayout>{children}</ConditionalLayout>
       </body>
     </html>
   );

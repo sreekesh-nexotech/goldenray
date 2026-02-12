@@ -6,7 +6,7 @@ import PageIllustration from "@/components/ui/page-illustration";
 import Button from "../ui/Button";
 import BasicResult from "./basic-result";
 import { BasicCalculatorData } from "@/types/types";
-import QuotePopup from "./QuotePopup";
+import CustomerDetailsPopup from "./CustomerDetailsPopup";
 
 interface SolarBasicResultProps {
   initialPincode: string;
@@ -18,7 +18,7 @@ interface SolarBasicResultProps {
     pincode: string,
     property_type: string,
     monthly_bill: number,
-    ownership_type?: string
+    ownership_type?: string,
   ) => void;
   onGoBack: () => void;
   apiError?: string | null;
@@ -38,20 +38,20 @@ export default function SolarBasicResult({
 }: SolarBasicResultProps) {
   const [pincode, setPincode] = useState(initialPincode);
   const [property_type, setproperty_type] = useState(
-    initialproperty_type || "residential"
+    initialproperty_type || "residential",
   );
   const [monthly_bill, setmonthly_bill] = useState<number | "">(
-    initialmonthly_bill
+    initialmonthly_bill,
   );
   const [ownership_type, setownership_type] = useState(initialownership_type);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [submittedOwnershipType, setSubmittedOwnershipType] = useState(
-    initialownership_type
+    initialownership_type,
   ); // Track submitted value
   const [monthly_label, setmonthly_label] = useState(
     initialproperty_type === "residential"
       ? "Average bi-Monthly Bill"
-      : "Average Monthly Bill"
+      : "Average Monthly Bill",
   );
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -94,7 +94,7 @@ export default function SolarBasicResult({
     setmonthly_label(
       e.target.value === "residential"
         ? "Average bi-Monthly Bill"
-        : "Average Monthly Bill"
+        : "Average Monthly Bill",
     );
     // Clear property type error on change
     setErrors((prev) => ({ ...prev, property_type: "" }));
@@ -127,7 +127,7 @@ export default function SolarBasicResult({
         pincode,
         property_type,
         billValue,
-        showOwnershipField ? ownership_type : undefined
+        showOwnershipField ? ownership_type : undefined,
       );
     }
   };
@@ -293,7 +293,14 @@ export default function SolarBasicResult({
             Go Back to Form
           </button>
         </div>
-        {isPopupOpen && <QuotePopup onClose={() => setIsPopupOpen(false)} />}
+        {isPopupOpen && (
+          <CustomerDetailsPopup
+            onClose={() => setIsPopupOpen(false)}
+            pincode={initialPincode}
+            monthlyBill={initialmonthly_bill}
+            systemSize={calculatedData.specifications.power_requirement}
+          />
+        )}
       </div>
     </div>
   );
