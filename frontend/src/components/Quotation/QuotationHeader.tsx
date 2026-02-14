@@ -12,9 +12,9 @@ export default function QuotationHeader({ logo }: QuotationHeaderProps) {
       <Image
         src={logo}
         alt="Flarize Logo"
-        width={100}
-        height={40}
-        className="h-8 w-auto object-contain"
+        width={80}
+        height={30}
+        className="h-5 w-auto object-contain"
       />
       <span className="text-xs text-gray-500">by Golden Ray</span>
     </div>

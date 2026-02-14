@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { getInstallationStats } from "@/services/installationStatsService";
 
 interface Testimonial {
   name: string;
@@ -19,7 +21,7 @@ interface Page3ContentProps {
   monthlyBill: number | "";
 }
 
-// Generate a deterministic "homes count" based on pincode
+// Generate a deterministic "homes count" based on pincode (FALLBACK)
 function getHomesCountForPincode(pincode: string): number {
   if (!pincode || pincode.length === 0) return 8;
   let hash = 0;
@@ -30,7 +32,7 @@ function getHomesCountForPincode(pincode: string): number {
   return 5 + (hash % 26);
 }
 
-// Get district name from pincode (simplified Kerala mapping)
+// Get district name from pincode (simplified Kerala mapping) (FALLBACK)
 function getDistrictFromPincode(pincode: string): string {
   const prefix = pincode.substring(0, 3);
   const districtMap: Record<string, string> = {
@@ -59,7 +61,7 @@ function getDistrictFromPincode(pincode: string): string {
   return districtMap[prefix] || "Alappuzha";
 }
 
-// Get district-wide installation count
+// Get district-wide installation count (FALLBACK)
 function getDistrictInstallations(pincode: string): number {
   const homes = getHomesCountForPincode(pincode);
   return homes * 3 + 7; // District has ~3x more than the pincode area
@@ -111,10 +113,51 @@ export default function Page3Content({
   pincode,
   monthlyBill,
 }: Page3ContentProps) {
-  const homesCount = getHomesCountForPincode(pincode);
-  const district = getDistrictFromPincode(pincode);
-  const districtInstallations = getDistrictInstallations(pincode);
+  // State for API data
+  const [homesCount, setHomesCount] = useState<number>(
+    getHomesCountForPincode(pincode),
+  );
+  const [district, setDistrict] = useState<string>(
+    getDistrictFromPincode(pincode),
+  );
+  const [districtInstallations, setDistrictInstallations] = useState<number>(
+    getDistrictInstallations(pincode),
+  );
+  const [yearInstallations, setYearInstallations] = useState<number>(0);
+
   const billAmount = typeof monthlyBill === "number" ? monthlyBill : 6000;
+
+  // Fetch real data from API
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!pincode) {
+        return;
+      }
+
+      try {
+        const stats = await getInstallationStats(pincode);
+
+        // Use real data from API
+        setHomesCount(
+          stats.pincode_installations > 0
+            ? stats.pincode_installations
+            : getHomesCountForPincode(pincode),
+        );
+        setDistrict(stats.district || getDistrictFromPincode(pincode));
+        setDistrictInstallations(
+          stats.district_installations > 0
+            ? stats.district_installations
+            : getDistrictInstallations(pincode),
+        );
+        setYearInstallations(stats.current_year_installations);
+      } catch (error) {
+        console.error("Failed to fetch installation stats:", error);
+        // Keep fallback values already set in state
+      }
+    };
+
+    fetchStats();
+  }, [pincode]);
 
   // Estimate savings range based on bill amount
   const minSavings = Math.round(billAmount * 0.8);
@@ -123,8 +166,8 @@ export default function Page3Content({
   return (
     <>
       {/* Main Headline */}
-      <div className="text-center mb-4 mt-2 px-4">
-        <h1 className="text-3xl font-bold leading-tight mb-1">
+      <div className="text-center my-7 mt-2 px-4 ">
+        <h1 className="text-2xl font-bold leading-tight mb-1">
           <span className="text-[#1a1a1a]">
             Homeowners Around You Have Already{" "}
           </span>
@@ -154,21 +197,24 @@ export default function Page3Content({
           </span>{" "}
           are already running on Flarize solar.{" "}
           <span className="font-bold text-[#123532]">
-            {districtInstallations} installations
+            {yearInstallations > 0
+              ? `${yearInstallations} installations`
+              : `${districtInstallations} installations`}
           </span>{" "}
-          across {district} district in 2024 alone.
+          across {district} district in{" "}
+          {yearInstallations > 0 ? new Date().getFullYear() : "2024"} alone.
         </p>
       </div>
 
       {/* Testimonial Cards */}
-      <div className="grid grid-cols-3 gap-3 mb-4 px-4">
+      <div className="grid grid-cols-3 gap-3 mb-9 mt-5 px-4">
         {testimonials.map((testimonial, index) => (
           <div
             key={index}
             className="border border-gray-200 rounded-xl overflow-hidden flex flex-col"
           >
             {/* Image */}
-            <div className="relative w-full h-32 overflow-hidden">
+            <div className="relative w-full h-35 overflow-hidden">
               <Image
                 src={testimonial.image}
                 alt={testimonial.name}
@@ -188,7 +234,7 @@ export default function Page3Content({
 
             {/* Quote */}
             <div className="p-2 flex-grow">
-              <p className="text-[8px] text-gray-600 leading-relaxed line-clamp-6">
+              <p className="text-[9px] text-gray-600 leading-relaxed line-clamp-6">
                 {testimonial.quote}
               </p>
             </div>
@@ -213,8 +259,8 @@ export default function Page3Content({
       </div>
 
       {/* QR Code / Testimonials Link Section */}
-      <div className="mx-4 mb-4 bg-[#FFF8E9] border border-[#E5D5B8] rounded-xl p-3 flex items-center gap-4">
-        <div className="flex-shrink-0 w-16 h-16 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
+      <div className="mx-4 mb-10 bg-[#FFF8E9] border border-[#E5D5B8] rounded-xl p-3 flex items-center gap-4">
+        <div className="flex-shrink-0 w-18 h-18 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
           {/* QR Code placeholder */}
           <svg
             className="w-12 h-12 text-gray-800"
@@ -276,10 +322,10 @@ export default function Page3Content({
           </svg>
         </div>
         <div>
-          <p className="text-sm font-bold text-[#123532] mb-1">
+          <p className="text-md font-bold text-[#123532] mb-1">
             📹 Watch Real Kerala Homeowners Share Their Experience
           </p>
-          <p className="text-[10px] text-gray-600 leading-relaxed">
+          <p className="text-xs text-gray-600 leading-relaxed">
             Scan the QR code to watch 2-minute video interviews with customers
             in Alappuzha, Kochi, and Thrissur. See their rooftop installations
             and hear their savings stories.
@@ -291,36 +337,93 @@ export default function Page3Content({
       </div>
 
       {/* They Acted vs Still Waiting */}
-      <div className="mx-4 mb-4 bg-gray-50 border border-gray-200 rounded-xl p-4">
-        <div className="grid grid-cols-2 gap-6">
+      <div className="bg-gray-50 py-8 mb-4 -mx-[10mm] px-[10mm]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* They Acted */}
-          <div>
-            <h3 className="text-base font-bold text-[#123532] mb-3">
+          <div className="pr-6">
+            <h3 className="text-base font-bold text-[#123532] mb-1">
               They Acted
             </h3>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></div>
-                <span className="text-xs text-gray-700">
+            <div className="h-[3px] bg-green-500 rounded-full mb-4"></div>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-green-500 flex-shrink-0 flex items-center justify-center">
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm text-gray-700">
                   Bills dropped by 85%–95%
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></div>
-                <span className="text-xs text-gray-700">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-green-500 flex-shrink-0 flex items-center justify-center">
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm text-gray-700">
                   Saving ₹{minSavings.toLocaleString("en-IN")}–₹
                   {maxSavings.toLocaleString("en-IN")} monthly
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></div>
-                <span className="text-xs text-gray-700">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-green-500 flex-shrink-0 flex items-center justify-center">
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm text-gray-700">
                   Protected from rate hikes
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></div>
-                <span className="text-xs text-gray-700">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-green-500 flex-shrink-0 flex items-center justify-center">
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm text-gray-700">
                   Home value increased
                 </span>
               </div>
@@ -328,37 +431,93 @@ export default function Page3Content({
           </div>
 
           {/* Still Waiting */}
-          <div className="border-l border-gray-300 pl-6">
-            <h3 className="text-base font-bold text-[#123532] mb-3">
+          <div className="pl-6 border-l border-gray-300">
+            <h3 className="text-base font-bold text-[#123532] mb-1">
               Still Waiting
             </h3>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-500 flex-shrink-0"></div>
-                <span className="text-xs text-gray-700">
+            <div className="h-[3px] bg-red-500 rounded-full mb-4"></div>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-red-500 flex-shrink-0 flex items-center justify-center">
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm text-gray-700">
                   Paying full KSEB bill monthly
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-500 flex-shrink-0"></div>
-                <span className="text-xs text-gray-700">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-red-500 flex-shrink-0 flex items-center justify-center">
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm text-gray-700">
                   Losing ₹
                   {(billAmount * 12 * 0.85).toLocaleString("en-IN", {
                     maximumFractionDigits: 0,
                   })}
-                  –₹
-                  {(billAmount * 12).toLocaleString("en-IN")}/year
+                  –₹{(billAmount * 12).toLocaleString("en-IN")}/year
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-500 flex-shrink-0"></div>
-                <span className="text-xs text-gray-700">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-red-500 flex-shrink-0 flex items-center justify-center">
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm text-gray-700">
                   Vulnerable to tariff increases
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-500 flex-shrink-0"></div>
-                <span className="text-xs text-gray-700">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-red-500 flex-shrink-0 flex items-center justify-center">
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm text-gray-700">
                   Watching neighbors save
                 </span>
               </div>
@@ -367,7 +526,7 @@ export default function Page3Content({
         </div>
 
         {/* Bottom urgency line */}
-        <div className="mt-4 pt-3 border-t border-gray-200 text-center">
+        <div className="mt-6 text-center">
           <p className="text-sm font-bold text-[#123532]">
             Every month you wait is another ₹
             {minSavings.toLocaleString("en-IN")}–₹

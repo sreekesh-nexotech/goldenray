@@ -7,6 +7,7 @@ import {
   Page1Content,
   Page2Content,
   Page3Content,
+  Page4Content,
 } from "@/components/Quotation";
 
 interface QuotationData {
@@ -16,6 +17,14 @@ interface QuotationData {
   pincode: string;
   monthlyBill: number | "";
   systemSize: string;
+  systemPrice: number;
+  emiPerMonth: number;
+  graphData: {
+    labels: string[];
+    datasets: {
+      data: number[];
+    }[];
+  };
 }
 
 export default function QuotationPage() {
@@ -103,6 +112,16 @@ export default function QuotationPage() {
         <Page3Content
           pincode={quotationData.pincode}
           monthlyBill={quotationData.monthlyBill}
+        />
+      </QuotationPageWrapper>
+
+      {/* Page 4 */}
+      <QuotationPageWrapper logo={logo}>
+        <Page4Content
+          monthlyBill={quotationData.monthlyBill}
+          systemPrice={quotationData.systemPrice}
+          emiPerMonth={quotationData.emiPerMonth}
+          graphData={quotationData.graphData}
         />
       </QuotationPageWrapper>
 

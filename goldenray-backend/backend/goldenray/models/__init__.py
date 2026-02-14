@@ -9,3 +9,4 @@ from .sent_quote import SentQuote
 from .solar_installation import SolarInstallation
 from .solar_installation_new import SolarInstallationNew
 from .wattage import Wattage
+from .customer_installation import CustomerInstallation

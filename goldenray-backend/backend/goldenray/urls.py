@@ -15,6 +15,7 @@ from .views.otp_views import SendOTPAPIView, VerifyOTPAPIView
 from .views.lead_collection_home_views import LeadCollectionHomeAPIView
 from .views.metadata_views import MetadataAPIView
 from .views.room_size_views import RoomSizeAPIView
+from .views.customer_installation_views import CustomerInstallationAPIView, InstallationStatsByPincodeAPIView
 
 urlpatterns = [
     # Batteries
@@ -60,4 +61,9 @@ urlpatterns = [
     # Room Sizes
     path("room-sizes/", RoomSizeAPIView.as_view(), name="room-size-list-create"),
     path("room-sizes/<int:pk>/", RoomSizeAPIView.as_view(), name="room-size-retrieve-update-destroy"),
+    # Customer Installations
+    path("customer-installations/", CustomerInstallationAPIView.as_view(), name="customer-installation-list-create"),
+    path("customer-installations/<int:pk>/", CustomerInstallationAPIView.as_view(), name="customer-installation-retrieve-update-destroy"),
+    # Installation Stats by Pincode
+    path("installation-stats/", InstallationStatsByPincodeAPIView.as_view(), name="installation-stats-by-pincode"),
 ]

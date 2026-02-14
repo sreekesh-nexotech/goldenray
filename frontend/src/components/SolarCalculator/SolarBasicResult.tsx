@@ -299,6 +299,13 @@ export default function SolarBasicResult({
             pincode={initialPincode}
             monthlyBill={initialmonthly_bill}
             systemSize={calculatedData.specifications.power_requirement}
+            systemPrice={parseFloat(
+              calculatedData.financialDetails.final_cost.replace(/[₹,]/g, ""),
+            )}
+            emiPerMonth={parseFloat(
+              calculatedData.financialDetails.starting_EMI.replace(/[₹,]/g, ""),
+            )}
+            graphData={calculatedData.graph_data}
           />
         )}
       </div>

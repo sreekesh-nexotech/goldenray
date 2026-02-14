@@ -8,6 +8,14 @@ interface CustomerDetailsPopupProps {
   pincode: string;
   monthlyBill: number | "";
   systemSize: string;
+  systemPrice: number;
+  emiPerMonth: number;
+  graphData: {
+    labels: string[];
+    datasets: {
+      data: number[];
+    }[];
+  };
 }
 
 export interface QuotationData {
@@ -17,6 +25,14 @@ export interface QuotationData {
   pincode: string;
   monthlyBill: number | "";
   systemSize: string;
+  systemPrice: number;
+  emiPerMonth: number;
+  graphData: {
+    labels: string[];
+    datasets: {
+      data: number[];
+    }[];
+  };
 }
 
 export default function CustomerDetailsPopup({
@@ -24,6 +40,9 @@ export default function CustomerDetailsPopup({
   pincode,
   monthlyBill,
   systemSize,
+  systemPrice,
+  emiPerMonth,
+  graphData,
 }: CustomerDetailsPopupProps) {
   const router = useRouter();
   const [customerName, setCustomerName] = useState("");
@@ -65,6 +84,9 @@ export default function CustomerDetailsPopup({
         pincode,
         monthlyBill,
         systemSize,
+        systemPrice,
+        emiPerMonth,
+        graphData,
       };
 
       sessionStorage.setItem("quotationData", JSON.stringify(quotationData));
