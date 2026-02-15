@@ -8,6 +8,7 @@ import {
   Page2Content,
   Page3Content,
   Page4Content,
+  Page5Content,
 } from "@/components/Quotation";
 
 interface QuotationData {
@@ -123,6 +124,11 @@ export default function QuotationPage() {
           emiPerMonth={quotationData.emiPerMonth}
           graphData={quotationData.graphData}
         />
+      </QuotationPageWrapper>
+
+      {/* Page 5 */}
+      <QuotationPageWrapper logo={logo}>
+        <Page5Content systemPrice={quotationData.systemPrice} />
       </QuotationPageWrapper>
 
       {/* Print styles */}
