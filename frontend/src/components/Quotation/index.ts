@@ -6,3 +6,4 @@ export { default as Page2Content } from "./Page2Content";
 export { default as Page3Content } from "./Page3Content";
 export { default as Page4Content } from "./Page4Content";
 export { default as Page5Content } from "./Page5Content";
+export { default as Page6Content } from "./Page6Content";

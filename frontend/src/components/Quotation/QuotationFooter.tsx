@@ -8,7 +8,15 @@ interface QuotationFooterProps {
 
 export default function QuotationFooter({ logo }: QuotationFooterProps) {
   return (
-    <div className="border-t border-gray-200 pt-2 mt-auto w-full bg-[#FFF8E9] px-4">
+    <div
+      className="border-t border-gray-200 pt-2 mt-auto w-auto bg-[#FFF8E9] px-4"
+      style={{
+        marginLeft: "-10mm",
+        marginRight: "-10mm",
+        marginBottom: "-8mm",
+        paddingBottom: "8mm",
+      }}
+    >
       <div className="flex items-center justify-between text-[9px] text-gray-600">
         <div className="flex items-center gap-1">
           <Image
