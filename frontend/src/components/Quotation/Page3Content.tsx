@@ -337,8 +337,8 @@ export default function Page3Content({
       </div>
 
       {/* They Acted vs Still Waiting */}
-      <div className="bg-gray-50 py-8 mb-4 -mx-[10mm] px-[10mm]">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="bg-gray-50 py-8 mb-4 -mx-[10mm] px-[10mm]" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+        <div className="grid grid-cols-2 gap-8">
           {/* They Acted */}
           <div className="pr-6">
             <h3 className="text-base font-bold text-[#123532] mb-1">
