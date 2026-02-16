@@ -11,6 +11,7 @@ import {
   Page5Content,
   Page6Content,
   Page7Content,
+  Page8Content,
 } from "@/components/Quotation";
 
 interface QuotationData {
@@ -141,6 +142,11 @@ export default function QuotationPage() {
       {/* Page 7 */}
       <QuotationPageWrapper logo={logo}>
         <Page7Content />
+      </QuotationPageWrapper>
+
+      {/* Page 8 */}
+      <QuotationPageWrapper logo={logo}>
+        <Page8Content />
       </QuotationPageWrapper>
 
       {/* Print styles */}
