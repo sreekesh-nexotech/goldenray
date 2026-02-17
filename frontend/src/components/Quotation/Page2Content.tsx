@@ -169,7 +169,13 @@ export default function Page2Content({ monthlyBill }: Page2ContentProps) {
 
           <div className="space-y-1.5 text-xs">
             <div className="flex items-start gap-1">
-              <span className="text-red-500 text-sm">💸</span>
+              <Image
+                src="https://golden-ray.b-cdn.net/icons/Vector%20(4).png"
+                alt=""
+                width={10}
+                height={10}
+                className="object-contain mt-0.5 flex-shrink-0"
+              />
               <span className="text-gray-700">
                 <span className="text-red-600 font-medium">
                   ₹{totalPaidIn25Years}+ lakh
@@ -178,14 +184,26 @@ export default function Page2Content({ monthlyBill }: Page2ContentProps) {
               </span>
             </div>
             <div className="flex items-start gap-1">
-              <span className="text-red-500 text-sm">📈</span>
+              <Image
+                src="https://golden-ray.b-cdn.net/icons/Vector%20(3).png"
+                alt=""
+                width={10}
+                height={10}
+                className="object-contain mt-0.5 flex-shrink-0"
+              />
               <span className="text-gray-700">
                 Bill increases{" "}
                 <span className="text-red-600 font-medium">8-12% yearly</span>
               </span>
             </div>
             <div className="flex items-start gap-1">
-              <span className="text-red-500 text-sm">⏳</span>
+              <Image
+                src="https://golden-ray.b-cdn.net/icons/Vector%20(2).png"
+                alt=""
+                width={10}
+                height={10}
+                className="object-contain mt-0.5 flex-shrink-0"
+              />
               <span className="text-gray-700">No ownership, no control</span>
             </div>
           </div>
@@ -229,7 +247,13 @@ export default function Page2Content({ monthlyBill }: Page2ContentProps) {
 
           <div className="space-y-1.5 text-xs">
             <div className="flex items-start gap-1">
-              <span className="text-green-600 text-sm">🐷</span>
+              <Image
+                src="https://golden-ray.b-cdn.net/icons/Vector%20(5).png"
+                alt=""
+                width={10}
+                height={10}
+                className="object-contain mt-0.5 flex-shrink-0"
+              />
               <span className="text-gray-700">
                 <span className="text-green-700 font-medium">
                   ₹{Math.round(totalPaidIn25Years * 0.65)} lakh
@@ -238,14 +262,26 @@ export default function Page2Content({ monthlyBill }: Page2ContentProps) {
               </span>
             </div>
             <div className="flex items-start gap-1">
-              <span className="text-green-600 text-sm">🛡</span>
+              <Image
+                src="https://golden-ray.b-cdn.net/icons/Vector%20(1).png"
+                alt=""
+                width={10}
+                height={10}
+                className="object-contain mt-0.5 flex-shrink-0"
+              />
               <span className="text-gray-700">
                 Protected from{" "}
                 <span className="text-green-700 font-medium">tariff hikes</span>
               </span>
             </div>
             <div className="flex items-start gap-1">
-              <span className="text-green-600 text-sm">⚡</span>
+              <Image
+                src="https://golden-ray.b-cdn.net/icons/Frame%20(1).png"
+                alt=""
+                width={10}
+                height={10}
+                className="object-contain mt-0.5 flex-shrink-0"
+              />
               <span className="text-gray-700">
                 Own your power,{" "}
                 <span className="text-green-700 font-medium">
@@ -310,9 +346,7 @@ export default function Page2Content({ monthlyBill }: Page2ContentProps) {
               className="object-contain"
             />
             <div>
-              <p className="text-xs font-bold text-[#123532]">
-                No Obligation
-              </p>
+              <p className="text-xs font-bold text-[#123532]">No Obligation</p>
               <p className="text-[8px] text-gray-500">If roof unsuitable</p>
             </div>
           </div>
@@ -327,9 +361,7 @@ export default function Page2Content({ monthlyBill }: Page2ContentProps) {
               className="object-contain"
             />
             <div>
-              <p className="text-xs font-bold text-[#123532]">
-                Price Locked
-              </p>
+              <p className="text-xs font-bold text-[#123532]">Price Locked</p>
               <p className="text-[8px] text-gray-500">For 90 days only</p>
             </div>
           </div>
@@ -344,9 +376,7 @@ export default function Page2Content({ monthlyBill }: Page2ContentProps) {
               className="object-contain"
             />
             <div>
-              <p className="text-xs font-bold text-[#123532]">
-                Installation
-              </p>
+              <p className="text-xs font-bold text-[#123532]">Installation</p>
               <p className="text-[8px] text-gray-500">in 15–20 day</p>
             </div>
           </div>

@@ -13,6 +13,7 @@ import {
   Page7Content,
   Page8Content,
   Page9Content,
+  Page10Content,
 } from "@/components/Quotation";
 
 interface QuotationData {
@@ -132,25 +133,33 @@ export default function QuotationPage() {
 
       {/* Page 5 */}
       <QuotationPageWrapper logo={logo}>
-        <Page5Content systemPrice={quotationData.systemPrice} />
+        <Page10Content
+          monthlyBill={quotationData.monthlyBill}
+          systemSize={quotationData.systemSize}
+        />
       </QuotationPageWrapper>
 
       {/* Page 6 */}
       <QuotationPageWrapper logo={logo}>
-        <Page6Content />
+        <Page5Content systemPrice={quotationData.systemPrice} />
       </QuotationPageWrapper>
 
       {/* Page 7 */}
       <QuotationPageWrapper logo={logo}>
-        <Page7Content />
+        <Page6Content />
       </QuotationPageWrapper>
 
       {/* Page 8 */}
       <QuotationPageWrapper logo={logo}>
-        <Page8Content />
+        <Page7Content />
       </QuotationPageWrapper>
 
       {/* Page 9 */}
+      <QuotationPageWrapper logo={logo}>
+        <Page8Content />
+      </QuotationPageWrapper>
+
+      {/* Page 10 */}
       <QuotationPageWrapper logo={logo}>
         <Page9Content
           monthlyBill={quotationData.monthlyBill}
