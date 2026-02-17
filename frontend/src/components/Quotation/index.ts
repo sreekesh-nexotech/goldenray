@@ -9,3 +9,4 @@ export { default as Page5Content } from "./Page5Content";
 export { default as Page6Content } from "./Page6Content";
 export { default as Page7Content } from "./Page7Content";
 export { default as Page8Content } from "./Page8Content";
+export { default as Page9Content } from "./Page9Content";

@@ -280,58 +280,75 @@ export default function Page2Content({ monthlyBill }: Page2ContentProps) {
         </div>
       </div>
 
-      {/* Guarantee Badges */}
-      <div className="grid grid-cols-4 gap-1 mb-4 px-19">
-        <div className="flex items-center gap-2">
-          <Image
-            src="/svgg.png"
-            alt="Badge"
-            width={32}
-            height={32}
-            className="flex-shrink-0"
-          />
-          <div>
-            <p className="text-xs font-bold text-gray-800">100% Refundable</p>
-            <p className="text-[10px] text-gray-600">₹5,000 booking fee</p>
+      {/* Bottom Guarantees Row */}
+      <div className="mx-20 mb-4 rounded-xl py-5 px-4">
+        <div className="flex items-center justify-between">
+          {/* 100% Refundable */}
+          <div className="flex items-center gap-1">
+            <Image
+              src="https://golden-ray.b-cdn.net/icons/Vector%20(8).png"
+              alt="Refundable"
+              width={20}
+              height={20}
+              className="object-contain"
+            />
+            <div>
+              <p className="text-xs font-bold text-[#123532]">
+                100% Refundable
+              </p>
+              <p className="text-[8px] text-gray-500">₹5,000 booking fee</p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Image
-            src="/svgg.png"
-            alt="Badge"
-            width={32}
-            height={32}
-            className="flex-shrink-0"
-          />
-          <div>
-            <p className="text-xs font-bold text-gray-800">No Obligation</p>
-            <p className="text-[10px] text-gray-600">If roof unsuitable</p>
+
+          {/* No Obligation */}
+          <div className="flex items-center gap-2">
+            <Image
+              src="https://golden-ray.b-cdn.net/icons/Vector%20(9).png"
+              alt="No Obligation"
+              width={30}
+              height={30}
+              className="object-contain"
+            />
+            <div>
+              <p className="text-xs font-bold text-[#123532]">
+                No Obligation
+              </p>
+              <p className="text-[8px] text-gray-500">If roof unsuitable</p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Image
-            src="/svgg.png"
-            alt="Badge"
-            width={32}
-            height={32}
-            className="flex-shrink-0"
-          />
-          <div>
-            <p className="text-xs font-bold text-gray-800">Price Locked</p>
-            <p className="text-[10px] text-gray-600">For 90 days only</p>
+
+          {/* Price Locked */}
+          <div className="flex items-center gap-2">
+            <Image
+              src="https://golden-ray.b-cdn.net/icons/Vector%20(10).png"
+              alt="Price Locked"
+              width={20}
+              height={20}
+              className="object-contain"
+            />
+            <div>
+              <p className="text-xs font-bold text-[#123532]">
+                Price Locked
+              </p>
+              <p className="text-[8px] text-gray-500">For 90 days only</p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Image
-            src="/svgg.png"
-            alt="Badge"
-            width={32}
-            height={32}
-            className="flex-shrink-0"
-          />
-          <div>
-            <p className="text-xs font-bold text-gray-800">Installation</p>
-            <p className="text-[10px] text-gray-600">in 15-20 day</p>
+
+          {/* Installation */}
+          <div className="flex items-center gap-2">
+            <Image
+              src="https://golden-ray.b-cdn.net/icons/Vector%20(11).png"
+              alt="Installation"
+              width={20}
+              height={20}
+              className="object-contain"
+            />
+            <div>
+              <p className="text-xs font-bold text-[#123532]">
+                Installation
+              </p>
+              <p className="text-[8px] text-gray-500">in 15–20 day</p>
+            </div>
           </div>
         </div>
       </div>
