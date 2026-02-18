@@ -181,22 +181,20 @@ export default function Page3Content({
       {/* Social Proof Banner */}
       <div className="bg-[#F0FDF4] border border-green-200 rounded-xl px-4 py-3 mb-4 mx-4 flex items-start gap-3">
         <div className="flex-shrink-0 mt-0.5">
-          <div className="w-8 h-8 bg-[#FF9500] rounded-full flex items-center justify-center">
-            <svg
-              className="w-4 h-4 text-white"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-            </svg>
-          </div>
+          <Image
+            src="https://golden-ray.b-cdn.net/icons/Vector%20(7).png"
+            alt="Location"
+            width={32}
+            height={32}
+            className="object-contain"
+          />
         </div>
-        <p className="text-sm text-gray-800 leading-relaxed">
-          <span className="font-bold text-[#123532]">
+        <p className="text-sm text-[#15803D] leading-relaxed">
+          <span className="font-bold text-[#15803D]">
             {homesCount} homes in {district} ({pincode})
           </span>{" "}
           are already running on Flarize solar.{" "}
-          <span className="font-bold text-[#123532]">
+          <span className="font-bold text-[#15803D]">
             {yearInstallations > 0
               ? `${yearInstallations} installations`
               : `${districtInstallations} installations`}

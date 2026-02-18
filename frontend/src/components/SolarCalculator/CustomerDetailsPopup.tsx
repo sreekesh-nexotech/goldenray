@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const QuotationPdfGenerator = dynamic(
+  () => import("@/components/Quotation/QuotationPdfGenerator"),
+  { ssr: false },
+);
 
 interface CustomerDetailsPopupProps {
   onClose: () => void;
@@ -44,11 +49,12 @@ export default function CustomerDetailsPopup({
   emiPerMonth,
   graphData,
 }: CustomerDetailsPopupProps) {
-  const router = useRouter();
   const [customerName, setCustomerName] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [pdfData, setPdfData] = useState<QuotationData | null>(null);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -76,7 +82,6 @@ export default function CustomerDetailsPopup({
     e.preventDefault();
 
     if (validateForm()) {
-      // Store data in sessionStorage for the quotation page
       const quotationData: QuotationData = {
         customerName,
         address,
@@ -89,11 +94,25 @@ export default function CustomerDetailsPopup({
         graphData,
       };
 
+      // Also store in sessionStorage for the /quotation page fallback
       sessionStorage.setItem("quotationData", JSON.stringify(quotationData));
 
-      // Navigate to quotation page
-      router.push("/quotation");
+      // Trigger PDF generation
+      setIsGenerating(true);
+      setPdfData(quotationData);
     }
+  };
+
+  const handlePdfComplete = () => {
+    setIsGenerating(false);
+    setPdfData(null);
+    onClose();
+  };
+
+  const handlePdfError = (error: string) => {
+    setIsGenerating(false);
+    setPdfData(null);
+    alert(error);
   };
 
   return (
@@ -177,12 +196,44 @@ export default function CustomerDetailsPopup({
           <div className="pt-4">
             <button
               type="submit"
-              className="w-full cursor-pointer px-8 py-3 bg-[#F7BA41] text-black font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200"
+              disabled={isGenerating}
+              className="w-full cursor-pointer px-8 py-3 bg-[#F7BA41] text-black font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Get Quotation
+              {isGenerating ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                  Generating PDF...
+                </span>
+              ) : (
+                "Get Quotation"
+              )}
             </button>
           </div>
         </form>
+
+        {/* PDF Generator - renders off-screen and generates PDF */}
+        {pdfData && (
+          <QuotationPdfGenerator
+            data={pdfData}
+            onComplete={handlePdfComplete}
+            onError={handlePdfError}
+          />
+        )}
       </div>
     </div>
   );

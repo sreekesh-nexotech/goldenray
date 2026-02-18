@@ -357,7 +357,7 @@ export default function Page10Content({ systemSize }: Page10ContentProps) {
         <div>
           <h3
             className="font-medium text-[#DC2626] mb-2"
-            style={{ fontSize: "20px" }}
+            style={{ fontSize: "17px" }}
           >
             Your Life Now
           </h3>
@@ -398,7 +398,7 @@ export default function Page10Content({ systemSize }: Page10ContentProps) {
         <div>
           <h3
             className="font-medium text-[#16a34a] mb-2"
-            style={{ fontSize: "20px" }}
+            style={{ fontSize: "17px" }}
           >
             Your Life with Solar
           </h3>
