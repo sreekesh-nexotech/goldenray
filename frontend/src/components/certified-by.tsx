@@ -11,7 +11,7 @@ export default function Certified() {
       <div className="max-w-[95%] lg:max-w-[90rem] mx-auto text-center">
         {/* Heading */}
         <h2 className="text-base md:text-xl lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold text-gray-800 uppercase tracking-wider">
-          Certified by the Best
+          Certified & KSEB Approved Solar Installer
         </h2>
 
         {/* Logos */}

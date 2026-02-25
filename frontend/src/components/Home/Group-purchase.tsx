@@ -36,8 +36,8 @@ export default function GroupPurchaseScheme() {
         <div className="p-5 sm:p-6 md:p-8 lg:p-8 xl:p-6 2xl:p-14">
           {/* Heading */}
           <h2 className="text-3xl sm:text-4xl md:text-3xl lg:text-4xl xl:text-4xl 2xl:text-5xl font-light leading-tight mb-4 sm:mb-5 md:mb-6 lg:mb-4 xl:mb-4 2xl:mb-10 text-[#123532]">
-            Save more with our group
-            <br className="hidden sm:block" /> purchase scheme!
+            Save More with Our Group
+            <br className="hidden sm:block" /> Purchase Scheme!
           </h2>
 
           {/* Benefit cards section - 4 columns on md+ */}
@@ -75,7 +75,8 @@ export default function GroupPurchaseScheme() {
               title="Invite Friends"
               description={
                 <>
-                  Share with friends and <br /> grow your group.
+                  Share with friends and neighbours. <br /> Bigger group, bigger
+                  discount.
                 </>
               }
             />
@@ -93,7 +94,8 @@ export default function GroupPurchaseScheme() {
               title="Unlock Discount"
               description={
                 <>
-                  Unlock massive discounts <br /> exclusive for bulk orders
+                  Exclusive bulk pricing on solar panel <br /> price in Kerala —
+                  activated at minimum group size.
                 </>
               }
             />
@@ -111,7 +113,8 @@ export default function GroupPurchaseScheme() {
               title="Install"
               description={
                 <>
-                  Enjoy a smooth, professional <br /> installation.
+                  Every home gets certified solar panel <br /> installation with
+                  full warranty and support.
                 </>
               }
             />
@@ -136,7 +139,7 @@ export default function GroupPurchaseScheme() {
 
               {/* Progress Text */}
               <p className="text-xs sm:text-sm md:text-xs lg:text-sm xl:text-sm 2xl:text-base text-[#123532] mb-4 sm:mb-5 md:mb-4 lg:mb-5 xl:mb-4 2xl:mb-8 leading-relaxed">
-                Neighbours in your are are teaming up for more savings.{" "}
+                Neighbours in your area are teaming up for more savings.{" "}
                 <span className="font-medium">
                   {familiesJoined} families joined, only {spotsLeft} spots left!
                 </span>

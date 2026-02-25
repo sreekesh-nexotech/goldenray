@@ -34,7 +34,7 @@ export default function Services({ serviceTitle }: servicesProps) {
               />
             }
             title="Fastest Installation"
-            description="Quick site survey & fast installation to start saving sooner."
+            description="Golden Ray's certified team: 2–6 days from start to activation. 300+ installations. No delays, no excuses."
             bgColor="#FDF6D2"
           />
 
@@ -49,8 +49,8 @@ export default function Services({ serviceTitle }: servicesProps) {
                 className="w-6 h-6 sm:w-10 sm:h-10"
               />
             }
-            title="10 Year Warranty period"
-            description="Long-term warranty for reliable performance & peace of mind."
+            title="10 Year Warranty Period"
+            description="Panels, inverters, workmanship — all protected. Backed by a company that's been here 8+ years."
             bgColor="#D4EEF0"
           />
 
@@ -65,8 +65,8 @@ export default function Services({ serviceTitle }: servicesProps) {
                 className="w-6 h-6 sm:w-12 sm:h-12"
               />
             }
-            title="Support with getting Subsidy"
-            description="End-to-end subsidy support with zero hassle, guaranteed."
+            title="Support with Getting Subsidy"
+            description="We handle your entire PM Surya Ghar application. Up to ₹78,000 MNRE subsidy — paperwork to bank transfer."
             bgColor="#FBE8DA"
           />
 
@@ -81,8 +81,8 @@ export default function Services({ serviceTitle }: servicesProps) {
                 className="w-6 h-6 sm:w-10 sm:h-10"
               />
             }
-            title="Multiple EMI options"
-            description="End-to-end subsidy support with zero hassle, guaranteed."
+            title="Multiple EMI Options"
+            description="Starting ₹2,000/month. In most cases, your EMI costs less than your current KSEB bill. Redirect, don't add."
             bgColor="#FBF1BD"
           />
 
@@ -97,8 +97,8 @@ export default function Services({ serviceTitle }: servicesProps) {
                 className="w-6 h-6 sm:w-10 sm:h-10"
               />
             }
-            title="Quick Repairs & Annual checkups"
-            description="Fast service & regular maintenance for maximum output."
+            title="Quick Repairs & Annual Checkups"
+            description="Your installer won't disappear. Scheduled solar panel maintenance, performance monitoring, and fast repairs across Kerala."
             bgColor="#C3E0BD"
           />
         </div>

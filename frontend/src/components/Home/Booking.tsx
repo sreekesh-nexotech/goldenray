@@ -30,7 +30,7 @@ export default function BookingForm() {
     // Client-side validation for name (at least 3 alphabetic characters)
     if (!name.match(/^[A-Za-z\s]{3,}$/)) {
       setError(
-        "Please enter a valid name with at least 3 alphabetic characters."
+        "Please enter a valid name with at least 3 alphabetic characters.",
       );
       setSuccessMessage(null); // Clear success message if there's a new error
       window.scrollTo(0, scrollY);
@@ -53,7 +53,7 @@ export default function BookingForm() {
       // Destructure 'message' directly, no need for a 'response' variable here
       await submitContactForm({ name, phone_number });
       setSuccessMessage(
-        "Thank you! Your consultation request has been successfully submitted. We'll be in touch shortly!"
+        "Thank you! Your consultation request has been successfully submitted. We'll be in touch shortly!",
       );
       if (formRef.current) {
         formRef.current.reset();
@@ -62,11 +62,11 @@ export default function BookingForm() {
       if (
         err instanceof Error &&
         err.message.includes(
-          'HTTP error! Status: 400, Message: {"phone_number":["lead collection home with this phone number already exists."]}'
+          'HTTP error! Status: 400, Message: {"phone_number":["lead collection home with this phone number already exists."]}',
         )
       ) {
         setSuccessMessage(
-          "We already have your details! Our team will contact you soon."
+          "We already have your details! Our team will contact you soon.",
         );
         if (formRef.current) {
           formRef.current.reset();
@@ -95,8 +95,10 @@ export default function BookingForm() {
             Book your free consultation
           </h1>
           <p className="text-base sm:text-2xl mb-8">
-            Get expert advice and find your ideal solar solution—no obligations,
-            just savings!
+            Stop budgeting around your electricity bill. Get an honest
+            assessment — savings potential, system options, MNRE subsidy
+            eligibility, and net metering benefits. No obligations, just answers
+            from a team that&apos;s done this 300+ times.
           </p>
           <form
             ref={formRef}

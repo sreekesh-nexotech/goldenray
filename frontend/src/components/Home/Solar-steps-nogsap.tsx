@@ -6,25 +6,25 @@ const steps = [
     id: 1,
     title: "Get a Free Consultation & Quote",
     description:
-      "Get a free, no-obligation solar consultation with our experienced experts who analyze your electricity usage, rooftop potential, and budget. You’ll receive a fully customized and transparent quote outlining system capacity, equipment details, pricing, and estimated savings. No hidden charges, no sales pressure—just clear, honest information to help you make a confident and informed decision about going solar",
+      "No generic sales pitch. Our experts analyze your actual KSEB bills, assess your rooftop, and design a system for YOUR consumption. You get a transparent quote — system capacity, solar panel price breakdown, projected savings, and MNRE subsidy eligibility. If solar doesn't make sense for you, we'll say that.",
     bgColor: "bg-[#074A4D]", // Dark teal
     textColor: "text-white",
     zIndex: "z-30",
   },
   {
     id: 2,
-    title: "Custom Design & Installation",
+    title: "Custom Design & Professional Installation",
     description:
-      "Our team designs a solar system specifically based on your energy consumption, roof structure, and future power needs. We handle everything from system planning and equipment selection to professional installation and safety checks. The installation is carried out by trained technicians following industry standards, ensuring optimal performance, long-term reliability, and a seamless transition to clean solar energy",
+      "System designed for your energy needs, roof type, and future plans — EV charger, new rooms, growing family. Golden Ray's certified technicians handle mounting, wiring, and safety checks. Most residential systems installed in 2–6 days. Zero disruption.",
     bgColor: "bg-[#ADD6D8]", // Light blue
     textColor: "text-[#333333]",
     zIndex: "z-20",
   },
   {
     id: 3,
-    title: "Activate Your Solar System",
+    title: "KSEB Approval, Net Metering & You're Live",
     description:
-      "Once your solar system is fully installed and approved by the utility authorities, we take care of the complete activation process. Our team ensures proper grid connection, system testing, and performance checks before handover. We also guide you on monitoring energy generation and usage, so you can confidently start producing clean power and see measurable savings on your electricity bills from day one",
+      "We manage KSEB approvals, net metering setup in Kerala, grid connection, performance testing, and your PM Surya Ghar Yojana subsidy application. Your panels start generating. Your meter runs backward. Your next KSEB bill makes you smile.",
     bgColor: "bg-[#F7BA41]", // Yellow/orange
     textColor: "text-[#333333]",
     zIndex: "z-10",
@@ -65,7 +65,7 @@ export default function SolarStepsNoGSAP() {
           }
         }
       },
-      { threshold: 0.5 } // Trigger when 50% of the section is visible
+      { threshold: 0.5 }, // Trigger when 50% of the section is visible
     );
 
     // Observe the section if it exists

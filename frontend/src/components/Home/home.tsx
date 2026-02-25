@@ -58,7 +58,7 @@ export default function Main() {
         TextColor="text-[#FFFFFF]"
         showYellowBtn={true}
         BoxTitle="Residential Solar Panel Installation & Energy Solutions"
-        BoxDescription="We provide end-to-end residential solar solutions designed to help homeowners reduce electricity costs and adopt clean, renewable energy. From initial site assessment and system design to professional installation and seamless grid integration, our experienced team manages every step of the process. We offer high-efficiency monocrystalline, polycrystalline, and hybrid solar systems, carefully selected based on your home's energy consumption, roof structure, and budget. "
+        BoxDescription="Stop paying ₹4,000–₹8,000 every month to KSEB. Our end-to-end residential solar panel installation — from site assessment to net metering activation — is backed by Golden Ray Renewable Energy (8+ years, 300+ installations). We handle KSEB approvals, PM Surya Ghar subsidy applications, and post-installation support. Your bill drops. Your AC guilt disappears. Explore residential solar →"
         BoxImg="https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png"
         flexReverse={true}
       />
@@ -68,7 +68,7 @@ export default function Main() {
         TextColor="text-[#444444]"
         showYellowBtn={false}
         BoxTitle="Commercial Solar Power Installation & Renewable Solutions"
-        BoxDescription="Running a business means managing operational costs without compromising reliability. Our commercial solar installations are designed to help businesses transition to clean, renewable energy while reducing long-term expenses. From offices and retail spaces to hospitals, schools, and industrial facilities, we provide scalable solar solutions tailored to your energy needs. Every installation begins with a thorough site assessment, load analysis, and system design to ensure optimal performance. We handle all aspects of the process, including permits, approvals, installation, grid integration, and ongoing support."
+        BoxDescription="Every rupee your business loses to electricity is margin gone forever. Our commercial solar systems are designed around your load profile — offices, hospitals, schools, retail, industrial. Site assessment, permits, KSEB approvals, grid integration, net metering, and ongoing support — all handled. Note: PM Surya Ghar subsidy is residential only. Commercial projects benefit from accelerated depreciation and tax advantages. Explore commercial solar →"
         BoxImg="https://golden-ray.b-cdn.net/images/Roof%20solar%20panel%20mounting.jpg"
         flexReverse={false}
       />
@@ -78,7 +78,7 @@ export default function Main() {
       <SolarStepsNoGSAP />
       <Partners />
       <Booking />
-      <Services serviceTitle="We help you all the way" />
+      <Services serviceTitle="We Help You All the Way" />
       <GroupPurchaseScheme />
       <Faq />
     </section>

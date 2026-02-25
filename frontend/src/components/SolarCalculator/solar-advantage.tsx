@@ -7,7 +7,7 @@ interface SolarAdvantageProps {
     pincode: string,
     property_type: string,
     monthly_bill: number,
-    ownership_type?: string
+    ownership_type?: string,
   ) => Promise<void>;
   initialPincode?: string;
   initialproperty_type?: string;
@@ -31,7 +31,7 @@ export default function SolarAdvantage({
   const [pincode, setPincode] = useState(initialPincode);
   const [property_type, setproperty_type] = useState(initialproperty_type);
   const [monthly_bill, setmonthly_bill] = useState<number | "">(
-    initialmonthly_bill
+    initialmonthly_bill,
   );
   const [ownership_type, setownership_type] = useState(initialownership_type);
   const [errors, setErrors] = useState({
@@ -89,7 +89,7 @@ export default function SolarAdvantage({
     setmonthly_label(
       e.target.value === "residential"
         ? "Average bi-Monthly Bill"
-        : "Average Monthly Bill"
+        : "Average Monthly Bill",
     );
   };
 
@@ -118,7 +118,7 @@ export default function SolarAdvantage({
         pincode,
         property_type,
         billValue,
-        showOwnershipField ? ownership_type : undefined
+        showOwnershipField ? ownership_type : undefined,
       );
     }
   };
@@ -133,7 +133,9 @@ export default function SolarAdvantage({
           Calculate Your Solar Advantage Today
         </h1>
         <p className="text-lg text-[#444444] mb-[3.75rem] max-w-2xl mx-auto">
-          Estimate savings, system size, and solar power benefits tailored to your energy consumption.
+          A Kerala home paying ₹6,000/month will hand KSEB roughly ₹18 lakh over
+          25 years. Enter your bill below — see how much of that YOUR solar
+          system claws back.
         </p>
         <div className="bg-white shadow-[0_0_15px_rgba(0,0,0,0.2)] rounded-3xl p-[2.5rem] py-[3rem] max-w-sm mx-auto">
           {fetchError && (
@@ -289,13 +291,13 @@ export default function SolarAdvantage({
         </div>
 
         <div className="absolute hidden xl:block top-1/2 left-1/6 transform -translate-x-1/2 -translate-y-1/2 bg-[#D0FBF7] text-[#124944] px-4 py-2 rounded-lg text-sm font-semibold rotate-[-11.87deg]">
-          Upto 78,000 Subsidy
+          Upto ₹78,000 Subsidy
         </div>
         <div className="absolute hidden xl:block top-1/2 right-1/6 transform translate-x-1/2 -translate-y-1/2 bg-[#D0FBF7] text-[#124944] px-4 py-2 rounded-lg text-sm font-semibold rotate-[16.14deg]">
           25 Years Lifespan
         </div>
         <div className="absolute hidden xl:block bottom-1/4 left-1/4 transform -translate-x-1/2 translate-y-1/2 bg-[#E6D0FB] text-[#124944] px-4 py-2 rounded-lg text-sm font-semibold rotate-[10.97deg]">
-          Starting From 2000/mo EMI
+          Starting From ₹2,000/mo EMI
         </div>
         <div className="absolute hidden xl:block bottom-1/3 right-1/4 transform translate-x-1/2 translate-y-1/2 bg-[#FBDFD0] text-[#124944] px-4 py-2 rounded-lg text-sm font-semibold rotate-[-6.84deg]">
           10 Years Warranty
