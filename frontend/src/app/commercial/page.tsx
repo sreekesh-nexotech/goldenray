@@ -14,20 +14,35 @@ import {
 } from "@/components/SolutionsPage";
 
 export const metadata: Metadata = {
-  title: "Commercial Solar Panel Installation Company in Kerala — Flarize",
+  title:
+    "Commercial Solar Panel Installation Company in Kerala — Flarize | Best Solar Company for Business",
   description:
-    "Flarize is Kerala's trusted commercial solar panel installation company. Reduce electricity bills by 90%. 40% accelerated depreciation + 75% financing. Get a free quote.",
+    "Flarize is Kerala's trusted commercial solar panels Kerala installation company & solar EPC company Kerala. Reduce electricity bills by 90%. 40% accelerated depreciation + 75% financing. Solar panel installation cost per kW Kerala from ₹45,000. Get a free quote.",
   keywords: [
-    "commercial solar installation kerala",
-    "commercial solar panels kerala",
-    "solar for offices kerala",
-    "solar power for shops kerala",
-    "rooftop solar commercial kerala",
+    "commercial solar installation Kerala",
+    "solar panel installation Kerala",
+    "commercial solar panels Kerala",
+    "solar company Kerala",
+    "solar installation for business Kerala",
+    "rooftop solar for commercial buildings",
+    "industrial solar installation Kerala",
+    "on-grid solar system Kerala business",
+    "commercial solar panel price Kerala",
+    "solar for factory Kerala",
+    "solar for warehouse Kerala",
+    "solar for office building Kerala",
+    "KSEB net metering commercial",
+    "commercial solar ROI Kerala",
+    "solar EPC company Kerala",
+    "solar power plant installation Kerala",
+    "best solar company in Kerala for business",
+    "solar panel installation cost per kW Kerala",
   ],
   openGraph: {
-    title: "Commercial Solar Installation Company in Kerala — Flarize",
+    title:
+      "Commercial Solar Installation Company in Kerala — Flarize | Solar Company Kerala",
     description:
-      "On-grid solar panel installation for factories, offices, and warehouses across Kerala. ROI in 3–4 years. 40% depreciation, GST input tax credit, 75% project financing. KSEB approvals and net metering handled end-to-end. MNRE certified, KSEB approved solar installer.",
+      "On-grid solar panel installation Kerala for factories, offices, and warehouses. Commercial solar ROI Kerala in 3–4 years. 40% depreciation, GST input tax credit, 75% project financing. KSEB net metering commercial handled end-to-end. MNRE certified, KSEB approved solar installer.",
     url: "https://flarize.com/commercial",
     siteName: "Flarize",
     images: [
@@ -35,7 +50,7 @@ export const metadata: Metadata = {
         url: commercialPageData.hero.image,
         width: 1200,
         height: 630,
-        alt: "Commercial Solar Installation",
+        alt: "Commercial solar panel installation on a factory rooftop in Kerala by Flarize — KSEB approved solar company",
       },
     ],
     locale: "en_US",
