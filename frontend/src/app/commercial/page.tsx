@@ -14,9 +14,9 @@ import {
 } from "@/components/SolutionsPage";
 
 export const metadata: Metadata = {
-  title: "Commercial Solar Panel Installation in Kerala | Flarize",
+  title: "Commercial Solar Panel Installation Company in Kerala — Flarize",
   description:
-    "Cut operating costs with commercial solar solutions in Kerala. High-performance systems for offices, shops, and industries.",
+    "Flarize is Kerala's trusted commercial solar panel installation company. Reduce electricity bills by 90%. 40% accelerated depreciation + 75% financing. Get a free quote.",
   keywords: [
     "commercial solar installation kerala",
     "commercial solar panels kerala",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     "rooftop solar commercial kerala",
   ],
   openGraph: {
-    title: "Commercial Solar Panel Installation in Kerala | Flarize",
+    title: "Commercial Solar Installation Company in Kerala — Flarize",
     description:
-      "Cut operating costs with commercial solar solutions in Kerala. High-performance systems for offices, shops, and industries.",
-    url: "https://flarize.com/commercial-solar-installation-kerala",
+      "On-grid solar panel installation for factories, offices, and warehouses across Kerala. ROI in 3–4 years. 40% depreciation, GST input tax credit, 75% project financing. KSEB approvals and net metering handled end-to-end. MNRE certified, KSEB approved solar installer.",
+    url: "https://flarize.com/commercial",
     siteName: "Flarize",
     images: [
       {
@@ -43,16 +43,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Commercial Solar Panel Installation in Kerala | Flarize",
+    title: "Commercial Solar Installation Company in Kerala — Flarize",
     description:
-      "Cut operating costs with commercial solar solutions in Kerala. High-performance systems for offices, shops, and industries.",
+      "Flarize is Kerala's trusted commercial solar panel installation company. Reduce electricity bills by 90%. 40% accelerated depreciation + 75% financing. Get a free quote.",
     images: [commercialPageData.hero.image],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/commercial-solar-installation-kerala",
+    canonical: "https://www.flarize.com/commercial",
   },
   robots: {
     index: true,
@@ -96,6 +96,7 @@ export default function CommercialPage() {
       <SolutionFaqSection
         title={data.faqTitle}
         description={data.faqDescription}
+        faqs={data.faqs}
       />
     </>
   );

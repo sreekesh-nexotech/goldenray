@@ -66,6 +66,7 @@ export interface SolutionPageData {
   darkPanelTypes: PanelType[];
   faqTitle: string;
   faqDescription: string;
+  faqs?: { question: string; answer: string }[];
 }
 
 // Residential Page Data
@@ -208,23 +209,23 @@ export const residentialPageData: SolutionPageData = {
 // Commercial Page Data
 export const commercialPageData: SolutionPageData = {
   hero: {
-    title: "Commercial Solar Installation",
-    description: "",
+    title: "Commercial Solar Panel Installation in Kerala",
+    description: "Flarize cuts your KSEB bill by 70–90%. On-grid rooftop solar panel installation across all 14 districts — 3–4 year ROI, 75% financing, KSEB approvals handled end-to-end.",
     image:
       "https://golden-ray.b-cdn.net/images/Roof%20solar%20panel%20mounting.jpg",
   },
   whatSection: {
-    title: "Power Your Business with Commercial Solar Installation",
+    title: "What Are Commercial Solar Systems for Businesses and Factories?",
     description:
-      "Commercial solar installation enables businesses to significantly reduce operational costs while demonstrating environmental responsibility. Our commercial solar solutions are designed for offices, factories, warehouses, and retail spaces, providing reliable power generation that scales with your business needs. Commercial solar installation enables businesses to significantly reduce operational costs while demonstrating environmental responsibility.",
+      "Grid-connected photovoltaic systems ranging from 10 kW to MW scale engineered for factories, offices, and industrial facilities.",
     image:
       "https://golden-ray.b-cdn.net/images/Roof%20solar%20panel%20mounting.jpg",
     imagePosition: "right",
   },
   howSection: {
-    title: "What Are Commercial Solar Systems?",
+    title: "How Does Commercial Solar Reduce Business Electricity Costs in Kerala?",
     description:
-      "Commercial solar systems are large-scale photovoltaic installations designed to meet the higher energy demands of businesses and industrial facilities. These systems are engineered for maximum efficiency, featuring advanced inverters, monitoring systems, and optimized panel configurations. Commercial solar power systems are customized based on available space, energy consumption patterns, and business objectives. Commercial solar systems are large-scale photovoltaic installations designed for businesses.",
+      "Reduces KSEB bill by 70–90%. Backed by 40% accelerated depreciation, GST input tax credit, and up to 75% IREDA financing.",
     image:
       "https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png",
     imagePosition: "left",
@@ -232,7 +233,7 @@ export const commercialPageData: SolutionPageData = {
   workSection: {
     title: "How Do Commercial Solar Systems Work?",
     description:
-      "Commercial solar systems operate by capturing sunlight through multiple panel arrays and converting it to electricity via industrial-grade inverters. The generated power is used to run business operations, with excess energy either stored in batteries or fed back to the grid for credits. Smart monitoring systems track performance and optimize energy distribution in real-time.",
+      "Panels generate electricity, surplus exported via net metering, real-time monitoring via dashboard.",
     image:
       "https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png",
   },
@@ -240,19 +241,19 @@ export const commercialPageData: SolutionPageData = {
     {
       name: "Monocrystalline Panels",
       description:
-        "Fast service & regular maintenance for maximum output.",
+        "20–22% efficiency — best for limited rooftop space.",
       image: "https://golden-ray.b-cdn.net/images/monocrystalline-panel.png",
     },
     {
       name: "Polycrystalline Panels",
       description:
-        "Long-term warranty for reliable performance & peace of mind.",
+        "16–18% efficiency — cost-effective for large rooftops.",
       image: "https://golden-ray.b-cdn.net/images/polycrystalline-panel.png",
     },
     {
       name: "Bifacial Panels",
       description:
-        "End-to-end subsidy support with zero hassle, guaranteed.",
+        "22–25% yield — dual-side generation for industrial rooftops.",
       image: "https://golden-ray.b-cdn.net/images/hybrid-panel.png",
     },
   ],
@@ -260,38 +261,38 @@ export const commercialPageData: SolutionPageData = {
     {
       title: "Monocrystalline Panels",
       description:
-        "Fast service & regular maintenance for maximum output.",
+        "20–22% efficiency — best for limited rooftop space.",
     },
     {
       title: "Polycrystalline Panels",
       description:
-        "Long-term warranty for reliable performance & peace of mind.",
+        "16–18% efficiency — cost-effective for large rooftops.",
     },
     {
-      title: "Hybrid Panels",
+      title: "Bifacial Panels",
       description:
-        "End-to-end subsidy support with zero hassle, guaranteed.",
+        "22–25% yield — dual-side generation for industrial rooftops.",
     },
   ],
   milestones: [
     {
       title: "Enterprise Partnerships",
       description:
-        "Partnered with 500+ businesses across Kerala for commercial solar installations.",
+        "500+ businesses across Kerala.",
       date: "MARCH 2022",
       percentage: 30,
     },
     {
       title: "Industrial Expansion",
       description:
-        "Expanded to serve manufacturing units, IT parks, and commercial complexes.",
+        "Services expanded to all 14 Kerala districts.",
       date: "JULY 2022",
       percentage: 45,
     },
     {
       title: "MW Scale Projects",
       description:
-        "Successfully completed 50+ megawatt-scale commercial installations.",
+        "50+ megawatt-scale commercial installations.",
       date: "DECEMBER 2022",
       percentage: 60,
     },
@@ -299,45 +300,82 @@ export const commercialPageData: SolutionPageData = {
   benefitsApplications: {
     benefitsTitle: "Benefits of Commercial Solar Power Systems",
     benefits: [
-      { text: "Significant reduction in operational costs" },
-      { text: "Tax benefits and accelerated depreciation" },
-      { text: "Enhanced brand image and CSR compliance" },
-      { text: "Protection against rising electricity tariffs" },
+      { text: "70–90% cost reduction" },
+      { text: "40% depreciation" },
+      { text: "GST ITC; up to 75% financing" },
+      { text: "MSME 15–25% subsidy" },
     ],
     applicationsTitle: "Applications of Commercial Solar Installation",
     applications: [
-      { text: "Office buildings and IT parks" },
-      { text: "Manufacturing facilities" },
-      { text: "Shopping malls and retail spaces" },
-      { text: "Warehouses and logistics centers" },
+      { text: "Offices" },
+      { text: "Factories, malls, warehouses" },
+      { text: "Hospitals" },
+      { text: "Educational institutions" },
     ],
   },
   finalThoughts: {
     title: "Commercial Solar Investment & ROI",
     description:
-      "Commercial solar installations typically achieve ROI within 3-5 years, with systems lasting 25+ years. Our team provides comprehensive feasibility studies, ensuring your investment delivers maximum returns while reducing your carbon footprint.",
+      "A 50 kW system costs ₹25–30 lakh with annual savings of ₹6–8 lakh. ROI in 3–4 years. Lifetime savings of ₹1.5+ crore over 20+ years. Installation cost: ₹45,000–60,000 per kW turnkey. KSEB approvals handled end-to-end. Timeline: 5–10 days install; 15–30 days full process. 40% accelerated depreciation under Section 32. MSME ESS 15–25% subsidy for eligible units. Up to 75% financing via IREDA & banks.",
   },
   darkPanelTypes: [
     {
       name: "Monocrystalline Panels",
       description:
-        "Premium efficiency for high-demand commercial operations.",
+        "20–22% efficiency — best for limited rooftop space.",
       image: "https://golden-ray.b-cdn.net/images/monocrystalline-panel.png",
     },
     {
       name: "Polycrystalline Panels",
       description:
-        "Budget-friendly option for large rooftop installations.",
+        "16–18% efficiency — cost-effective for large rooftops.",
       image: "https://golden-ray.b-cdn.net/images/polycrystalline-panel.png",
     },
     {
       name: "Bifacial Panels",
       description:
-        "Next-gen technology for maximized energy harvest.",
+        "22–25% yield — dual-side generation for industrial rooftops.",
       image: "https://golden-ray.b-cdn.net/images/hybrid-panel.png",
     },
   ],
   faqTitle: "Have any questions?",
   faqDescription:
-    "Get expert advice and find the perfect commercial solar solution for your business!",
+    "Expert answers for businesses, factories, and commercial property owners in Kerala.",
+  faqs: [
+    {
+      question: "How much does commercial solar panel installation cost in Kerala?",
+      answer:
+        "Commercial solar panel installation in Kerala costs \u20B945,000\u201360,000 per kW on a turnkey basis. A 50 kW system is approximately \u20B925\u201330 lakh. After 40% accelerated depreciation, GST input tax credit, and Kerala ESS subsidy for eligible MSMEs, the effective cost is significantly lower. With up to 75% bank financing, most businesses start with just \u20B97\u20138 lakh out of pocket. Contact Flarize for a free, site-specific quote.",
+    },
+    {
+      question: "What is the ROI on commercial solar installation in Kerala?",
+      answer:
+        "Most commercial solar installations in Kerala achieve full ROI in 3\u20134 years by combining electricity savings, 40% accelerated depreciation, GST input tax credit, KSEB net metering credits, and applicable MSME subsidies. After payback, the system generates near-free electricity for 20+ years \u2014 lifetime savings on a 50 kW system can exceed \u20B91.5 crore.",
+    },
+    {
+      question: "Does Flarize handle KSEB approvals and net metering for commercial solar?",
+      answer:
+        "Yes. As a KSEB approved solar installer and MNRE certified commercial solar company in Kerala, Flarize manages the complete KSEB process \u2014 net metering application, feasibility report, technical approval, inspection coordination, and bidirectional meter installation. End-to-end paperwork handling is included in every project.",
+    },
+    {
+      question: "How long does commercial solar installation take?",
+      answer:
+        "Physical solar panel installation takes 5\u201310 working days for most projects (10\u2013100 kW range). The full timeline from site assessment to KSEB commissioning is typically 15\u201330 days, depending on KSEB approval timelines and system complexity.",
+    },
+    {
+      question: "Can I claim 40% accelerated depreciation on commercial solar in India?",
+      answer:
+        "Yes. Under Section 32 of the Income Tax Act, solar power plant equipment qualifies for 40% accelerated depreciation in Year 1. For a business in the 30% tax bracket, this alone recovers \u20B93\u20134 lakh on a \u20B925 lakh system in Year 1. Combined with GST input tax credit and KSEB net metering credits, the solar tax benefit for business in India is substantial.",
+    },
+    {
+      question: "Is there a government subsidy for commercial solar in Kerala?",
+      answer:
+        "The PM Surya Ghar subsidy is for residential only. Commercial businesses benefit from: 1) 40% accelerated depreciation under Section 32, 2) GST input tax credit on installation cost, 3) MSME solar subsidy Kerala \u2014 15\u201325% capital subsidy under the Kerala Entrepreneur Support Scheme for eligible manufacturing units.",
+    },
+    {
+      question: "Can I get a loan for commercial solar installation in Kerala?",
+      answer:
+        "Yes. A solar loan from IREDA in Kerala and major banks (SBI, HDFC, ICICI, Axis Bank) covers up to 75% project financing, with repayment over 7\u201315 years. RBI classifies renewable energy under priority sector lending. The monthly EMI is often comparable to or lower than the current KSEB bill. Flarize assists with all loan documentation.",
+    },
+  ],
 };
