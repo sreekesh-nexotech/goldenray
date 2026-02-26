@@ -58,7 +58,7 @@ export default function SubsidyCalculator({
 
   return (
     <section
-      className="relative py-16 overflow-hidden"
+      className="relative py-16 sm:py-18 md:py-20 lg:py-24 xl:py-28 2xl:py-32 overflow-hidden"
       style={{
         background:
           "radial-gradient(38.63% 65.14% at 50.97% 56.91%, #F8F2E1 0%, rgba(255, 255, 255, 0) 100%)",
@@ -66,15 +66,15 @@ export default function SubsidyCalculator({
     >
       <PageIllustration isGradient={false} />
 
-      <div className="relative max-w-7xl mx-auto text-center px-4 md:px-8">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#123532] mb-4">
+      <div className="relative max-w-7xl mx-auto text-center px-4 sm:px-6 md:px-8 lg:px-8 xl:px-10 2xl:px-12">
+        <h1 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl 2xl:text-5xl font-bold text-[#123532] mb-4 sm:mb-5 lg:mb-6 xl:mb-6 2xl:mb-8">
           Check Your Subsidy in 30 Seconds
         </h1>
-        <p className="text-base md:text-lg text-[#666666] mb-12">
+        <p className="text-base sm:text-lg md:text-lg lg:text-xl xl:text-xl 2xl:text-2xl text-[#666666] mb-12 sm:mb-14 lg:mb-16 xl:mb-16 2xl:mb-18">
           Free calculator — see your exact subsidy amount instantly
         </p>
 
-        <div className="bg-[#FFF9EF] shadow-lg rounded-3xl p-8 md:p-10 max-w-md mx-auto relative">
+        <div className="bg-[#FFF9EF] shadow-lg rounded-3xl p-6 sm:p-8 md:p-10 lg:p-10 xl:p-12 2xl:p-14 max-w-md xl:max-w-lg 2xl:max-w-xl mx-auto relative">
           <form className="flex flex-col space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
@@ -185,8 +185,8 @@ export default function SubsidyCalculator({
       </div>
 
       {/* Bottom Features */}
-      <div className="relative max-w-4xl mx-auto mt-16 px-4">
-        <div className="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-12">
+      <div className="relative max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto mt-16 sm:mt-18 lg:mt-20 xl:mt-24 2xl:mt-28 px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-8 sm:gap-10 md:gap-12 lg:gap-14 xl:gap-16 2xl:gap-18">
           <div className="flex items-center gap-2">
             <svg
               className="w-5 h-5 text-green-600"

@@ -2,23 +2,25 @@ export default function WhyFlarize() {
   const features = [
     {
       title: "MNRE Approved & KSEB Registered",
-      description: "Official govt portal vendor—your subsidy is guaranteed",
+      description:
+        "Official government portal vendor — your subsidy is guaranteed",
       iconUrl: "https://golden-ray.b-cdn.net/icons/license.png",
     },
     {
-      title: "2-3 Day Installation",
-      description: "Fastest in Kerala (others take 7-10 days)",
+      title: "300+ Kerala Families Served",
+      description: "8+ years operating in Kerala with a 4.9★ customer rating",
       iconUrl: "https://golden-ray.b-cdn.net/icons/acute%20(1).png",
     },
     {
       title: "₹78K Full Subsidy Guaranteed",
-      description: "Credited in 30 days—every customer gets their full amount",
+      description: "Credited directly to your bank account within 45–60 days",
       iconUrl:
         "https://golden-ray.b-cdn.net/icons/account_balance_wallet%20(1).png",
     },
     {
-      title: "5-Year Service + 24/7 Helpline",
-      description: "Free priority service + expert helpline: 1800-XXX-XXXX",
+      title: "Save ₹5,000+ Every Month",
+      description:
+        "Slash your electricity bills from Day 1 with a 25-year system warranty",
       iconUrl: "https://golden-ray.b-cdn.net/icons/call%20(1).png",
     },
   ];
@@ -35,7 +37,7 @@ export default function WhyFlarize() {
         {/* Heading */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16 xl:mb-18 2xl:mb-20">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl 2xl:text-5xl font-bold text-[#123532] mb-3 sm:mb-4 lg:mb-6">
-            Why 1,200+ Kerala Families Choose Flarize
+            Why 300+ Kerala Families Choose Flarize
           </h2>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-2xl text-[#6B7280] max-w-5xl mx-auto leading-relaxed">
             We handle all government paperwork, KSEB registration, and subsidy

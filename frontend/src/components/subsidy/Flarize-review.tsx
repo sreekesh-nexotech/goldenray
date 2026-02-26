@@ -70,7 +70,7 @@ export default function FlarizeReview() {
 
   const handleSwipedRight = useCallback(() => {
     setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + reviews.length) % reviews.length
+      (prevIndex) => (prevIndex - 1 + reviews.length) % reviews.length,
     );
     currentIndexRef.current =
       (currentIndexRef.current - 1 + reviews.length) % reviews.length;
@@ -117,9 +117,9 @@ export default function FlarizeReview() {
   };
 
   return (
-    <div className="overflow-hidden py-16 px-4 sm:px-6 lg:px-8 bg-white">
+    <div className="overflow-hidden py-12 sm:py-14 md:py-16 lg:py-20 xl:py-24 2xl:py-28 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 bg-white">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#123532] mb-12 text-center">
+        <h2 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl 2xl:text-5xl font-bold text-[#123532] mb-8 sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16 2xl:mb-18 text-center">
           Real Kerala Families, Real Results
         </h2>
 
@@ -142,22 +142,22 @@ export default function FlarizeReview() {
                 key={index}
                 className="flex-shrink-0 w-full md:w-auto px-4 md:px-0"
               >
-                <div className="bg-[#F7F7F2] rounded-2xl p-6 h-full flex flex-col mx-auto max-w-lg md:max-w-none">
+                <div className="bg-[#F7F7F2] rounded-2xl sm:rounded-2xl lg:rounded-3xl xl:rounded-3xl 2xl:rounded-4xl p-4 sm:p-5 md:p-6 lg:p-6 xl:p-8 2xl:p-10 h-full flex flex-col mx-auto max-w-lg md:max-w-none">
                   {/* Stats */}
-                  <div className="flex justify-between items-start mb-4">
+                  <div className="flex justify-between items-start mb-4 sm:mb-5 lg:mb-6 xl:mb-6 2xl:mb-8">
                     <div className="text-left">
-                      <p className="text-2xl md:text-3xl font-bold text-[#123532]">
+                      <p className="text-2xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold text-[#123532]">
                         {review.stats[0].value}
                       </p>
-                      <p className="text-sm md:text-base text-[#444444]">
+                      <p className="text-sm sm:text-sm md:text-base lg:text-base xl:text-base 2xl:text-lg text-[#444444]">
                         {review.stats[0].label}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl md:text-3xl font-bold text-[#123532]">
+                      <p className="text-2xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold text-[#123532]">
                         {review.stats[1].value}
                       </p>
-                      <p className="text-sm md:text-base text-[#444444]">
+                      <p className="text-sm sm:text-sm md:text-base lg:text-base xl:text-base 2xl:text-lg text-[#444444]">
                         {review.stats[1].label}
                       </p>
                     </div>
@@ -167,17 +167,17 @@ export default function FlarizeReview() {
                   <hr className="border-gray-300 mb-4" />
 
                   {/* Quote */}
-                  <p className="text-[#444444] mb-4 text-sm md:text-base leading-relaxed flex-grow">
+                  <p className="text-[#444444] mb-4 sm:mb-5 lg:mb-6 xl:mb-6 2xl:mb-8 text-sm sm:text-sm md:text-base lg:text-base xl:text-base 2xl:text-lg leading-relaxed flex-grow">
                     {review.quote}
                   </p>
 
                   {/* Author */}
-                  <p className="text-[#123532] font-semibold text-sm md:text-base mb-1">
+                  <p className="text-[#123532] font-semibold text-sm sm:text-sm md:text-base lg:text-base xl:text-base 2xl:text-lg mb-1 sm:mb-2">
                     {review.author}
                   </p>
 
                   {/* Details */}
-                  <p className="text-xs md:text-sm text-[#6B7280]">
+                  <p className="text-xs sm:text-xs md:text-sm lg:text-sm xl:text-sm 2xl:text-base text-[#6B7280]">
                     {review.details}
                   </p>
                 </div>

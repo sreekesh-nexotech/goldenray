@@ -13,7 +13,7 @@ export default function SubsidyResults({
 }: SubsidyResultsProps) {
   return (
     <section
-      className="relative py-16 overflow-hidden"
+      className="relative py-16 sm:py-18 md:py-20 lg:py-24 xl:py-28 2xl:py-32 overflow-hidden"
       style={{
         background:
           "radial-gradient(38.63% 65.14% at 50.97% 56.91%, #F8F2E1 0%, rgba(255, 255, 255, 0) 100%)",
@@ -21,10 +21,10 @@ export default function SubsidyResults({
     >
       <PageIllustration isGradient={false} />
 
-      <div className="relative max-w-7xl mx-auto px-4 md:px-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-8 xl:px-10 2xl:px-12">
         {/* Main Title */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#123532] mb-4">
+        <div className="text-center mb-8 sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16 2xl:mb-18">
+          <h1 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl 2xl:text-6xl font-bold text-[#123532] mb-4 sm:mb-5 lg:mb-6 xl:mb-6 2xl:mb-8">
             Good News! You Are Eligible for PM Surya
             <br />
             Ghar Subsidy
@@ -32,7 +32,7 @@ export default function SubsidyResults({
         </div>
 
         {/* Top Info Cards */}
-        <div className="flex flex-col md:flex-row justify-start gap-4 mb-12 max-w-3xl">
+        <div className="flex flex-col md:flex-row justify-start gap-4 sm:gap-5 lg:gap-6 xl:gap-6 2xl:gap-8 mb-8 sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16 2xl:mb-18 max-w-3xl xl:max-w-4xl 2xl:max-w-4xl">
           <div className="flex-1">
             <p className="text-sm text-[#123532] font-medium mb-2">
               Average Monthly Electricity Bill
@@ -92,10 +92,10 @@ export default function SubsidyResults({
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-7 md:gap-8 lg:gap-8 xl:gap-10 2xl:gap-12 max-w-7xl mx-auto">
           {/* Why You're Eligible Card */}
-          <div className="bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-md">
-            <h2 className="text-4xl font-semibold text-[#123532] mb-8">
+          <div className="bg-white border-2 border-gray-200 rounded-2xl sm:rounded-2xl lg:rounded-3xl xl:rounded-3xl 2xl:rounded-4xl p-6 sm:p-7 md:p-8 lg:p-8 xl:p-10 2xl:p-12 shadow-md">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl 2xl:text-4xl font-semibold text-[#123532] mb-6 sm:mb-7 md:mb-8 lg:mb-8 xl:mb-10 2xl:mb-10">
               Why You&apos;re Eligible?
             </h2>
             <div className="space-y-5">
@@ -137,7 +137,7 @@ export default function SubsidyResults({
           </div>
 
           {/* Estimated Subsidy Card */}
-          <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <div className="bg-white rounded-2xl sm:rounded-2xl lg:rounded-3xl xl:rounded-3xl 2xl:rounded-4xl p-6 sm:p-7 md:p-8 lg:p-8 xl:p-10 2xl:p-12 shadow-lg">
             <div className="mb-6">
               <p className="text-lg text-[#666666] mb-2">
                 Your estimated subsidy
@@ -164,8 +164,8 @@ export default function SubsidyResults({
           </div>
 
           {/* Why Trust Us Card */}
-          <div className="bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-md">
-            <h2 className="text-3xl font-semibold text-[#123532] mb-6">
+          <div className="bg-white border-2 border-gray-200 rounded-2xl sm:rounded-2xl lg:rounded-3xl xl:rounded-3xl 2xl:rounded-4xl p-6 sm:p-7 md:p-8 lg:p-8 xl:p-10 2xl:p-12 shadow-md">
+            <h2 className="text-2xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-semibold text-[#123532] mb-4 sm:mb-5 md:mb-6 lg:mb-6 xl:mb-7 2xl:mb-8">
               Why Trust Us?
             </h2>
             <div className="space-y-6">
@@ -240,7 +240,7 @@ export default function SubsidyResults({
         </div>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4 mt-12">
+        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-5 lg:gap-6 xl:gap-6 2xl:gap-8 mt-8 sm:mt-10 md:mt-12 lg:mt-14 xl:mt-16 2xl:mt-18">
           <LinkingButton
             content="Book Free Site Visit"
             ButtonLink="#footer"
