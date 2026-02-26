@@ -82,7 +82,7 @@ export default function SubsidyFaq() {
 
   return (
     <div className="flex items-center justify-center">
-      <div className="container mx-auto flex flex-col items-center justify-center gap-8 lg:gap-12 md:p-10 rounded-xl max-w-full py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36">
+      <div className="container mx-auto flex flex-col items-center justify-center gap-4 lg:gap-6 md:p-4 rounded-xl max-w-full py-4 xl:py-2 px-4 sm:px-6 lg:px-8 xl:px-36">
         {/* Heading and Description */}
         <div className="w-full text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-[#123532] mb-2 leading-tight">
@@ -94,18 +94,18 @@ export default function SubsidyFaq() {
         </div>
 
         {/* FAQ Accordion */}
-        <div className="w-full max-w-8xl p-6 rounded-3xl bg-[#F6F2EF]">
+        <div className="w-full max-w-8xl p-3 sm:p-4 rounded-3xl bg-[#F6F2EF]">
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="border-b border-gray-200 last:border-b-0 py-4"
+              className="border-b border-gray-200 last:border-b-0 py-2"
             >
               <button
                 className="flex justify-between items-center w-full text-left focus:outline-none cursor-pointer"
                 onClick={() => toggleFaq(index)}
                 aria-label="toggle FAQ answer"
               >
-                <span className="text-base md:text-lg font-semibold text-[#444444] pr-4">
+                <span className="text-sm md:text-base font-semibold text-[#444444] pr-4">
                   {faq.question}
                 </span>
                 <span
