@@ -72,15 +72,15 @@ export interface SolutionPageData {
 // Residential Page Data
 export const residentialPageData: SolutionPageData = {
   hero: {
-    title: "Residential Solar Installation",
+    title: "Residential Solar Installation in Kerala",
     description: "",
     image:
       "https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png",
   },
   whatSection: {
-    title: "Revolutionize Your Home Energy with Residential Solar Installation",
+    title: "Revolutionize Your Home Energy with On-Grid Solar Panels in Kerala",
     description:
-      "Residential solar installation allows homeowners to reduce dependence on traditional electricity sources while embracing renewable energy. Home solar panels provide consistent power generation, helping households manage rising energy costs efficiently. Residential solar installation allows homeowners to reduce dependence on traditional electricity sources while embracing renewable energy. Home solar panels provide consistent power generation, helping households manage rising energy costs efficiently.",
+      "Every two months, your KSEB bill arrives — and every two months, it\u2019s a little higher than the last. Electricity tariffs keep rising, and for most Kerala homeowners, there\u2019s no sign of that stopping. Installing solar panels for your home changes that completely. Instead of paying more for the same electricity year after year, you generate your own power from your rooftop. With KSEB net metering Kerala, surplus power flows back to the grid and is credited to your bill — on good months, your electricity bill drops to near-zero. This is one decision today that saves you money for the next 25 years. Flarize — the best solar company Kerala — handles everything: system design, KSEB paperwork, PM Surya Ghar subsidy Kerala processing, and home solar power system Kerala installation.",
     image:
       "https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png",
     imagePosition: "right",
@@ -88,7 +88,7 @@ export const residentialPageData: SolutionPageData = {
   howSection: {
     title: "What Are Residential Solar Panels?",
     description:
-      "Residential solar panels are photovoltaic systems designed for homes to convert sunlight into usable electricity. These residential solar power systems are customized based on roof size, energy needs, and sunlight availability. Residential solar panels are photovoltaic systems designed for homes to convert sunlight into usable electricity. These residential solar power systems are customized based on roof size, energy needs, and sunlight availability. Residential solar panels are photovoltaic systems designed for homes to convert sunlight into usable electricity. These residential solar power systems are customized based.",
+      "Residential solar panels — or solar panel for house Kerala — are rooftop solar system Kerala solutions that convert sunlight into electricity your home can use. Every system is customised based on roof type, energy usage from recent KSEB bills, and available shade-free area. The result is a rooftop solar system sized exactly for your household with a 25-year performance warranty.",
     image:
       "https://golden-ray.b-cdn.net/images/Roof%20solar%20panel%20mounting.jpg",
     imagePosition: "left",
@@ -96,7 +96,7 @@ export const residentialPageData: SolutionPageData = {
   workSection: {
     title: "How Do Residential Solar Panels Work?",
     description:
-      "Solar panels capture sunlight and convert it into direct current electricity, which is then transformed into usable power through an inverter. Excess energy can be exported to the grid, reducing electricity bills. Solar panels capture sunlight and convert it into direct current electricity, which is then transformed into usable power through an inverter. Excess energy can be exported to the grid, reducing electricity bills.",
+      "Sunlight converts into DC electricity. An inverter converts DC to AC for home use. Surplus energy flows to the KSEB grid through KSEB net metering Kerala and offsets your bill. The on-grid solar system Kerala runs automatically from sunrise to sunset.",
     image:
       "https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png",
   },
@@ -104,106 +104,156 @@ export const residentialPageData: SolutionPageData = {
     {
       name: "Monocrystalline Panels",
       description:
-        "Fast service & regular maintenance for maximum output.",
+        "Highest efficiency. Ideal for limited roof space.",
       image: "https://golden-ray.b-cdn.net/images/monocrystalline-panel.png",
     },
     {
       name: "Polycrystalline Panels",
       description:
-        "Long-term warranty for reliable performance & peace of mind.",
+        "Lower cost, reliable output.",
       image: "https://golden-ray.b-cdn.net/images/polycrystalline-panel.png",
     },
     {
-      name: "Hybrid Panels",
+      name: "Hybrid Solar Systems",
       description:
-        "End-to-end subsidy support with zero hassle, guaranteed.",
+        "Solar + battery storage for outage protection. Hybrid solar system Kerala.",
       image: "https://golden-ray.b-cdn.net/images/hybrid-panel.png",
     },
   ],
   solarTypes: [
     {
-      title: "Monocrystalline Panels",
+      title: "Monocrystalline",
       description:
-        "Fast service & regular maintenance for maximum output.",
+        "Most efficient. Best for solar panels Kerala homes with limited roof space.",
     },
     {
-      title: "Polycrystalline Panels",
+      title: "Polycrystalline",
       description:
-        "Long-term warranty for reliable performance & peace of mind.",
+        "Budget-friendly. Reliable solar panel for house Kerala.",
     },
     {
-      title: "Hybrid Panels",
+      title: "Hybrid",
       description:
-        "End-to-end subsidy support with zero hassle, guaranteed.",
+        "Battery backup enabled. Off-grid solar system Kerala + hybrid solar system Kerala.",
     },
   ],
   milestones: [
     {
-      title: "Increased our PAN India reach",
+      title: "Founded as Golden Ray (2022)",
       description:
-        "We have gained 1000+ additional channel partnerships! 25000+ satisfied customers on global scale.",
-      date: "JANUARY 2022",
+        "Started in Alappuzha, Kerala.",
+      date: "2022",
       percentage: 25,
     },
     {
-      title: "Increased our PAN India reach",
+      title: "Rebranded to Flarize (2024)",
       description:
-        "We have gained 1000+ additional channel partnerships! 25000+ satisfied customers on global scale.",
-      date: "JANUARY 2022",
-      percentage: 25,
+        "Kerala solar booking platform with 50+ installations per month.",
+      date: "2024",
+      percentage: 50,
     },
     {
-      title: "Going Global",
+      title: "Pan-Kerala Expansion (2025\u20132026)",
       description:
-        "For the first time Flarize Solar started exploring its Solar PV module.",
-      date: "JANUARY 2022",
-      percentage: 25,
+        "Operating across all 14 districts.",
+      date: "2025",
+      percentage: 75,
     },
   ],
   benefitsApplications: {
     benefitsTitle: "Benefits of Residential Solar Power Systems",
     benefits: [
-      { text: "Reduces energy costs" },
-      { text: "Long term savings" },
-      { text: "Increase property value" },
-      { text: "Supports environmental sustainability by lowering carbon emissions" },
+      { text: "Lower KSEB electricity bills" },
+      { text: "₹4\u20136 lakh+ savings over 25 years" },
+      { text: "₹78,000 rooftop solar subsidy Kerala 2025" },
+      { text: "25-year panel warranty" },
+      { text: "Increased home resale value" },
+      { text: "Clean renewable energy" },
+      { text: "Protection from tariff hikes" },
     ],
-    applicationsTitle: "Applications of Residential Solar Installation",
+    applicationsTitle: "Applications of Residential Solar Installation Kerala",
     applications: [
       { text: "Independent houses" },
       { text: "Villas" },
       { text: "Gated communities" },
-      { text: "Rooftop systems for energy independence" },
+      { text: "Rooftop solar system Kerala for energy independence" },
     ],
   },
   finalThoughts: {
-    title: "Solar Panels Cost for House & Final Thoughts",
+    title: "Solar Panel Price Kerala: Cost, Subsidy & What to Expect",
     description:
-      "Solar panels cost for house installations vary based on capacity and components. Choosing the best solar company for homes ensures transparent pricing, professional installation, and reliable long-term performance.",
+      "A 3kW solar system price Kerala: ₹1.85\u20132.15 lakh before subsidy. After ₹78,000 PM Surya Ghar subsidy, cost drops to ₹1.1\u20131.4 lakh. 5kW solar system Kerala costs ₹2.8\u20133.2 lakh before subsidy. Solar installation cost Kerala payback period: 4\u20136 years. MNRE approved solar installer Kerala. DCR panels Kerala / ALMM approved.",
   },
   darkPanelTypes: [
     {
       name: "Monocrystalline Panels",
       description:
-        "Highest efficiency & regular maintenance for maximum output.",
+        "Highest efficiency. Solar panels Kerala — best for limited roof space.",
       image: "https://golden-ray.b-cdn.net/images/monocrystalline-panel.png",
     },
     {
       name: "Polycrystalline Panels",
       description:
-        "Long life expectancy for reliable performance & peace of mind.",
+        "Budget-friendly. Reliable solar panel for house Kerala.",
       image: "https://golden-ray.b-cdn.net/images/polycrystalline-panel.png",
     },
     {
-      name: "Hybrid Panels",
+      name: "Hybrid Solar Systems",
       description:
-        "Combined durability, superior efficiency with fantastic guarantee.",
+        "Battery backup enabled. Hybrid solar system Kerala for outage protection.",
       image: "https://golden-ray.b-cdn.net/images/hybrid-panel.png",
     },
   ],
-  faqTitle: "Have any questions?",
+  faqTitle: "Have any questions about residential solar installation Kerala?",
   faqDescription:
-    "Get expert advice and find your ideal solar solution—no obligations, just savings!",
+    "Get expert advice and find your ideal solar solution — no obligations, just savings!",
+  faqs: [
+    {
+      question: "How much does solar panel installation cost in Kerala?",
+      answer:
+        "A 3kW solar system price Kerala is ₹1.85–2.15 lakh before subsidy. After the ₹78,000 PM Surya Ghar subsidy Kerala, the out-of-pocket cost drops to ₹1.1–1.4 lakh. A 5kW solar system Kerala costs ₹2.8–3.2 lakh before subsidy. Solar panel price Kerala varies by system size, panel type, and roof structure. Contact Flarize for a free site-specific quote.",
+    },
+    {
+      question: "How does KSEB net metering work in Kerala?",
+      answer:
+        "With KSEB net metering Kerala, surplus electricity your solar panels generate flows back into the KSEB grid. A bidirectional meter records both import and export. At billing time, the exported units are credited against your consumption — potentially reducing your bill to near-zero. Flarize handles the complete KSEB net metering application as part of every residential solar installation Kerala project.",
+    },
+    {
+      question: "What is the PM Surya Ghar subsidy for solar in Kerala?",
+      answer:
+        "The PM Surya Ghar Muft Bijli Yojana provides up to ₹78,000 subsidy for residential rooftop solar systems in Kerala. For a 3kW system, the subsidy is ₹78,000. This is a central government scheme administered through MNRE. Flarize is an MNRE approved solar installer Kerala and processes the PM Surya Ghar subsidy Kerala application on your behalf — so you don't have to chase paperwork.",
+    },
+    {
+      question: "Is Flarize a KSEB-approved and MNRE-certified solar installer?",
+      answer:
+        "Yes. Flarize is both a KSEB-approved solar installer and an MNRE approved solar installer Kerala. We handle everything from system design, KSEB net metering application, technical inspection coordination, to PM Surya Ghar subsidy Kerala processing. With an MNRE solar subsidy Kerala empanelment, your installation qualifies for all applicable government benefits.",
+    },
+    {
+      question: "What size solar system do I need for my home in Kerala?",
+      answer:
+        "It depends on your electricity usage. A 1kW solar system Kerala is suitable for small homes with monthly bills under ₹1,000. A 2kW solar system Kerala fits homes with ₹1,000–2,000 bills. A 3kW solar system price Kerala covers most average homes, and a 5kW solar system Kerala handles larger households or those with AC usage. Flarize recommends the right size based on your last 3 KSEB bills and roof area.",
+    },
+    {
+      question: "What is the KSEB solar subsidy for rooftop systems?",
+      answer:
+        "The KSEB solar subsidy is channelled through the PM Surya Ghar scheme administered by MNRE. For systems up to 3kW, you receive ₹78,000. Flarize manages the full documentation and approval process as part of every residential solar installation Kerala. This rooftop solar subsidy Kerala 2025 is available to all Kerala homeowners with a valid KSEB domestic connection.",
+    },
+    {
+      question: "What is the difference between on-grid, off-grid, and hybrid solar systems?",
+      answer:
+        "An on-grid solar system Kerala is connected to the KSEB grid and uses net metering — ideal for most homes. An off-grid solar system Kerala operates independently with battery storage and is suitable for areas with unreliable grid supply. A hybrid solar system Kerala combines both: grid-connected with battery backup for power during outages. Flarize installs all three types across Kerala.",
+    },
+    {
+      question: "Do I need DCR / ALMM-approved panels for the subsidy?",
+      answer:
+        "Yes. To qualify for the PM Surya Ghar subsidy, you must use DCR panels Kerala that are ALMM (Approved List of Models and Manufacturers) listed. Flarize only uses ALMM-approved, DCR-compliant solar panels from top-tier manufacturers — ensuring your system qualifies for the full ₹78,000 MNRE solar subsidy Kerala.",
+    },
+    {
+      question: "How long does residential solar installation take in Kerala?",
+      answer:
+        "Physical solar panel installation Kerala typically takes 1–2 days for residential systems (1kW–5kW). The full process — including site assessment, KSEB net metering Kerala application, inspection, and commissioning — takes 15–30 days depending on KSEB timelines. Flarize handles the entire process end-to-end.",
+    },
+  ],
 };
 
 // Commercial Page Data

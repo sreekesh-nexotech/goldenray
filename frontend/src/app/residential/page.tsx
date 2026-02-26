@@ -14,21 +14,42 @@ import {
 } from "@/components/SolutionsPage";
 
 export const metadata: Metadata = {
-  title: "Residential Solar Installation in Kerala | Rooftop Experts",
+  title:
+    "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering | Flarize",
   description:
-    "Install rooftop solar panels for your Kerala home. Reduce electricity bills with safe, efficient residential solar systems by Flarize.",
+    "Install on-grid solar panels for your home in Kerala. Get ₹78,000 PM Surya Ghar subsidy, KSEB net metering & MNRE-approved installation. Best solar company Kerala. Solar panel price Kerala from ₹1.1 lakh. Free quote from Flarize.",
   keywords: [
-    "residential solar installation kerala",
-    "rooftop solar for home kerala",
-    "home solar system kerala",
-    "on grid solar for home kerala",
-    "solar panels for house kerala",
+    "solar panels Kerala",
+    "solar panels for home Kerala",
+    "solar panel installation Kerala",
+    "residential solar installation Kerala",
+    "rooftop solar system Kerala",
+    "on-grid solar system Kerala",
+    "solar panel price Kerala",
+    "solar panel for house Kerala",
+    "3kW solar system price Kerala",
+    "5kW solar system Kerala",
+    "PM Surya Ghar subsidy Kerala",
+    "KSEB solar subsidy",
+    "MNRE solar subsidy Kerala",
+    "KSEB net metering Kerala",
+    "solar installation cost Kerala",
+    "MNRE approved solar installer Kerala",
+    "off-grid solar system Kerala",
+    "hybrid solar system Kerala",
+    "rooftop solar subsidy Kerala 2025",
+    "home solar power system Kerala",
+    "best solar company Kerala",
+    "DCR panels Kerala ALMM approved",
+    "1kW solar system Kerala",
+    "2kW solar system Kerala",
   ],
   openGraph: {
-    title: "Residential Solar Installation in Kerala | Rooftop Experts",
+    title:
+      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering | Flarize",
     description:
-      "Install rooftop solar panels for your Kerala home. Reduce electricity bills with safe, efficient residential solar systems by Flarize.",
-    url: "https://flarize.com/residential-solar-installation-kerala",
+      "Install on-grid solar panels for your home in Kerala. Get ₹78,000 PM Surya Ghar subsidy, KSEB net metering & MNRE-approved residential solar installation Kerala. Free quote from Flarize.",
+    url: "https://flarize.com/residential",
     siteName: "Flarize",
     images: [
       {
@@ -43,16 +64,17 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Residential Solar Installation in Kerala | Rooftop Experts",
+    title:
+      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering | Flarize",
     description:
-      "Install rooftop solar panels for your Kerala home. Reduce electricity bills with safe, efficient residential solar systems by Flarize.",
+      "Install on-grid solar panels for your home in Kerala. Get ₹78,000 PM Surya Ghar subsidy, KSEB net metering & MNRE-approved installation. Free quote from Flarize.",
     images: [residentialPageData.hero.image],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/residential-solar-installation-kerala",
+    canonical: "https://www.flarize.com/residential",
   },
   robots: {
     index: true,
@@ -96,6 +118,7 @@ export default function ResidentialPage() {
       <SolutionFaqSection
         title={data.faqTitle}
         description={data.faqDescription}
+        faqs={data.faqs}
       />
     </>
   );
