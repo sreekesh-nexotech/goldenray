@@ -2,9 +2,9 @@ export default function SubsidySteps() {
   const steps = [
     {
       number: "01",
-      title: "Check Eligibility & Get Your Free Quote",
+      title: "Check Eligibility & Get Your Free Quotee",
       description:
-        "Use our free calculator or call us. We check your roof, electricity bill, and local KSEB rules to give you a personalised quote within 24 hours.",
+        "Free site visit + system design. We assess your roof, KSEB connection, and calculate your exact subsidy amount.",
       bgColor: "#FDF6D2",
       circleBgColor: "#EFE9C8",
       numberColor: "#9E9467",
@@ -13,7 +13,7 @@ export default function SubsidySteps() {
       number: "02",
       title: "We Handle All Paperwork for You",
       description:
-        "We take care of PM Surya Ghar portal registration, KSEB net meter application, bank loan documentation, and all government approvals. You don\u2019t visit any office.",
+        "Flarize files your PM Surya Ghar application on the MNRE national portal, handles all KSEB documentation and net meter registration.",
       bgColor: "#FBE8DA",
       circleBgColor: "#EDD9C8",
       numberColor: "#957A67",
@@ -31,7 +31,7 @@ export default function SubsidySteps() {
       number: "04",
       title: "Subsidy Credited to Your Bank",
       description:
-        "After KSEB inspection and net meter installation, the government credits up to \u20B978,000 directly to your bank account within 45\u201360 days.",
+        "After commissioning, your PM Surya Ghar subsidy (up to ₹78,000) is credited directly to your bank account — typically within 30 days.",
       bgColor: "#DEF5DE",
       circleBgColor: "#D0E8D0",
       numberColor: "#778F71",
