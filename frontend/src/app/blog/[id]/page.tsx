@@ -5,7 +5,6 @@ import { blogContentMap } from "@/data/blog-content";
 import BlogArticleHero from "@/components/Blog/article/BlogArticleHero";
 import BlogArticleSidebar from "@/components/Blog/article/BlogArticleSidebar";
 import BlogArticleContent from "@/components/Blog/article/BlogArticleContent";
-import BlogArticleCta from "@/components/Blog/article/BlogArticleCta";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -58,19 +57,19 @@ export default async function BlogArticlePage({
   return (
     <div className="bg-white min-h-screen">
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <BlogArticleHero
-        article={article}
-        author={content?.author}
-        reviewedBy={content?.reviewedBy}
-      />
+      <BlogArticleHero article={article} />
 
       {/* ── Main Content + Sidebar ────────────────────────────────────────── */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-10 sm:py-12 lg:py-14">
         <div className="flex flex-col lg:flex-row gap-10 xl:gap-14 2xl:gap-16">
           {/* Left: Article body */}
           <div className="flex-1 min-w-0">
-            <BlogArticleContent article={article} content={content} />
-            <BlogArticleCta />
+            <BlogArticleContent
+              article={article}
+              content={content}
+              author={content?.author}
+              reviewedBy={content?.reviewedBy}
+            />
           </div>
 
           {/* Right: Sticky sidebar */}

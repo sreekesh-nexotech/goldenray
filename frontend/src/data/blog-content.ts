@@ -4,6 +4,31 @@ export type ContentSection = {
   paragraphs: string[];
 };
 
+export type UnderstandingRow = {
+  cells: string[];
+};
+
+export type UnderstandingTable = {
+  headers: string[];
+  rows: UnderstandingRow[];
+  highlightColumnIndex?: number;
+};
+
+export type ArticleUnderstanding = {
+  title: string;
+  paragraphs: string[];
+  table?: UnderstandingTable;
+  afterTableParagraphs?: string[];
+  keyInsight?: string;
+};
+
+export type ArticleEligible = {
+  title: string;
+  intro: string;
+  items: string[];
+  important?: string;
+};
+
 export type ArticleContent = {
   author: string;
   reviewedBy?: string;
@@ -11,6 +36,8 @@ export type ArticleContent = {
   quickSummary: string[];
   intro: string[];
   sections: ContentSection[];
+  understanding?: ArticleUnderstanding;
+  eligible?: ArticleEligible;
 };
 
 export const blogContentMap: Record<string, ArticleContent> = {
@@ -92,6 +119,38 @@ export const blogContentMap: Record<string, ArticleContent> = {
         ],
       },
     ],
+    understanding: {
+      title: "Understanding the MNRE Solar Subsidy in Kerala",
+      paragraphs: [
+        "The Ministry of New and Renewable Energy (MNRE) offers direct subsidies to residential consumers who install rooftop solar systems. This subsidy is credited directly to your bank account after successful installation and inspection.",
+        "Kerala has one of the highest adoption rates in South India, with over 45,000 homes already benefiting from this program.",
+      ],
+      table: {
+        headers: ["System Size", "Total Cost", "MNRE Subsidy", "Payback Period"],
+        highlightColumnIndex: 2,
+        rows: [
+          { cells: ["1–2 kW", "₹60,000 – ₹1,20,000", "₹18,000 – ₹36,000", "5–6 years"] },
+          { cells: ["3 kW", "₹1,80,000", "₹54,000", "4–5 years"] },
+          { cells: ["4–5 kW", "₹2,40,000 – ₹3,00,000", "₹78,000", "4–5 years"] },
+        ],
+      },
+      afterTableParagraphs: [
+        "The subsidy is capped at ₹78,000 for systems above 3 kW. This means whether you install a 4 kW or 10 kW system, the maximum subsidy remains ₹78,000. The table shows typical costs and payback periods based on average Kerala electricity rates.",
+      ],
+      keyInsight: "For most Kerala homes with monthly bills above ₹3,000, a 3 kW system offers the best subsidy-to-cost ratio. You get ₹54,000 in subsidy and generate enough power to offset 70–80% of your consumption.",
+    },
+    eligible: {
+      title: "Who is Eligible for the Solar Subsidy?",
+      intro: "Not all solar installations qualify for the MNRE subsidy. Here are the specific requirements you must meet:",
+      items: [
+        "Residential connection: Must have an active residential electricity connection (not commercial or industrial)",
+        "MNRE-approved vendor: Installation must be done by a vendor registered under the MNRE portal",
+        "System size limit: Maximum 10 kW for individual households (group housing societies can install up to 500 kW)",
+        "Net metering: Must apply for and install a bi-directional net meter through KSEB",
+        "One-time benefit: Subsidy can only be claimed once per residential connection",
+      ],
+      important: "If you install solar through a non-approved vendor or without proper documentation, you will not be eligible for the subsidy — even if you meet all other criteria. Always verify vendor credentials on the MNRE portal before signing any contract.",
+    },
   },
 
   "how-to-calculate-solar-roi-kerala": {
@@ -167,6 +226,39 @@ export const blogContentMap: Record<string, ArticleContent> = {
         ],
       },
     ],
+    understanding: {
+      title: "Understanding Solar ROI for Kerala Homeowners",
+      paragraphs: [
+        "Solar ROI in Kerala is driven by three factors: system cost (after MNRE subsidy), annual electricity savings on your KSEB bill, and net metering credits for surplus energy exported to the grid.",
+        "Kerala's average 5.2 peak sun hours per day, combined with steadily rising KSEB tariffs, makes residential solar one of the strongest ROI opportunities in the country.",
+      ],
+      table: {
+        headers: ["System Size", "Net Investment", "Annual Savings", "Payback Period", "25-Year ROI"],
+        highlightColumnIndex: 4,
+        rows: [
+          { cells: ["1 kW", "₹25,000", "₹11,000", "2.3 years", "1,020%"] },
+          { cells: ["2 kW", "₹50,000", "₹20,000", "2.5 years", "900%"] },
+          { cells: ["3 kW", "₹1,07,000", "₹28,000", "3.8 years", "740%"] },
+          { cells: ["5 kW", "₹2,14,000", "₹46,000", "4.7 years", "510%"] },
+        ],
+      },
+      afterTableParagraphs: [
+        "These figures use Kerala's average KSEB LT domestic tariff of ₹5.50–₹6.80/unit (slab dependent), MNRE subsidy at full entitlement, and a 5% annual tariff escalation. Actual savings may vary based on your specific district's solar irradiation and monthly consumption pattern.",
+      ],
+      keyInsight: "A 3 kW system for a Kerala home consuming 250–350 units/month typically achieves a simple payback of just 3.8–4.5 years — after which every unit it generates is pure profit for the remaining 20+ years of the system's life.",
+    },
+    eligible: {
+      title: "Who Should Calculate Solar ROI?",
+      intro: "This ROI calculation method applies to any Kerala homeowner considering rooftop solar. You'll get the most accurate results if:",
+      items: [
+        "You have at least 6 months of KSEB bills to determine your average consumption",
+        "You own your home or have long-term occupancy (10+ years) to benefit from the full payback period",
+        "Your monthly electricity bill is ₹1,500 or more — below this, payback periods may exceed 8 years",
+        "Your roof has at least 15 m² of unshaded south-facing area for a standard 3 kW system",
+        "You plan to stay connected to the KSEB grid and apply for net metering",
+      ],
+      important: "ROI projections assume a 5% annual KSEB tariff escalation. If tariff increases are faster (as they have been historically), your actual payback period will be shorter than calculated. Never base your decision on zero-escalation assumptions.",
+    },
   },
 
   "solar-installation-timeline": {
@@ -240,6 +332,40 @@ export const blogContentMap: Record<string, ArticleContent> = {
         ],
       },
     ],
+    understanding: {
+      title: "Understanding the Solar Installation Process",
+      paragraphs: [
+        "A complete rooftop solar installation in Kerala involves five distinct phases — each with its own timeline and dependencies. Understanding these phases helps you plan your installation and set realistic expectations.",
+        "The total process takes 45–75 days from initial registration to receiving your first subsidy credit, with the physical installation itself completed in just 1–3 days.",
+      ],
+      table: {
+        headers: ["Phase", "Stage", "Typical Duration", "Key Milestone"],
+        highlightColumnIndex: 3,
+        rows: [
+          { cells: ["1", "Planning & Documentation", "Days 1–7", "Proposal approved"] },
+          { cells: ["2", "KSEB Feasibility Approval", "Days 7–37", "Sanction letter received"] },
+          { cells: ["3", "Procurement & Installation", "Days 37–45", "System generating"] },
+          { cells: ["4", "Commissioning & Documents", "Days 45–55", "KSEB certificate issued"] },
+          { cells: ["5", "Net Meter & Subsidy", "Days 55–75", "Subsidy credited to bank"] },
+        ],
+      },
+      afterTableParagraphs: [
+        "The two longest phases — KSEB approval and net meter installation — are controlled by KSEB and cannot be expedited by your installer. However, choosing an experienced MNRE-certified installer with a dedicated documentation team can shorten the overall timeline by ensuring zero document rejections or resubmissions.",
+      ],
+      keyInsight: "Homeowners who register on the PM Surya Ghar portal before selecting an installer consistently complete the process 10–15 days faster. Start your registration the same week you decide to go solar — it costs nothing and locks in your place in the KSEB approval queue.",
+    },
+    eligible: {
+      title: "Who Can Start the Installation Process?",
+      intro: "Any Kerala homeowner with a valid KSEB connection can begin the solar installation process. However, you should have the following in place before proceeding:",
+      items: [
+        "Active KSEB residential consumer account (LT domestic connection)",
+        "Aadhaar-linked mobile number for PM Surya Ghar portal OTP verification",
+        "Roof ownership or long-term lease (minimum 10 years) to justify the investment",
+        "Minimum 15 m² of unshaded roof area, ideally south or southwest facing",
+        "Sanctioned load of at least 1 kW from KSEB (most residential connections qualify)",
+      ],
+      important: "Do not sign any installer contract or make any payment before receiving your feasibility sanction letter from KSEB. Any installation done before KSEB approval will be ineligible for the MNRE subsidy, even if the installer is MNRE-certified.",
+    },
   },
 
   "monocrystalline-vs-polycrystalline": {
@@ -313,6 +439,41 @@ export const blogContentMap: Record<string, ArticleContent> = {
         ],
       },
     ],
+    understanding: {
+      title: "Understanding the Difference: Mono vs Poly Solar Panels",
+      paragraphs: [
+        "The core difference between monocrystalline and polycrystalline solar panels lies in how their silicon cells are manufactured. Monocrystalline cells are cut from a single silicon crystal, giving them higher efficiency and better performance in Kerala's conditions.",
+        "For most Kerala homes, the higher upfront cost of monocrystalline panels is recovered within 3–4 years through better generation — particularly during the 4–5 month monsoon season when diffuse light performance matters most.",
+      ],
+      table: {
+        headers: ["Feature", "Monocrystalline", "Polycrystalline"],
+        highlightColumnIndex: 1,
+        rows: [
+          { cells: ["Typical Efficiency", "20–22%", "16–18%"] },
+          { cells: ["Temperature Coefficient", "−0.35–0.40%/°C", "−0.40–0.50%/°C"] },
+          { cells: ["Kerala Monsoon Performance", "Excellent", "Good"] },
+          { cells: ["Space Required (3 kW)", "15–17 m²", "18–22 m²"] },
+          { cells: ["Cost vs Poly", "+15–20% premium", "Base price"] },
+          { cells: ["MNRE Subsidy Eligible", "Yes", "Yes"] },
+        ],
+      },
+      afterTableParagraphs: [
+        "Both panel types qualify for the full MNRE subsidy. The choice comes down to available roof space, budget, and how much of the year you experience shading or overcast conditions. For Kerala's climate, monocrystalline is the recommended choice for most installations.",
+      ],
+      keyInsight: "During Kerala's 4-month monsoon, monocrystalline panels generate up to 18% more electricity than equivalent polycrystalline panels under the same overcast conditions. Over a 25-year system life, this difference alone more than pays back the ₹15,000–₹25,000 monocrystalline premium.",
+    },
+    eligible: {
+      title: "Which Panel Type Is Right for Your Home?",
+      intro: "The best panel choice depends on your specific roof situation. Here are the conditions that determine which technology suits you:",
+      items: [
+        "Limited roof space (under 20 m²): Monocrystalline or TOPCon for maximum power density",
+        "Adequate roof space with no shading: Quality polycrystalline is still a strong performer and subsidy-eligible",
+        "Monsoon-heavy usage: Monocrystalline strongly preferred for superior diffuse-light performance",
+        "Budget-constrained: Polycrystalline from a Tier-1 manufacturer is a sound and fully subsidisable choice",
+        "Premium performance priority: TOPCon or HJT for the highest efficiency currently available in Kerala",
+      ],
+      important: "Only panels on MNRE's approved models list qualify for the central subsidy. Before confirming any panel purchase, ask your installer to verify the specific model's BIS certification status. Non-BIS panels will disqualify your entire subsidy application.",
+    },
   },
 
   "sharma-family-case-study": {
@@ -387,6 +548,43 @@ export const blogContentMap: Record<string, ArticleContent> = {
         ],
       },
     ],
+    understanding: {
+      title: "Understanding the Sharma Family's Solar Investment",
+      paragraphs: [
+        "The Sharma family's 5 kW installation in Kakkanad is a detailed real-world case study showing every cost component, subsidy received, and monthly generation figure after 12 months of operation.",
+        "Their investment breakdown demonstrates how an MNRE subsidy combined with an SBI solar loan can make a premium system cashflow-positive from day one.",
+      ],
+      table: {
+        headers: ["Cost Component", "Amount"],
+        highlightColumnIndex: 1,
+        rows: [
+          { cells: ["Panels (12 × 415W TOPCon)", "₹1,74,000"] },
+          { cells: ["Hybrid Inverter (5 kW)", "₹42,000"] },
+          { cells: ["Mounting, Wiring & Safety", "₹33,000"] },
+          { cells: ["Documentation & Lab Tests", "₹8,000"] },
+          { cells: ["GST (12%)", "₹32,000"] },
+          { cells: ["Gross Installation Cost", "₹2,92,000"] },
+          { cells: ["MNRE Subsidy Received", "−₹78,000"] },
+          { cells: ["Net Investment", "₹2,14,000"] },
+        ],
+      },
+      afterTableParagraphs: [
+        "The ₹78,000 MNRE subsidy was credited to Arjun's account 52 days after net meter installation. Their SBI solar loan of ₹1,50,000 at 8.5% interest results in an EMI of ₹3,083/month, making them net positive from day one compared to their previous KSEB bill of ₹4,500/month.",
+      ],
+      keyInsight: "The Sharma family's experience confirms that structuring a solar loan so that the EMI is lower than the electricity bill you're replacing means you start saving money from the very first month — before the loan is even paid off.",
+    },
+    eligible: {
+      title: "Is Your Situation Similar to the Sharma Family?",
+      intro: "The Sharma family's case study applies most directly to homeowners who share these characteristics. See how many of these match your situation:",
+      items: [
+        "Monthly KSEB bill of ₹3,000–₹6,000 (similar to the Sharmas' ₹4,500 pre-solar bill)",
+        "South or southwest facing roof with minimal shading from trees or buildings",
+        "Planning to stay in the home for at least 7–10 years to realise full payback benefits",
+        "Interested in hybrid inverter to future-proof for battery storage during power cuts",
+        "Willing to use a bank solar loan to reduce upfront capital requirement",
+      ],
+      important: "Real-world generation may differ from projections by 5–15% depending on your specific district's solar irradiation, roof orientation, and local shading conditions. Always get a site-specific projection from your installer rather than applying national averages.",
+    },
   },
 
   "string-vs-power-optimizers": {
@@ -461,6 +659,39 @@ export const blogContentMap: Record<string, ArticleContent> = {
         ],
       },
     ],
+    understanding: {
+      title: "Understanding Your Inverter Technology Options",
+      paragraphs: [
+        "The inverter converts your panels' DC electricity into usable AC power. The technology you choose affects not just cost, but how well your system handles Kerala's unique challenges — shading from coconut palms, high ambient temperatures, and occasional power cuts.",
+        "Here is a clear comparison of the four main inverter approaches available for Kerala rooftop installations.",
+      ],
+      table: {
+        headers: ["Technology", "Ideal Roof Condition", "Extra Cost vs String", "Panel Monitoring", "Battery Ready?"],
+        highlightColumnIndex: 2,
+        rows: [
+          { cells: ["String Inverter", "Unshaded, single orientation", "Base price", "System level", "No (unless hybrid)"] },
+          { cells: ["DC Power Optimizers", "Partial shading", "₹25,000–₹35,000", "Panel level", "No"] },
+          { cells: ["Microinverters", "Heavy shading / complex roof", "₹40,000–₹60,000", "Panel level", "No"] },
+          { cells: ["Hybrid Inverter", "Any (future battery plans)", "₹8,000–₹15,000", "System level", "Yes"] },
+        ],
+      },
+      afterTableParagraphs: [
+        "For most Kerala homes with clear south-facing roofs, a quality string inverter offers the best value. For homes with coconut palms or neighbouring structures causing partial shading on even 2–3 panels, DC power optimizers on those panels will recover their cost within 3–4 years.",
+      ],
+      keyInsight: "If even one panel in your string is shaded for 2+ hours daily, adding DC optimizers to just those affected panels can recover the ₹3,000–₹3,500 per-panel cost within 2 years through improved generation — making it one of the highest-ROI upgrades available.",
+    },
+    eligible: {
+      title: "Which Inverter Setup Is Right for Your Roof?",
+      intro: "Choosing the right inverter depends on your roof's shading situation and future plans. Use these criteria to identify your best option:",
+      items: [
+        "Unshaded, south-facing roof with single orientation: Standard string inverter — best value, no complexity needed",
+        "1–3 panels partially shaded by coconut palms or neighbouring walls: DC power optimizers on only those panels",
+        "Multiple roof orientations (east + west split): Power optimizers or microinverters for independent MPPT per panel",
+        "Heavy shading across most of the roof: Microinverters for maximum panel-level independence",
+        "Future battery storage planned: Hybrid inverter from the start — avoids a costly inverter replacement later",
+      ],
+      important: "A shading analysis (shadow simulation) by your installer is essential before deciding on an inverter type. Skipping this step and assuming your roof is shade-free is the most common cause of underperforming solar systems in Kerala.",
+    },
   },
 
   "solar-panel-maintenance-monsoon": {
@@ -538,6 +769,40 @@ export const blogContentMap: Record<string, ArticleContent> = {
         ],
       },
     ],
+    understanding: {
+      title: "Understanding Monsoon's Impact on Your Solar System",
+      paragraphs: [
+        "Kerala's monsoon is the most distinctive variable in the state's solar equation. During June–September, solar generation drops to 30–50% of peak, but the heavy rain naturally cleans panels of dust and pollen.",
+        "The real maintenance challenge is biological growth — moss, algae, and lichen that establish during extended humid conditions and persist after the rains end, reducing output by 5–15%.",
+      ],
+      table: {
+        headers: ["Period", "Avg Generation", "Key Challenge", "Recommended Action"],
+        highlightColumnIndex: 3,
+        rows: [
+          { cells: ["Jan–Mar (Peak)", "95–100% of rated", "Dust & bird droppings", "Monthly light cleaning"] },
+          { cells: ["Apr–May (Pre-monsoon)", "90–95% of rated", "Check mounts & wiring", "Full pre-monsoon inspection"] },
+          { cells: ["Jun–Sep (Monsoon)", "30–50% of rated", "Biological growth, storms", "Daily monitoring via app"] },
+          { cells: ["Oct–Nov (Post-monsoon)", "70–85% of rated", "Post-monsoon soiling", "Deep clean & treat growth"] },
+          { cells: ["Dec (NE Monsoon)", "80–90% of rated", "Leaf debris & early dew", "Light clean before peak season"] },
+        ],
+      },
+      afterTableParagraphs: [
+        "Scheduling a professional annual service (₹2,000–₹3,500) in October — right after the southwest monsoon ends and before the December–March peak season — is the single best maintenance decision for Kerala solar owners. It includes torque checks, thermal imaging to detect hot spots, and inverter software updates.",
+      ],
+      keyInsight: "Biological soiling — moss and algae — is unique to Kerala's humid climate and is not removed by rain. A one-time treatment with diluted white vinegar (1:10) in October costs almost nothing but restores 5–15% of output that is typically lost to biological films during the monsoon season.",
+    },
+    eligible: {
+      title: "Who Needs to Follow This Maintenance Guide?",
+      intro: "This maintenance guide is relevant to all Kerala rooftop solar owners, but is especially critical if any of the following apply to your installation:",
+      items: [
+        "Your system is older than 1 year and has not had a professional inspection",
+        "You have overhanging trees within 5 metres of your panels (leaf debris and biological growth risk)",
+        "Your panels have any visible dark staining, green film, or white mineral deposits",
+        "Your inverter app shows generation more than 10% below your installer's original projection",
+        "Your system has not been professionally serviced since installation",
+      ],
+      important: "Never attempt to clean solar panels while the system is operating. Always switch the DC isolator OFF at the inverter and the AC isolator OFF at the distribution board before touching any panel surface. Working on a live solar system is a serious electrocution risk.",
+    },
   },
 
   "pm-surya-ghar-application-guide": {
@@ -612,6 +877,43 @@ export const blogContentMap: Record<string, ArticleContent> = {
         ],
       },
     ],
+    understanding: {
+      title: "Understanding the PM Surya Ghar Portal Process",
+      paragraphs: [
+        "The PM Surya Ghar Muft Bijli Yojana portal (pmsuryaghar.gov.in) is the central point for all subsidy applications. Every Kerala homeowner must complete this online process before and after installation to qualify for the MNRE subsidy.",
+        "The portal has 8 key steps spanning approximately 45–75 days. Here is a stage-by-stage breakdown with the documents and timeframes involved.",
+      ],
+      table: {
+        headers: ["Step", "Action", "Timeframe", "Key Document Required"],
+        highlightColumnIndex: 2,
+        rows: [
+          { cells: ["1", "Portal Registration", "Day 1", "KSEB consumer number + Aadhaar OTP"] },
+          { cells: ["2", "Feasibility Application", "Day 1–3", "KSEB bill photo, roof details"] },
+          { cells: ["3", "KSEB Site Assessment", "Days 7–37", "KSEB sanction letter (via portal)"] },
+          { cells: ["4", "Solar Installation", "Days 37–45", "MNRE vendor invoice"] },
+          { cells: ["5", "Commissioning Submission", "Days 45–50", "Equipment certificates, photos"] },
+          { cells: ["6", "KSEB Net Meter Install", "Days 50–70", "Bidirectional meter fitted by KSEB"] },
+          { cells: ["7", "Bank Details Submission", "Day 70", "Cancelled cheque / passbook copy"] },
+          { cells: ["8", "Subsidy Credit", "Within 30 days", "Bank account confirmation"] },
+        ],
+      },
+      afterTableParagraphs: [
+        "Steps 1–2 and Step 7 are consumer-controlled and take only a few hours each. Steps 3, 6, and 8 are KSEB and government-controlled — these are the stages that require patient follow-up. Use the portal's built-in grievance module if any step exceeds its stated timeline.",
+      ],
+      keyInsight: "Your PM Surya Ghar Application Reference Number is your most important document throughout the entire process. Save it immediately after registration — you'll need it for every follow-up with KSEB, and it's the only way to file a grievance if your application is delayed.",
+    },
+    eligible: {
+      title: "Who Can Apply on the PM Surya Ghar Portal?",
+      intro: "The PM Surya Ghar portal is open to all residential electricity consumers in India. To complete the Kerala-specific application successfully, you must have:",
+      items: [
+        "A valid KSEB LT domestic consumer account number (10-digit number on your electricity bill)",
+        "An Aadhaar-linked mobile number for OTP-based portal verification",
+        "A bank account in your name for subsidy credit (nationalised or scheduled commercial bank)",
+        "Ownership or long-term occupancy rights over the property where installation will occur",
+        "A roof that can structurally support solar panel mounting (flat RCC or tiled sloped roof)",
+      ],
+      important: "Tenants can apply for the PM Surya Ghar portal registration if they have a KSEB account in their name. However, landlord written consent is strongly recommended before proceeding with installation, as the solar system becomes a fixture of the property.",
+    },
   },
 
   "net-metering-kseb-guide": {
@@ -685,5 +987,39 @@ export const blogContentMap: Record<string, ArticleContent> = {
         ],
       },
     ],
+    understanding: {
+      title: "Understanding KSEB Net Metering and Your New Bill",
+      paragraphs: [
+        "After your bidirectional net meter is installed by KSEB, your electricity bill format changes. The bill now shows units imported from the grid and units exported to it — and you pay only for the net difference.",
+        "The Thomas family's billing history below illustrates how net metering works across different months and how banked credits offset monsoon bills.",
+      ],
+      table: {
+        headers: ["Month", "Units Imported", "Units Exported", "Net Units", "Monthly Bill"],
+        highlightColumnIndex: 4,
+        rows: [
+          { cells: ["February (Peak Sun)", "95", "175", "−80 (credit)", "₹70 fixed charges only"] },
+          { cells: ["June (Monsoon)", "310", "80", "230", "₹940 (vs ₹2,020 without solar)"] },
+          { cells: ["September (Late Monsoon)", "280", "60", "220", "₹870 (vs ₹1,850 without solar)"] },
+          { cells: ["November (Post-monsoon)", "140", "110", "30", "₹180 (vs ₹870 without solar)"] },
+          { cells: ["Annual Average", "1,800", "1,600", "200 net", "₹420/month vs ₹1,850"] },
+        ],
+      },
+      afterTableParagraphs: [
+        "Surplus banked credits from high-generation months (November–March) are carried forward for 12 months and automatically offset your consumption in low-generation months. At the annual settlement in March, any remaining unconsumed credits are paid out by KSEB at ₹3.40–₹3.70 per unit.",
+      ],
+      keyInsight: "Shifting just two appliances — your water heater and washing machine — to run between 10 AM and 2 PM can increase your self-consumption ratio from 60% to over 80%, reducing the units you export at the lower ₹3.50/unit avoided cost rate and increasing savings at the full ₹6.50/unit import tariff rate.",
+    },
+    eligible: {
+      title: "Who Qualifies for KSEB Net Metering?",
+      intro: "KSEB's net metering scheme is available to most residential solar owners, but there are specific technical and administrative requirements to meet:",
+      items: [
+        "LT domestic electricity connection (single-phase 240V or three-phase 415V)",
+        "Solar system capacity within your KSEB sanctioned load limit",
+        "MNRE-empanelled installer who submits commissioning documents through the contractor portal",
+        "BIS-certified panels and MNRE-listed inverter (required for net meter application approval)",
+        "Completed PM Surya Ghar portal registration and feasibility approval before installation",
+      ],
+      important: "Commercial and industrial KSEB connections have different net metering tariff rates and capacity limits. The avoided cost rate of ₹3.40–₹3.70/unit applies specifically to LT domestic connections. If your home has a commercial connection for any reason, verify the applicable tariff with KSEB before sizing your system.",
+    },
   },
 };

@@ -50,10 +50,10 @@ const CTA_CARDS = [
 export default function BlogArticleCta() {
   return (
     <div className="flex flex-col sm:flex-row gap-4 mt-2 mb-10">
-      {CTA_CARDS.map((card) => (
+      {CTA_CARDS.map((card, i) => (
         <div
           key={card.title}
-          className={`flex-1 rounded-2xl p-5 sm:p-6 flex flex-col gap-3 ${card.bg} border border-transparent`}
+          className={`flex-1 rounded-2xl p-5 sm:p-6 flex flex-col gap-3 ${card.bg} border border-transparent ${i === 0 ? "order-1 sm:order-none" : "order-2 sm:order-none"}`}
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm flex-shrink-0">
