@@ -11,6 +11,13 @@ import BlogArticleContent from "@/components/Blog/article/BlogArticleContent";
 import Link from "next/link";
 import Image from "next/image";
 
+// Revalidate pre-built pages every hour (ISR)
+export const revalidate = 3600;
+
+// Allow slugs NOT in generateStaticParams to be rendered on-demand
+// (handles new articles added to Strapi after the last build)
+export const dynamicParams = true;
+
 // ─── Static params — all slugs from the API ───────────────────────────────────
 export async function generateStaticParams() {
   const slugs = await fetchAllSlugs();

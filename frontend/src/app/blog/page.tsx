@@ -2,6 +2,9 @@ import BlogMain from "@/components/Blog/BlogMain";
 import { Metadata } from "next";
 import { fetchAllArticles } from "@/services/blogApiService";
 
+// Revalidate the entire page every hour (ISR)
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Solar Energy Blog Kerala | Tips, Guides & Updates | Flarize",
   description:
