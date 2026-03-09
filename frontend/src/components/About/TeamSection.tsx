@@ -37,7 +37,7 @@ const teamMembers = [
     //   "From installations to customer support, Mark makes sure everything runs smoothly. His mission? A seamless, hassle-free solar experience for every customer.",
     linkedin:
       "https://www.linkedin.com/in/anupriya-m-s-22b989338?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
-    imageUrl: "https://golden-ray.b-cdn.net/images/Anupriya%20MS%20(1).jpeg",
+    imageUrl: "https://golden-ray.b-cdn.net/About%20us/Team/Anupriya%20MS.jpeg",
   },
   // {
   //   name: "John Doe",

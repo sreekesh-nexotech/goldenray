@@ -1,5 +1,5 @@
 import type { BlogArticle } from "@/data/blog-data";
-import type { ArticleContent } from "@/data/blog-content";
+import type { ArticleContent, ContentSection } from "@/data/blog-content";
 import BlogArticleUnderstanding from "./BlogArticleUnderstanding";
 
 interface BlogArticleContentProps {
@@ -37,6 +37,27 @@ function QuickSummary({ items }: { items: string[] }) {
   );
 }
 
+// ── Renders a single titled content section from the API ──────────────────────
+function ArticleSection({ section }: { section: ContentSection }) {
+  return (
+    <section id={section.id} className="mb-10 scroll-mt-24">
+      <h2 className="text-lg sm:text-xl md:text-[1.35rem] lg:text-2xl font-bold text-[#1F2937] mb-4 sm:mb-5 leading-snug">
+        {section.title}
+      </h2>
+      <div className="flex flex-col gap-3 sm:gap-4">
+        {section.paragraphs.map((para, i) => (
+          <p
+            key={i}
+            className="text-sm sm:text-base text-[#374151] leading-relaxed sm:leading-loose"
+          >
+            {para}
+          </p>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function BlogArticleContent({
   article,
   content,
@@ -45,6 +66,7 @@ export default function BlogArticleContent({
 }: BlogArticleContentProps) {
   const intro = content?.intro ?? [article.description];
   const quickSummary = content?.quickSummary ?? [];
+  const sections = content?.sections ?? [];
 
   return (
     <article className="prose-none">
@@ -99,6 +121,15 @@ export default function BlogArticleContent({
 
       {/* Quick Summary Box */}
       {quickSummary.length > 0 && <QuickSummary items={quickSummary} />}
+
+      {/* Article body sections from API contentBlocks */}
+      {sections.length > 0 && (
+        <div className="mb-10">
+          {sections.map((section) => (
+            <ArticleSection key={section.id} section={section} />
+          ))}
+        </div>
+      )}
 
       {/* Check Subsidy CTA Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 bg-[#F7BA41] rounded-2xl px-5 py-5 sm:px-7 sm:py-5 md:px-8 lg:px-9 xl:px-10 2xl:px-12 mb-10">

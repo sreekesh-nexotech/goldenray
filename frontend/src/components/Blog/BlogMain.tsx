@@ -3,15 +3,16 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  blogArticles,
-  blogCategories,
-  categoryColors,
-  type BlogArticle,
-} from "@/data/blog-data";
+import { categoryColors, type BlogArticle } from "@/data/blog-data";
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
-function BlogHero() {
+function BlogHero({
+  count,
+  lastUpdated,
+}: {
+  count: number;
+  lastUpdated: string;
+}) {
   return (
     <section
       className="relative w-full overflow-hidden"
@@ -40,9 +41,9 @@ function BlogHero() {
           Clear, practical guides to help you make confident solar decisions.
         </p>
         <div className="flex items-center justify-center gap-3 text-sm sm:text-base text-[#6B7280]">
-          <span>{blogArticles.length} Guides</span>
+          <span>{count} Guides</span>
           <span className="w-1.5 h-1.5 rounded-full bg-[#6B7280] inline-block" />
-          <span>Last updated: Dec 2024</span>
+          <span>Last updated: {lastUpdated}</span>
         </div>
       </div>
     </section>
@@ -55,11 +56,13 @@ function BlogFilters({
   onSearch,
   activeCategory,
   onCategory,
+  categories,
 }: {
   search: string;
   onSearch: (v: string) => void;
   activeCategory: string;
   onCategory: (c: string) => void;
+  categories: string[];
 }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 pt-2 pb-6">
@@ -91,7 +94,7 @@ function BlogFilters({
 
       {/* Category tabs */}
       <div className="flex flex-wrap justify-center gap-2">
-        {blogCategories.map((cat) => (
+        {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => onCategory(cat)}
@@ -350,15 +353,23 @@ function BlogCta() {
 // ─── Main Component ────────────────────────────────────────────────────────────
 const INITIAL_VISIBLE = 6;
 
-export default function BlogMain() {
+interface BlogMainProps {
+  articles: BlogArticle[];
+  categories: string[];
+}
+
+export default function BlogMain({ articles, categories }: BlogMainProps) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All Guides");
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
 
-  const featuredPost = blogArticles.find((a) => a.featured);
+  const featuredPost = articles.find((a) => a.featured);
+
+  // Derive last-updated text from the most recent article
+  const lastUpdated = articles[0]?.updatedDate ?? "";
 
   const filteredPosts = useMemo(() => {
-    return blogArticles
+    return articles
       .filter((a) => !a.featured)
       .filter((a) =>
         activeCategory === "All Guides" ? true : a.category === activeCategory,
@@ -369,14 +380,14 @@ export default function BlogMain() {
             a.description.toLowerCase().includes(search.toLowerCase())
           : true,
       );
-  }, [search, activeCategory]);
+  }, [articles, search, activeCategory]);
 
   const visiblePosts = filteredPosts.slice(0, visibleCount);
   const hasMore = visibleCount < filteredPosts.length;
 
   return (
     <div className="bg-white">
-      <BlogHero />
+      <BlogHero count={articles.length} lastUpdated={lastUpdated} />
 
       <BlogFilters
         search={search}
@@ -389,6 +400,7 @@ export default function BlogMain() {
           setActiveCategory(c);
           setVisibleCount(INITIAL_VISIBLE);
         }}
+        categories={categories}
       />
 
       {/* Featured Post — only show when no filter/search active */}

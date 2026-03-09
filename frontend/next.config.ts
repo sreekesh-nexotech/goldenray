@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: 'golden-ray.b-cdn.net',
             },
+            {
+                protocol: 'https',
+                hostname: 'blog.flarize.com',
+            },
         ],
     },
     reactStrictMode: true,

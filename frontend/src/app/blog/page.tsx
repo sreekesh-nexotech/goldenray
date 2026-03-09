@@ -1,5 +1,6 @@
 import BlogMain from "@/components/Blog/BlogMain";
 import { Metadata } from "next";
+import { fetchAllArticles } from "@/services/blogApiService";
 
 export const metadata: Metadata = {
   title: "Solar Energy Blog Kerala | Tips, Guides & Updates | Flarize",
@@ -51,10 +52,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const { articles, categories } = await fetchAllArticles();
   return (
     <section className="relative">
-      <BlogMain />
+      <BlogMain articles={articles} categories={categories} />
     </section>
   );
 }

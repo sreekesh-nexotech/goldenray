@@ -1,43 +1,43 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { blogArticles } from "@/data/blog-data";
-import { blogContentMap } from "@/data/blog-content";
+import {
+  fetchArticleBySlug,
+  fetchAllSlugs,
+  fetchAllArticles,
+} from "@/services/blogApiService";
 import BlogArticleHero from "@/components/Blog/article/BlogArticleHero";
 import BlogArticleSidebar from "@/components/Blog/article/BlogArticleSidebar";
 import BlogArticleContent from "@/components/Blog/article/BlogArticleContent";
 import Link from "next/link";
 import Image from "next/image";
 
-// ─── Static params for all blog articles ─────────────────────────────────────
-export function generateStaticParams() {
-  return blogArticles.map((a) => ({ id: a.id }));
+// ─── Static params — all slugs from the API ───────────────────────────────────
+export async function generateStaticParams() {
+  const slugs = await fetchAllSlugs();
+  return slugs.map((slug) => ({ id: slug }));
 }
 
-// ─── Metadata ─────────────────────────────────────────────────────────────────
+// ─── Metadata — uses SEO fields from Strapi ───────────────────────────────────
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const article = blogArticles.find((a) => a.id === id);
-  if (!article) return {};
+  const result = await fetchArticleBySlug(id);
+  if (!result) return {};
+  const { article, seo } = result;
   return {
-    title: `${article.title} | Golden Ray Solar`,
-    description: article.description,
+    title: seo?.metaTitle ?? `${article.title} | Golden Ray Solar`,
+    description: seo?.metaDescription ?? article.description,
+    keywords: seo?.keywords ?? undefined,
+    alternates: seo?.canonicalUrl ? { canonical: seo.canonicalUrl } : undefined,
     openGraph: {
-      title: article.title,
-      description: article.description,
+      title: seo?.metaTitle ?? article.title,
+      description: seo?.metaDescription ?? article.description,
       images: [{ url: article.image }],
     },
   };
-}
-
-// ─── Related posts helper ─────────────────────────────────────────────────────
-function getRelatedPosts(currentId: string, category: string) {
-  return blogArticles
-    .filter((a) => a.id !== currentId && a.category === category)
-    .slice(0, 3);
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -47,12 +47,20 @@ export default async function BlogArticlePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const article = blogArticles.find((a) => a.id === id);
 
-  if (!article) notFound();
+  // Fetch current article + all articles (for related posts) in parallel
+  const [result, { articles: allArticles }] = await Promise.all([
+    fetchArticleBySlug(id),
+    fetchAllArticles(),
+  ]);
 
-  const content = blogContentMap[id];
-  const relatedPosts = getRelatedPosts(id, article.category);
+  if (!result) notFound();
+
+  const { article, content } = result;
+
+  const relatedPosts = allArticles
+    .filter((a) => a.id !== id && a.category === article.category)
+    .slice(0, 3);
 
   return (
     <div className="bg-white min-h-screen">
