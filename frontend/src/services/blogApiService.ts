@@ -265,9 +265,11 @@ function parseContentBlocks(
       }
     } else if (node.type === "list") {
       if (!current) continue;
-      current.listItems = (node as { children: RichTextListItem[] }).children.map(
+      const newItems = (node as { children: RichTextListItem[] }).children.map(
         (item) => nodeText(item)
       );
+      // Accumulate — each list item may be its own separate list node in Strapi
+      current.listItems = [...(current.listItems ?? []), ...newItems];
     }
   }
   if (current) rawSections.push(current);
