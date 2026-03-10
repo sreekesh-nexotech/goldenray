@@ -159,12 +159,14 @@ function richTextToStrings(nodes: RichTextNode[]): string[] {
 }
 
 function richTextToListItems(nodes: RichTextNode[]): string[] {
+  const items: string[] = [];
   for (const node of nodes) {
     if (node.type === "list") {
-      return node.children.map((item) => nodeText(item));
+      // Each item may be its own separate list node — accumulate all
+      items.push(...node.children.map((item) => nodeText(item)));
     }
   }
-  return [];
+  return items;
 }
 
 function slugify(text: string): string {
