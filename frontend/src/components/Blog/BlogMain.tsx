@@ -370,7 +370,6 @@ export default function BlogMain({ articles, categories }: BlogMainProps) {
 
   const filteredPosts = useMemo(() => {
     return articles
-      .filter((a) => !a.featured)
       .filter((a) =>
         activeCategory === "All Guides" ? true : a.category === activeCategory,
       )

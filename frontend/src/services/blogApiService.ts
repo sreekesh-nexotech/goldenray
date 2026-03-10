@@ -239,8 +239,26 @@ function parseContentBlocks(
         current = { id: "intro", title: "", paragraphs: [], afterTableParagraphs: [] };
       }
       if (text.startsWith("[TABLE]")) {
+        // Old format: [TABLE] marker + all pipe rows in one paragraph
         current.tableText = text;
-      } else if (current.tableText) {
+      } else if (text.includes("[TABLE]")) {
+        // New format: [TABLE] appears mid/end of paragraph; pipe rows follow separately
+        const tableIndex = text.indexOf("[TABLE]");
+        const before = text.substring(0, tableIndex).trim();
+        if (before) current.paragraphs.push(before);
+        current.tableText = "[TABLE]"; // rows will be appended from subsequent paragraphs
+      } else if (current.tableText !== undefined && text.startsWith("|")) {
+        // Split-paragraph table rows — each pipe row is its own paragraph
+        const lines = text.split("\n");
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith("|")) {
+            current.tableText += "\n" + trimmed;
+          } else if (trimmed) {
+            current.afterTableParagraphs.push(trimmed);
+          }
+        }
+      } else if (current.tableText !== undefined) {
         current.afterTableParagraphs.push(text);
       } else {
         current.paragraphs.push(text);
@@ -360,7 +378,7 @@ export async function fetchAllArticles(): Promise<{
   categories: string[];
 }> {
   try {
-    const res = await fetch(`${API_BASE}/articles?populate=*`, {
+    const res = await fetch(`${API_BASE}/articles?populate=*&pagination[pageSize]=100`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) throw new Error(`API error: ${res.status}`);
