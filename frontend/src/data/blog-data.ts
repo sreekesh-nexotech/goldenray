@@ -3,7 +3,8 @@ export type BlogArticle = {
   title: string;
   description: string;
   category: string;
-  image: string;
+  image: string;       // card thumbnail (coverImg)
+  mainImage?: string; // article hero image (mainImg)
   readTime: string;
   updatedDate: string;
   featured?: boolean;

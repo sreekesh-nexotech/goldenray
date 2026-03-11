@@ -22,7 +22,7 @@ export default function BlogArticleUnderstanding({
       {/* Article image */}
       <div className="relative w-full h-56 sm:h-72 md:h-80 lg:h-96 xl:h-[420px] 2xl:h-[460px] rounded-2xl overflow-hidden shadow-sm mb-7">
         <Image
-          src={article.image}
+          src={article.mainImage ?? article.image}
           alt={understanding.title}
           fill
           className="object-cover"

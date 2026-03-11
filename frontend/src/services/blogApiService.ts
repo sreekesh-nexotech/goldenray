@@ -82,6 +82,13 @@ interface ApiContentBlock {
   body: RichTextNode[];
 }
 
+interface ApiImgUrls {
+  coverImg?: string | null;
+  mainImg?: string | null;
+  socialSharing?: string | null;
+  secondaryImg?: string | null;
+}
+
 export interface ApiSeo {
   metaTitle?: string | null;
   metaDescription?: string | null;
@@ -119,6 +126,7 @@ interface ApiArticle {
   warning: string | null;
   insights: string | null;
   seo: ApiSeo | null;
+  imgUrls: ApiImgUrls | null;
 }
 
 interface StrapiResponse {
@@ -323,21 +331,26 @@ function parseContentBlocks(
 // ── Transformers ──────────────────────────────────────────────────────────────
 function transformToBlogArticle(raw: ApiArticle): BlogArticle {
   const category = raw.categories?.[0]?.name ?? "Solar Guide";
+  const categoryFallback = FALLBACK_IMAGES[category] ?? DEFAULT_FALLBACK;
 
-  // coverImage.url may be a relative path on Strapi — prefix domain if needed
-  let image = DEFAULT_FALLBACK;
-  if (raw.coverImage?.url) {
+  // Priority: imgUrls.coverImg → coverImage (Strapi media) → category fallback
+  let image = categoryFallback;
+  if (raw.imgUrls?.coverImg) {
+    image = raw.imgUrls.coverImg;
+  } else if (raw.coverImage?.url) {
     const u = raw.coverImage.url;
     image = u.startsWith("http") ? u : `https://blog.flarize.com${u}`;
-  } else {
-    image = FALLBACK_IMAGES[category] ?? DEFAULT_FALLBACK;
   }
+
+  // Priority: imgUrls.mainImg → same as card image
+  const mainImage = raw.imgUrls?.mainImg ?? image;
 
   return {
     id: raw.slug,
     title: raw.title,
     description: raw.excerpt,
     category,
+    mainImage,
     image,
     readTime: `${raw.readTime ?? 5} min read`,
     updatedDate: formatDate(raw.publishedOn ?? raw.updatedAt),
