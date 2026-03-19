@@ -15,7 +15,7 @@ import {
 
 export const metadata: Metadata = {
   title:
-    "Commercial Solar Panel Installation Company in Kerala — Flarize | Best Solar Company for Business",
+    "Commercial Solar Panel Installation Company in Kerala | Best Solar Company for Business",
   description:
     "Flarize is Kerala's trusted commercial solar panels Kerala installation company & solar EPC company Kerala. Reduce electricity bills by 90%. 40% accelerated depreciation + 75% financing. Solar panel installation cost per kW Kerala from ₹45,000. Get a free quote.",
   keywords: [
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
       "Commercial Solar Installation Company in Kerala — Flarize | Solar Company Kerala",
     description:
       "On-grid solar panel installation Kerala for factories, offices, and warehouses. Commercial solar ROI Kerala in 3–4 years. 40% depreciation, GST input tax credit, 75% project financing. KSEB net metering commercial handled end-to-end. MNRE certified, KSEB approved solar installer.",
-    url: "https://flarize.com/commercial",
+    url: "https://www.flarize.com/commercial",
     siteName: "Flarize",
     images: [
       {

@@ -15,7 +15,7 @@ import {
 
 export const metadata: Metadata = {
   title:
-    "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering | Flarize",
+    "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering",
   description:
     "Install on-grid solar panels for your home in Kerala. Get ₹78,000 PM Surya Ghar subsidy, KSEB net metering & MNRE-approved installation. Best solar company Kerala. Solar panel price Kerala from ₹1.1 lakh. Free quote from Flarize.",
   keywords: [
@@ -46,10 +46,10 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title:
-      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering | Flarize",
+      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering",
     description:
       "Install on-grid solar panels for your home in Kerala. Get ₹78,000 PM Surya Ghar subsidy, KSEB net metering & MNRE-approved residential solar installation Kerala. Free quote from Flarize.",
-    url: "https://flarize.com/residential",
+    url: "https://www.flarize.com/residential",
     siteName: "Flarize",
     images: [
       {
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering | Flarize",
+      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering",
     description:
       "Install on-grid solar panels for your home in Kerala. Get ₹78,000 PM Surya Ghar subsidy, KSEB net metering & MNRE-approved installation. Free quote from Flarize.",
     images: [residentialPageData.hero.image],

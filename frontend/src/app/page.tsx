@@ -2,7 +2,7 @@ import Main from "@/components/Home/home";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Solar Power Systems in Kerala for Homes & Businesses | Flarize",
+  title: "Solar Power Systems in Kerala for Homes & Businesses",
   description:
     "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
   keywords: [
@@ -14,10 +14,10 @@ export const metadata: Metadata = {
     "best solar company in kerala",
   ],
   openGraph: {
-    title: "Solar Power Systems in Kerala for Homes & Businesses | Flarize",
+    title: "Solar Power Systems in Kerala for Homes & Businesses",
     description:
       "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
-    url: "https://flarize.com",
+    url: "https://www.flarize.com",
     siteName: "Flarize",
     images: [
       {
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Solar Power Systems in Kerala for Homes & Businesses | Flarize",
+    title: "Solar Power Systems in Kerala for Homes & Businesses",
     description:
       "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
     images: ["/heroImg.png"],

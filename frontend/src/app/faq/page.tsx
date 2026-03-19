@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "Solar Subsidy & Rooftop Solar FAQs in Kerala",
     description:
       "Find answers on solar subsidies, pricing, net metering, and rooftop solar systems in Kerala before going solar.",
-    url: "https://flarize.com/solar-faq",
+    url: "https://www.flarize.com/faq",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Solar FAQ" },
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/solar-faq",
+    canonical: "https://www.flarize.com/faq",
   },
   robots: {
     index: true,

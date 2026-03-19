@@ -4,7 +4,7 @@ import ContactMain from "@/components/ContactUs/ContactMain";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact Solar Experts in Kerala | Flarize",
+  title: "Contact Solar Experts in Kerala",
   description:
     "Speak with Kerala's solar installation experts. Contact Flarize for site visits, system design, pricing, and support.",
   keywords: [
@@ -14,10 +14,10 @@ export const metadata: Metadata = {
     "rooftop solar consultation kerala",
   ],
   openGraph: {
-    title: "Contact Solar Experts in Kerala | Flarize",
+    title: "Contact Solar Experts in Kerala",
     description:
       "Speak with Kerala's solar installation experts. Contact Flarize for site visits, system design, pricing, and support.",
-    url: "https://flarize.com/contact-flarize-solar",
+    url: "https://www.flarize.com/contactus",
     siteName: "Flarize",
     images: [
       {
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Contact Solar Experts in Kerala | Flarize",
+    title: "Contact Solar Experts in Kerala",
     description:
       "Speak with Kerala's solar installation experts. Contact Flarize for site visits, system design, pricing, and support.",
     images: ["/heroImg.png"],
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/contact-flarize-solar",
+    canonical: "https://www.flarize.com/contactus",
   },
   robots: {
     index: true,

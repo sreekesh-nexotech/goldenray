@@ -5,7 +5,7 @@ import Hero from "@/components/ui/Hero";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Residential & Commercial Solar Solutions in Kerala | Flarize",
+  title: "Residential & Commercial Solar Solutions in Kerala",
   description:
     "Discover custom solar solutions in Kerala for homes and businesses. Expert installation, high-efficiency panels, and trusted support.",
   keywords: [
@@ -16,10 +16,10 @@ export const metadata: Metadata = {
     "solar EPC company kerala",
   ],
   openGraph: {
-    title: "Residential & Commercial Solar Solutions in Kerala | Flarize",
+    title: "Residential & Commercial Solar Solutions in Kerala",
     description:
       "Discover custom solar solutions in Kerala for homes and businesses. Expert installation, high-efficiency panels, and trusted support.",
-    url: "https://flarize.com/solar-solutions-kerala",
+    url: "https://www.flarize.com/solutions",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Solar Solutions" },
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Residential & Commercial Solar Solutions in Kerala | Flarize",
+    title: "Residential & Commercial Solar Solutions in Kerala",
     description:
       "Discover custom solar solutions in Kerala for homes and businesses. Expert installation, high-efficiency panels, and trusted support.",
     images: ["/heroImg.png"],
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/solar-solutions-kerala",
+    canonical: "https://www.flarize.com/solutions",
   },
   robots: {
     index: true,

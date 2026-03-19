@@ -4,7 +4,7 @@ import { Metadata } from "next";
 
 // Metadata
 export const metadata: Metadata = {
-  title: "Solar Savings Calculator for Kerala Homes | Flarize",
+  title: "Solar Savings Calculator for Kerala Homes",
   description:
     "Estimate your solar power cost and savings in Kerala. Use our solar calculator to plan the right system for your home or business.",
   keywords: [
@@ -15,10 +15,10 @@ export const metadata: Metadata = {
     "solar ROI calculator kerala",
   ],
   openGraph: {
-    title: "Solar Savings Calculator for Kerala Homes | Flarize",
+    title: "Solar Savings Calculator for Kerala Homes",
     description:
       "Estimate your solar power cost and savings in Kerala. Use our solar calculator to plan the right system for your home or business.",
-    url: "https://flarize.com/solar-calculator",
+    url: "https://www.flarize.com/advanced-calculator",
     siteName: "Flarize",
     images: [
       {
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Solar Savings Calculator for Kerala Homes | Flarize",
+    title: "Solar Savings Calculator for Kerala Homes",
     description:
       "Estimate your solar power cost and savings in Kerala. Use our solar calculator to plan the right system for your home or business.",
     images: ["/heroImg.png"],
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/solar-calculator",
+    canonical: "https://www.flarize.com/advanced-calculator",
   },
   robots: {
     index: true,

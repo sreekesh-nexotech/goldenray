@@ -6,7 +6,7 @@ import { fetchAllArticles } from "@/services/blogApiService";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Solar Energy Blog Kerala | Tips, Guides & Updates | Flarize",
+  title: "Solar Energy Blog Kerala | Tips, Guides & Updates",
   description:
     "Read expert insights on solar power in Kerala. Get updates on panels, subsidies, savings, and smart energy solutions from Flarize.",
   keywords: [
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     "solar installation Kerala guide",
   ],
   openGraph: {
-    title: "Solar Energy Blog Kerala | Tips, Guides & Updates | Flarize",
+    title: "Solar Energy Blog Kerala | Tips, Guides & Updates",
     description:
       "Read expert insights on solar power in Kerala. Get updates on panels, subsidies, savings, and smart energy solutions from Flarize.",
     url: "https://www.flarize.com/blog",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Solar Energy Blog Kerala | Tips, Guides & Updates | Flarize",
+    title: "Solar Energy Blog Kerala | Tips, Guides & Updates",
     description:
       "Read expert insights on solar power in Kerala. Get updates on panels, subsidies, savings, and smart energy solutions from Flarize.",
     images: ["/heroImg.png"],
