@@ -19,6 +19,45 @@ const nextConfig: NextConfig = {
         ],
     },
     reactStrictMode: true,
+    async redirects() {
+        return [
+            {
+                source: '/solar-faq',
+                destination: '/faq',
+                permanent: true,
+            },
+            {
+                source: '/solar-solutions-kerala',
+                destination: '/solutions',
+                permanent: true,
+            },
+            {
+                source: '/contact-flarize-solar',
+                destination: '/contactus',
+                permanent: true,
+            },
+            {
+                source: '/solar-projects-kerala',
+                destination: '/projects',
+                permanent: true,
+            },
+            {
+                source: '/solar-calculator',
+                destination: '/advanced-calculator',
+                permanent: true,
+            },
+            {
+                source: '/solar-blog',
+                destination: '/resources',
+                permanent: true,
+            },
+            {
+                source: '/blog/how-to-calculate-solar-roi-kerala',
+                destination: '/blog/how-to-calculate-solar-roi-in-kerala',
+                permanent: true,
+            },
+        ];
+    },
 };
 
 export default nextConfig;

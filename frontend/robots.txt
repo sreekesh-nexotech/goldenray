@@ -8,4 +8,4 @@ Allow: /
 # Disallow: /dashboard/
 
 # Sitemap location
-Sitemap: https://flarize.com/sitemap.xml
+Sitemap: https://www.flarize.com/sitemap.xml

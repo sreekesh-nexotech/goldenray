@@ -35,7 +35,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${post.title} - Flarize Blog`,
       description: post.description || `Read our article about ${post.title}.`,
-      url: `https://flarize.com/resources/${id}`,
+      url: `https://www.flarize.com/resources/${id}`,
       siteName: "Flarize",
       images: post.image
         ? [{ url: post.image, width: 1200, height: 630, alt: post.title }]

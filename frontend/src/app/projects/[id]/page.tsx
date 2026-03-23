@@ -36,7 +36,7 @@ export async function generateMetadata({
       description:
         project.description ||
         `Explore our ${project.title} solar installation project.`,
-      url: `https://flarize.com/projects/${id}`,
+      url: `https://www.flarize.com/projects/${id}`,
       siteName: "Flarize",
       images: project.imageUrl
         ? [

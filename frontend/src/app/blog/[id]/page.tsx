@@ -11,6 +11,8 @@ import BlogArticleContent from "@/components/Blog/article/BlogArticleContent";
 import Link from "next/link";
 import Image from "next/image";
 
+const SITE_ORIGIN = "https://www.flarize.com";
+
 // Revalidate pre-built pages every hour (ISR)
 export const revalidate = 3600;
 
@@ -34,14 +36,17 @@ export async function generateMetadata({
   const result = await fetchArticleBySlug(id);
   if (!result) return {};
   const { article, seo } = result;
+  const canonical = `${SITE_ORIGIN}/blog/${id}`;
+
   return {
     title: seo?.metaTitle ?? `${article.title} | Golden Ray Solar`,
     description: seo?.metaDescription ?? article.description,
     keywords: seo?.keywords ?? undefined,
-    alternates: seo?.canonicalUrl ? { canonical: seo.canonicalUrl } : undefined,
+    alternates: { canonical },
     openGraph: {
       title: seo?.metaTitle ?? article.title,
       description: seo?.metaDescription ?? article.description,
+      url: canonical,
       images: [{ url: article.mainImage ?? article.image }],
     },
   };

@@ -80,6 +80,7 @@ const switzer = localFont({
 /* -------------------- Metadata -------------------- */
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.flarize.com"),
   title: {
     default: "Flarize - Solar Solutions",
     template: "%s | Flarize",
@@ -89,11 +90,11 @@ export const metadata: Metadata = {
     title: "Flarize | Solar Solutions",
     description:
       "Empowering sustainable energy with innovative solar solutions.",
-    url: "https://flarize.com",
+    url: "https://www.flarize.com",
     siteName: "Flarize",
     images: [
       {
-        url: "https://flarize.com/ogImg.jpg",
+        url: "https://www.flarize.com/ogImg.jpg",
         width: 1600,
         height: 730,
         alt: "Flarize | Solar Solution",
@@ -107,7 +108,7 @@ export const metadata: Metadata = {
     title: "Flarize - Solar Solutions",
     description:
       "Empowering sustainable energy with innovative solar solutions.",
-    images: ["https://flarize.com/ogImg.jpg"],
+    images: ["https://www.flarize.com/ogImg.jpg"],
   },
   icons: {
     icon: "/favicon.ico",

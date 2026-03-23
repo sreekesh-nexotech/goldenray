@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: "Privacy Policy - Flarize",
     description:
       "Learn about how Flarize protects your privacy and handles your personal information.",
-    url: "https://flarize.com/privacy",
+    url: "https://www.flarize.com/privacy",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Privacy Policy" },

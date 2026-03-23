@@ -1,96 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-
-
-<url>
-  <loc>https://flarize.com/</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://flarize.com/solutions</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://flarize.com/projects</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://flarize.com/resources</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://flarize.com/about</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://flarize.com/faq</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://flarize.com/privacy</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://flarize.com/terms</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://flarize.com/resources/h1</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://flarize.com/resources/h2</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://flarize.com/resources/h3</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://flarize.com/resources/h4</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://flarize.com/resources/h5</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://flarize.com/resources/1</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://flarize.com/resources/6</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://flarize.com/resources/2</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://flarize.com/resources/3</loc>
-  <lastmod>2025-08-07T15:34:41+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-
-
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://www.flarize.com/contactus</loc><lastmod>2026-03-21</lastmod><changefreq>yearly</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.flarize.com/about</loc><lastmod>2026-03-21</lastmod><changefreq>yearly</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.flarize.com/commercial</loc><lastmod>2026-03-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://www.flarize.com/faq</loc><lastmod>2026-03-21</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://www.flarize.com/projects</loc><lastmod>2026-03-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+<url><loc>https://www.flarize.com/privacy</loc><lastmod>2026-03-21</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+<url><loc>https://www.flarize.com/solutions</loc><lastmod>2026-03-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+<url><loc>https://www.flarize.com/residential</loc><lastmod>2026-03-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://www.flarize.com/terms</loc><lastmod>2026-03-21</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+<url><loc>https://www.flarize.com</loc><lastmod>2026-03-21</lastmod><changefreq>weekly</changefreq><priority>1</priority></url>
 </urlset>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     title: "Terms and Conditions - Flarize",
     description:
       "Review the terms and conditions for using Flarize's solar energy services.",
-    url: "https://flarize.com/terms",
+    url: "https://www.flarize.com/terms",
     siteName: "Flarize",
     images: [
       {
