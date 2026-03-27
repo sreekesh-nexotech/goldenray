@@ -44,7 +44,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="py-12 sm:py-14 md:py-16 lg:py-20 xl:py-24 bg-white">
+    <section className="py-12 sm:py-14 md:py-16 lg:py-20 xl:py-24 bg-[#F7F8FA]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16">
           <div className="lg:col-span-5">

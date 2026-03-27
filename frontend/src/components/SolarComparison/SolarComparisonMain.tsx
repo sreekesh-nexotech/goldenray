@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
   SolarPanel,
   FilterState,
@@ -12,7 +13,6 @@ import {
 } from "@/services/solarPanelService";
 import FilterSidebar from "./FilterSidebar";
 import PanelCard from "./PanelCard";
-import ComparisonTable from "./ComparisonTable";
 import HowToChoose from "./HowToChoose";
 import CTASection from "./CTASection";
 import FAQSection from "./FAQSection";
@@ -29,6 +29,7 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ];
 
 export default function SolarComparisonMain() {
+  const router = useRouter();
   const [panels, setPanels] = useState<SolarPanel[]>([]);
   const [allPanels, setAllPanels] = useState<SolarPanel[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,7 +38,6 @@ export default function SolarComparisonMain() {
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [selectedPanelIds, setSelectedPanelIds] = useState<string[]>([]);
-  const [showComparison, setShowComparison] = useState(false);
   const [availableBrands, setAvailableBrands] = useState<string[]>([]);
 
   // Fetch panels on mount and when filters/sort change
@@ -81,32 +81,16 @@ export default function SolarComparisonMain() {
     });
   };
 
-  const handleRemoveFromComparison = (panelId: string) => {
-    setSelectedPanelIds((prev) => prev.filter((id) => id !== panelId));
-  };
-
-  const handleAddToComparison = (panelId: string) => {
-    if (selectedPanelIds.length < 3 && !selectedPanelIds.includes(panelId)) {
-      setSelectedPanelIds((prev) => [...prev, panelId]);
-    }
-  };
-
   const selectedPanels = allPanels.filter((p) =>
     selectedPanelIds.includes(p.id),
   );
 
-  // Show comparison view
-  if (showComparison) {
-    return (
-      <ComparisonTable
-        selectedPanels={selectedPanels}
-        allPanels={allPanels}
-        onRemovePanel={handleRemoveFromComparison}
-        onAddPanel={handleAddToComparison}
-        onClose={() => setShowComparison(false)}
-      />
-    );
-  }
+  // Navigate to comparison table page
+  const handleCompare = () => {
+    if (selectedPanelIds.length >= 2) {
+      router.push(`/comparison-table?panels=${selectedPanelIds.join(",")}`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -307,7 +291,7 @@ export default function SolarComparisonMain() {
           // Will implement quote functionality
           window.location.href = "/contact";
         }}
-        onCompareSelected={() => setShowComparison(true)}
+        onCompareSelected={handleCompare}
       />
 
       {/* FAQ Section */}
@@ -351,7 +335,7 @@ export default function SolarComparisonMain() {
                   Clear
                 </button>
                 <button
-                  onClick={() => setShowComparison(true)}
+                  onClick={handleCompare}
                   disabled={selectedPanelIds.length < 2}
                   className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all ${
                     selectedPanelIds.length >= 2

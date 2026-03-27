@@ -4,6 +4,9 @@ import { SolarPanel } from "@/types/solarPanel";
 import Image from "next/image";
 import { X, ChevronDown, Check, X as XIcon, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
+import RecommendationSection from "./RecommendationSection";
+import ComparisonCTA from "./ComparisonCTA";
+import FAQSection from "./FAQSection";
 
 interface ComparisonTableProps {
   selectedPanels: SolarPanel[];
@@ -13,19 +16,18 @@ interface ComparisonTableProps {
   onClose: () => void;
 }
 
-// Helpers
-const gridTemplate = (count: number) => `repeat(${count + 1}, minmax(0, 1fr))`;
-
 // Section header row spanning the table grid
 function SectionHeader({ title, columns }: { title: string; columns: number }) {
   return (
-    <div
-      className="grid bg-[#F1F3F6] text-[#3F454D] border-y border-[#DFE3E8] text-sm sm:text-base"
-      style={{ gridTemplateColumns: gridTemplate(columns) }}
-    >
-      <div className="px-4 py-3 font-semibold">{title}</div>
+    <div className="flex bg-[#F1F3F6] text-[#3F454D] text-sm sm:text-base">
+      <div className="min-w-[140px] sm:min-w-[180px] px-4 py-3 font-semibold sticky left-0 bg-[#F1F3F6] z-20 border-y border-[#DFE3E8] shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
+        {title}
+      </div>
       {Array.from({ length: columns }).map((_, idx) => (
-        <div key={idx} className="border-l border-[#DFE3E8]" />
+        <div
+          key={idx}
+          className="min-w-[240px] sm:min-w-[200px] border-l border-y border-[#DFE3E8] flex-shrink-0 bg-[#F1F3F6]"
+        />
       ))}
     </div>
   );
@@ -104,18 +106,15 @@ function ComparisonRow({
   };
 
   return (
-    <div
-      className={`grid border-b ${highlight ? "bg-[#FFFFFF]" : "bg-white"}`}
-      style={{ gridTemplateColumns: gridTemplate(values.length) }}
-    >
-      <div className="px-3 sm:px-4 py-3 text-[13px] text-[#616770] font-medium border-r border-[#E1E5EA] flex items-center justify-between gap-2">
+    <div className={`flex ${highlight ? "bg-[#FFFFFF]" : "bg-white"}`}>
+      <div className="min-w-[140px] sm:min-w-[180px] px-3 sm:px-4 py-3 text-[13px] text-[#616770] font-medium border-r border-b border-[#E1E5EA] flex items-center justify-between gap-2 sticky left-0 bg-white z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
         <span>{label}</span>
-        <span className="text-[#8D8D8D] text-xs">ⓘ</span>
+        <span className="text-[#8D8D8D] text-xs hidden sm:inline">ⓘ</span>
       </div>
       {values.map((value, index) => (
         <div
           key={index}
-          className="px-3 sm:px-4 py-3 text-[13px] text-[#3C4147] font-medium text-left border-r border-[#E1E5EA] last:border-r-0"
+          className="min-w-[240px] max-w-[240px] sm:min-w-[200px] sm:max-w-none px-3 sm:px-4 py-3 text-[11px] sm:text-[13px] text-[#3C4147] font-medium text-left border-r border-b border-[#E1E5EA] last:border-r-0 flex-shrink-0 break-words"
         >
           {formatValue(value)}
         </div>
@@ -336,8 +335,6 @@ function VisualSummarySection({
 }: {
   selectedPanels: SolarPanel[];
 }) {
-  const isTwoPanelLayout = selectedPanels.length === 2;
-
   return (
     <section className="mt-6 sm:mt-7 md:mt-8 lg:mt-9 xl:mt-10 2xl:mt-12">
       <div className="text-center mb-4 sm:mb-5 md:mb-5 lg:mb-6 xl:mb-7 2xl:mb-8">
@@ -346,16 +343,15 @@ function VisualSummarySection({
         </h3>
       </div>
 
-      <div
-        className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-4 lg:gap-5 xl:gap-5 2xl:gap-6 ${
-          isTwoPanelLayout
-            ? "lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 max-w-5xl mx-auto"
-            : "lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3"
-        }`}
-      >
-        {selectedPanels.map((panel) => (
-          <VisualSummaryCard key={panel.id} panel={panel} />
-        ))}
+      {/* Mobile: horizontal scroll, Desktop: grid */}
+      <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
+        <div className="flex gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-4 md:gap-4 lg:gap-5 xl:gap-5 2xl:gap-6">
+          {selectedPanels.map((panel) => (
+            <div key={panel.id} className="min-w-[280px] sm:min-w-0 flex-shrink-0 sm:flex-shrink">
+              <VisualSummaryCard panel={panel} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -401,54 +397,51 @@ export default function ComparisonTable({
   return (
     <div className="bg-[#F7F8FA] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Panel Selectors row */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-[#F3F3F3] border border-[#E4E4E4] rounded-lg px-3 sm:px-4 py-3 mb-6">
-          <PanelSelector
-            selectedPanel={panelSlots[0]}
-            allPanels={allPanels}
-            selectedPanelIds={selectedPanelIds}
-            onSelect={(panelId) => handleSelectPanel(0, panelId)}
-            onRemove={() => handleRemovePanel(0)}
-          />
-          <span className="text-xs sm:text-sm text-[#6B6B6B]">VS</span>
-          <PanelSelector
-            selectedPanel={panelSlots[1]}
-            allPanels={allPanels}
-            selectedPanelIds={selectedPanelIds}
-            onSelect={(panelId) => handleSelectPanel(1, panelId)}
-            onRemove={() => handleRemovePanel(1)}
-          />
-          <span className="text-xs sm:text-sm text-[#6B6B6B]">VS</span>
-          <PanelSelector
-            selectedPanel={panelSlots[2]}
-            allPanels={allPanels}
-            selectedPanelIds={selectedPanelIds}
-            onSelect={(panelId) => handleSelectPanel(2, panelId)}
-            onRemove={() => handleRemovePanel(2)}
-          />
+        {/* Panel Selectors row - horizontally scrollable on mobile */}
+        <div className="overflow-x-auto pb-2 mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-3 bg-[#F3F3F3] border border-[#E4E4E4] rounded-lg px-3 sm:px-4 py-3 min-w-max sm:min-w-0">
+            <PanelSelector
+              selectedPanel={panelSlots[0]}
+              allPanels={allPanels}
+              selectedPanelIds={selectedPanelIds}
+              onSelect={(panelId) => handleSelectPanel(0, panelId)}
+              onRemove={() => handleRemovePanel(0)}
+            />
+            <span className="text-xs sm:text-sm text-[#6B6B6B]">VS</span>
+            <PanelSelector
+              selectedPanel={panelSlots[1]}
+              allPanels={allPanels}
+              selectedPanelIds={selectedPanelIds}
+              onSelect={(panelId) => handleSelectPanel(1, panelId)}
+              onRemove={() => handleRemovePanel(1)}
+            />
+            <span className="text-xs sm:text-sm text-[#6B6B6B]">VS</span>
+            <PanelSelector
+              selectedPanel={panelSlots[2]}
+              allPanels={allPanels}
+              selectedPanelIds={selectedPanelIds}
+              onSelect={(panelId) => handleSelectPanel(2, panelId)}
+              onRemove={() => handleRemovePanel(2)}
+            />
+          </div>
         </div>
 
         <div className="mb-4 text-center">
-          <h2 className="text-4xl font-bold text-[#183C39]">
+          <h2 className="text-2xl sm:text-4xl font-bold text-[#183C39]">
             Side-by-Side Comparison
           </h2>
         </div>
 
-        {/* Comparison Table */}
+        {/* Comparison Table - horizontally scrollable */}
         {selectedPanels.length >= 2 && (
-          <div className="bg-white border border-[#DFE3E8] overflow-hidden">
+          <div className="bg-white border border-[#DFE3E8] overflow-x-auto">
             {/* Column headers */}
-            <div
-              className="grid"
-              style={{
-                gridTemplateColumns: gridTemplate(selectedPanels.length),
-              }}
-            >
-              <div className="border-r border-[#DFE3E8] bg-white" />
+            <div className="flex">
+              <div className="min-w-[140px] sm:min-w-[180px] border-r border-b border-[#DFE3E8] bg-white sticky left-0 z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]" />
               {panelSlots.slice(0, selectedPanels.length).map((panel, idx) => (
                 <div
                   key={panel?.id || idx}
-                  className="bg-[#F4F1E6] border-r border-[#DFE3E8] flex items-center justify-between px-3 sm:px-4 py-2 text-[13px] font-semibold text-[#355659]"
+                  className="min-w-[240px] sm:min-w-[200px] bg-[#F4F1E6] border-r border-b border-[#DFE3E8] flex items-center justify-between px-3 sm:px-4 py-2 text-[10px] sm:text-[13px] font-semibold text-[#355659] flex-shrink-0"
                 >
                   <span className="truncate">{panel?.name}</span>
                   <button
@@ -462,17 +455,12 @@ export default function ComparisonTable({
             </div>
 
             {/* Image row */}
-            <div
-              className="grid border-b border-[#DFE3E8]"
-              style={{
-                gridTemplateColumns: gridTemplate(selectedPanels.length),
-              }}
-            >
-              <div className="border-r border-[#DFE3E8] bg-white" />
+            <div className="flex">
+              <div className="min-w-[140px] sm:min-w-[180px] border-r border-b border-[#DFE3E8] bg-white sticky left-0 z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]" />
               {panelSlots.slice(0, selectedPanels.length).map((panel, idx) => (
                 <div
                   key={panel?.id || idx}
-                  className="border-r border-[#DFE3E8] bg-white flex items-center justify-center h-[240px] sm:h-[300px]"
+                  className="min-w-[240px] sm:min-w-[200px] border-r border-b border-[#DFE3E8] bg-white flex items-center justify-center h-[180px] sm:h-[300px] flex-shrink-0"
                 >
                   {panel && (
                     <div className="relative w-[92%] h-[90%] overflow-hidden">
@@ -671,9 +659,14 @@ export default function ComparisonTable({
             </div>
 
             <VisualSummarySection selectedPanels={selectedPanels} />
+            <RecommendationSection selectedPanels={selectedPanels} />
+            <ComparisonCTA />
           </>
         )}
       </div>
+
+      {/* FAQ Section - outside the container since it has its own */}
+      {selectedPanels.length >= 2 && <FAQSection />}
     </div>
   );
 }
