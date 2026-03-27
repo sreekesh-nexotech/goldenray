@@ -1,23 +1,62 @@
 // Solar Panel Service
 // This service provides solar panel data from the backend API
 
-import { SolarPanel, FilterState, PanelType } from "@/types/solarPanel";
+import { SolarPanel, FilterState } from "@/types/solarPanel";
 import { apiCall } from "./apiService";
 
 // Backend response interface
+interface BackendPanelData {
+  id: number;
+  brand: string;
+  name: string;
+  wattage: number;
+  panel_type: string;
+  technology: string;
+  image_url: string;
+  description: string;
+  efficiency: string;
+  temperature_coefficient: string;
+  noct: string;
+  real_output_at_60c: string;
+  ip_rating: string;
+  wind_load: string;
+  moisture_protection: string;
+  weight: string;
+  bifacial_gain: string;
+  product_warranty: number;
+  performance_warranty: number;
+  first_year_power_drop: string;
+  annual_degradation: string;
+  output_at_year_25: string;
+  manufacturing_capacity: string;
+  bloomberg_tier1: boolean;
+  pvel_top_performer: boolean;
+  bis_certified: boolean;
+  independent_audit: boolean;
+  certifications: string[];
+  price_range: string;
+  subsidy_eligible: boolean;
+  kerala_climate_score: number;
+  efficiency_rating: number;
+  heat_performance_rating: number;
+  warranty_rating: number;
+  kerala_climate_rating: number;
+  overall_rating: string;
+}
+
 interface SolarPanelsResponse {
-  data: any[];
+  data: BackendPanelData[];
   meta?: {
     total: number;
   };
 }
 
 interface SinglePanelResponse {
-  data: any;
+  data: BackendPanelData;
 }
 
 // Transform backend data to frontend format
-function transformPanelData(backendPanel: any): SolarPanel {
+function transformPanelData(backendPanel: BackendPanelData): SolarPanel {
   return {
     id: backendPanel.id.toString(),
     brand: backendPanel.brand,
@@ -34,13 +73,13 @@ function transformPanelData(backendPanel: any): SolarPanel {
     description: backendPanel.description,
     efficiency: parseFloat(backendPanel.efficiency),
     temperatureCoefficient: parseFloat(backendPanel.temperature_coefficient),
-    noct: backendPanel.noct,
-    realOutputAt60C: backendPanel.real_output_at_60c,
+    noct: parseFloat(backendPanel.noct),
+    realOutputAt60C: parseFloat(backendPanel.real_output_at_60c),
     ipRating: backendPanel.ip_rating,
-    windLoad: backendPanel.wind_load,
+    windLoad: parseFloat(backendPanel.wind_load),
     moistureProtection: backendPanel.moisture_protection,
     weight: parseFloat(backendPanel.weight),
-    bifacialGain: backendPanel.bifacial_gain,
+    bifacialGain: backendPanel.bifacial_gain ? parseFloat(backendPanel.bifacial_gain) : null,
     productWarranty: backendPanel.product_warranty,
     performanceWarranty: backendPanel.performance_warranty,
     firstYearPowerDrop: parseFloat(backendPanel.first_year_power_drop),

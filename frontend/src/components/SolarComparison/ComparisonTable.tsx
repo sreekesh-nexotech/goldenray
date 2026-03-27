@@ -366,7 +366,6 @@ export default function ComparisonTable({
   allPanels,
   onRemovePanel,
   onAddPanel,
-  onClose: _onClose,
 }: ComparisonTableProps) {
   const selectedPanelIds = selectedPanels.map((p) => p.id);
 
