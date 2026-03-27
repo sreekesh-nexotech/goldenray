@@ -1,0 +1,263 @@
+from django.core.management.base import BaseCommand
+from goldenray.models import SolarPanel
+
+
+class Command(BaseCommand):
+    help = 'Populate database with 6 solar panels from datasheets'
+
+    def handle(self, *args, **options):
+        # Clear existing panels (optional - remove if you want to keep existing data)
+        # SolarPanel.objects.all().delete()
+        # self.stdout.write('Cleared existing solar panels')
+
+        panels_data = [
+            {
+                # 1. WAAREE — Ahnay Series Bi-55-550
+                'brand': 'Waaree',
+                'name': 'Ahnay Series Bi-55-550',
+                'wattage': 550,
+                'panel_type': 'bifacial',
+                'technology': 'p-type-perc',
+                'image_url': '/frame (5).png',
+                'description': 'Premium bifacial panel with P-Type Mono PERC technology featuring dual glass construction. Best for Kerala\'s tropical climate with excellent wind load resistance (5400 Pa) and 70% bifaciality factor.',
+                'efficiency': 21.36,
+                'temperature_coefficient': -0.34,
+                'noct': 43,
+                'real_output_at_60c': 89,
+                'ip_rating': 'IP68',
+                'wind_load': 5400,
+                'moisture_protection': 'Excellent',
+                'weight': 32.5,
+                'bifacial_gain': 15,
+                'product_warranty': 12,
+                'performance_warranty': 30,
+                'first_year_power_drop': 2.0,
+                'annual_degradation': 0.55,
+                'output_at_year_25': 82.05,
+                'manufacturing_capacity': '12 GW',
+                'bloomberg_tier1': True,
+                'pvel_top_performer': True,
+                'bis_certified': True,
+                'independent_audit': True,
+                'certifications': ['ISO 9001:2015', 'ISO 14001:2015', 'ISO 45001:2018', 'Black & Veatch assessed'],
+                'price_range': '₹28,000 - ₹32,000',
+                'subsidy_eligible': True,
+                'kerala_climate_score': 87,
+                'efficiency_rating': 87,
+                'heat_performance_rating': 89,
+                'warranty_rating': 82,
+                'kerala_climate_rating': 87,
+                'overall_rating': 'excellent'
+            },
+            {
+                # 2. ADANI SOLAR — Elan Shine TOPCon ASB-M10-144-555
+                'brand': 'Adani Solar',
+                'name': 'Elan Shine TOPCon ASB-M10-144-555',
+                'wattage': 555,
+                'panel_type': 'bifacial',
+                'technology': 'n-type-topcon',
+                'image_url': '/frame (5).png',
+                'description': 'India\'s first fully integrated N-Type TOPCon bifacial panel with industry-leading temperature coefficient of -0.26%/°C. Zero LID (Light Induced Degradation) and 80% bifaciality. Ideal for Kerala\'s high ambient temperatures.',
+                'efficiency': 21.5,
+                'temperature_coefficient': -0.26,
+                'noct': 45,
+                'real_output_at_60c': 91,
+                'ip_rating': 'IP68',
+                'wind_load': 3600,
+                'moisture_protection': 'Very Good',
+                'weight': 28.0,
+                'bifacial_gain': 15,
+                'product_warranty': 12,
+                'performance_warranty': 30,
+                'first_year_power_drop': 1.0,
+                'annual_degradation': 0.40,
+                'output_at_year_25': 87.4,
+                'manufacturing_capacity': '3.5 GW',
+                'bloomberg_tier1': True,
+                'pvel_top_performer': False,
+                'bis_certified': True,
+                'independent_audit': True,
+                'certifications': ['IEC 61215', 'IEC 61730', 'UL 61730', 'BIS'],
+                'price_range': '₹30,000 - ₹35,000',
+                'subsidy_eligible': True,
+                'kerala_climate_score': 92,
+                'efficiency_rating': 88,
+                'heat_performance_rating': 97,
+                'warranty_rating': 87,
+                'kerala_climate_rating': 92,
+                'overall_rating': 'excellent'
+            },
+            {
+                # 3. VIKRAM SOLAR — Prexos VSMDH.72.545.05
+                'brand': 'Vikram Solar',
+                'name': 'Prexos VSMDH.72.545.05',
+                'wattage': 545,
+                'panel_type': 'bifacial',
+                'technology': 'p-type-perc',
+                'image_url': '/frame (5).png',
+                'description': 'India\'s largest solar manufacturer\'s premium offering with glass-to-glass dual glass construction and polyolefin (POE) encapsulant for near-zero PID. Excellent moisture protection for Kerala monsoons with 5400 Pa wind load resistance.',
+                'efficiency': 21.13,
+                'temperature_coefficient': -0.35,
+                'noct': 45,
+                'real_output_at_60c': 87,
+                'ip_rating': 'IP68',
+                'wind_load': 5400,
+                'moisture_protection': 'Excellent',
+                'weight': 33.4,
+                'bifacial_gain': 25,
+                'product_warranty': 12,
+                'performance_warranty': 30,
+                'first_year_power_drop': 2.0,
+                'annual_degradation': 0.50,
+                'output_at_year_25': 83.7,
+                'manufacturing_capacity': '6 GW',
+                'bloomberg_tier1': True,
+                'pvel_top_performer': True,
+                'bis_certified': True,
+                'independent_audit': True,
+                'certifications': ['IEC 61215:2016', 'IEC 61730:2016', 'IEC 61701', 'IEC 62716', 'IEC 60068-2-68', 'IS/IEC 61730', 'IS 14286', 'CE', 'UL 61215', 'UL 61730'],
+                'price_range': '₹27,000 - ₹31,000',
+                'subsidy_eligible': True,
+                'kerala_climate_score': 85,
+                'efficiency_rating': 85,
+                'heat_performance_rating': 83,
+                'warranty_rating': 84,
+                'kerala_climate_rating': 85,
+                'overall_rating': 'excellent'
+            },
+            {
+                # 4. SAATVIK — N-TOPCon SGE 580-144 TGG
+                'brand': 'Saatvik',
+                'name': 'N-TOPCon SGE 580-144 TGG',
+                'wattage': 580,
+                'panel_type': 'bifacial',
+                'technology': 'n-type-topcon',
+                'image_url': '/frame (5).png',
+                'description': 'Highest efficiency (22.45%) and wattage (580W) in the DCR lineup. Only panel combining N-Type TOPCon with dual glass construction. Excellent temperature coefficient (-0.30%/°C), 80% bifaciality, and industry-best degradation rates. Top choice for Kerala climate.',
+                'efficiency': 22.45,
+                'temperature_coefficient': -0.30,
+                'noct': 45,
+                'real_output_at_60c': 90,
+                'ip_rating': 'IP68',
+                'wind_load': 5400,
+                'moisture_protection': 'Excellent',
+                'weight': 32.0,
+                'bifacial_gain': 15,
+                'product_warranty': 12,
+                'performance_warranty': 30,
+                'first_year_power_drop': 1.0,
+                'annual_degradation': 0.40,
+                'output_at_year_25': 87.4,
+                'manufacturing_capacity': '3 GW',
+                'bloomberg_tier1': False,
+                'pvel_top_performer': False,
+                'bis_certified': True,
+                'independent_audit': True,
+                'certifications': ['IEC 61215', 'IEC 61730', 'IEC 61701', 'UL 61215', 'UL 61730', 'CEC', 'IEC 61853-1', 'IEC 62804', 'IEC 62716', 'IS 14286'],
+                'price_range': '₹32,000 - ₹36,000',
+                'subsidy_eligible': True,
+                'kerala_climate_score': 96,
+                'efficiency_rating': 95,
+                'heat_performance_rating': 95,
+                'warranty_rating': 87,
+                'kerala_climate_rating': 96,
+                'overall_rating': 'excellent'
+            },
+            {
+                # 5. PREMIER ENERGIES — PE-550HB
+                'brand': 'Premier Energies',
+                'name': 'PE-550HB',
+                'wattage': 550,
+                'panel_type': 'bifacial',
+                'technology': 'p-type-perc',
+                'image_url': '/frame (5).png',
+                'description': 'Best temperature coefficient among PERC panels (-0.32%/°C) with highest bifaciality (85%). Features gallium-doped wafer for reduced LID/LeTID and SMBB technology. Hyderabad-made with better annual degradation (0.45%) than typical PERC. Excellent mid-range value.',
+                'efficiency': 21.29,
+                'temperature_coefficient': -0.32,
+                'noct': 45,
+                'real_output_at_60c': 88,
+                'ip_rating': 'IP68',
+                'wind_load': 5400,
+                'moisture_protection': 'Very Good',
+                'weight': 28.0,
+                'bifacial_gain': 20,
+                'product_warranty': 12,
+                'performance_warranty': 30,
+                'first_year_power_drop': 2.0,
+                'annual_degradation': 0.45,
+                'output_at_year_25': 87.2,
+                'manufacturing_capacity': '2 GW',
+                'bloomberg_tier1': False,
+                'pvel_top_performer': False,
+                'bis_certified': True,
+                'independent_audit': True,
+                'certifications': ['BIS R-63003719', 'BIS R-63004740'],
+                'price_range': '₹26,000 - ₹30,000',
+                'subsidy_eligible': True,
+                'kerala_climate_score': 89,
+                'efficiency_rating': 87,
+                'heat_performance_rating': 90,
+                'warranty_rating': 87,
+                'kerala_climate_rating': 89,
+                'overall_rating': 'excellent'
+            },
+            {
+                # 6. RENEWSYS — DESERV SGalactic 144 (545W Monofacial)
+                'brand': 'RenewSys',
+                'name': 'DESERV SGalactic 144',
+                'wattage': 545,
+                'panel_type': 'monocrystalline',
+                'technology': 'p-type-perc',
+                'image_url': '/frame (5).png',
+                'description': 'India\'s first vertically integrated manufacturer (makes own encapsulants, backsheets, cells). Budget-friendly monofacial PERC panel. Note: Worst temperature coefficient (-0.38%/°C) and only 10-year product warranty. Value pick for cost-conscious installations.',
+                'efficiency': 20.99,
+                'temperature_coefficient': -0.38,
+                'noct': 45,
+                'real_output_at_60c': 84,
+                'ip_rating': 'IP68',
+                'wind_load': 5400,
+                'moisture_protection': 'Good',
+                'weight': 28.7,
+                'bifacial_gain': None,
+                'product_warranty': 10,
+                'performance_warranty': 25,
+                'first_year_power_drop': 2.0,
+                'annual_degradation': 0.55,
+                'output_at_year_25': 82.0,
+                'manufacturing_capacity': '1.5 GW',
+                'bloomberg_tier1': False,
+                'pvel_top_performer': False,
+                'bis_certified': True,
+                'independent_audit': True,
+                'certifications': ['ISO 9001:2015', 'OHSAS 45001:2018', 'ISO 14001:2015'],
+                'price_range': '₹22,000 - ₹26,000',
+                'subsidy_eligible': True,
+                'kerala_climate_score': 74,
+                'efficiency_rating': 70,
+                'heat_performance_rating': 72,
+                'warranty_rating': 75,
+                'kerala_climate_rating': 74,
+                'overall_rating': 'good'
+            },
+        ]
+
+        created_count = 0
+        updated_count = 0
+
+        for panel_data in panels_data:
+            panel, created = SolarPanel.objects.update_or_create(
+                brand=panel_data['brand'],
+                name=panel_data['name'],
+                defaults=panel_data
+            )
+
+            if created:
+                created_count += 1
+                self.stdout.write(self.style.SUCCESS(f'✓ Created: {panel.brand} {panel.name}'))
+            else:
+                updated_count += 1
+                self.stdout.write(self.style.WARNING(f'↻ Updated: {panel.brand} {panel.name}'))
+
+        self.stdout.write(self.style.SUCCESS(f'\n✅ Successfully processed {len(panels_data)} solar panels'))
+        self.stdout.write(self.style.SUCCESS(f'   Created: {created_count}'))
+        self.stdout.write(self.style.SUCCESS(f'   Updated: {updated_count}'))

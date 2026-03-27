@@ -8,5 +8,6 @@ from .room_size import RoomSize
 from .sent_quote import SentQuote
 from .solar_installation import SolarInstallation
 from .solar_installation_new import SolarInstallationNew
+from .solar_panel import SolarPanel
 from .wattage import Wattage
 from .customer_installation import CustomerInstallation

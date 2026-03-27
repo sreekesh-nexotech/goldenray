@@ -11,7 +11,7 @@ export default function Hero({ title, description }: HeroProps) {
       <PageIllustration />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 pt-32 pb-10 md:pt-48 md:pb-10 max-w-7xl flex flex-col md:flex-row items-center h-full lg:gap-40 gap-0">
+      <div className="relative z-10 container mx-auto px-4 pt-24 pb-8 md:pt-32 md:pb-8 max-w-7xl flex flex-col md:flex-row items-center h-full lg:gap-40 gap-0">
         {/* Title and description*/}
         <div className="w-full  text-center ">
           <h1 className="text-[40px]/10 sm:text-5xl lg:text-7xl font-bold text-[#123532] mb-4">

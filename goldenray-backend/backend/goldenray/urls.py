@@ -6,6 +6,7 @@ from .views.kseb_tariff_views import KSEBTariffAPIView
 from .views.evcar_views import EVCarAPIView
 from .views.evscooter_views import EVScooterAPIView
 from .views.solar_installation_views import SolarInstallationAPIView
+from .views.solar_panel_views import SolarPanelAPIView
 from .views.pincode_views import PincodeAPIView
 from .views.solar_calculator_views import SolarCalculatorAPIView
 from .views.solar_calculator_new_views import SolarCalculatorNewAPIView
@@ -42,6 +43,9 @@ urlpatterns = [
     # Solar Installations New
     path("solar-installations-new/", SolarInstallationNewAPIView.as_view(), name="solar-installation-new-list-create"),
     path("solar-installations-new/<int:pk>/", SolarInstallationNewAPIView.as_view(), name="solar-installation-new-retrieve-update-destroy"),
+    # Solar Panels
+    path("solar-panels/", SolarPanelAPIView.as_view(), name="solar-panel-list-create"),
+    path("solar-panels/<int:pk>/", SolarPanelAPIView.as_view(), name="solar-panel-retrieve-update-destroy"),
     # Pincodes
     path("pincodes/", PincodeAPIView.as_view(), name="pincode-list-create"),
     path("pincodes/<int:pk>/", PincodeAPIView.as_view(), name="pincode-retrieve-update-destroy"),

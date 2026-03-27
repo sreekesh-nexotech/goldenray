@@ -5,4 +5,5 @@ from .kseb_tariff_serializer import KSEBTariffSerializer
 from .evcar_serializer import EVCarSerializer
 from .evscooter_serializer import EVScooterSerializer
 from .solar_installation_serializer import SolarInstallationSerializer
+from .solar_panel_serializer import SolarPanelSerializer
 from .pincode_serializer import PincodeSerializer

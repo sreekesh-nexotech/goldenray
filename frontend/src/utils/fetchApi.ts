@@ -25,16 +25,25 @@ export async function fetchApi<T>(
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
+      // Clone response to read body twice if needed
+      const responseClone = response.clone();
+
       // Try to parse JSON error response from backend
       let errorData;
       try {
         errorData = await response.json();
       } catch {
-        // If JSON parsing fails, use text
-        const errorText = await response.text();
-        throw new Error(
-          `HTTP error! Status: ${response.status}, Message: ${errorText}`
-        );
+        // If JSON parsing fails, use text from clone
+        try {
+          const errorText = await responseClone.text();
+          throw new Error(
+            `HTTP error! Status: ${response.status}, Message: ${errorText}`
+          );
+        } catch {
+          throw new Error(
+            `HTTP error! Status: ${response.status}`
+          );
+        }
       }
 
       // Throw error with parsed JSON data
