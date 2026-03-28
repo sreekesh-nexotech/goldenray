@@ -387,11 +387,11 @@ export default function FilterSidebar({
 
         {/* Drawer */}
         <div
-          className={`absolute left-0 top-0 bottom-0 w-[85%] max-w-sm bg-white transform transition-transform duration-300 ${
+          className={`absolute left-0 top-4 bottom-4 w-[85%] max-w-sm bg-white rounded-r-2xl shadow-2xl transform transition-transform duration-300 flex flex-col ${
             isMobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
             <h2 className="font-bold text-lg text-gray-900">Filters</h2>
             <div className="flex items-center gap-3">
               {hasActiveFilters && (
@@ -410,7 +410,7 @@ export default function FilterSidebar({
               </button>
             </div>
           </div>
-          <div className="p-4 overflow-y-auto h-[calc(100%-64px)]">
+          <div className="p-4 overflow-y-auto flex-1">
             <FilterContent />
           </div>
         </div>

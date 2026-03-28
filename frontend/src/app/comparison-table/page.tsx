@@ -126,7 +126,7 @@ function ComparisonTableContent() {
 
           {/* Title */}
           <div className="text-center">
-            <h1 className="text-3xl sm:text-6xl lg:text-5xl xl:text-6xl font-semibold text-[#123532] mb-4">
+            <h1 className="text-[2.75rem] sm:text-6xl lg:text-5xl xl:text-6xl font-semibold text-[#123532] mb-4 leading-tight">
               Solar Panel<br className="sm:hidden" /> Comparison Table
             </h1>
             <p className="text-base sm:text-base md:text-xl text-[#444444] max-w-3xl mx-auto">

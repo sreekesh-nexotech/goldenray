@@ -48,50 +48,30 @@ export default function HowToChoose() {
           </p>
         </div>
 
-        {/* Cards Grid */}
-        <div className="space-y-4 sm:space-y-5 md:space-y-6">
-          {/* First 3 cards - equal width */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-            {guides.slice(0, 3).map((guide, index) => (
+        {/* Cards - Horizontally scrollable on mobile, grid on larger screens */}
+        <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible snap-x snap-mandatory scrollbar-hide">
+          <div className="flex gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-5 md:gap-6">
+            {guides.map((guide, index) => (
               <div
                 key={index}
-                className="bg-[#074A4D] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-7 lg:p-8
-                           transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
+                className="w-[90vw] max-w-[320px] sm:w-auto flex-shrink-0 sm:flex-shrink snap-start"
               >
-                <div className="mb-3 sm:mb-4">
-                  <span className="text-white/80 text-base sm:text-lg font-light">
-                    {guide.number}
-                  </span>
+                <div
+                  className="bg-[#074A4D] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-7 lg:p-8 h-full
+                             transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
+                >
+                  <div className="mb-3 sm:mb-4">
+                    <span className="text-white/80 text-base sm:text-lg font-light">
+                      {guide.number}
+                    </span>
+                  </div>
+                  <h3 className="text-white text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 leading-snug">
+                    {guide.title}
+                  </h3>
+                  <p className="text-white/70 text-xs sm:text-sm leading-relaxed">
+                    {guide.description}
+                  </p>
                 </div>
-                <h3 className="text-white text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 leading-snug">
-                  {guide.title}
-                </h3>
-                <p className="text-white/70 text-xs sm:text-sm leading-relaxed">
-                  {guide.description}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Last 2 cards - wider cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
-            {guides.slice(3).map((guide, index) => (
-              <div
-                key={index + 3}
-                className="bg-[#074A4D] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-7 lg:p-8
-                           transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
-              >
-                <div className="mb-3 sm:mb-4">
-                  <span className="text-white/80 text-base sm:text-lg font-light">
-                    {guide.number}
-                  </span>
-                </div>
-                <h3 className="text-white text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 leading-snug">
-                  {guide.title}
-                </h3>
-                <p className="text-white/70 text-xs sm:text-sm leading-relaxed">
-                  {guide.description}
-                </p>
               </div>
             ))}
           </div>

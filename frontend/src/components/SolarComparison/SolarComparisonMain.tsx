@@ -136,29 +136,19 @@ export default function SolarComparisonMain() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-4">
+        <div className="mb-6">
+          {/* Top Row: Filter Button and Sort Dropdown */}
+          <div className="flex items-center justify-between gap-4 mb-2">
             {/* Mobile Filter Button */}
             <button
               onClick={() => setMobileFilterOpen(true)}
               className="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium"
             >
               <SlidersHorizontal className="w-5 h-5" />
-              Filters
             </button>
 
-            {/* Results Count */}
-            <p className="text-gray-600">
-              <span className="font-semibold text-gray-900">
-                {panels.length}
-              </span>{" "}
-              Panels Found
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
             {/* Sort Dropdown */}
-            <div className="relative">
+            <div className="relative ml-auto">
               <button
                 onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
                 className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:border-gray-300 transition-colors"
@@ -201,6 +191,16 @@ export default function SolarComparisonMain() {
                 </>
               )}
             </div>
+          </div>
+
+          {/* Results Count - Below Filter Button */}
+          <div className="lg:hidden">
+            <p className="text-gray-600">
+              <span className="font-semibold text-gray-900">
+                {panels.length}
+              </span>{" "}
+              Panels Found
+            </p>
           </div>
         </div>
 
