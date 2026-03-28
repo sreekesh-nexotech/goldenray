@@ -41,7 +41,7 @@ function KeralaClimateScoreBadge({ score }: { score: number }) {
   return (
     <div className="flex items-center gap-2 text-[10px] text-[#2F2F2F]">
       <Image
-        src="/Frame (6).png"
+        src="https://golden-ray.b-cdn.net/icons/Frame%20(6).png"
         alt="Kerala climate score logo"
         width={20}
         height={20}
@@ -70,7 +70,7 @@ export default function PanelCard({
       {/* Image Section */}
       <div className="relative bg-white h-44 sm:h-48 flex items-center justify-center">
         <Image
-          src={panel.imageUrl}
+          src={panel.imageUrl || "https://golden-ray.b-cdn.net/images/frame%20(5).png"}
           alt={panel.name}
           fill
           className="object-contain px-6"
