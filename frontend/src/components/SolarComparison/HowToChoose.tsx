@@ -36,7 +36,7 @@ export default function HowToChoose() {
 
   return (
     <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-white to-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-10 sm:mb-12 md:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#074A4D] mb-4 sm:mb-6">
@@ -50,14 +50,16 @@ export default function HowToChoose() {
 
         {/* Cards - Horizontally scrollable on mobile, grid on larger screens */}
         <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible snap-x snap-mandatory scrollbar-hide">
-          <div className="flex gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-5 md:gap-6">
+          <div className="flex gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-6 sm:gap-4 lg:gap-6 lg:justify-items-stretch">
             {guides.map((guide, index) => (
               <div
                 key={index}
-                className="w-[90vw] max-w-[320px] sm:w-auto flex-shrink-0 sm:flex-shrink snap-start"
+                className={`w-[88vw] max-w-[320px] sm:w-auto lg:max-w-none flex-shrink-0 sm:flex-shrink snap-start ${
+                  index < 3 ? "lg:col-span-2" : "lg:col-span-3"
+                }`}
               >
                 <div
-                  className="bg-[#074A4D] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-7 lg:p-8 h-full
+                  className="bg-[#074A4D] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-6 h-full
                              transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
                 >
                   <div className="mb-3 sm:mb-4">
@@ -65,7 +67,7 @@ export default function HowToChoose() {
                       {guide.number}
                     </span>
                   </div>
-                  <h3 className="text-white text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 leading-snug">
+                  <h3 className="text-white text-base sm:text-lg md:text-lg font-semibold mb-3 sm:mb-4 leading-snug">
                     {guide.title}
                   </h3>
                   <p className="text-white/70 text-xs sm:text-sm leading-relaxed">
