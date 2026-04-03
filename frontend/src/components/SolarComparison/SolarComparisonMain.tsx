@@ -11,13 +11,13 @@ import {
   getFilteredPanels,
   getAvailableBrands,
 } from "@/services/solarPanelService";
-import FilterSidebar from "./FilterSidebar";
+import FilterSidebar from "@/components/SolarComparison/FilterSidebar";
 import PanelCard from "./PanelCard";
 import HowToChoose from "./HowToChoose";
 import CTASection from "./CTASection";
 import FAQSection from "./FAQSection";
 import PageIllustration from "@/components/ui/page-illustration";
-import { ChevronDown, SlidersHorizontal, ArrowRight } from "lucide-react";
+import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 
 type SortOption = "topRated" | "efficiency" | "price" | "warranty";
 
@@ -299,54 +299,44 @@ export default function SolarComparisonMain() {
 
       {/* Floating Compare Bar */}
       {selectedPanelIds.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+        <div className="fixed bottom-0 left-0 right-0 bg-[#F3F3F3] border-t border-[#D9D9D9] shadow-lg z-40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="flex -space-x-2">
-                  {selectedPanels.slice(0, 3).map((panel, index) => (
-                    <div
-                      key={panel.id}
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-xs font-bold text-[#074A4D]"
-                      style={{ zIndex: 3 - index }}
-                    >
-                      {panel.brand.charAt(0)}
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900">
-                    {selectedPanelIds.length} panel
-                    {selectedPanelIds.length > 1 ? "s" : ""} selected
-                  </p>
-                  <p className="text-sm text-gray-500 hidden sm:block">
-                    {selectedPanelIds.length < 2
-                      ? "Select at least 2 to compare"
-                      : "Ready to compare"}
-                  </p>
-                </div>
+            <div className="grid grid-cols-[1fr_auto_minmax(140px,220px)] items-center gap-3 sm:gap-6">
+              <div className="flex items-center gap-3 overflow-x-auto pr-1">
+                {selectedPanels.slice(0, 3).map((panel) => (
+                  <button
+                    key={panel.id}
+                    onClick={() => handleToggleCompare(panel.id)}
+                    className="relative shrink-0 min-w-[124px] max-w-[132px] rounded-xl bg-[#0D5A62] text-white px-3 py-2.5 text-center"
+                  >
+                    <span className="block text-[12px] leading-[1.15]">
+                      {panel.brand} {panel.type}
+                    </span>
+                    <span className="block text-[12px] leading-[1.2]">
+                      {panel.wattage}W
+                    </span>
+                    <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full border border-white/70 flex items-center justify-center">
+                      <X className="h-2.5 w-2.5" />
+                    </span>
+                  </button>
+                ))}
               </div>
 
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setSelectedPanelIds([])}
-                  className="px-4 py-2.5 text-gray-600 font-medium hover:text-gray-900 transition-colors"
-                >
-                  Clear
-                </button>
-                <button
-                  onClick={handleCompare}
-                  disabled={selectedPanelIds.length < 2}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all ${
-                    selectedPanelIds.length >= 2
-                      ? "bg-[#074A4D] text-white hover:bg-[#063D3F]"
-                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  }`}
-                >
-                  Compare
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+              <p className="text-[16px] sm:text-[18px] leading-none text-[#3F3F46] font-normal justify-self-center">
+                {selectedPanelIds.length}/3
+              </p>
+
+              <button
+                onClick={handleCompare}
+                disabled={selectedPanelIds.length < 2}
+                className={`h-10 sm:h-11 rounded-xl font-semibold text-[15px] sm:text-[16px] transition-colors ${
+                  selectedPanelIds.length >= 2
+                    ? "bg-[#EDB83F] text-[#0F172A] hover:bg-[#DEAB38]"
+                    : "bg-[#E7D5A9] text-[#6B7280] cursor-not-allowed"
+                }`}
+              >
+                Compare Now
+              </button>
             </div>
           </div>
         </div>

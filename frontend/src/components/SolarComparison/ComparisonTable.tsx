@@ -3,7 +3,7 @@
 import { SolarPanel } from "@/types/solarPanel";
 import Image from "next/image";
 import { X, ChevronDown, Check, X as XIcon, Plus } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import RecommendationSection from "./RecommendationSection";
 import ComparisonCTA from "./ComparisonCTA";
 import FAQSection from "./FAQSection";
@@ -17,16 +17,27 @@ interface ComparisonTableProps {
 }
 
 // Section header row spanning the table grid
-function SectionHeader({ title, columns }: { title: string; columns: number }) {
+function SectionHeader({
+  title,
+  columns,
+  gridStyle,
+}: {
+  title: string;
+  columns: number;
+  gridStyle: CSSProperties;
+}) {
   return (
-    <div className="flex bg-[#F1F3F6] text-[#3F454D] text-sm sm:text-base">
-      <div className="min-w-[140px] sm:min-w-[180px] px-4 py-3 font-semibold sticky left-0 bg-[#F1F3F6] z-20 border-y border-[#DFE3E8] shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
+    <div
+      className="grid bg-[#F1F3F6] text-[#3F454D] text-sm sm:text-base"
+      style={gridStyle}
+    >
+      <div className="min-w-0 px-4 py-3 font-semibold sticky left-0 bg-[#F1F3F6] z-20 border-y border-[#DFE3E8] shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
         {title}
       </div>
       {Array.from({ length: columns }).map((_, idx) => (
         <div
           key={idx}
-          className="min-w-[240px] sm:min-w-[200px] border-l border-y border-[#DFE3E8] flex-shrink-0 bg-[#F1F3F6]"
+          className="min-w-0 border-l border-y border-[#DFE3E8] bg-[#F1F3F6]"
         />
       ))}
     </div>
@@ -37,10 +48,12 @@ function SectionHeader({ title, columns }: { title: string; columns: number }) {
 function ComparisonRow({
   label,
   values,
+  gridStyle,
   highlight = false,
 }: {
   label: string;
   values: (string | number | boolean | null)[];
+  gridStyle: CSSProperties;
   highlight?: boolean;
 }) {
   const formatValue = (value: string | number | boolean | null) => {
@@ -106,15 +119,18 @@ function ComparisonRow({
   };
 
   return (
-    <div className={`flex ${highlight ? "bg-[#FFFFFF]" : "bg-white"}`}>
-      <div className="min-w-[140px] sm:min-w-[180px] px-3 sm:px-4 py-3 text-[13px] text-[#616770] font-medium border-r border-b border-[#E1E5EA] flex items-center justify-between gap-2 sticky left-0 bg-white z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
+    <div
+      className={`grid ${highlight ? "bg-[#FFFFFF]" : "bg-white"}`}
+      style={gridStyle}
+    >
+      <div className="min-w-0 px-3 sm:px-4 py-3 text-[13px] text-[#616770] font-medium border-r border-b border-[#E1E5EA] flex items-center justify-between gap-2 sticky left-0 bg-white z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
         <span>{label}</span>
         <span className="text-[#8D8D8D] text-xs hidden sm:inline">ⓘ</span>
       </div>
       {values.map((value, index) => (
         <div
           key={index}
-          className="min-w-[240px] max-w-[240px] sm:min-w-[200px] sm:max-w-none px-3 sm:px-4 py-3 text-[11px] sm:text-[13px] text-[#3C4147] font-medium text-left border-r border-b border-[#E1E5EA] last:border-r-0 flex-shrink-0 break-words"
+          className="min-w-0 px-3 sm:px-4 py-3 text-[11px] sm:text-[13px] text-[#3C4147] font-medium text-left border-r border-b border-[#E1E5EA] last:border-r-0 break-words"
         >
           {formatValue(value)}
         </div>
@@ -347,7 +363,10 @@ function VisualSummarySection({
       <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
         <div className="flex gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-4 md:gap-4 lg:gap-5 xl:gap-5 2xl:gap-6">
           {selectedPanels.map((panel) => (
-            <div key={panel.id} className="min-w-[280px] sm:min-w-0 flex-shrink-0 sm:flex-shrink">
+            <div
+              key={panel.id}
+              className="min-w-[280px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+            >
               <VisualSummaryCard panel={panel} />
             </div>
           ))}
@@ -364,6 +383,13 @@ export default function ComparisonTable({
   onAddPanel,
 }: ComparisonTableProps) {
   const selectedPanelIds = selectedPanels.map((p) => p.id);
+  const tableGridStyle = useMemo<CSSProperties>(
+    () => ({
+      gridTemplateColumns: `var(--comparison-label-col) repeat(${selectedPanels.length}, minmax(0, 1fr))`,
+      minWidth: `calc(var(--comparison-label-col) + ${selectedPanels.length * 180}px)`,
+    }),
+    [selectedPanels.length],
+  );
 
   // Create slots for up to 3 panels
   const panelSlots = [0, 1, 2].map((index) => selectedPanels[index] || null);
@@ -434,191 +460,233 @@ export default function ComparisonTable({
 
         {/* Comparison Table - horizontally scrollable */}
         {selectedPanels.length >= 2 && (
-          <div className="bg-white border border-[#DFE3E8] overflow-x-auto">
-            {/* Column headers */}
-            <div className="flex">
-              <div className="min-w-[140px] sm:min-w-[180px] border-r border-b border-[#DFE3E8] bg-white sticky left-0 z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]" />
-              {panelSlots.slice(0, selectedPanels.length).map((panel, idx) => (
-                <div
-                  key={panel?.id || idx}
-                  className="min-w-[240px] sm:min-w-[200px] bg-[#F4F1E6] border-r border-b border-[#DFE3E8] flex items-center justify-between px-3 sm:px-4 py-2 text-[10px] sm:text-[13px] font-semibold text-[#355659] flex-shrink-0"
-                >
-                  <span className="truncate">{panel?.name}</span>
-                  <button
-                    onClick={() => handleRemovePanel(idx)}
-                    className="p-1 text-gray-500 hover:text-gray-800"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* Image row */}
-            <div className="flex">
-              <div className="min-w-[140px] sm:min-w-[180px] border-r border-b border-[#DFE3E8] bg-white sticky left-0 z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]" />
-              {panelSlots.slice(0, selectedPanels.length).map((panel, idx) => (
-                <div
-                  key={panel?.id || idx}
-                  className="min-w-[240px] sm:min-w-[200px] border-r border-b border-[#DFE3E8] bg-white flex items-center justify-center h-[180px] sm:h-[300px] flex-shrink-0"
-                >
-                  {panel && (
-                    <div className="relative w-[92%] h-[90%] overflow-hidden">
-                      <Image
-                        src={panel.imageUrl}
-                        alt={panel.name}
-                        fill
-                        className="object-contain scale-[1.35]"
-                        sizes="(max-width: 640px) 60vw, (max-width: 1024px) 45vw, 32vw"
-                      />
+          <div className="bg-white border border-[#DFE3E8] overflow-x-auto [--comparison-label-col:120px] sm:[--comparison-label-col:128px] md:[--comparison-label-col:112px] lg:[--comparison-label-col:128px] xl:[--comparison-label-col:144px] 2xl:[--comparison-label-col:220px]">
+            <div className="min-w-full" style={tableGridStyle}>
+              {/* Column headers */}
+              <div className="grid" style={tableGridStyle}>
+                <div className="min-w-0 border-r border-b border-[#DFE3E8] bg-white sticky left-0 z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]" />
+                {panelSlots
+                  .slice(0, selectedPanels.length)
+                  .map((panel, idx) => (
+                    <div
+                      key={panel?.id || idx}
+                      className="min-w-0 bg-[#F4F1E6] border-r border-b border-[#DFE3E8] flex items-center justify-between gap-2 px-3 sm:px-4 py-2 text-[10px] sm:text-[13px] font-semibold text-[#355659]"
+                    >
+                      <span className="truncate min-w-0">{panel?.name}</span>
+                      <button
+                        onClick={() => handleRemovePanel(idx)}
+                        className="p-1 text-gray-500 hover:text-gray-800 flex-shrink-0"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                     </div>
-                  )}
-                </div>
-              ))}
+                  ))}
+              </div>
+
+              {/* Image row */}
+              <div className="grid" style={tableGridStyle}>
+                <div className="min-w-0 border-r border-b border-[#DFE3E8] bg-white sticky left-0 z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]" />
+                {panelSlots
+                  .slice(0, selectedPanels.length)
+                  .map((panel, idx) => (
+                    <div
+                      key={panel?.id || idx}
+                      className="min-w-0 border-r border-b border-[#DFE3E8] bg-white flex items-center justify-center h-[180px] sm:h-[300px]"
+                    >
+                      {panel && (
+                        <div className="relative w-[92%] h-[90%] overflow-hidden">
+                          <Image
+                            src={panel.imageUrl}
+                            alt={panel.name}
+                            fill
+                            className="object-contain scale-[1.35]"
+                            sizes="(max-width: 640px) 60vw, (max-width: 1024px) 45vw, 32vw"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+              </div>
+
+              {/* The Basics */}
+              <SectionHeader
+                title="The Basics"
+                columns={selectedPanels.length}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Technology"
+                values={getValues("technology")}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Power Output"
+                values={getValues((p) => `${p.wattage}W`)}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Construction"
+                values={getValues((p) =>
+                  p.moistureProtection.includes("Glass-to-Glass")
+                    ? `${p.moistureProtection}__K_BEST__`
+                    : p.moistureProtection,
+                )}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Subsidy Eligible (DCR)"
+                values={getValues("subsidyEligible")}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Bifacial Gain"
+                values={getValues((p) =>
+                  p.bifacialGain ? `+${p.bifacialGain}%` : "N/A",
+                )}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Weight"
+                values={getValues((p) => `${p.weight} kg`)}
+                gridStyle={tableGridStyle}
+              />
+
+              {/* Heat Performance */}
+              <SectionHeader
+                title="Heat Performance — The Kerala Test"
+                columns={selectedPanels.length}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Temperature Coefficient"
+                values={getValues((p) => {
+                  const badge =
+                    p.temperatureCoefficient <= -0.35 ? "__BEST__" : "__GOOD__";
+                  return `${p.temperatureCoefficient}%/°C${badge}`;
+                })}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Efficiency (STC)"
+                values={getValues((p) => `${p.efficiency}%`)}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="NOCT"
+                values={getValues((p) => `${p.noct}°C`)}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Real Output at 60°C"
+                values={getValues((p) => `~${p.realOutputAt60C}W`)}
+                gridStyle={tableGridStyle}
+              />
+
+              {/* Durability */}
+              <SectionHeader
+                title="Durability — Kerala Monsoons"
+                columns={selectedPanels.length}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Moisture Protection"
+                values={getValues("moistureProtection")}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="IP Rating"
+                values={getValues("ipRating")}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Wind Load"
+                values={getValues((p) => `${p.windLoad} Pa`)}
+                gridStyle={tableGridStyle}
+              />
+
+              {/* Warranty & Degradation */}
+              <SectionHeader
+                title="Warranty & Degradation"
+                columns={selectedPanels.length}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Product Warranty"
+                values={getValues((p) => `${p.productWarranty} years`)}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Performance Warranty"
+                values={getValues((p) => `${p.performanceWarranty} years`)}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="First‑Year Power Drop"
+                values={getValues((p) => `${p.firstYearPowerDrop}%`)}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Annual Degradation"
+                values={getValues((p) =>
+                  p.annualDegradation >= 0.5
+                    ? `${p.annualDegradation}%/year__BELOW_AVG__`
+                    : `${p.annualDegradation}%/year`,
+                )}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Output at Year 25"
+                values={getValues((p) => `${p.outputAtYear25}%`)}
+                gridStyle={tableGridStyle}
+              />
+
+              {/* Brand Trust */}
+              <SectionHeader
+                title="Brand Trust"
+                columns={selectedPanels.length}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Manufacturing Capacity"
+                values={getValues("manufacturingCapacity")}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Bloomberg Tier 1"
+                values={getValues((p) =>
+                  p.bloombergTier1 ? "✓ Tier 1" : "Check",
+                )}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="PVEL Top Performer"
+                values={getValues((p) =>
+                  p.pvelTopPerformer ? "✓ Yes" : "Check",
+                )}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="BIS Certified"
+                values={getValues("bisCertified")}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Independent Audit"
+                values={getValues("independentAudit")}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Certifications"
+                values={getValues((p) => p.certifications.join(", "))}
+                gridStyle={tableGridStyle}
+              />
+              <ComparisonRow
+                label="Price Range"
+                values={getValues("priceRange")}
+                gridStyle={tableGridStyle}
+                highlight
+              />
             </div>
-
-            {/* The Basics */}
-            <SectionHeader title="The Basics" columns={selectedPanels.length} />
-            <ComparisonRow
-              label="Technology"
-              values={getValues("technology")}
-            />
-            <ComparisonRow
-              label="Power Output"
-              values={getValues((p) => `${p.wattage}W`)}
-            />
-            <ComparisonRow
-              label="Construction"
-              values={getValues((p) =>
-                p.moistureProtection.includes("Glass-to-Glass")
-                  ? `${p.moistureProtection}__K_BEST__`
-                  : p.moistureProtection,
-              )}
-            />
-            <ComparisonRow
-              label="Subsidy Eligible (DCR)"
-              values={getValues("subsidyEligible")}
-            />
-            <ComparisonRow
-              label="Bifacial Gain"
-              values={getValues((p) =>
-                p.bifacialGain ? `+${p.bifacialGain}%` : "N/A",
-              )}
-            />
-            <ComparisonRow
-              label="Weight"
-              values={getValues((p) => `${p.weight} kg`)}
-            />
-
-            {/* Heat Performance */}
-            <SectionHeader
-              title="Heat Performance — The Kerala Test"
-              columns={selectedPanels.length}
-            />
-            <ComparisonRow
-              label="Temperature Coefficient"
-              values={getValues((p) => {
-                const badge =
-                  p.temperatureCoefficient <= -0.35 ? "__BEST__" : "__GOOD__";
-                return `${p.temperatureCoefficient}%/°C${badge}`;
-              })}
-            />
-            <ComparisonRow
-              label="Efficiency (STC)"
-              values={getValues((p) => `${p.efficiency}%`)}
-            />
-            <ComparisonRow
-              label="NOCT"
-              values={getValues((p) => `${p.noct}°C`)}
-            />
-            <ComparisonRow
-              label="Real Output at 60°C"
-              values={getValues((p) => `~${p.realOutputAt60C}W`)}
-            />
-
-            {/* Durability */}
-            <SectionHeader
-              title="Durability — Kerala Monsoons"
-              columns={selectedPanels.length}
-            />
-            <ComparisonRow
-              label="Moisture Protection"
-              values={getValues("moistureProtection")}
-            />
-            <ComparisonRow label="IP Rating" values={getValues("ipRating")} />
-            <ComparisonRow
-              label="Wind Load"
-              values={getValues((p) => `${p.windLoad} Pa`)}
-            />
-
-            {/* Warranty & Degradation */}
-            <SectionHeader
-              title="Warranty & Degradation"
-              columns={selectedPanels.length}
-            />
-            <ComparisonRow
-              label="Product Warranty"
-              values={getValues((p) => `${p.productWarranty} years`)}
-            />
-            <ComparisonRow
-              label="Performance Warranty"
-              values={getValues((p) => `${p.performanceWarranty} years`)}
-            />
-            <ComparisonRow
-              label="First‑Year Power Drop"
-              values={getValues((p) => `${p.firstYearPowerDrop}%`)}
-            />
-            <ComparisonRow
-              label="Annual Degradation"
-              values={getValues((p) =>
-                p.annualDegradation >= 0.5
-                  ? `${p.annualDegradation}%/year__BELOW_AVG__`
-                  : `${p.annualDegradation}%/year`,
-              )}
-            />
-            <ComparisonRow
-              label="Output at Year 25"
-              values={getValues((p) => `${p.outputAtYear25}%`)}
-            />
-
-            {/* Brand Trust */}
-            <SectionHeader
-              title="Brand Trust"
-              columns={selectedPanels.length}
-            />
-            <ComparisonRow
-              label="Manufacturing Capacity"
-              values={getValues("manufacturingCapacity")}
-            />
-            <ComparisonRow
-              label="Bloomberg Tier 1"
-              values={getValues((p) =>
-                p.bloombergTier1 ? "✓ Tier 1" : "Check",
-              )}
-            />
-            <ComparisonRow
-              label="PVEL Top Performer"
-              values={getValues((p) =>
-                p.pvelTopPerformer ? "✓ Yes" : "Check",
-              )}
-            />
-            <ComparisonRow
-              label="BIS Certified"
-              values={getValues("bisCertified")}
-            />
-            <ComparisonRow
-              label="Independent Audit"
-              values={getValues("independentAudit")}
-            />
-            <ComparisonRow
-              label="Certifications"
-              values={getValues((p) => p.certifications.join(", "))}
-            />
-            <ComparisonRow
-              label="Price Range"
-              values={getValues("priceRange")}
-              highlight
-            />
           </div>
         )}
 
