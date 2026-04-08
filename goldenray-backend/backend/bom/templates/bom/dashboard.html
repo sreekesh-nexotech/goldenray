@@ -36,6 +36,17 @@
 <body>
   <h1>Golden Ray BOM</h1>
   <p>Welcome, {{ request.user.username }}.</p>
+  <a href="{% url 'bom:calculator' %}" style="
+    display:inline-block;
+    padding:10px 28px;
+    background:linear-gradient(135deg,#F59E0B,#D97706);
+    border-radius:8px;
+    color:#0F172A;
+    font-weight:600;
+    font-size:14px;
+    text-decoration:none;
+    box-shadow:0 4px 16px rgba(245,158,11,0.35);
+  ">Open BOM Calculator →</a>
   <form method="post" action="{% url 'bom:logout' %}">
     {% csrf_token %}
     <button type="submit" style="background:none;border:none;cursor:pointer;padding:0;">

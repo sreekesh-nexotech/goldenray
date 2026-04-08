@@ -1,6 +1,8 @@
 from django.urls import path
 from .views.auth import login_view, logout_view
 from .views.dashboard import dashboard_view
+from .views.calculator import calculator_view
+from .views.api import BomCalculateView
 from .views.api import (
     GlobalCostsList, GlobalCostsDetail,
     CategoryList, CategoryDetail,
@@ -22,7 +24,11 @@ urlpatterns = [
     # ── Template views ──────────────────────────────────────────────────────
     path("", login_view, name="login"),
     path("dashboard/", dashboard_view, name="dashboard"),
+    path("calculator/", calculator_view, name="calculator"),
     path("logout/", logout_view, name="logout"),
+
+    # ── Calculator API (public) ──────────────────────────────────────────────
+    path("api/calculate/", BomCalculateView.as_view(), name="api-bom-calculate"),
 
     # ── GlobalCosts ─────────────────────────────────────────────────────────
     path("api/global-costs/", GlobalCostsList.as_view(), name="api-global-costs-list"),
