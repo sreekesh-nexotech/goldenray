@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Golden Ray BOM — Sign In</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+    :root {
+      --gold:       #F59E0B;
+      --gold-deep:  #D97706;
+      --gold-pale:  rgba(245, 158, 11, 0.12);
+      --gold-glow:  rgba(245, 158, 11, 0.25);
+      --navy:       #0F172A;
+      --navy-mid:   #1E293B;
+      --navy-card:  #162032;
+      --slate:      #64748B;
+      --silver:     #CBD5E1;
+      --white:      #F8FAFC;
+      --red:        #EF4444;
+      --red-bg:     rgba(239, 68, 68, 0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background-color: var(--navy);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── starfield background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(245,158,11,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(245,158,11,0.04) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* subtle grid texture */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(245,158,11,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,158,11,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* ── card ── */
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--navy-card);
+      border: 1px solid rgba(245, 158, 11, 0.15);
+      border-radius: 16px;
+      padding: 48px 40px 40px;
+      box-shadow:
+        0 0 0 1px rgba(245,158,11,0.05),
+        0 24px 64px rgba(0, 0, 0, 0.6),
+        0 0 80px rgba(245, 158, 11, 0.05);
+      animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── logo mark ── */
+    .logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 32px;
+      gap: 14px;
+    }
+
+    .sun-icon {
+      width: 56px;
+      height: 56px;
+      filter: drop-shadow(0 0 16px rgba(245,158,11,0.5));
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { filter: drop-shadow(0 0 12px rgba(245,158,11,0.4)); }
+      50%       { filter: drop-shadow(0 0 24px rgba(245,158,11,0.75)); }
+    }
+
+    .brand-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .brand-name span {
+      color: var(--gold);
+    }
+
+    .tagline {
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--slate);
+      margin-top: -4px;
+    }
+
+    /* ── divider ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,158,11,0.2), transparent);
+      margin-bottom: 28px;
+    }
+
+    /* ── messages ── */
+    .messages {
+      margin-bottom: 20px;
+    }
+
+    .message-error {
+      background: var(--red-bg);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #FCA5A5;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .message-error::before {
+      content: '⚠';
+      font-size: 13px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── form ── */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--slate);
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder {
+      color: rgba(100,116,139,0.6);
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: rgba(245, 158, 11, 0.5);
+      background: rgba(245, 158, 11, 0.04);
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.08);
+    }
+
+    /* autofill override */
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 40px #162032 inset !important;
+      -webkit-text-fill-color: var(--white) !important;
+    }
+
+    /* ── submit button ── */
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+      border: none;
+      border-radius: 8px;
+      color: var(--navy);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(245,158,11,0.3);
+    }
+
+    .btn-submit:hover {
+      opacity: 0.92;
+      box-shadow: 0 6px 28px rgba(245,158,11,0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* ── footer note ── */
+    .card-footer {
+      margin-top: 28px;
+      text-align: center;
+    }
+
+    .card-footer p {
+      font-size: 11.5px;
+      color: rgba(100,116,139,0.7);
+      line-height: 1.6;
+    }
+
+    .lock-icon {
+      display: inline-block;
+      margin-right: 4px;
+      font-size: 11px;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 36px 24px 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+
+      <!-- Logo -->
+      <div class="logo-wrap">
+        <svg class="sun-icon" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- rays -->
+          <line x1="28" y1="4"  x2="28" y2="10" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="28" y1="46" x2="28" y2="52" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="4"  y1="28" x2="10" y2="28" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="46" y1="28" x2="52" y2="28" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="10.34" y1="10.34" x2="14.6"  y2="14.6"  stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="41.4"  y1="41.4"  x2="45.66" y2="45.66" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="10.34" y1="45.66" x2="14.6"  y2="41.4"  stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="41.4"  y1="14.6"  x2="45.66" y2="10.34" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- core -->
+          <circle cx="28" cy="28" r="9.5" fill="#F59E0B" fill-opacity="0.15" stroke="#F59E0B" stroke-width="2"/>
+          <circle cx="28" cy="28" r="5"   fill="#F59E0B"/>
+        </svg>
+        <div class="brand-name">Golden <span>Ray</span></div>
+        <div class="tagline">Restricted Access — Superusers Only</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Django messages -->
+      {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+        <div class="message-error">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Login form -->
+      <form method="post" action="" autocomplete="off">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            value="{{ username|default:'' }}"
+            autofocus
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn-submit">Sign In</button>
+      </form>
+
+      <div class="card-footer">
+        <p><span class="lock-icon">🔒</span>BOM Admin Portal &nbsp;·&nbsp; Golden Ray Nexotech</p>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
