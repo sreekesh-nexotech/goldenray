@@ -11,6 +11,9 @@ import BlogArticleContent from "@/components/Blog/article/BlogArticleContent";
 import Link from "next/link";
 import Image from "next/image";
 
+import JsonLD from "@/components/JsonLD";
+import { getArticleSchema, getBlogBreadcrumbSchema } from "@/data/jsonld";
+
 const SITE_ORIGIN = "https://www.flarize.com";
 
 // Revalidate pre-built pages every hour (ISR)
@@ -75,7 +78,22 @@ export default async function BlogArticlePage({
     .slice(0, 3);
 
   return (
-    <div className="bg-white min-h-screen">
+    <>
+      <JsonLD
+        data={getArticleSchema({
+          title: article.title,
+          excerpt: article.description ||  "",
+          updatedAt: article.updatedDate  || "",
+          slug: article.id || id,
+        })}
+      />
+      <JsonLD
+        data={getBlogBreadcrumbSchema({
+          title: article.title,
+          slug: article.id || id,
+        })}
+      />
+      <div className="bg-white min-h-screen">
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <BlogArticleHero article={article} />
 
@@ -169,6 +187,7 @@ export default async function BlogArticlePage({
           </div>
         </section>
       )}
-    </div>
+      </div>
+    </>
   );
 }

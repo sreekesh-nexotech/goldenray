@@ -1,6 +1,9 @@
 import Main from "@/components/Home/home";
 import { Metadata } from "next";
 
+import JsonLD from "@/components/JsonLD";
+import { localBusinessSchema, organizationSchema, faqSchema, breadcrumbSchema } from "@/data/jsonld";
+
 export const metadata: Metadata = {
   title: "Solar Power Systems in Kerala for Homes & Businesses",
   description:
@@ -51,8 +54,14 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <section>
-      <Main />
-    </section>
+    <>
+      <JsonLD data={localBusinessSchema} />
+      <JsonLD data={organizationSchema} />
+      <JsonLD data={faqSchema} />
+      <JsonLD data={breadcrumbSchema} />
+      <section>
+        <Main />
+      </section>
+    </>
   );
 }

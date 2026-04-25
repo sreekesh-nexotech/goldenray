@@ -13,6 +13,9 @@ import {
   SolutionFaqSection,
 } from "@/components/SolutionsPage";
 
+import JsonLD from "@/components/JsonLD";
+import { residentialServiceSchema } from "@/data/jsonld";
+
 export const metadata: Metadata = {
   title:
     "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering",
@@ -87,6 +90,7 @@ export default function ResidentialPage() {
 
   return (
     <>
+      <JsonLD data={residentialServiceSchema} />
       {/* Hero Section */}
       <SolutionHero data={data.hero} />
 

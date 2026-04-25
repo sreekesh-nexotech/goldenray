@@ -12,6 +12,8 @@ import {
   FinalThoughtsSection,
   SolutionFaqSection,
 } from "@/components/SolutionsPage";
+import JsonLD from "@/components/JsonLD";
+import { commercialServiceSchema } from "@/data/jsonld";
 
 export const metadata: Metadata = {
   title:
@@ -80,6 +82,7 @@ export default function CommercialPage() {
 
   return (
     <>
+      <JsonLD data={commercialServiceSchema} />
       {/* Hero Section */}
       <SolutionHero data={data.hero} />
 
