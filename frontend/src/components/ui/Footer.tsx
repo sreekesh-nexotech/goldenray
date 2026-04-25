@@ -249,10 +249,18 @@ export default function Footer() {
                 <ul className="flex flex-col gap-3 text-[#444444] text-lg lg:text-xl font-medium">
                   <li>
                     <Link
-                      href="/solutions"
+                      href="#"
                       className="hover:text-gray-800 transition-all ease-in-out duration-300"
                     >
-                      Our Solutions
+                      Affilliate Program
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      How Flarize Works
                     </Link>
                   </li>
                   <li>
@@ -265,10 +273,10 @@ export default function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="/contactus"
                       className="hover:text-gray-800 transition-all ease-in-out duration-300"
                     >
-                      Blog
+                      Contact Us
                     </Link>
                   </li>
                   <li>
@@ -288,6 +296,22 @@ export default function Footer() {
                 <ul className="flex flex-col gap-3 text-[#444444] text-lg lg:text-xl font-medium">
                   <li>
                     <Link
+                      href="#"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Solar Warranty
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Government Subsidies
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       href="/faq"
                       target="new"
                       className="hover:text-gray-800 transition-all ease-in-out duration-300"
@@ -297,7 +321,7 @@ export default function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="/blog"
                       className="hover:text-gray-800 transition-all ease-in-out duration-300"
                     >
                       Blogs
@@ -320,6 +344,24 @@ export default function Footer() {
                 <ul className="flex flex-col gap-3 text-[#444444] text-lg lg:text-xl font-medium">
                   <li>
                     <Link
+                      href="#"
+                      target="new"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Cookie Policy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      target="new"
+                      className="hover:text-gray-800 transition-all ease-in-out duration-300"
+                    >
+                      Legal Policy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       href="/privacy"
                       target="new"
                       className="hover:text-gray-800 transition-all ease-in-out duration-300"
@@ -333,7 +375,7 @@ export default function Footer() {
                       target="new"
                       className="hover:text-gray-800 transition-all ease-in-out duration-300"
                     >
-                      Terms and Conditions
+                      Terms of Service
                     </Link>
                   </li>
                 </ul>

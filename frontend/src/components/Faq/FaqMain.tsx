@@ -17,7 +17,7 @@ const faqCategories = [
       {
         question: "What is the solar panel price for home use?",
         answer:
-          "For a typical Indian home, a 1kW to 10kW rooftop system is suitable. Estimated costs:\n• 1 kW - Rs.40,000-Rs.60,000\n• 3 kW - Rs.1.1-Rs.1.5 lakh (after subsidy approx Rs.60,000-Rs.90,000)\n• 5 kW - Rs.1.8-Rs.2.5 lakh\n• 10 kW - Rs.3.5-Rs.5 lakh\n\nTip: Under PM Surya Ghar Muft Bijli Yojana, subsidies of up to Rs.78,000 are available for 3kW systems.",
+          "For a typical Indian home, a 1kW to 10kW rooftop system is suitable. Estimated costs:\n• 1 kW - Rs.40,000-Rs.60,000\n• 3 kW - Rs.1.1-Rs.1.5 lakh (maximum subsidy 78000)\n• 5 kW - Rs.1.8-Rs.2.5 lakh\n• 10 kW - Rs.3.5-Rs.5 lakh\n\nTip: Under PM Surya Ghar Muft Bijli Yojana, subsidies of up to Rs.78,000 are available for 3kW systems.",
       },
       {
         question: "What is the solar panel price for a 5kW system?",

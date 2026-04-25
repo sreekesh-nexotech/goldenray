@@ -139,7 +139,7 @@ export const residentialPageData: SolutionPageData = {
   ],
   milestones: [
     {
-      title: "Founded as Golden Ray (2022)",
+      title: "Founded as Golden Ray (2018)",
       description:
         "Started in Alappuzha, Kerala.",
       date: "2022",
