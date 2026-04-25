@@ -8,9 +8,9 @@ export default function WhatWeBelieve() {
     <section className="py-16 px-4 sm:px-6 lg:px-4 xl:px-16  sm:pt-20 lg:pt-4">
       {/* Section Heading Container */}
       <div className="max-w-7xl mx-auto text-center mb-16">
-        <h1 className="text-3xl md:text-4xl lg:text-[64px] font-semibold text-[#123532]">
+        <h2 className="text-3xl md:text-4xl lg:text-[64px] font-semibold text-[#123532]">
           The 3 Lakh Question Nobody Asks
-        </h1>
+        </h2>
       </div>
 
       {/* Main Content Container (Dark Green Box) */}

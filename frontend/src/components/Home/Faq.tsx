@@ -60,9 +60,9 @@ export default function Faq() {
       <div className="container mx-auto flex flex-col items-center justify-center gap-8 lg:gap-12 md:p-10 rounded-xl max-w-full py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36">
         {/* Heading and Description */}
         <div className="w-full text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#123532] mb-2 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#123532] mb-2 leading-tight">
             Have Any Questions?
-          </h1>
+          </h2>
           <p className="text-base md:text-xl text-[#444444]">
             Get expert advice and find your ideal solar solution — no
             obligations, just answers.

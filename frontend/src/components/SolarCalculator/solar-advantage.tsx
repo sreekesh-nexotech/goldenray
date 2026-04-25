@@ -129,9 +129,9 @@ export default function SolarAdvantage({
     >
       <PageIllustration isGradient={false} />
       <div className="relative max-w-7xl mx-auto text-center px-4 md:px-0">
-        <h1 className="text-4xl md:text-4xl lg:text-4xl 2xl:text-6xl  font-semibold text-[#123532] mb-4">
+        <h2 className="text-4xl md:text-4xl lg:text-4xl 2xl:text-6xl  font-semibold text-[#123532] mb-4">
           Calculate Your Solar Advantage Today
-        </h1>
+        </h2>
         <p className="text-lg text-[#444444] mb-[3.75rem] max-w-2xl mx-auto">
           A Kerala home paying ₹6,000/month will hand KSEB roughly ₹18 lakh over
           25 years. Enter your bill below — see how much of that YOUR solar
