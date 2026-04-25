@@ -3,7 +3,7 @@ import { Metadata } from "next";
 
 // Metadata
 export const metadata: Metadata = {
-  title: "PM Surya Ghar Subsidy Kerala 2025 | Get ₹78,000 Back | Flarize Solar",
+  title: "PM Surya Ghar Subsidy Kerala 2025 | Get ₹78,000 Back ",
   description:
     "Claim up to ₹78,000 PM Surya Ghar solar subsidy in Kerala. Flarize handles KSEB paperwork, portal filing & 2–3 day installation. 300+ families served, 8+ years in Kerala. Check your eligibility now.",
   keywords: [
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title:
-      "PM Surya Ghar Subsidy Kerala 2025 | Get ₹78,000 Back | Flarize Solar",
+      "PM Surya Ghar Subsidy Kerala 2025 | Get ₹78,000 Back ",
     description:
       "Claim up to ₹78,000 PM Surya Ghar solar subsidy in Kerala. Flarize handles KSEB paperwork, portal filing & 2–3 day installation. 300+ families served, 8+ years in Kerala.",
     url: "https://www.flarize.com/subsidy",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "PM Surya Ghar Subsidy Kerala 2025 | Get ₹78,000 Back | Flarize Solar",
+      "PM Surya Ghar Subsidy Kerala 2025 | Get ₹78,000 Back ",
     description:
       "Claim up to ₹78,000 PM Surya Ghar solar subsidy in Kerala. Flarize handles KSEB paperwork, portal filing & 2–3 day installation. 300+ families served, 8+ years in Kerala.",
     images: ["/heroImg.png"],

@@ -42,7 +42,7 @@ export async function generateMetadata({
   const canonical = `${SITE_ORIGIN}/blog/${id}`;
 
   return {
-    title: seo?.metaTitle ?? `${article.title} | Golden Ray Solar`,
+    title: seo?.metaTitle ?? `${article.title}`,
     description: seo?.metaDescription ?? article.description,
     keywords: seo?.keywords ?? undefined,
     alternates: { canonical },

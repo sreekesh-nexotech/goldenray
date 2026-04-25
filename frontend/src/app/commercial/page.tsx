@@ -17,9 +17,9 @@ import { commercialServiceSchema } from "@/data/jsonld";
 
 export const metadata: Metadata = {
   title:
-    "Commercial Solar Panel Installation Company in Kerala | Best Solar Company for Business",
+    "Commercial Solar Installation Kerala | EPC Company",
   description:
-    "Flarize is Kerala's trusted commercial solar panels Kerala installation company & solar EPC company Kerala. Reduce electricity bills by 90%. 40% accelerated depreciation + 75% financing. Solar panel installation cost per kW Kerala from ₹45,000. Get a free quote.",
+    "Flarize is Kerala&#39;s leading commercial solar EPC company. Reduce electricity bills by 90%, claim 40% accelerated depreciation, and get KSEB-approved grid integration. Free quote.",
   keywords: [
     "commercial solar installation Kerala",
     "solar panel installation Kerala",

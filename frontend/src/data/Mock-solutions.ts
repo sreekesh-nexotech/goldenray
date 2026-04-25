@@ -30,7 +30,7 @@ export const mockSolutions: SolutionData[] = [
     heroDescription:
       "Power your home with clean, renewable solar energy and enjoy significant savings on your electricity bills",
     metaTitle:
-      "Residential Solar Installation - Home Solar Solutions | Flarize Kerala",
+      "Residential Solar Installation - Home Solar Solutions",
     metaDescription:
       "Transform your home with Flarize's residential solar solutions in Kerala. Expert installation, long-term savings, and reliable power for your household. Get a free consultation today!",
     boxBgColor: "[#074A4D]",
@@ -83,7 +83,7 @@ export const mockSolutions: SolutionData[] = [
     heroDescription:
       "Reduce operational costs and boost your business sustainability with our commercial solar installations",
     metaTitle:
-      "Commercial Solar Installation - Business Solar Solutions | Flarize Kerala",
+      "Commercial Solar Installation - Business Solar Solutions ",
     metaDescription:
       "Power your business with Flarize's commercial solar solutions in Kerala. Reduce operational costs, ensure reliable energy, and enhance your brand's sustainability. Contact us for a custom quote!",
     boxBgColor: "[#ADD6D8]",

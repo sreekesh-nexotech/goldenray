@@ -5,7 +5,7 @@ import JsonLD from "@/components/JsonLD";
 import { localBusinessSchema, organizationSchema, faqSchema, breadcrumbSchema } from "@/data/jsonld";
 
 export const metadata: Metadata = {
-  title: "Solar Power Systems in Kerala for Homes & Businesses",
+  title: "Solar Panel Installation Kerala | KSEB Approved | Flarize",
   description:
     "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
   keywords: [
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "best solar company in kerala",
   ],
   openGraph: {
-    title: "Solar Power Systems in Kerala for Homes & Businesses",
+    title: "Solar Panel Installation Kerala | KSEB Approved | Flarize",
     description:
       "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
     url: "https://www.flarize.com",
