@@ -47,7 +47,7 @@ const solutions = [
 const tools = [
   { name: "Check Your Monthly Cost", href: "#" },
   { name: "Review Your Solar Quote", href: "#" },
-  { name: "Compare Solar Options", href: "#" },
+  { name: "Compare Solar Options", href: "/solar-comparison" },
   { name: "Choose the Right Inverter", href: "#" },
 ];
 
