@@ -1,11 +1,11 @@
-# robots.txt for flarize.com
-
+# *
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /manifest.json
 
-# Disallow specific admin or internal pages if any (optional)
-# Disallow: /admin/
-# Disallow: /dashboard/
+# Host
+Host: https://www.flarize.com
 
-# Sitemap location
+# Sitemaps
 Sitemap: https://www.flarize.com/sitemap.xml
