@@ -126,9 +126,9 @@ const tools = [
 
             <li>
               <Link
-                href="#"
+                href="/how-flarize-works"
                 className={`relative lg:text-xl ${
-                  isActive("") ? "font-bold before:w-1/2" : ""
+                  isActive("/how-flarize-works") ? "font-bold before:w-1/2" : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-300 before:ease-in-out hover:before:w-1/2`}
               >
                 How Flarize Works
@@ -310,10 +310,10 @@ const tools = [
 
         <li>
           <Link
-            href="#"
+            href="/how-flarize-works"
             onClick={() => setIsOpen(false)}
             className={`relative text-gray-700 font-medium text-xl ${
-              isActive("#") ? "font-bold" : ""
+              isActive("/how-flarize-works") ? "font-bold" : ""
             }`}
           >
             How Flarize Works
