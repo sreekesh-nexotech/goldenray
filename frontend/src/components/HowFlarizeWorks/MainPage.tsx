@@ -8,6 +8,7 @@ import ProblemsSolve from './ProblemsSolve'
 import Quotes from './Quotes'
 import Faq from '../Home/Faq'
 import Support from './Support'
+import Booking from './Booking'
 
 const MainPage = () => {
   return (
@@ -21,6 +22,7 @@ const MainPage = () => {
         <Quotes/>
         <Support/>
         <Faq/>
+        <Booking/>
     </section>
   )
 }
