@@ -73,7 +73,7 @@ export default function SolarSlots() {
 
               {/* CTA Button */}
               <Link
-                href="#"
+                href="#reserve"
                 className="inline-flex items-center gap-2 text-[#F59E0B]  text-sm sm:text-base hover:gap-3 transition-all"
               >
                 Start This Group
@@ -93,9 +93,12 @@ export default function SolarSlots() {
           </p>
 
           {/* Reserve Button */}
-          <button className="px-8 sm:px-10 md:px-12 lg:px-14 2xl:px-12 py-3 sm:py-4 2xl:py-3 bg-[#F59E0B] text-white font-semibold text-sm sm:text-base md:text-lg 2xl:text-base rounded-xl hover:bg-[#D97706] transition-colors shadow-lg">
+          <Link
+            href="#reserve"
+            className="px-8 sm:px-10 md:px-12 lg:px-14 2xl:px-12 py-3 sm:py-4 2xl:py-3 bg-[#F59E0B] text-white font-semibold text-sm sm:text-base md:text-lg 2xl:text-base rounded-xl hover:bg-[#D97706] transition-colors shadow-lg"
+          >
             Reserve & We&apos;ll Match You
-          </button>
+          </Link>
         </div>
       </div>
     </section>
