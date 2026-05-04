@@ -39,7 +39,7 @@ const [showAllLocations, setShowAllLocations] = useState(false);
 const solutions = [
   { name: "Residential", href: "/residential" },
   { name: "Commercial", href: "/commercial" },
-  { name: "Group Purchase", href: "#" },
+  { name: "Group Purchase", href: "/group-purchase" },
   { name: "Our Projects", href: "/projects" },
   { name: "Blog", href: "/blog" },
 ];
