@@ -24,11 +24,11 @@ const Booking = () => {
         />
       </div>
 
-      <div className="w-full max-w-7xl mx-auto text-center">
-        <h2 className="text-xl xl:text-3xl font-semibold text-[#123532] mb-6">
+      <div className="w-full max-w-7xl mx-auto">
+        <h2 className="text-xl xl:text-3xl font-semibold text-[#123532] mb-6 text-left md:text-center">
           Solar Installation Across All 14 Kerala Districts
         </h2>
-        <p className=" text-[20px] text-[#757575]">
+        <p className=" text-[20px] text-[#757575]  text-center">
           Flarize&apos;s local installer network covers all 14 Kerala districts — <span className='text-[#444444] font-medium'>Ernakulam, Thiruvananthapuram, Kozhikode, Thrissur, Alappuzha, Kollam, Kottayam, Palakkad, Malappuram, Kannur, Kasaragod, Pathanamthitta, Idukki, and Wayanad</span>. When you confirm a solar system, the nearest certified installer in your pincode is automatically assigned — which is why Flarize consistently achieves 3-7 day installation timelines even in districts far from a central warehouse
         </p>
       </div>
