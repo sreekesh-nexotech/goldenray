@@ -5,6 +5,7 @@ import InstallationJourney from './InstallationJourney'
 import Difference from './Difference'
 import InstallationDifference from './InstallationDifference'
 import ProblemsSolve from './ProblemsSolve'
+import Quotes from './Quotes'
 
 const MainPage = () => {
   return (
@@ -15,6 +16,7 @@ const MainPage = () => {
         <Difference/>
         <InstallationDifference/>
         <ProblemsSolve/>
+        <Quotes/>
     </section>
   )
 }
