@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LinkingButton from "../ui/LinkingButton";
 
 export default function SolarSlots() {
   const slots = [
@@ -93,12 +94,7 @@ export default function SolarSlots() {
           </p>
 
           {/* Reserve Button */}
-          <Link
-            href="#reserve"
-            className="px-8 sm:px-10 md:px-12 lg:px-14 2xl:px-12 py-3 sm:py-4 2xl:py-3 bg-[#F59E0B] text-white font-semibold text-sm sm:text-base md:text-lg 2xl:text-base rounded-xl hover:bg-[#D97706] transition-colors shadow-lg"
-          >
-            Reserve & We&apos;ll Match You
-          </Link>
+          <LinkingButton content="Reserve & We'll Match You" ButtonLink="#reserve" ButtonBg="bg-[#F7BA41]" ButtonHover="hover:bg-[#e6a73a]" Buttontext="text-[#272218]" />
         </div>
       </div>
     </section>

@@ -1,6 +1,7 @@
 import Certified from "../certified-by";
 import HomeTestimonial from "../Home/Testimomial";
 import SolarAdvantageMain from "../SolarCalculator/SolarAdvantageMain";
+import Activate from "./Activate";
 import GroupLeader from "./GroupLeader";
 import Faq from "./GroupPurchaseFAQ";
 import GroupPurchaseHero from "./GroupPurchaseHero";
@@ -24,6 +25,7 @@ export default function GroupPurchaseMain() {
         <GroupLeader/>
         <HomeTestimonial/>
         <Faq/>
+        <Activate/>
     </section>
   );
 }
