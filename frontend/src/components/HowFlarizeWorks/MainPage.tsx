@@ -3,6 +3,7 @@ import Hero from './Hero'
 import FlarizeDeals from './FlarizeDeals'
 import InstallationJourney from './InstallationJourney'
 import Difference from './Difference'
+import InstallationDifference from './InstallationDifference'
 
 const MainPage = () => {
   return (
@@ -11,6 +12,7 @@ const MainPage = () => {
         <FlarizeDeals/>
         <InstallationJourney/>
         <Difference/>
+        <InstallationDifference/>
     </section>
   )
 }
