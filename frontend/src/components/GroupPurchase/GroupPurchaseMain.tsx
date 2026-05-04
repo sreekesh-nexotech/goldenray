@@ -1,5 +1,8 @@
 import Certified from "../certified-by";
+import HomeTestimonial from "../Home/Testimomial";
 import SolarAdvantageMain from "../SolarCalculator/SolarAdvantageMain";
+import GroupLeader from "./GroupLeader";
+import Faq from "./GroupPurchaseFAQ";
 import GroupPurchaseHero from "./GroupPurchaseHero";
 import GroupVsIndividual from "./GroupVsIndividual";
 import Reserve from "./Reserve";
@@ -18,6 +21,9 @@ export default function GroupPurchaseMain() {
         <SolarSlots />
         <GroupVsIndividual />
         <Reserve/>
+        <GroupLeader/>
+        <HomeTestimonial/>
+        <Faq/>
     </section>
   );
 }
