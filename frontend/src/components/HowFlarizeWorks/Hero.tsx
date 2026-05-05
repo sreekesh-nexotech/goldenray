@@ -1,0 +1,80 @@
+"use client";
+
+import Image from "next/image";
+import PageIllustration from "@/components/ui/page-illustration";
+import LinkingButton from "../ui/LinkingButton";
+
+export default function Hero() {
+	return (
+		<section className="relative w-full overflow-hidden">
+			<PageIllustration />
+
+			{/* Content */}
+			<div className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-7xl flex flex-col md:flex-row items-stretch h-full xl:gap-40 gap-0">
+				{/* Left Side - Text */}
+				<div className="w-full text-left h-full flex flex-col justify-center">
+					<div className="hidden sm:block text-sm text-[#F7BA41] font-semibold mb-2">
+						Solar Installation Process in Kerala — How Flarize Works in 7 Steps
+					</div>
+					<h1 className="text-[2.5rem]/10  font-medium  xl:font-bold text-[#111827] mb-6">
+						One brand. Three options.<br />
+						<span className="text-[#F88A22] font-bold">You pick, we handle the rest.</span>
+					</h1>
+					<p className="text-sm xl:text-lg  text-[#444444] mb-6">
+						Kerala&apos;s solar booking platform. Share your KSEB electricity bill, get a free roof assessment, and receive 3 fully customised quotes — each with a different panel brand and budget. Your system is installed in 3-7 days. KSEB net metering handled. Subsidy processed. Savings begin.
+					</p>
+
+                    <div className="flex flex-row gap-8 justify-start mb-4">
+						<div className="text-left">
+							<div className="text-base md:text-xl xl:text-[30px] font-bold text-[#074A4D]">3-7 Days</div>
+							<div className="text-[10px] xl:text-sm text-[#444444]">Installation Timeline</div>
+						</div>
+						<div className="text-left">
+							<div className="text-base md:text-xl xl:text-[30px] font-bold text-[#074A4D]">300+</div>
+							<div className="text-[10px] xl:text-sm text-[#444444]">Kerala Homes Installed</div>
+						</div>
+						<div className="text-left">
+							<div className="text-base md:text-xl xl:text-[30px] font-bold text-[#074A4D]">4.9★</div>
+							<div className="text-[10px] xl:text-sm text-[#444444]">Customer Rating</div>
+						</div>
+					</div>
+
+        
+
+					<div className="flex flex-row  text-xs lg:text-lg justify-start lg:gap-4 gap-2 mb-6">
+						<LinkingButton
+							content="Get Free Solar Estimate"
+							ButtonLink="#solar-estimate"
+							ButtonBg="bg-[#F7BA41]"
+							Buttontext="text-[#272218]"
+							ButtonHover="hover:bg-yellow-500"
+						/>
+						<LinkingButton
+							content="Watch Installation Story"
+							ButtonLink="#installation-story"
+							ButtonBorder="border border-[#074A4D]"
+							ButtonBg="bg-[#FFFFFF]"
+							Buttontext="text-[#074A4D]"
+							ButtonHover="hover:bg-[#eeeeee]"
+						/>
+					</div>
+
+				</div>
+
+				{/* Right Side - Image */}
+				<div className="w-full mx-auto mt-10 md:mt-0 flex justify-center items-stretch mb-8 h-full">
+					<div className="relative w-full max-w-[32rem] aspect-[4/3]">
+						<Image
+                        src="https://golden-ray.b-cdn.net/images/how-flarize-works-hero.svg"
+                        alt="Solar installation team working on rooftop in Kerala"
+                        fill
+                        priority
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="rounded-xl object-cover"
+                        />
+					</div>
+				</div>
+			</div>
+		</section>
+	);
+}

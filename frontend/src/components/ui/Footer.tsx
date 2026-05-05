@@ -249,7 +249,7 @@ export default function Footer() {
                 <ul className="flex flex-col gap-3 text-[#444444] text-lg lg:text-xl font-medium">
                   <li>
                     <Link
-                      href="#"
+                      href="/affiliate-programs"
                       className="hover:text-gray-800 transition-all ease-in-out duration-300"
                     >
                       Affilliate Program
@@ -257,7 +257,7 @@ export default function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="/how-flarize-works"
                       className="hover:text-gray-800 transition-all ease-in-out duration-300"
                     >
                       How Flarize Works

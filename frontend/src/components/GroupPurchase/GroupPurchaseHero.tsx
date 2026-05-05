@@ -10,7 +10,7 @@ export default function GroupPurchaseHero() {
     <section className="relative w-full overflow-hidden">
       <PageIllustration />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-12 md:pt-28 md:pb-16 lg:pt-32 lg:pb-20">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-12 md:pt-20 md:pb-16  lg:pb-20">
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           <div className="w-full lg:w-[52%] text-center lg:text-left">
             <h1 className="text-[1.75rem]/[1.12] sm:text-[2.25rem]/[1.12] md:text-[2.75rem]/[1.12] lg:text-[3.25rem]/[1.12] xl:text-[3.5rem]/[1.12] 2xl:text-[3.75rem]/[1.12] text-[#123532]">
