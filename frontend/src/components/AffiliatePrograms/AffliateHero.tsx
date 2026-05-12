@@ -40,7 +40,7 @@ const AffliateHero = () => {
 					<div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-2 w-full sm:w-auto">
 	                    <LinkingButton content="Apply as Affiliate Partner →" ButtonLink="#apply" ButtonBg="bg-[#F7BA41]" ButtonHover="hover:bg-[#e6a73a]" Buttontext="text-[#272218]" />
 						
-						<Link href="#how-it-works" className="btn border border-[#074A4D] flex items-center justify-center gap-2 bg-transparent text-[#074A4D] hover:bg-[#f5f5f5] transition-all duration-200 px-4 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-base">
+						<Link href="#working" className="btn border border-[#074A4D] flex items-center justify-center gap-2 bg-transparent text-[#074A4D] hover:bg-[#f5f5f5] transition-all duration-200 px-4 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-base">
 							See How it works
 						</Link>
 					</div>

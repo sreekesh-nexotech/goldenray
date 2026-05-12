@@ -30,7 +30,8 @@ export default function Working() {
 
   return (
     <section
-      className="relative py-12 sm:py-14 md:py-16 lg:py-20 xl:py-24"
+      id="working"
+      className="scroll-mt-10 relative py-12 sm:py-14 md:py-16 lg:py-20 xl:py-24"
       style={{
         background:
           "radial-gradient(114.71% 114.71% at 50% 0%, #F8F2E1 0%, #FFFFFF 100%)",

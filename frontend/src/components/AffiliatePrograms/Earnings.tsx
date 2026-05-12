@@ -27,7 +27,7 @@ const Earnings = () => {
       </div>
 
       {/* Main Card */}
-        <div className="w-full max-w-6xl bg-white rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.12)] px-4 md:px-20 py-7 md:py-10">
+        <div className="w-full  bg-white rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.12)] px-4 md:px-20 py-7 md:py-10">
             
             <div className="flex flex-col lg:flex-row gap-13 justify-between">
             
@@ -58,11 +58,9 @@ const Earnings = () => {
                         />
 
                         <div className="flex justify-between mt-4 text-sm text-[#6B7280]">
-                            <span>1</span>
-                            <span>3</span>
-                            <span>5</span>
-                            <span>7</span>
-                            <span>10</span>
+                            {Array.from({ length: MAX_INSTALLATIONS - MIN_INSTALLATIONS + 1 }, (_, i) => (
+                                <span key={i}>{MIN_INSTALLATIONS + i}</span>
+                            ))}
                         </div>
                     </div>
                 </div>
