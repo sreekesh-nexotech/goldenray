@@ -1,3 +1,4 @@
+"use client";
 import { UserGroupIcon } from '@heroicons/react/16/solid';
 import { Building2, ChartLine, Hammer, Laptop, Star,  } from 'lucide-react'
 import React from 'react'
@@ -56,15 +57,22 @@ export const WhoCanJoin = () => {
       </div>
 
         {/* Professional categories */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
+        <div className="w-full max-w-7xl flex overflow-x-auto gap-4 lg:grid  lg:grid-cols-3 md:gap-6 no-scrollbar">
             {professionals.map((item,idx) => (
-                <div key={idx} className='flex flex-col bg-[#F7F4E6] border border-[#E5E5E5] rounded-xl px-6 py-4 gap-2'>
+                <div key={idx} className='flex flex-col bg-[#F7F4E6] border border-[#E5E5E5] rounded-xl px-6 py-4 gap-2 min-w-[75vw] max-w-[75vw] lg:min-w-0 lg:max-w-none items-center text-center '>
                     <div className='w-fit bg-white p-2 rounded-lg shadow-[0_2px_2px_rgba(0,0,0,0.2)]'>{item.icon}</div>
                     <h3 className="text-lg text-[#171717]">{item.title}</h3>
                     <p className="text-sm text-[#525252]">{item.desc}</p>
                 </div>
             ))}
         </div>
+
+
+        <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </section>
   )
 }

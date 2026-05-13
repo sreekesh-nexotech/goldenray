@@ -6,21 +6,21 @@ export default function Working() {
 
   const steps = [
     {
-      number: "1",
+      number: "01",
       title: "Register for Free",
       description:
         "Fill in the online application form. Our partner team reviews your profile and sends confirmation within 24-48 hours. There is no registration fee, no deposit, and no commitment beyond the partner agreement terms",
       badge: "24–48 hour approval",
     },
     {
-      number: "2",
+      number: "02",
       title: "Receive Your Unique Referral Link and Marketing Materials",
       description:
         "Every approved affiliate receives a personalised tracking link and a set of digital marketing materials — WhatsApp messages, social media graphics, and conversation guides tailored for different partner types. Share through any channel: WhatsApp, Instagram, in-person conversations, or your professional email list",
       badge: "Unique tracking link",
     },
     {
-      number: "3",
+      number: "03",
       title: " Earn Commission Within 7-14 Days of Installation",
       description:
         "When a customer you referred completes their solar installation, your commission is credited to your partner account. Payouts follow a monthly cycle. Every credit is traceable in your real-time partner dashboard — no chasing required",
@@ -37,7 +37,7 @@ export default function Working() {
           "radial-gradient(114.71% 114.71% at 50% 0%, #F8F2E1 0%, #FFFFFF 100%)",
       }}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-15">
+      <div className="mx-auto max-w-7xl px-4 sm:px-2 space-y-15">
         {/* Heading */}
         <h2 className="text-center text-3xl xl:text-5xl font-bold text-[#123532] mb-4">
           How the Flarize Solar Affiliate Program Works — 3 Steps
@@ -47,25 +47,25 @@ export default function Working() {
         </p>
 
         {/* Three Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-6 md:gap-6 ">
+        <div className="w-full max-w-7xl flex overflow-x-auto gap-4 lg:grid  lg:grid-cols-3 md:gap-6 no-scrollbar ">
           {steps.map((step, index) => (
             <div
               key={index}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(1)} 
-              className={`relative  text-center flex flex-col items-center p-5 rounded-2xl transition-all duration-300 ease-in-out cursor-pointer ${
+              className={`relative  text-start flex flex-col items-start p-4 mt-8 rounded-2xl transition-all duration-300 ease-in-out cursor-pointer min-w-[75vw] max-w-[75vw] lg:min-w-0 lg:max-w-none  ${
                 hoveredCard === index
-                  ? "bg-white shadow-xl"
+                  ? "bg-white shadow-xl transform -translate-y-5"
                   : "bg-transparent"
               }`}
             >
               {/* Number */}
-              <div className="text-[#E5E7EB] bg-[#074A4D] rounded-full p-5 w-15 flex items-center justify-center h-15 text-lg sm:text-xl md:text-2xl mb-4 sm:mb-5">
+              <div className="text-[#123532] text-base sm:text-lg md:text-xl mb-4 sm:mb-5">
                 {step.number}
               </div>
 
               {/* Title */}
-              <h3 className="text-[#074A4D] font-semibold text-lg sm:text-xl md:text-xl lg:text-xl xl:text-2xl mb-3 sm:mb-4 leading-tight">
+              <h3 className="text-[#123532] font-semibold text-lg sm:text-xl md:text-xl lg:text-xl xl:text-2xl mb-3 sm:mb-4 leading-tight">
                 {step.title}
               </h3>
 

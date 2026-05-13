@@ -34,7 +34,7 @@ const CommissionStructure = () => {
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-5xl md:p-8 bg-[#FEF3E8] rounded-xl overflow-hidden">
+      <div className="w-full max-w-5xl p-5 md:p-8 bg-[#FEF3E8] rounded-xl overflow-hidden">
         {/* Table */}
         <div className="relative">
           <div className="grid grid-cols-3 bg-[#074A4D] text-white text-xs sm:text-sm md:text-base rounded-t-xl font-semibold">
@@ -98,13 +98,13 @@ const CommissionStructure = () => {
       </div>
 
       {/* Badges */}
-      <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full">
+      <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:justify-center sm:gap-3 w-full max-w-4xl mx-auto">
         {badges.map((badge, idx) => (
           <div
             key={idx}
-            className="flex items-center gap-2 bg-[#16A34A3D] text-[#15803D] text-xs sm:text-sm md:text-base font-medium px-3 sm:px-4 py-2 rounded-full"
+            className="flex items-center gap-2 bg-[#16A34A3D] text-[#15803D] text-[10px] sm:text-sm md:text-base font-medium px-3 sm:px-4 py-2 rounded-full w-full sm:w-auto"
           >
-            <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#15803D]" strokeWidth={3} />
+            <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#15803D] shrink-0" strokeWidth={3} />
             <span>{badge}</span>
           </div>
         ))}

@@ -76,7 +76,7 @@ const Earnings = () => {
             </div>
 
             {/* RIGHT CARD */}
-            <div className="w-full max-w-[460px] bg-[#074A4D] rounded-2xl px-4 py-6 text-white ">
+            <div className="w-full lg:max-w-[460px] bg-[#074A4D] rounded-2xl px-4 py-6 text-white ">
                 
                 <div className="text-center">
                 <p className="text-lg font-medium text-[#D1D5DB]">
@@ -120,15 +120,15 @@ const Earnings = () => {
             </div>
 
             {/* BUTTON */}
-            <div className="flex justify-center mt-10">
-            <button className="bg-[#F7BA41] text-base cursor-pointer  hover:bg-[#e5a51f] transition-all duration-300 text-[#000000] font-semibold px-10 md:px-20 py-4 rounded-xl shadow-[0_10px_25px_rgba(242,178,51,0.35)] flex items-center gap-3">
+            <div className="flex  justify-center mt-10">
+            <button className="bg-[#F7BA41] w-full lg:w-fit  text-base cursor-pointer  hover:bg-[#e5a51f] transition-all duration-300 text-[#000000] font-semibold px-10 md:px-20 py-4 rounded-xl shadow-[0_10px_25px_rgba(242,178,51,0.35)] flex items-center justify-center gap-3">
                 <span><Rocket/></span>
                 Start Earning Today
             </button>
             </div>
 
             {/* FOOTER TEXT */}
-            <p className="text-center text-sm leading-6 text-[#757575] mt-4 mx-auto">
+            <p className="hidden lg:block text-center text-sm leading-6 text-[#757575] mt-4 mx-auto">
             Most active Flarize partners refer between 3 and 8 homes per month.
             At the standard residential commission, that translates to Rs.24,000-Rs.48,000 monthly without any capital investment, inventory, or sales pressure.
             Unlike pay-per-lead programs, you earn a fixed amount per installation not per form fill.
