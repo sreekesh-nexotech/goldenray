@@ -1,5 +1,6 @@
 "use client";
 import { ChartLine, Rocket } from 'lucide-react';
+import Link from 'next/link';
 import React, { useState } from 'react';
 
 
@@ -121,10 +122,10 @@ const Earnings = () => {
 
             {/* BUTTON */}
             <div className="flex  justify-center mt-10">
-            <button className="bg-[#F7BA41] w-full lg:w-fit  text-base cursor-pointer  hover:bg-[#e5a51f] transition-all duration-300 text-[#000000] font-semibold px-10 md:px-20 py-4 rounded-xl shadow-[0_10px_25px_rgba(242,178,51,0.35)] flex items-center justify-center gap-3">
+            <Link href="#form" className="bg-[#F7BA41] w-full lg:w-fit  text-base cursor-pointer  hover:bg-[#e5a51f] transition-all duration-300 text-[#000000] font-semibold px-10 md:px-20 py-4 rounded-xl shadow-[0_10px_25px_rgba(242,178,51,0.35)] flex items-center justify-center gap-3">
                 <span><Rocket/></span>
                 Start Earning Today
-            </button>
+            </Link>
             </div>
 
             {/* FOOTER TEXT */}

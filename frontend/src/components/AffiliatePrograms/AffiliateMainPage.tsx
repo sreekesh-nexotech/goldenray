@@ -8,6 +8,7 @@ import CommissionStructure from './CommissionStructure'
 import Faq from '../Home/Faq'
 import WhyFlarize from './WhyFlarize'
 import Testimonials from './Testimonials'
+import Form from './Form'
 
 const AffiliateMainPage = () => {
   return (
@@ -20,6 +21,7 @@ const AffiliateMainPage = () => {
       <CommissionStructure/>
       <WhyFlarize/>
       <Testimonials/>
+      <Form/>
       <Faq/>
     </section>
   )

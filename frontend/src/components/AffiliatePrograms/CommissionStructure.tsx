@@ -85,7 +85,7 @@ const CommissionStructure = () => {
 
           <LinkingButton
             content="See Full Commission Structure →"
-            ButtonLink="#apply"
+            ButtonLink="#form"
             ButtonBg="bg-[#F7BA41]"
             ButtonHover="hover:bg-[#e5a51f]"
             Buttontext="text-[#000000]"
