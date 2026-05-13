@@ -9,6 +9,8 @@ import Faq from '../Home/Faq'
 import WhyFlarize from './WhyFlarize'
 import Testimonials from './Testimonials'
 import Form from './Form'
+import StartEarning from './StartEarning'
+import Districts from './Districts'
 
 const AffiliateMainPage = () => {
   return (
@@ -22,6 +24,8 @@ const AffiliateMainPage = () => {
       <WhyFlarize/>
       <Testimonials/>
       <Form/>
+      <StartEarning/>
+      <Districts/>
       <Faq/>
     </section>
   )
