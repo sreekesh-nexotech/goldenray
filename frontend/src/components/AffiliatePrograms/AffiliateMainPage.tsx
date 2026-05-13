@@ -3,6 +3,9 @@ import AffliateHero from './AffliateHero'
 import { WhoCanJoin } from './WhoCanJoin'
 import Earnings from './Earnings'
 import Working from './Working'
+import Track from './Track'
+import CommissionStructure from './CommissionStructure'
+import Faq from '../Home/Faq'
 
 const AffiliateMainPage = () => {
   return (
@@ -11,6 +14,10 @@ const AffiliateMainPage = () => {
       <WhoCanJoin/>
       <Earnings/>
       <Working/>
+      <Track/>
+      <CommissionStructure/>
+
+      <Faq/>
     </section>
   )
 }
