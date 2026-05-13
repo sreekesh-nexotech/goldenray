@@ -6,6 +6,7 @@ import Working from './Working'
 import Track from './Track'
 import CommissionStructure from './CommissionStructure'
 import Faq from '../Home/Faq'
+import WhyFlarize from './WhyFlarize'
 
 const AffiliateMainPage = () => {
   return (
@@ -16,6 +17,7 @@ const AffiliateMainPage = () => {
       <Working/>
       <Track/>
       <CommissionStructure/>
+      <WhyFlarize/>
 
       <Faq/>
     </section>
