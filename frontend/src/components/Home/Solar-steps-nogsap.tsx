@@ -100,7 +100,7 @@ export default function SolarStepsNoGSAP() {
       ref={sectionRef}
       className="flex flex-col py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36 relative"
     >
-      <h2 className="text-3xl xl:w-1/2 sm:text-4xl lg:text-4xl font-bold text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
+      <h2 className="text-3xl xl:w-1/2 sm:text-4xl lg:text-4xl font-semibold text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
         Go solar in just 3 easy steps
       </h2>
       <div className="w-full max-w-full md:flex space-y-4 md:space-y-0">

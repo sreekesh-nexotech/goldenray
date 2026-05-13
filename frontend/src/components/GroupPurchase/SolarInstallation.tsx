@@ -38,7 +38,7 @@ export default function SolarInstallation() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <h2 className="text-[#123532] font-bold text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-5xl text-center mb-3 sm:mb-4">
+        <h2 className="text-[#123532] font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-5xl text-center mb-3 sm:mb-4">
           How Group Solar Installation Works in Kerala
         </h2>
 

@@ -39,7 +39,7 @@ export default function Working() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-2 space-y-15">
         {/* Heading */}
-        <h2 className="text-center text-3xl xl:text-5xl font-bold text-[#123532] mb-4">
+        <h2 className="text-center text-3xl xl:text-5xl font-semibold text-[#123532] mb-4">
           How the Flarize Solar Affiliate Program Works — 3 Steps
         </h2>
         <p className="text-center hidden sm:block text-[20px] text-[#4B5563]">

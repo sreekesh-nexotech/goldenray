@@ -13,7 +13,7 @@ const Activate = () => {
     <section className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-7xl flex flex-col items-center h-full gap-8">
       {/* Heading */}
       <div className="w-full max-w-7xl mx-auto text-center mb-8">
-        <h2 className="text-3xl xl:text-5xl font-bold text-[#123532] mb-4">
+        <h2 className="text-3xl xl:text-5xl font-semibold text-[#123532] mb-4">
           Activate Solar in Your Area
         </h2>
         <p className="text-[20px] text-[#4B5563]">
