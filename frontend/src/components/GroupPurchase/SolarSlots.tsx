@@ -30,7 +30,7 @@ export default function SolarSlots() {
     <section className="relative py-12 sm:py-14 md:py-16 lg:py-20 xl:py-24 2xl:py-16 ">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <h2 className="text-[#123532] font-bold text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl 2xl:text-4xl text-center mb-3 sm:mb-4 2xl:mb-3">
+        <h2 className="text-[#123532] font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl 2xl:text-4xl text-center mb-3 sm:mb-4 2xl:mb-3">
           Active Group Solar Slots Near You
         </h2>
 

@@ -70,7 +70,7 @@ const Reserve = () => {
     <section id='reserve' className="scroll-mt-15 relative z-10 container mx-auto px-4 py-10 md:py-20 xl:py-16 max-w-7xl flex flex-col xl:flex-row items-stretch gap-10 md:gap-16">
       {/* Left Info Section */}
       <div className="flex-1 w-full xl:max-w-xl flex flex-col">
-        <h2 className="text-[#123532] font-bold text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-5xl text-left mb-3 sm:mb-4">
+        <h2 className="text-[#123532] font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-5xl text-left mb-3 sm:mb-4">
           Reserve Your Group Solar Spot in Kerala
         </h2>
         <p className="text-[#6B7280] text-sm sm:text-base md:text-base text-left mb-8 sm:mb-10 md:mb-12 lg:mb-14">

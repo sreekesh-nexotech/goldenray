@@ -59,7 +59,7 @@ const InstallationJourney = () => {
       {/* Header Container*/}
       <div className="max-w-7xl mx-auto px-6 md:px-10 mb-14">
         <div className="w-full max-w-7xl mx-auto text-center mb-8">
-        <h2 className="text-3xl xl:text-5xl font-bold text-[#123532] mb-4">
+        <h2 className="text-3xl xl:text-5xl font-semibold text-[#123532] mb-4">
           Your Solar Installation Journey in Kerala — 7 Steps Explained
         </h2>
         <p className="hidden sm:block text-[20px] text-[#4B5563]">
