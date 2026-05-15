@@ -31,16 +31,16 @@ function BlogHero({
         }}
       />
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 pt-24 pb-4 md:pt-28 md:pb-6 max-w-7xl text-center">
-        <p className="text-sm sm:text-base font-medium text-[#6B7280] tracking-wide mb-2">
+        <p className="text-xs md:text-base font-normal leading-normal text-[#6B7280] tracking-wide mb-2">
           Knowledge Hub
         </p>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#123532] mb-3 leading-tight">
+        <h1 className="text-4xl md:text-7xl font-semibold leading-tight text-[#123532] mb-3">
           Solar Guides &amp; Insights
         </h1>
-        <p className="text-base sm:text-lg md:text-xl text-[#444444] mb-4 max-w-xl md:max-w-2xl mx-auto leading-relaxed">
+        <p className="text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-4 max-w-xl md:max-w-2xl mx-auto">
           Clear, practical guides to help you make confident solar decisions.
         </p>
-        <div className="flex items-center justify-center gap-3 text-sm sm:text-base text-[#6B7280]">
+        <div className="flex items-center justify-center gap-3 text-xs md:text-base font-normal leading-normal text-[#6B7280]">
           <span>{count} Guides</span>
           <span className="w-1.5 h-1.5 rounded-full bg-[#6B7280] inline-block" />
           <span>Last updated: {lastUpdated}</span>
@@ -87,7 +87,7 @@ function BlogFilters({
             value={search}
             onChange={(e) => onSearch(e.target.value)}
             placeholder="Search solar guides..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 bg-white text-sm text-[#444444] placeholder-[#aaaaaa] focus:outline-none focus:ring-2 focus:ring-[#F7BA41] shadow-sm"
+            className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 bg-white text-sm md:text-base text-[#444444] placeholder-[#aaaaaa] focus:outline-none focus:ring-2 focus:ring-[#F7BA41] shadow-sm"
           />
         </div>
       </div>
@@ -98,7 +98,7 @@ function BlogFilters({
           <button
             key={cat}
             onClick={() => onCategory(cat)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
+            className={`px-4 py-1.5 rounded-full text-xs md:text-base font-medium transition-colors duration-200 ${
               activeCategory === cat
                 ? "bg-[#F7BA41] text-[#1F2937]"
                 : "bg-white border border-gray-200 text-[#444444] hover:border-[#F7BA41] hover:text-[#1F2937]"
@@ -133,22 +133,22 @@ function FeaturedPost({ post }: { post: BlogArticle }) {
           {/* Content */}
           <div className="bg-white p-8 md:p-10 lg:p-12 flex flex-col justify-center">
             <span
-              className={`inline-block self-start px-3 py-1 rounded-full text-xs font-semibold mb-4 ${colorClass}`}
+              className={`inline-block self-start px-3 py-1 rounded-full text-xs md:text-base font-semibold leading-normal mb-4 ${colorClass}`}
             >
               {post.category}
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-[#123532] mb-3 leading-snug group-hover:text-[#ED8723] transition-colors">
+            <h2 className="text-xl md:text-2xl font-semibold leading-snug text-[#123532] mb-3 group-hover:text-[#ED8723] transition-colors">
               {post.title}
             </h2>
-            <p className="text-[#666666] text-base leading-relaxed mb-6">
+            <p className="text-[#666666] text-xs md:text-base font-normal leading-normal mb-6">
               {post.description}
             </p>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-[#888888] mb-6">
+            <div className="flex flex-wrap items-center gap-4 text-xs md:text-base font-normal leading-normal text-[#888888] mb-6">
               <span>{post.readTime}</span>
               <span>•</span>
               <span>Updated {post.updatedDate}</span>
             </div>
-            <span className="text-[#ED8723] font-semibold text-sm group-hover:underline inline-flex items-center gap-1">
+            <span className="text-[#ED8723] text-base md:text-xl font-normal md:font-semibold leading-snug group-hover:underline inline-flex items-center gap-1">
               Read Guide
               <svg
                 className="w-4 h-4"
@@ -189,17 +189,17 @@ function BlogCard({ post }: { post: BlogArticle }) {
         </div>
         <div className="p-5 flex flex-col flex-1">
           <span
-            className={`inline-block self-start px-2.5 py-1 rounded-full text-xs font-semibold mb-3 ${colorClass}`}
+            className={`inline-block self-start px-2.5 py-1 rounded-full text-xs md:text-base font-semibold leading-normal mb-3 ${colorClass}`}
           >
             {post.category}
           </span>
-          <h3 className="text-base font-bold text-[#123532] mb-2 leading-snug group-hover:text-[#ED8723] transition-colors line-clamp-2">
+          <h3 className="text-xl md:text-2xl font-semibold leading-snug text-[#123532] mb-2 group-hover:text-[#ED8723] transition-colors line-clamp-2">
             {post.title}
           </h3>
-          <p className="text-[#666666] text-sm leading-relaxed line-clamp-2 flex-1 mb-4">
+          <p className="text-[#666666] text-xs md:text-base font-normal leading-normal line-clamp-2 flex-1 mb-4">
             {post.description}
           </p>
-          <div className="flex items-center justify-between text-xs text-[#888888] mt-auto">
+          <div className="flex items-center justify-between text-xs md:text-base font-normal leading-normal text-[#888888] mt-auto">
             <span>{post.readTime}</span>
             <span>{post.updatedDate}</span>
           </div>
@@ -214,19 +214,19 @@ function BlogNewsletter() {
   return (
     <section className=" py-14 px-4 sm:px-6 lg:px-8 mt-4">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#123532] mb-3">
+        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-3">
           Stay Updated on Solar Policy &amp; Subsidy Changes
         </h2>
-        <p className="text-[#666666] text-base mb-7">
+        <p className="text-[#666666] text-sm md:text-xl font-normal leading-relaxed mb-7">
           Get important updates directly to your inbox.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
           <input
             type="email"
             placeholder="Enter your email"
-            className="w-full sm:w-auto flex-1 max-w-sm px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm text-[#444444] placeholder-[#aaaaaa] focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
+            className="w-full sm:w-auto flex-1 max-w-sm px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm md:text-base text-[#444444] placeholder-[#aaaaaa] focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
           />
-          <button className="bg-[#F7BA41] hover:bg-[#e5a934] text-[#1F2937] font-semibold px-6 py-3 rounded-xl transition-colors text-sm whitespace-nowrap">
+          <button className="bg-[#F7BA41] hover:bg-[#e5a934] text-[#1F2937] font-semibold px-6 py-3 rounded-xl transition-colors text-base md:text-xl leading-snug whitespace-nowrap">
             Subscribe
           </button>
         </div>
@@ -313,10 +313,10 @@ function BlogCta() {
     >
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#123532] mb-3">
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-3">
             Not Sure Where to Start?
           </h2>
-          <p className="text-[#666666] text-base max-w-xl mx-auto">
+          <p className="text-[#666666] text-sm md:text-xl font-normal leading-relaxed max-w-xl mx-auto">
             Let us guide you through your solar journey with personalized
             recommendations.
           </p>
@@ -330,15 +330,15 @@ function BlogCta() {
               <div className="w-14 h-14 rounded-full bg-[#FEF3C7] flex items-center justify-center mb-5">
                 {card.icon}
               </div>
-              <h3 className="text-base font-bold text-[#123532] mb-2">
+              <h3 className="text-base md:text-xl font-semibold leading-snug text-[#123532] mb-2">
                 {card.title}
               </h3>
-              <p className="text-[#666666] text-sm leading-relaxed flex-1 mb-6">
+              <p className="text-[#666666] text-xs md:text-base font-normal leading-normal flex-1 mb-6">
                 {card.description}
               </p>
               <Link
                 href={card.href}
-                className="w-full py-2.5 rounded-xl border border-[#123532] text-[#123532] text-sm font-semibold text-center hover:bg-[#123532] hover:text-white transition-colors duration-200 mt-auto"
+                className="w-full py-2.5 rounded-xl border border-[#123532] text-[#123532] text-base md:text-xl font-semibold leading-snug text-center hover:bg-[#123532] hover:text-white transition-colors duration-200 mt-auto"
               >
                 {card.cta}
               </Link>
@@ -416,7 +416,7 @@ export default function BlogMain({ articles, categories }: BlogMainProps) {
             ))}
           </div>
         ) : (
-          <p className="text-center text-[#888888] py-16">
+          <p className="text-center text-[#888888] text-xs md:text-base font-normal leading-normal py-16">
             No articles found for &ldquo;{search || activeCategory}&rdquo;
           </p>
         )}
@@ -426,7 +426,7 @@ export default function BlogMain({ articles, categories }: BlogMainProps) {
           <div className="flex justify-center mt-10">
             <button
               onClick={() => setVisibleCount((v) => v + 6)}
-              className="px-8 py-3 rounded-xl border border-gray-300 text-[#444444] text-sm font-semibold hover:border-[#123532] hover:text-[#123532] transition-colors duration-200"
+              className="px-8 py-3 rounded-xl border border-gray-300 text-[#444444] text-base md:text-xl font-semibold leading-snug hover:border-[#123532] hover:text-[#123532] transition-colors duration-200"
             >
               Load More Articles
             </button>

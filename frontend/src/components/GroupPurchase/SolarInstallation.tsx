@@ -38,12 +38,12 @@ export default function SolarInstallation() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <h2 className="text-[#123532] font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-5xl text-center mb-3 sm:mb-4">
+        <h2 className="text-[#123532] text-4xl md:text-5xl font-semibold leading-tight text-center mb-3 sm:mb-4">
           How Group Solar Installation Works in Kerala
         </h2>
 
         {/* Subtitle */}
-        <p className="text-[#6B7280] text-sm sm:text-base md:text-base lg:text-lg xl:text-lg text-center mb-8 sm:mb-10 md:mb-12 lg:mb-14">
+        <p className="text-[#6B7280] text-base md:text-xl font-normal md:font-semibold leading-snug text-center mb-8 sm:mb-10 md:mb-12 lg:mb-14">
           If the group doesn&apos;t form, your price stays locked.
         </p>
 
@@ -61,17 +61,17 @@ export default function SolarInstallation() {
               }`}
             >
               {/* Number */}
-              <div className="text-[#123532] font-semibold text-lg sm:text-xl md:text-xl mb-4 sm:mb-5">
+              <div className="text-[#123532] text-xl md:text-2xl font-semibold leading-snug mb-4 sm:mb-5">
                 {step.number}
               </div>
 
               {/* Title */}
-              <h3 className="text-[#123532] font-semibold text-lg sm:text-xl md:text-xl lg:text-xl xl:text-2xl mb-3 sm:mb-4 leading-tight">
+              <h3 className="text-[#123532] text-xl md:text-2xl font-semibold leading-snug mb-3 sm:mb-4">
                 {step.title}
               </h3>
 
               {/* Description */}
-              <p className="text-[#6B7280] text-xs sm:text-sm md:text-sm lg:text-sm xl:text-base leading-relaxed mb-4 sm:mb-5 md:mb-6">
+              <p className="text-[#6B7280] text-xs md:text-base font-normal leading-normal mb-4 sm:mb-5 md:mb-6">
                 {step.description}
               </p>
 

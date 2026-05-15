@@ -36,10 +36,10 @@ export default function WhyFlarize() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
         {/* Heading */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16 xl:mb-18 2xl:mb-20">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl 2xl:text-5xl font-bold text-[#123532] mb-3 sm:mb-4 lg:mb-6">
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-3 sm:mb-4 lg:mb-6">
             Why 300+ Kerala Families Choose Flarize
           </h2>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-2xl text-[#6B7280] max-w-5xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-xl font-normal leading-relaxed text-[#6B7280] max-w-5xl mx-auto">
             We handle all government paperwork, KSEB registration, and subsidy
             processing while you sit back and start saving on electricity.
           </p>
@@ -62,12 +62,12 @@ export default function WhyFlarize() {
               </div>
 
               {/* Title */}
-              <h3 className="text-sm sm:text-base lg:text-lg xl:text-xl 2xl:text-xl font-semibold text-[#374151] mb-3 sm:mb-4 lg:mb-5 xl:mb-5 2xl:mb-5 leading-tight">
+              <h3 className="text-base md:text-xl font-semibold leading-snug text-[#374151] mb-3 sm:mb-4 lg:mb-5 xl:mb-5 2xl:mb-5">
                 {feature.title}
               </h3>
 
               {/* Description */}
-              <p className="text-xs sm:text-sm lg:text-base xl:text-base 2xl:text-base text-[#6B7280] leading-relaxed flex-1 flex items-start">
+              <p className="text-xs md:text-base font-normal leading-normal text-[#6B7280] flex-1 flex items-start">
                 {feature.description}
               </p>
             </div>

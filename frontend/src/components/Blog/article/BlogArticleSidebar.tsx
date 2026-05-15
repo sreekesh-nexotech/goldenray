@@ -27,7 +27,7 @@ export default function BlogArticleSidebar({
       {/* On This Page */}
       {sections.length > 0 && (
         <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-          <h3 className="text-sm font-bold text-[#123532] mb-4 uppercase tracking-wide">
+          <h3 className="text-xs md:text-base font-semibold leading-normal text-[#123532] mb-4 uppercase tracking-wide">
             On This Page
           </h3>
           <nav className="flex flex-col gap-1">
@@ -35,7 +35,7 @@ export default function BlogArticleSidebar({
               <a
                 key={section.id}
                 href={`#${section.id}`}
-                className={`text-sm py-1.5 px-2 rounded-lg transition-colors duration-150 ${
+                className={`text-xs md:text-base font-normal leading-normal py-1.5 px-2 rounded-lg transition-colors duration-150 ${
                   idx === 0
                     ? "text-[#ED8723] font-semibold bg-amber-50"
                     : "text-[#555555] hover:text-[#123532] hover:bg-gray-50"
@@ -52,14 +52,14 @@ export default function BlogArticleSidebar({
 
       {/* Popular Tags */}
       <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-        <h3 className="text-sm font-bold text-[#123532] mb-4 uppercase tracking-wide">
+        <h3 className="text-xs md:text-base font-semibold leading-normal text-[#123532] mb-4 uppercase tracking-wide">
           Popular Tags
         </h3>
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-[#444444] hover:bg-[#F7BA41] hover:text-[#1F2937] cursor-pointer transition-colors duration-200"
+              className="px-3 py-1 text-xs md:text-base font-medium leading-normal rounded-full bg-gray-100 text-[#444444] hover:bg-[#F7BA41] hover:text-[#1F2937] cursor-pointer transition-colors duration-200"
             >
               {tag}
             </span>
@@ -84,13 +84,15 @@ export default function BlogArticleSidebar({
             />
           </svg>
         </div>
-        <h3 className="text-base font-bold text-[#1F2937] mb-1">Need Help?</h3>
-        <p className="text-xs text-[#3D3D3D] leading-relaxed mb-4">
+        <h3 className="text-base md:text-xl font-semibold leading-snug text-[#1F2937] mb-1">
+          Need Help?
+        </h3>
+        <p className="text-xs md:text-base font-normal leading-normal text-[#3D3D3D] mb-4">
           Talk to a solar expert and get personalised guidance for your home.
         </p>
         <Link
           href="/contactus"
-          className="w-full py-2.5 bg-white text-[#1F2937] text-sm font-semibold rounded-xl hover:bg-[#f0f0f0] transition-colors duration-200 text-center"
+          className="w-full py-2.5 bg-white text-[#1F2937] text-base md:text-xl font-semibold leading-snug rounded-xl hover:bg-[#f0f0f0] transition-colors duration-200 text-center"
         >
           Schedule a Call
         </Link>
@@ -99,7 +101,7 @@ export default function BlogArticleSidebar({
       {/* Back to Blog */}
       <Link
         href="/blog"
-        className="flex items-center gap-2 text-sm text-[#6B7280] hover:text-[#123532] transition-colors duration-200 px-1"
+        className="flex items-center gap-2 text-xs md:text-base font-normal leading-normal text-[#6B7280] hover:text-[#123532] transition-colors duration-200 px-1"
       >
         <svg
           className="w-4 h-4"

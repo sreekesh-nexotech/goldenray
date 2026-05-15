@@ -85,10 +85,10 @@ export default function SubsidyFaq() {
       <div className="container mx-auto flex flex-col items-center justify-center gap-4 lg:gap-6 md:p-4 rounded-xl max-w-full py-4 xl:py-2 px-4 sm:px-6 lg:px-8 xl:px-36">
         {/* Heading and Description */}
         <div className="w-full text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#123532] mb-2 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-2">
             Frequently Asked Questions
           </h1>
-          <p className="text-base md:text-xl text-[#444444]">
+          <p className="text-sm md:text-xl font-normal leading-relaxed text-[#444444]">
             Everything you need to know about PM Surya Ghar subsidy in Kerala
           </p>
         </div>
@@ -105,7 +105,7 @@ export default function SubsidyFaq() {
                 onClick={() => toggleFaq(index)}
                 aria-label="toggle FAQ answer"
               >
-                <span className="text-sm md:text-base font-semibold text-[#444444] pr-4">
+                <span className="text-base md:text-xl font-semibold leading-snug text-[#444444] pr-4">
                   {faq.question}
                 </span>
                 <span
@@ -117,7 +117,7 @@ export default function SubsidyFaq() {
                 </span>
               </button>
               {openIndex === index && (
-                <div className="mt-3 text-[#444444] text-sm md:text-base leading-relaxed">
+                <div className="mt-3 text-[#444444] text-xs md:text-base font-normal leading-normal">
                   {Array.isArray(faq.answer) ? (
                     <ul className="list-disc pl-5 space-y-1">
                       {faq.answer.map((point, i) => (

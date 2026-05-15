@@ -59,14 +59,16 @@ export default function BlogArticleCta() {
             <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm flex-shrink-0">
               {card.icon}
             </div>
-            <h3 className="text-sm font-bold text-[#123532]">{card.title}</h3>
+            <h3 className="text-base md:text-xl font-semibold leading-snug text-[#123532]">
+              {card.title}
+            </h3>
           </div>
-          <p className="text-xs text-[#555555] leading-relaxed">
+          <p className="text-xs md:text-base font-normal leading-normal text-[#555555]">
             {card.description}
           </p>
           <Link
             href={card.href}
-            className="inline-flex items-center gap-1.5 mt-auto text-sm font-semibold text-[#123532] hover:text-[#ED8723] transition-colors duration-200"
+            className="inline-flex items-center gap-1.5 mt-auto text-base md:text-xl font-semibold leading-snug text-[#123532] hover:text-[#ED8723] transition-colors duration-200"
           >
             {card.cta}
             <svg

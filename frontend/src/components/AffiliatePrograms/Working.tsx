@@ -39,11 +39,12 @@ export default function Working() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-2 space-y-15">
         {/* Heading */}
-        <h2 className="text-center text-3xl xl:text-5xl font-semibold text-[#123532] mb-4">
+        <h2 className="text-center text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
           How the Flarize Solar Affiliate Program Works — 3 Steps
         </h2>
-        <p className="text-center hidden sm:block text-[20px] text-[#4B5563]">
-            Starting your Kerala solar affiliate journey takes less than five minutes. Once registered you can submit referrals immediately
+        <p className="text-center hidden sm:block text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
+          Starting your Kerala solar affiliate journey takes less than five
+          minutes. Once registered you can submit referrals immediately
         </p>
 
         {/* Three Column Grid */}
@@ -52,7 +53,7 @@ export default function Working() {
             <div
               key={index}
               onMouseEnter={() => setHoveredCard(index)}
-              onMouseLeave={() => setHoveredCard(1)} 
+              onMouseLeave={() => setHoveredCard(1)}
               className={`relative  text-start flex flex-col items-start p-4 mt-8 rounded-2xl transition-all duration-300 ease-in-out cursor-pointer min-w-[75vw] max-w-[75vw] lg:min-w-0 lg:max-w-none  ${
                 hoveredCard === index
                   ? "bg-white shadow-xl transform -translate-y-5"
@@ -60,22 +61,22 @@ export default function Working() {
               }`}
             >
               {/* Number */}
-              <div className="text-[#123532] text-base sm:text-lg md:text-xl mb-4 sm:mb-5">
+              <div className="text-[#123532] text-xl md:text-2xl font-semibold leading-snug mb-4 sm:mb-5">
                 {step.number}
               </div>
 
               {/* Title */}
-              <h3 className="text-[#123532] font-semibold text-lg sm:text-xl md:text-xl lg:text-xl xl:text-2xl mb-3 sm:mb-4 leading-tight">
+              <h3 className="text-[#123532] text-xl md:text-2xl font-semibold leading-snug mb-3 sm:mb-4">
                 {step.title}
               </h3>
 
               {/* Description */}
-              <p className="text-[#525252] text-xs sm:text-sm md:text-sm xl:text-base leading-relaxed mb-4 sm:mb-5 md:mb-6">
+              <p className="text-[#525252] text-xs md:text-base font-normal leading-normal mb-4 sm:mb-5 md:mb-6">
                 {step.description}
               </p>
 
               {/* Badge */}
-              <div className="inline-block px-6 py-1 bg-[#16A34A3D] text-[#15803D] text-xs sm:text-base font-medium rounded-2xl">
+              <div className="inline-block px-6 py-1 bg-[#16A34A3D] text-[#15803D] text-xs md:text-base font-normal leading-normal rounded-2xl">
                 {step.badge}
               </div>
             </div>

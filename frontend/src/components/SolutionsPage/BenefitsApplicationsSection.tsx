@@ -17,7 +17,7 @@ export default function BenefitsApplicationsSection({
             className="rounded-2xl md:rounded-3xl p-8 md:p-10 lg:p-12"
             style={{ background: "#E5F4F2" }}
           >
-            <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-6 md:mb-8">
+            <h3 className="text-xl md:text-2xl font-semibold leading-snug text-gray-900 mb-6 md:mb-8">
               {data.benefitsTitle}
             </h3>
             <ul className="space-y-4 md:space-y-5">
@@ -36,7 +36,7 @@ export default function BenefitsApplicationsSection({
                       <circle cx="12" cy="12" r="6" fill="#6B7280" />
                     </svg>
                   </span>
-                  <span className="text-gray-700 text-base md:text-lg lg:text-xl leading-relaxed">
+                  <span className="text-gray-700 text-sm md:text-base lg:text-xl font-normal leading-normal">
                     {benefit.text}
                   </span>
                 </li>
@@ -49,7 +49,7 @@ export default function BenefitsApplicationsSection({
             className="rounded-2xl md:rounded-3xl p-8 md:p-10 lg:p-12"
             style={{ background: "#F9F5E8" }}
           >
-            <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-6 md:mb-8">
+            <h3 className="text-xl md:text-2xl font-semibold leading-snug text-gray-900 mb-6 md:mb-8">
               {data.applicationsTitle}
             </h3>
             <ul className="space-y-4 md:space-y-5">
@@ -68,7 +68,7 @@ export default function BenefitsApplicationsSection({
                       <circle cx="12" cy="12" r="6" fill="#6B7280" />
                     </svg>
                   </span>
-                  <span className="text-gray-700 text-base md:text-lg lg:text-xl leading-relaxed">
+                  <span className="text-gray-700 text-sm md:text-base lg:text-xl font-normal leading-normal">
                     {application.text}
                   </span>
                 </li>

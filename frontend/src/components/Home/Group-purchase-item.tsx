@@ -20,10 +20,10 @@ export default function GroupPurchaseItem({
         {icon}
       </div>
       <div className="flex flex-col w-full">
-        <h3 className="text-xl sm:text-2xl md:text-lg lg:text-base xl:text-lg 2xl:text-2xl font-semibold text-[#123532] mb-1 sm:mb-2 md:mb-1 lg:mb-1">
+        <h3 className="text-xl md:text-2xl font-semibold leading-snug text-[#123532] mb-1 sm:mb-2 md:mb-1 lg:mb-1">
           {title}
         </h3>
-        <p className="text-sm sm:text-base md:text-sm lg:text-base xl:text-base 2xl:text-xl text-[#444444] leading-relaxed">
+        <p className="text-xs md:text-base font-normal leading-normal text-[#444444]">
           {description}
         </p>
       </div>

@@ -1,31 +1,31 @@
-import React from 'react'
+import React from "react";
 
 const PROFESSIONS = [
-  'Real Estate Agent',
-  'Builder / Developer',
-  'Influencer / Content Creator',
-  'Financial Advisor',
-  'Freelancer / Gig Worker',
-  'Society / RWA Representative',
-  'Other',
-]
+  "Real Estate Agent",
+  "Builder / Developer",
+  "Influencer / Content Creator",
+  "Financial Advisor",
+  "Freelancer / Gig Worker",
+  "Society / RWA Representative",
+  "Other",
+];
 
 const DISTRICTS = [
-  'Thiruvananthapuram',
-  'Kollam',
-  'Pathanamthitta',
-  'Alappuzha',
-  'Kottayam',
-  'Idukki',
-  'Ernakulam',
-  'Thrissur',
-  'Palakkad',
-  'Malappuram',
-  'Kozhikode',
-  'Wayanad',
-  'Kannur',
-  'Kasaragod',
-]
+  "Thiruvananthapuram",
+  "Kollam",
+  "Pathanamthitta",
+  "Alappuzha",
+  "Kottayam",
+  "Idukki",
+  "Ernakulam",
+  "Thrissur",
+  "Palakkad",
+  "Malappuram",
+  "Kozhikode",
+  "Wayanad",
+  "Kannur",
+  "Kasaragod",
+];
 
 const Form = () => {
   return (
@@ -39,73 +39,88 @@ const Form = () => {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-2 space-y-15">
         {/* Heading */}
-        <h2 className="text-center text-3xl xl:text-5xl font-semibold text-[#123532] mb-4">
+        <h2 className="text-center text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
           Start Earning with Solar Today
         </h2>
-        <p className="text-center  text-[20px] text-[#4B5563]">
-            Before you apply, here are clear answers to the questions most potential partners ask. If you have a question not listed here, message us on WhatsApp and your partner manager will respond within a few hours.
+        <p className="text-center text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
+          Before you apply, here are clear answers to the questions most
+          potential partners ask. If you have a question not listed here,
+          message us on WhatsApp and your partner manager will respond within a
+          few hours.
         </p>
-
 
         {/* Contact Form */}
 
         <form className="max-w-2xl mx-auto bg-[#074A4D] rounded-2xl p-5 sm:p-6 ">
-          <h3 className="hidden sm:block text-3xl  text-white text-center mb-1">
+          <h3 className="hidden sm:block text-4xl md:text-5xl font-semibold leading-tight text-white text-center mb-1">
             Affiliate Application
           </h3>
-          <p className="hidden sm:block text-base text-[#D4D4D4] text-center mb-5">
-            Takes 2 minutes. Our partner team reviews and responds within 48 hours.
+          <p className="hidden sm:block text-sm md:text-xl font-normal leading-relaxed text-[#D4D4D4] text-center mb-5">
+            Takes 2 minutes. Our partner team reviews and responds within 48
+            hours.
           </p>
 
           <div className="bg-white rounded-2xl p-5 sm:p-6">
             {/* Full Name */}
             <div className="mb-4">
-              <label htmlFor="fullName" className="block text-xs sm:text-sm font-medium text-[#414651] mb-1.5">
+              <label
+                htmlFor="fullName"
+                className="block text-xs md:text-base font-medium leading-normal text-[#414651] mb-1.5"
+              >
                 Full Name
               </label>
               <input
                 id="fullName"
                 type="text"
                 placeholder="Enter your name"
-                className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D]"
+                className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm md:text-base text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D]"
               />
             </div>
 
             {/* Phone Number */}
             <div className="mb-4">
-              <label htmlFor="phone" className="block text-xs sm:text-sm font-medium text-[#414651] mb-1.5">
+              <label
+                htmlFor="phone"
+                className="block text-xs md:text-base font-medium leading-normal text-[#414651] mb-1.5"
+              >
                 Phone Number
               </label>
               <input
                 id="phone"
                 type="tel"
                 placeholder="Enter your number"
-                className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D]"
+                className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm md:text-base text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D]"
               />
             </div>
 
             {/* Email */}
             <div className="mb-4">
-              <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-[#414651] mb-1.5">
+              <label
+                htmlFor="email"
+                className="block text-xs md:text-base font-medium leading-normal text-[#414651] mb-1.5"
+              >
                 Email ID
               </label>
               <input
                 id="email"
                 type="email"
                 placeholder="Enter your email"
-                className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D]"
+                className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm md:text-base text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D]"
               />
             </div>
 
             {/* Profession */}
             <div className="mb-4">
-              <label htmlFor="profession" className="block text-xs sm:text-sm font-medium text-[#414651] mb-1.5">
+              <label
+                htmlFor="profession"
+                className="block text-xs md:text-base font-medium leading-normal text-[#414651] mb-1.5"
+              >
                 Your Profession
               </label>
               <select
                 id="profession"
                 defaultValue=""
-                className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm text-[#111827] bg-white focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D] cursor-pointer"
+                className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm md:text-base text-[#111827] bg-white focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D] cursor-pointer"
               >
                 <option value="" disabled className="text-[#9CA3AF]">
                   Select Your Profession
@@ -120,13 +135,16 @@ const Form = () => {
 
             {/* District */}
             <div className="mb-5">
-              <label htmlFor="district" className="block text-xs sm:text-sm font-medium text-[#414651] mb-1.5">
+              <label
+                htmlFor="district"
+                className="block text-xs md:text-base font-medium leading-normal text-[#414651] mb-1.5"
+              >
                 District / Area
               </label>
               <select
                 id="district"
                 defaultValue=""
-                className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm text-[#111827] bg-white focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D] cursor-pointer"
+                className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm md:text-base text-[#111827] bg-white focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D] cursor-pointer"
               >
                 <option value="" disabled className="text-[#9CA3AF]">
                   Select Your District / Area
@@ -142,37 +160,38 @@ const Form = () => {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-[#F7BA41] hover:bg-[#e5a51f] transition-colors duration-200 text-[#272218] font-semibold text-sm sm:text-lg py-3 rounded-xl cursor-pointer"
+              className="w-full bg-[#F7BA41] hover:bg-[#e5a51f] transition-colors duration-200 text-[#272218] font-semibold text-base md:text-xl leading-snug py-3 rounded-xl cursor-pointer"
             >
               Submit Application
             </button>
 
             {/* Divider */}
-            <div className="text-center  text-base sm:text-2xl text-[#5B5B5B] my-3">or</div>
+            <div className="text-center text-base md:text-xl font-normal leading-snug text-[#5B5B5B] my-3">
+              or
+            </div>
 
             {/* WhatsApp */}
             <a
               href="https://wa.me/6282922988?text=Hi, I'd like to know more about Flarize solar solutions."
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full border border-[#074A4D] text-[#074A4D] hover:bg-[#F3F4F6] transition-colors duration-200 font-semibold text-base sm:text-lg py-3 rounded-xl flex items-center justify-center gap-2"
+              className="w-full border border-[#074A4D] text-[#074A4D] hover:bg-[#F3F4F6] transition-colors duration-200 font-semibold text-base md:text-xl leading-snug py-3 rounded-xl flex items-center justify-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
                 fill="currentColor"
                 viewBox="0 0 24 24"
-            >
+              >
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
               </svg>
               Message us on WhatsApp
             </a>
           </div>
         </form>
-
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Form
+export default Form;

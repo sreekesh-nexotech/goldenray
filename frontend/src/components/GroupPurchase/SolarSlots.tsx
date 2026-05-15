@@ -30,12 +30,12 @@ export default function SolarSlots() {
     <section className="relative py-12 sm:py-14 md:py-16 lg:py-20 xl:py-24 2xl:py-16 ">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <h2 className="text-[#123532] font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl 2xl:text-4xl text-center mb-3 sm:mb-4 2xl:mb-3">
+        <h2 className="text-[#123532] text-4xl md:text-5xl font-semibold leading-tight text-center mb-3 sm:mb-4 2xl:mb-3">
           Active Group Solar Slots Near You
         </h2>
 
         {/* Subheading with status */}
-        <p className="text-sm sm:text-base md:text-base lg:text-lg xl:text-base 2xl:text-base text-center mb-8 sm:mb-10 md:mb-12 lg:mb-14 2xl:mb-8">
+        <p className="text-base md:text-xl font-normal md:font-semibold leading-snug text-center mb-8 sm:mb-10 md:mb-12 lg:mb-14 2xl:mb-8">
           <span className="text-[#F59E0B] font-semibold">3 of 5</span>{" "}
           <span className="text-[#6B7280]">
             open this month.Max 10 families each · Resets monthly
@@ -51,23 +51,23 @@ export default function SolarSlots() {
             >
               {/* Header with location and status */}
               <div className="flex items-start justify-between mb-2 sm:mb-3 md:mb-2 2xl:mb-3">
-                <h3 className="text-[#123532]  text-xl sm:text-2xl md:text-xl lg:text-xl xl:text-xl 2xl:text-2xl">
+                <h3 className="text-[#123532] text-xl md:text-2xl font-semibold leading-snug">
                   {slot.location}
                 </h3>
-                <span className="text-[#6B7280] text-xs sm:text-sm md:text-sm font-medium whitespace-nowrap ml-3">
+                <span className="text-[#6B7280] text-xs md:text-base font-normal leading-normal whitespace-nowrap ml-3">
                   {slot.status}
                 </span>
               </div>
 
               {/* Description */}
-              <p className="text-[#6B7280] text-xs sm:text-sm md:text-sm lg:text-sm xl:text-sm 2xl:text-sm leading-relaxed mb-4 sm:mb-5 2xl:mb-3">
+              <p className="text-[#6B7280] text-xs md:text-base font-normal leading-normal mb-4 sm:mb-5 2xl:mb-3">
                 {slot.description}
               </p>
 
               {/* Bonus Badge */}
               <div className="flex items-center gap-2 mb-4 sm:mb-5 md:mb-3 2xl:mb-3">
                 <span className="text-lg sm:text-xl">🏆</span>
-                <span className="text-[#059669] text-xs sm:text-sm md:text-xs font-medium">
+                <span className="text-[#059669] text-xs md:text-base font-normal leading-normal">
                   First-family leader bonus: {slot.bonus}
                 </span>
               </div>
@@ -75,7 +75,7 @@ export default function SolarSlots() {
               {/* CTA Button */}
               <Link
                 href="#reserve"
-                className="inline-flex items-center gap-2 text-[#F59E0B]  text-sm sm:text-base hover:gap-3 transition-all"
+                className="inline-flex items-center gap-2 text-[#F59E0B] text-base md:text-xl font-normal md:font-semibold leading-snug hover:gap-3 transition-all"
               >
                 Start This Group
                 <span>→</span>
@@ -86,7 +86,7 @@ export default function SolarSlots() {
 
         {/* Bottom Section */}
         <div className="text-center">
-          <p className="text-[#6B7280] text-sm sm:text-base md:text-base lg:text-lg xl:text-base 2xl:text-base mb-6 sm:mb-8 2xl:mb-6 max-w-4xl mx-auto">
+          <p className="text-[#6B7280] text-sm md:text-xl font-normal leading-relaxed mb-6 sm:mb-8 2xl:mb-6 max-w-4xl mx-auto">
             Your area not listed? Reserve your spot and we start matching
             families near you. Most group solar slots in Kerala fill within
             10-15 days. We serve all 14 districts — from Kasaragod to
@@ -94,7 +94,13 @@ export default function SolarSlots() {
           </p>
 
           {/* Reserve Button */}
-          <LinkingButton content="Reserve & We'll Match You" ButtonLink="#reserve" ButtonBg="bg-[#F7BA41]" ButtonHover="hover:bg-[#e6a73a]" Buttontext="text-[#272218]" />
+          <LinkingButton
+            content="Reserve & We'll Match You"
+            ButtonLink="#reserve"
+            ButtonBg="bg-[#F7BA41]"
+            ButtonHover="hover:bg-[#e6a73a]"
+            Buttontext="text-[#272218]"
+          />
         </div>
       </div>
     </section>

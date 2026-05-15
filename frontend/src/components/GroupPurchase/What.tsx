@@ -32,12 +32,12 @@ export default function What() {
     <section className="relative py-8 sm:py-10 md:py-12 lg:py-14 xl:py-16 ">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <h2 className="text-[#123532] font-semibold text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl mb-3 sm:mb-4 md:mb-5 lg:mb-6">
+        <h2 className="text-[#123532] text-4xl md:text-5xl font-semibold leading-tight mb-3 sm:mb-4 md:mb-5 lg:mb-6">
           What Is Group Solar Purchasing?
         </h2>
 
         {/* Description */}
-        <p className="text-sm sm:text-sm md:text-base lg:text-base xl:text-base 2xl:text-lg mb-6 sm:mb-8 md:mb-10 lg:mb-12 leading-relaxed">
+        <p className="text-sm md:text-xl font-normal leading-relaxed mb-6 sm:mb-8 md:mb-10 lg:mb-12">
           Group solar purchasing is a bulk installation model exclusive to
           Flarize. 10 families in the same Kerala locality book together, and we
           install all homes in a single coordinated week. Each home gets its own
@@ -65,16 +65,16 @@ export default function What() {
               <div key={index} className="flex flex-col">
                 {/* Number and Title */}
                 <div className="flex items-start gap-2 sm:gap-3 mb-1">
-                  <span className="text-[#F59E0B] font-smibold text-lg sm:text-xl md:text-xl lg:text-xl flex-shrink-0">
+                  <span className="text-[#F59E0B] text-base md:text-xl font-semibold leading-snug flex-shrink-0">
                     {feature.number}
                   </span>
-                  <h3 className="text-[#123532] font-semibold text-base sm:text-lg md:text-lg lg:text-md xl:text-lg 2xl:text-xl leading-tight">
+                  <h3 className="text-[#123532] text-xl md:text-2xl font-semibold leading-snug">
                     {feature.title}
                   </h3>
                 </div>
 
                 {/* Description */}
-                <p className="text-[#6B7280] text-xs sm:text-xs md:text-sm lg:text-sm leading-relaxed pl-6 sm:pl-8 md:pl-9">
+                <p className="text-[#6B7280] text-xs md:text-base font-normal leading-normal pl-6 sm:pl-8 md:pl-9">
                   {feature.description}
                 </p>
               </div>

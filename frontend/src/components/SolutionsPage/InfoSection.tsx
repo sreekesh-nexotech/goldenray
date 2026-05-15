@@ -41,10 +41,10 @@ export default function InfoSection({
 
           {/* Text Content */}
           <div className="w-full lg:w-1/2">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
+            <h2 className="text-xl md:text-2xl lg:text-2xl font-semibold leading-snug text-gray-900 mb-6">
               {data.title}
             </h2>
-            <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+            <p className="text-gray-600 text-sm md:text-base lg:text-xl font-normal leading-relaxed">
               {data.description}
             </p>
           </div>

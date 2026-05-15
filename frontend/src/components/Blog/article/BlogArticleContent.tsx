@@ -12,7 +12,9 @@ interface BlogArticleContentProps {
 function QuickSummary({ items }: { items: string[] }) {
   return (
     <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-6 mb-10 border-l-4 border-l-[#3B82F6]">
-      <h3 className="text-base font-bold text-[#123532] mb-4">Quick Summary</h3>
+      <h3 className="text-xl md:text-2xl font-semibold leading-snug text-[#123532] mb-4">
+        Quick Summary
+      </h3>
       <ul className="flex flex-col gap-2.5">
         {items.map((item, i) => (
           <li key={i} className="flex items-start gap-2.5">
@@ -27,7 +29,7 @@ function QuickSummary({ items }: { items: string[] }) {
                 clipRule="evenodd"
               />
             </svg>
-            <span className="text-sm text-[#374151] leading-relaxed">
+            <span className="text-xs md:text-base font-normal leading-normal text-[#374151]">
               {item}
             </span>
           </li>
@@ -41,14 +43,14 @@ function QuickSummary({ items }: { items: string[] }) {
 function ArticleSection({ section }: { section: ContentSection }) {
   return (
     <section id={section.id} className="mb-10 scroll-mt-24">
-      <h2 className="text-lg sm:text-xl md:text-[1.35rem] lg:text-2xl font-bold text-[#1F2937] mb-4 sm:mb-5 leading-snug">
+      <h2 className="text-xl md:text-2xl font-semibold leading-snug text-[#1F2937] mb-4 sm:mb-5">
         {section.title}
       </h2>
       <div className="flex flex-col gap-3 sm:gap-4">
         {section.paragraphs.map((para, i) => (
           <p
             key={i}
-            className="text-sm sm:text-base text-[#374151] leading-relaxed sm:leading-loose"
+            className="text-sm md:text-xl font-normal leading-relaxed text-[#374151]"
           >
             {para}
           </p>
@@ -74,15 +76,15 @@ export default function BlogArticleContent({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-7 pb-6 border-b border-gray-200">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-[#123532] flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-sm font-semibold">
+            <span className="text-white text-xs md:text-base font-semibold leading-normal">
               {(author ?? "G")[0]}
             </span>
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#1F2937]">
+            <p className="text-xs md:text-base font-semibold leading-normal text-[#1F2937]">
               {author ?? "Golden Ray Solar"}
             </p>
-            <p className="text-xs text-[#6B7280]">
+            <p className="text-xs md:text-base font-normal leading-normal text-[#6B7280]">
               Updated {article.updatedDate} &nbsp;·&nbsp; {article.readTime}
             </p>
           </div>
@@ -100,7 +102,7 @@ export default function BlogArticleContent({
                 clipRule="evenodd"
               />
             </svg>
-            <span className="text-xs font-medium">
+            <span className="text-xs md:text-base font-medium leading-normal">
               Reviewed by {reviewedBy}
             </span>
           </div>
@@ -112,7 +114,7 @@ export default function BlogArticleContent({
         {intro.map((para, i) => (
           <p
             key={i}
-            className="text-sm sm:text-base text-[#374151] leading-relaxed sm:leading-loose"
+            className="text-sm md:text-xl font-normal leading-relaxed text-[#374151]"
           >
             {para}
           </p>
@@ -134,16 +136,16 @@ export default function BlogArticleContent({
       {/* Check Subsidy CTA Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 bg-[#F7BA41] rounded-2xl px-5 py-5 sm:px-7 sm:py-5 md:px-8 lg:px-9 xl:px-10 2xl:px-12 mb-10">
         <div className="flex-1 min-w-0">
-          <h3 className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-[1.2rem] 2xl:text-xl font-bold text-white mb-1">
+          <h3 className="text-base md:text-xl font-semibold leading-snug text-white mb-1">
             Check Subsidy Eligibility
           </h3>
-          <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
+          <p className="text-xs md:text-base font-normal leading-normal text-white/80">
             Find out which government subsidies you qualify for.
           </p>
         </div>
         <a
           href="/subsidy"
-          className="flex-shrink-0 inline-flex items-center justify-center bg-white text-[#1F2937] font-semibold text-sm sm:text-sm md:text-base rounded-xl px-5 py-2.5 sm:px-6 sm:py-2.5 md:px-7 md:py-3 xl:px-8 2xl:px-9 hover:bg-gray-100 transition-colors duration-200 whitespace-nowrap"
+          className="flex-shrink-0 inline-flex items-center justify-center bg-white text-[#1F2937] font-semibold text-base md:text-xl leading-snug rounded-xl px-5 py-2.5 sm:px-6 sm:py-2.5 md:px-7 md:py-3 xl:px-8 2xl:px-9 hover:bg-gray-100 transition-colors duration-200 whitespace-nowrap"
         >
           Check Eligibility
         </a>

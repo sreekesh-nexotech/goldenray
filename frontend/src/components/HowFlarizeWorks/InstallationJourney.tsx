@@ -20,19 +20,23 @@ const steps = [
   },
   {
     title: "KSEB Net Metering Application",
-    description: "Once you confirm your quote, Flarize submits your KSEB net metering application on your behalf. We prepare all documentation — technical specifications, load sanction letter, site plan, and consumer details. KSEB approval typically takes 20-35 working days; Flarize tracks the application and follows up throughout. You do not need to visit a KSEB office",
+    description:
+      "Once you confirm your quote, Flarize submits your KSEB net metering application on your behalf. We prepare all documentation — technical specifications, load sanction letter, site plan, and consumer details. KSEB approval typically takes 20-35 working days; Flarize tracks the application and follows up throughout. You do not need to visit a KSEB office",
   },
   {
     title: "Installation in 3-7 Days",
-    description: "Your solar system arrives as a pre-packed kit — panels, inverter, mounting structure, cables, and all accessories. The nearest certified Flarize installer in your pincode is automatically assigned. Your rooftop solar system is installed in 3-7 working days — significantly faster than the 3-6 week industry average in Kerala",
+    description:
+      "Your solar system arrives as a pre-packed kit — panels, inverter, mounting structure, cables, and all accessories. The nearest certified Flarize installer in your pincode is automatically assigned. Your rooftop solar system is installed in 3-7 working days — significantly faster than the 3-6 week industry average in Kerala",
   },
   {
     title: "System Commissioning and Monitoring Activation",
-    description: "After installation, a Flarize engineer conducts full system commissioning — inverter configuration, initial generation check, electrical safety inspection, and monitoring dashboard activation. Your real-time solar generation data is available from the Flarize app from day one. Any performance issues are flagged automatically",
+    description:
+      "After installation, a Flarize engineer conducts full system commissioning — inverter configuration, initial generation check, electrical safety inspection, and monitoring dashboard activation. Your real-time solar generation data is available from the Flarize app from day one. Any performance issues are flagged automatically",
   },
   {
     title: "Net Metering Activation — Savings Begin",
-    description: "KSEB conducts the final inspection, installs the bi-directional net meter, and activates your net metering connection. From this point, the solar units you generate reduce your electricity bill directly — and surplus units exported to the KSEB grid are credited to your account. Your solar investment is now working for you",
+    description:
+      "KSEB conducts the final inspection, installs the bi-directional net meter, and activates your net metering connection. From this point, the solar units you generate reduce your electricity bill directly — and surplus units exported to the KSEB grid are credited to your account. Your solar investment is now working for you",
   },
 ];
 
@@ -41,12 +45,14 @@ const InstallationJourney = () => {
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
-      const firstCard = scrollRef.current.firstElementChild as HTMLElement | null;
+      const firstCard = scrollRef.current
+        .firstElementChild as HTMLElement | null;
       const scrollAmount = firstCard ? firstCard.offsetWidth + 24 : 380;
-      const scrollTo = direction === "left"
-        ? scrollRef.current.scrollLeft - scrollAmount 
-        : scrollRef.current.scrollLeft + scrollAmount;
-      
+      const scrollTo =
+        direction === "left"
+          ? scrollRef.current.scrollLeft - scrollAmount
+          : scrollRef.current.scrollLeft + scrollAmount;
+
       scrollRef.current.scrollTo({
         left: scrollTo,
         behavior: "smooth",
@@ -59,18 +65,18 @@ const InstallationJourney = () => {
       {/* Header Container*/}
       <div className="max-w-7xl mx-auto px-6 md:px-10 mb-14">
         <div className="w-full max-w-7xl mx-auto text-center mb-8">
-        <h2 className="text-3xl xl:text-5xl font-semibold text-[#123532] mb-4">
-          Your Solar Installation Journey in Kerala — 7 Steps Explained
-        </h2>
-        <p className="hidden sm:block text-[20px] text-[#4B5563]">
-           From your first enquiry to your electricity bill dropping — here is
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
+            Your Solar Installation Journey in Kerala — 7 Steps Explained
+          </h2>
+          <p className="hidden sm:block text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
+            From your first enquiry to your electricity bill dropping — here is
             exactly what happens at every step of your solar installation with
             Flarize.
-        </p>
-      </div>
+          </p>
+        </div>
       </div>
 
-    <div
+      <div
         ref={scrollRef}
         className="no-scrollbar mt-12 flex gap-6 overflow-x-auto scroll-smooth no-scrollbar"
         style={{
@@ -84,12 +90,14 @@ const InstallationJourney = () => {
             data-card
             className="shrink-0 w-full max-w-[560px] rounded-xl border border-[#E8E4DA] bg-white p-6"
           >
-            <span className="text-sm text-[#123532] font-medium">
+            <span className="text-xs md:text-base font-normal leading-normal text-[#123532]">
               {String(idx + 1).padStart(2, "0")}
             </span>
             <hr className="my-4 border-[#EAEAEA]" />
-            <h3 className="text-xl font-semibold text-[#123532]">{step.title}</h3>
-            <p className="mt-3 text-sm leading-relaxed text-[#444444]">
+            <h3 className="text-xl md:text-2xl font-semibold leading-snug text-[#123532]">
+              {step.title}
+            </h3>
+            <p className="mt-3 text-xs md:text-base font-normal leading-normal text-[#444444]">
               {step.description}
             </p>
           </article>
@@ -128,6 +136,5 @@ const InstallationJourney = () => {
     </section>
   );
 };
-
 
 export default InstallationJourney;

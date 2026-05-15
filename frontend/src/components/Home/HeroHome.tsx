@@ -33,10 +33,10 @@ export default function HeroHome() {
       <div className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-7xl flex flex-col md:flex-row items-center h-full xl:gap-40 gap-0">
         {/* Left Side - Text */}
         <div className="w-full text-center md:text-left">
-          <h1 className="text-[2.5rem]/10 sm:text-5xl lg:text-7xl font-bold text-[#123532] mb-4">
+          <h1 className="text-4xl md:text-7xl font-semibold leading-tight text-[#123532] mb-4">
             Solar Energy Solutions in Kerala
           </h1>
-          <p className="text-base sm:text-lg md:text-xl  2xl:text-2xl text-[#444444] mb-6">
+          <p className="text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-6">
             India&apos;s first solar booking platform. Your KSEB bill isn&apos;t
             going down — we stop it from going up. Backed by Golden Ray (300+
             installations, 4.9★). KSEB approved solar EPC company for homes and

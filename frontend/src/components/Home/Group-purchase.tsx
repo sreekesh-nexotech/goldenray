@@ -35,7 +35,7 @@ export default function GroupPurchaseScheme() {
       >
         <div className="p-5 sm:p-6 md:p-8 lg:p-8 xl:p-6 2xl:p-14">
           {/* Heading */}
-          <h2 className="text-3xl sm:text-4xl md:text-3xl lg:text-4xl xl:text-4xl 2xl:text-5xl font-light leading-tight mb-4 sm:mb-5 md:mb-6 lg:mb-4 xl:mb-4 2xl:mb-10 text-[#123532]">
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight mb-4 sm:mb-5 md:mb-6 lg:mb-4 xl:mb-4 2xl:mb-10 text-[#123532]">
             Save More with Our Group
             <br className="hidden sm:block" /> Purchase Scheme!
           </h2>
@@ -138,7 +138,7 @@ export default function GroupPurchaseScheme() {
               </div>
 
               {/* Progress Text */}
-              <p className="text-xs sm:text-sm md:text-xs lg:text-sm xl:text-sm 2xl:text-base text-[#123532] mb-4 sm:mb-5 md:mb-4 lg:mb-5 xl:mb-4 2xl:mb-8 leading-relaxed">
+              <p className="text-xs md:text-base font-normal leading-normal text-[#123532] mb-4 sm:mb-5 md:mb-4 lg:mb-5 xl:mb-4 2xl:mb-8">
                 Neighbours in your area are teaming up for more savings.{" "}
                 <span className="font-medium">
                   {familiesJoined} families joined, only {spotsLeft} spots left!
@@ -148,7 +148,7 @@ export default function GroupPurchaseScheme() {
               {/* Reserve Button */}
               <Link
                 href="#booking"
-                className="inline-block bg-white text-[#074A4D] px-5 py-2 sm:px-6 sm:py-2.5 md:px-5 md:py-2 lg:px-6 lg:py-2.5 xl:px-7 xl:py-3 2xl:px-10 2xl:py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer text-xs sm:text-sm md:text-xs lg:text-sm xl:text-sm 2xl:text-lg"
+                className="inline-block bg-white text-[#074A4D] px-5 py-2 sm:px-6 sm:py-2.5 md:px-5 md:py-2 lg:px-6 lg:py-2.5 xl:px-7 xl:py-3 2xl:px-10 2xl:py-4 rounded-lg font-semibold leading-snug text-base md:text-xl hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
               >
                 Reserve your spot
               </Link>

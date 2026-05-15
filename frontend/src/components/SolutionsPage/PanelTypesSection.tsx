@@ -31,7 +31,7 @@ export default function PanelTypesSection({
       <div className="max-w-7xl mx-auto">
         {/* Section Title */}
         <h2
-          className={`text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-10 md:mb-12 lg:mb-16 ${
+          className={`text-4xl md:text-5xl font-semibold leading-tight text-center mb-10 md:mb-12 lg:mb-16 ${
             isDark ? "text-white" : "text-gray-900"
           }`}
         >
@@ -70,7 +70,7 @@ export default function PanelTypesSection({
 
               {/* Panel Name */}
               <h3
-                className={`text-base md:text-lg lg:text-xl 2xl:text-2xl font-bold mb-3 md:mb-4 ${
+                className={`text-base md:text-xl lg:text-2xl 2xl:text-2xl font-semibold leading-snug mb-3 md:mb-4 ${
                   isDark ? "text-white" : "text-gray-900"
                 }`}
               >
@@ -79,7 +79,7 @@ export default function PanelTypesSection({
 
               {/* Panel Description */}
               <p
-                className={`text-sm md:text-base 2xl:text-lg leading-relaxed ${
+                className={`text-xs md:text-base 2xl:text-base font-normal leading-normal ${
                   isDark ? "text-gray-300" : "text-gray-700"
                 }`}
               >

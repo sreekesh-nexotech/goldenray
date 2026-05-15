@@ -20,22 +20,22 @@ export default function BlogHero() {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 xl:px-36 pt-36 pb-14 md:pt-48 md:pb-16 max-w-7xl flex flex-col items-center text-center">
         {/* Label */}
-        <p className="text-sm sm:text-base font-medium text-[#6B7280] tracking-wide mb-4">
+        <p className="text-xs md:text-base font-normal leading-normal text-[#6B7280] tracking-wide mb-4">
           Knowledge Hub
         </p>
 
         {/* Heading */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#123532] leading-tight mb-5">
+        <h1 className="text-4xl md:text-7xl font-semibold leading-tight text-[#123532] mb-5">
           Solar Guides &amp; Insights
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base sm:text-lg md:text-xl text-[#444444] max-w-xl md:max-w-2xl leading-relaxed mb-8">
+        <p className="text-sm md:text-xl font-normal leading-relaxed text-[#444444] max-w-xl md:max-w-2xl mb-8">
           Clear, practical guides to help you make confident solar decisions.
         </p>
 
         {/* Stats row */}
-        <div className="flex items-center gap-3 text-sm sm:text-base text-[#6B7280]">
+        <div className="flex items-center gap-3 text-xs md:text-base font-normal leading-normal text-[#6B7280]">
           <span>28 Guides</span>
           <span className="w-1.5 h-1.5 rounded-full bg-[#6B7280] inline-block" />
           <span>Last updated: Dec 2024</span>

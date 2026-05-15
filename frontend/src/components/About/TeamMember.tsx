@@ -40,18 +40,18 @@ export default function TeamMember({
       <div className="flex flex-col items-start flex-1">
         <div>
           {/* Name */}
-          <h3 className="text-sm md:text-base lg:text-lg font-semibold text-[#2D3748] mb-1 uppercase tracking-wide">
+          <h3 className="text-base md:text-xl font-semibold leading-snug text-[#2D3748] mb-1 uppercase tracking-wide">
             {name}
           </h3>
 
           {/* Title/Role */}
-          <p className="text-xs md:text-sm text-[#F7BA41] font-semibold uppercase tracking-wider">
+          <p className="text-xs md:text-base font-semibold leading-normal text-[#F7BA41] uppercase tracking-wider">
             {title}
           </p>
 
           {/* Description if provided */}
           {description && (
-            <p className="text-sm text-[#666666] mt-3 leading-relaxed">
+            <p className="text-xs md:text-base font-normal leading-normal text-[#666666] mt-3">
               {description}
             </p>
           )}
@@ -63,7 +63,7 @@ export default function TeamMember({
             href={linkedin || twitter || "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-4 py-2 text-sm border-2 border-[#074A4D] text-[#074A4D] rounded-lg font-semibold hover:bg-[#074A4D] hover:text-white transition-colors duration-300 mt-14"
+            className="inline-flex items-center px-4 py-2 text-xs md:text-base font-semibold leading-snug border-2 border-[#074A4D] text-[#074A4D] rounded-lg hover:bg-[#074A4D] hover:text-white transition-colors duration-300 mt-14"
           >
             LinkedIn →
           </Link>

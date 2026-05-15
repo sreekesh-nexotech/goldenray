@@ -36,7 +36,7 @@ export default function Footer() {
 
     if (!name.match(/^[A-Za-z\s]{3,}$/)) {
       setError(
-        "Please enter a valid name with at least 3 alphabetic characters."
+        "Please enter a valid name with at least 3 alphabetic characters.",
       );
       setSuccessMessage(null);
       window.scrollTo(0, scrollY);
@@ -57,7 +57,7 @@ export default function Footer() {
     try {
       await submitContactForm({ name, phone_number });
       setSuccessMessage(
-        "Thank you! Your consultation request has been successfully submitted. We'll be in touch shortly!"
+        "Thank you! Your consultation request has been successfully submitted. We'll be in touch shortly!",
       );
       if (formRef.current) {
         formRef.current.reset();
@@ -69,7 +69,7 @@ export default function Footer() {
         err.message.includes("phone number already exists")
       ) {
         setSuccessMessage(
-          "We already have your details! Our team will contact you soon."
+          "We already have your details! Our team will contact you soon.",
         );
         if (formRef.current) {
           formRef.current.reset();
@@ -205,7 +205,12 @@ export default function Footer() {
               </p>
               {/* Guideline [8]: Increased touch target for social media icons with padding */}
               <div className="flex gap-4">
-                <Link href="https://www.linkedin.com/showcase/flarize/" target="new" aria-label="LinkedIn" className="p-2">
+                <Link
+                  href="https://www.linkedin.com/showcase/flarize/"
+                  target="new"
+                  aria-label="LinkedIn"
+                  className="p-2"
+                >
                   <Image
                     src={LinkedInLogo}
                     alt="LinkedIn Logo"
@@ -213,7 +218,12 @@ export default function Footer() {
                     height={24}
                   />
                 </Link>
-                <Link href="https://www.facebook.com/profile.php?id=61586953048937" target="new" aria-label="Facebook" className="p-2">
+                <Link
+                  href="https://www.facebook.com/profile.php?id=61586953048937"
+                  target="new"
+                  aria-label="Facebook"
+                  className="p-2"
+                >
                   <Image
                     src={FacebookLogo}
                     alt="Facebook Logo"
@@ -221,7 +231,12 @@ export default function Footer() {
                     height={24}
                   />
                 </Link>
-                <Link href="https://www.instagram.com/fla.rize?igsh=MW0zZnJueG01Mm01bQ%3D%3D&utm_source=qr" target="new" aria-label="Instagram" className="p-2">
+                <Link
+                  href="https://www.instagram.com/fla.rize?igsh=MW0zZnJueG01Mm01bQ%3D%3D&utm_source=qr"
+                  target="new"
+                  aria-label="Instagram"
+                  className="p-2"
+                >
                   <Image
                     src={InstagramLogo}
                     alt="Instagram Logo"

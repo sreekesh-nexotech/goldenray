@@ -30,10 +30,10 @@ export default function TestimonialSection({ testimonial }: TestimonialProps) {
 
         {/* Testimonial Content */}
         <div className="p-6 sm:p-8 md:p-20 lg:px-50 ">
-          <blockquote className="text-lg sm:text-xl md:text-[32px] font-normal text-[#535862]  mb-10 ">
+          <blockquote className="text-sm md:text-xl font-normal leading-relaxed text-[#535862]  mb-10 ">
             &quot;{testimonial.quote}&quot;
           </blockquote>
-          <p className="text-sm md:text-2xl text-[#124944] font-medium">
+          <p className="text-base md:text-xl font-semibold leading-snug text-[#124944]">
             {testimonial.author}
           </p>
         </div>

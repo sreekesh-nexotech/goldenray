@@ -25,7 +25,7 @@ export default function SolutionHero({ data }: SolutionHeroProps) {
       {/* Content */}
       <div className="relative h-full flex items-center px-4 md:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full">
-          <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-white leading-tight uppercase max-w-3xl">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-semibold leading-tight text-white uppercase max-w-3xl">
             {data.title}
           </h1>
         </div>

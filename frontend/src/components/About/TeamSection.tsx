@@ -58,7 +58,7 @@ const TeamSection = ({ members = teamMembers }) => {
       <div className="max-w-7xl mx-auto">
         {/* Section Heading */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2D3748]">
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#2D3748]">
             Meet Our Team
           </h2>
         </div>

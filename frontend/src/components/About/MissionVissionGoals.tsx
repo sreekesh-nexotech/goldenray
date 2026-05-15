@@ -75,7 +75,7 @@ export default function MissionVisionGoals() {
       {/* Main Heading and Introductory Paragraph Container */}
       <div className="relative max-w-7xl mx-auto text-left mb-12">
         {/* Radial Gradients Layer */}
-        <h2 className="text-2xl sm:text-5xl font-semibold text-[#074A4D] mb-6">
+        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#074A4D] mb-6">
           Mission, Vision + Goals
         </h2>
       </div>
@@ -88,13 +88,15 @@ export default function MissionVisionGoals() {
             className="relative px-5 py-5 flex flex-col items-start rounded-2xl transition-all duration-300 ease-in-out hover:bg-white hover:shadow-[0_0_15px_#A98F383D] hover:-translate-y-1"
           >
             {/* Number */}
-            <p className="text-sm font-medium text-black mb-6">{goal.number}</p>
+            <p className="text-base md:text-xl font-semibold leading-snug text-black mb-6">
+              {goal.number}
+            </p>
             {/* Title */}
-            <h3 className="text-2xl md:text-4xl font-semibold text-[#121217] mb-4">
+            <h3 className="text-xl md:text-2xl font-semibold leading-snug text-[#121217] mb-4">
               {goal.title}
             </h3>
             {/* Description */}
-            <div className="text-base full mb:text-xl text-[#666666]">
+            <div className="text-sm md:text-xl font-normal leading-relaxed text-[#666666]">
               {goal.descriptionBold && (
                 <p className="font-bold mb-3">{goal.descriptionBold}</p>
               )}

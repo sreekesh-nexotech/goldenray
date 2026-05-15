@@ -12,10 +12,10 @@ const FormHeading: React.FC<FormHeadingProps> = ({ title, description }) => {
       <div className="relative z-10 container mx-auto px-2 sm:px-6 lg:px-8 xl:px-36 pb-15  flex flex-col md:flex-row items-center">
         {/* Title and description */}
         <div className="w-full text-center">
-          <h1 className="text-[24px] leading-10 sm:text-3xl lg:text-5xl font-semibold text-[#123532] mb-4">
+          <h1 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
             {title}
           </h1>
-          <p className="text-base w-full mx-auto sm:text-lg md:text-[20px] text-[#444444] mb-6">
+          <p className="text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-6">
             {description}
           </p>
         </div>

@@ -25,13 +25,13 @@ export default function ResourceHero({ posts }: HeroSectionProps) {
               className="rounded-xl"
             />
           </div>
-          <h2 className="text-2xl lg:text-[32px] text-[#123532] font-semibold mt-4 ">
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mt-4">
             {mainPost.title}
           </h2>
-          <p className="text-[#444444] text-base lg:text-xl">
+          <p className="text-[#444444] text-xs md:text-base font-normal leading-normal">
             {mainPost.description}
           </p>
-          <p className="text-[#666666] font-medium text-xs lg:text-base mt-2">
+          <p className="text-[#666666] text-xs md:text-base font-normal leading-normal mt-2">
             {mainPost.date} • {mainPost.readTime}
           </p>
           {/* main image  hidden in larger devices*/}
@@ -64,10 +64,10 @@ export default function ResourceHero({ posts }: HeroSectionProps) {
                   />
                 </div>
                 <div>
-                  <h3 className="text-[#123532] text-base lg:text-2xl font-semibold">
+                  <h3 className="text-[#123532] text-xl md:text-2xl font-semibold leading-snug">
                     {post.title}
                   </h3>
-                  <p className="text-[#666666] font-medium text-xs lg:text-sm">
+                  <p className="text-[#666666] text-xs md:text-base font-normal leading-normal">
                     {post.date} • {post.readTime}
                   </p>
                 </div>

@@ -22,7 +22,7 @@ export default function MilestonesSection({
 
   const prevSlide = () => {
     setCurrentSlide(
-      (prev) => (prev - 1 + milestones.length) % milestones.length
+      (prev) => (prev - 1 + milestones.length) % milestones.length,
     );
   };
 
@@ -30,7 +30,7 @@ export default function MilestonesSection({
     <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Section Title */}
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12 md:mb-16">
+        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-center text-gray-900 mb-12 md:mb-16">
           {title}
         </h2>
 
@@ -45,12 +45,12 @@ export default function MilestonesSection({
                 }`}
               >
                 {/* Milestone Title */}
-                <h3 className="text-base font-semibold text-gray-900 mb-3">
+                <h3 className="text-base md:text-xl font-semibold leading-snug text-gray-900 mb-3">
                   {milestone.title}
                 </h3>
 
                 {/* Milestone Description */}
-                <p className="text-gray-600 text-sm mb-8 px-4">
+                <p className="text-gray-600 text-xs md:text-base font-normal leading-normal mb-8 px-4">
                   {milestone.description}
                 </p>
 

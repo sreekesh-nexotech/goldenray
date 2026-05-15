@@ -91,10 +91,10 @@ export default function BookingForm() {
       <div className="absolute inset-0 bg-black opacity-20"></div>
       <div className="relative z-10 xl:min-h-screen flex items-center justify-start py-20 md:px-12 px-4 sm:px-6 lg:px-8 xl:px-36">
         <div className="text-white max-w-xl text-center md:text-left">
-          <h2 className="text-4xl sm:text-5xl lg:text-4xl font-semibold leading-tight mb-4">
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight mb-4">
             Book your free consultation
           </h2>
-          <p className="text-base sm:text-2xl mb-8">
+          <p className="text-sm md:text-xl font-normal leading-relaxed mb-8">
             Stop budgeting around your electricity bill. Get an honest
             assessment — savings potential, system options, MNRE subsidy
             eligibility, and net metering benefits. No obligations, just answers
@@ -144,7 +144,7 @@ export default function BookingForm() {
           </form>
           {error && (
             <p
-              className="text-red-500 bg-[#f9e6e6] p-5 rounded-2xl text-sm mt-4 text-center md:text-left w-full lg:w-2/3"
+              className="text-red-500 bg-[#f9e6e6] p-5 rounded-2xl text-xs md:text-base font-normal leading-normal mt-4 text-center md:text-left w-full lg:w-2/3"
               role="alert"
             >
               {error}
@@ -152,7 +152,7 @@ export default function BookingForm() {
           )}
           {successMessage && (
             <p
-              className=" text-green-500 bg-[#E6F9E6] p-5 rounded-2xl text-xl mt-4 text-center md:text-left w-full lg:w-2/3"
+              className=" text-green-500 bg-[#E6F9E6] p-5 rounded-2xl text-sm md:text-xl font-normal leading-relaxed mt-4 text-center md:text-left w-full lg:w-2/3"
               role="status"
             >
               <div className="flex items-center gap-1 mb-2 ">
@@ -173,7 +173,9 @@ export default function BookingForm() {
                     d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z"
                   ></path>
                 </svg>
-                <span className="font-bold text-xl ">Thank You</span>
+                <span className="font-semibold text-base md:text-xl leading-snug">
+                  Thank You
+                </span>
               </div>
               {successMessage}
             </p>

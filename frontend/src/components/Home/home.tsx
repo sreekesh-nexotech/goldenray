@@ -47,7 +47,7 @@ export default function Main() {
 
       {/* Services Section Title */}
       <div className="w-full py-12 px-4 md:px-6 lg:px-8">
-        <h2 className="text-4xl md:text-5xl font-semibold text-center text-[#123532] mb-2">
+        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-center text-[#123532] mb-2">
           Services
         </h2>
       </div>

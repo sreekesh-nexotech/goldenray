@@ -28,7 +28,7 @@ export default function ContactForm() {
 
     if (!name.match(/^[A-Za-z\s]{3,}$/)) {
       setError(
-        "Please enter a valid name with at least 3 alphabetic characters."
+        "Please enter a valid name with at least 3 alphabetic characters.",
       );
       setSuccessMessage(null);
       window.scrollTo(0, scrollY);
@@ -49,7 +49,7 @@ export default function ContactForm() {
     try {
       await submitContactForm({ name, phone_number });
       setSuccessMessage(
-        "Thank you for reaching out! We'll get back to you shortly."
+        "Thank you for reaching out! We'll get back to you shortly.",
       );
       if (formRef.current) {
         formRef.current.reset();
@@ -61,7 +61,7 @@ export default function ContactForm() {
         err.message.includes("phone number already exists")
       ) {
         setSuccessMessage(
-          "We already have your details! Our team will contact you soon."
+          "We already have your details! Our team will contact you soon.",
         );
         if (formRef.current) {
           formRef.current.reset();
@@ -92,7 +92,7 @@ export default function ContactForm() {
             id="name"
             name="name"
             placeholder="Name"
-            className="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#F7BA41] focus:border-transparent placeholder:text-gray-400"
+            className="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-[#F7BA41] focus:border-transparent placeholder:text-gray-400"
             required
             pattern="[A-Za-z\s]{3,}"
             title="Please enter at least 3 alphabetic characters."
@@ -106,7 +106,7 @@ export default function ContactForm() {
             id="phone_number"
             name="phone_number"
             placeholder="Phone number"
-            className="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#F7BA41] focus:border-transparent placeholder:text-gray-400"
+            className="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-[#F7BA41] focus:border-transparent placeholder:text-gray-400"
             required
             pattern="[6-9]\d{9}"
             title="Please enter a valid 10-digit Indian mobile number."
@@ -120,7 +120,7 @@ export default function ContactForm() {
             id="pin_code"
             name="pin_code"
             placeholder="Pin code"
-            className="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#F7BA41] focus:border-transparent placeholder:text-gray-400"
+            className="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-[#F7BA41] focus:border-transparent placeholder:text-gray-400"
             pattern="\d{6}"
             title="Please enter a valid 6-digit pin code."
             aria-label="Your pin code"
@@ -133,7 +133,7 @@ export default function ContactForm() {
             name="property_type"
             value={propertyType}
             onChange={(e) => setPropertyType(e.target.value)}
-            className="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#F7BA41] focus:border-transparent text-gray-700 bg-white appearance-none cursor-pointer"
+            className="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-[#F7BA41] focus:border-transparent text-gray-700 bg-white appearance-none cursor-pointer"
             aria-label="Property type"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
@@ -152,7 +152,7 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className={`w-full bg-[#F7BA41] hover:bg-[#e6a73a] text-[#272218] font-semibold px-6 py-3 sm:py-4 rounded-lg text-sm sm:text-base transition-colors duration-300 ${
+          className={`w-full bg-[#F7BA41] hover:bg-[#e6a73a] text-[#272218] font-semibold px-6 py-3 sm:py-4 rounded-lg text-base md:text-xl leading-snug transition-colors duration-300 ${
             isLoading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           aria-label="Book now"
@@ -163,7 +163,7 @@ export default function ContactForm() {
 
       {error && (
         <p
-          className="text-red-600 bg-red-50 p-3 sm:p-4 rounded-lg text-xs sm:text-sm mt-4"
+          className="text-red-600 bg-red-50 p-3 sm:p-4 rounded-lg text-xs md:text-base font-normal leading-normal mt-4"
           role="alert"
         >
           {error}
@@ -171,7 +171,7 @@ export default function ContactForm() {
       )}
       {successMessage && (
         <p
-          className="text-green-700 bg-green-50 p-3 sm:p-4 rounded-lg text-xs sm:text-sm mt-4"
+          className="text-green-700 bg-green-50 p-3 sm:p-4 rounded-lg text-xs md:text-base font-normal leading-normal mt-4"
           role="status"
         >
           {successMessage}

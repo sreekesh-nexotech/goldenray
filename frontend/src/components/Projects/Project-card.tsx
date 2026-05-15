@@ -29,16 +29,16 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         {/* Project Details */}
         <div className="py-3 flex flex-col gap-5 flex-1">
           {/* Project Title */}
-          <h3 className="text-[28px] font-semibold text-[#424646] ">
+          <h3 className="text-xl md:text-2xl font-semibold leading-snug text-[#424646] ">
             {project.title}
           </h3>
           {/* Project Description */}
-          <p className="text-gray-700 text-xl line-clamp-3">
+          <p className="text-gray-700 text-sm md:text-xl font-normal leading-relaxed line-clamp-3">
             {project.cardDescription}
           </p>
 
           {/* Area and Power Section */}
-          <div className="hidden md:flex items-center gap-8 text-sm text-gray-800 justify-baseline">
+          <div className="hidden md:flex items-center gap-8 text-xs md:text-base font-normal leading-normal text-gray-800 justify-baseline">
             {/* Area Column */}
             <div className="flex flex-col border-r pr-5">
               <div className="flex items-center gap-2">
@@ -46,7 +46,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
                 <Image src="/area.png" alt="Area" width={20} height={20} />
                 <span>Area</span> {/* Label for Area */}
               </div>
-              <p className="font-medium text-2xl  mt-1 text-[#020817]">
+              <p className="font-medium text-xl md:text-2xl leading-snug mt-1 text-[#020817]">
                 {project.area}
               </p>
             </div>
@@ -59,7 +59,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
                 <span>Power</span> {/* Label for Power */}
               </div>
               {/* Dynamic Power value, made bolder and slightly larger to match the image. */}
-              <p className="font-medium text-2xl  mt-1 text-[#020817] ">
+              <p className="font-medium text-xl md:text-2xl leading-snug mt-1 text-[#020817] ">
                 {project.power}
               </p>
             </div>

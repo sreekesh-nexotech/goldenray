@@ -170,7 +170,7 @@ export default function HomeTestimonial() {
       ref={ref} // For useInView to detect section visibility
       className="overflow-hidden py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36 relative"
     >
-      <h2 className="text-4xl xl:w-1/2 sm:text-4xl lg:text-4xl 2xl:text-4xl font-semibold text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
+      <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
         What our clients have to say
       </h2>
 
@@ -252,20 +252,20 @@ export default function HomeTestimonial() {
                 <div className="flex flex-wrap justify-between">
                   {testimonial.stats.map((stat, i) => (
                     <div key={i} className="text-left">
-                      <p className="text-2xl sm:text-3xl font-semibold text-[#123532]">
+                      <p className="text-xl md:text-2xl font-semibold leading-snug text-[#123532]">
                         {stat.value}
                       </p>
-                      <p className="text-sm sm:text-2xl text-[#444444] mb-4">
+                      <p className="text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-4">
                         {stat.label}
                       </p>
                     </div>
                   ))}
                 </div>
                 <hr className="opacity-10 mb-5" />
-                <p className="text-[#444444] mb-10 text-sm sm:text-lg">
+                <p className="text-[#444444] mb-10 text-sm md:text-xl font-normal leading-relaxed">
                   {testimonial.quote}
                 </p>
-                <p className="text-[#123532] font-semibold text-sm sm:text-xl">
+                <p className="text-[#123532] text-base md:text-xl font-semibold leading-snug">
                   {testimonial.author}
                 </p>
               </div>

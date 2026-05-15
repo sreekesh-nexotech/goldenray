@@ -11,20 +11,20 @@ export default function AboutHero() {
       <div className="relative z-10 container mx-auto px-4 pt-28 pb-1 max-w-7xl flex flex-col md:flex-row items-center h-full xl:gap-40 gap-0">
         {/* Left Side - Text */}
         <div className="w-full  text-center md:text-left">
-          <h1 className="text-[40px]/10 sm:text-5xl lg:text-7xl font-bold text-[#123532] mb-4">
+          <h1 className="text-4xl md:text-7xl font-semibold leading-tight text-[#123532] mb-4">
             Clean Energy, Made Simple
           </h1>
-          <p className="hidden md:block text-base sm:text-lg text-[#444444] mb-6">
+          <p className="hidden md:block text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-6">
             Solar means running your AC without guilt. Working from home
             comfortably. Raising kids without constantly checking the meter.
           </p>
-          <p className="hidden md:block text-base sm:text-lg text-[#444444] mb-2">
+          <p className="hidden md:block text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-2">
             But here&apos;s something most installers won&apos;t tell you:
           </p>
-          <p className="hidden md:block text-base sm:text-lg text-[#444444] font-semibold mb-2">
+          <p className="hidden md:block text-sm md:text-xl font-semibold leading-relaxed text-[#444444] mb-2">
             What happens when they shut down?
           </p>
-          <p className="hidden md:block text-base sm:text-lg text-[#444444] mb-6">
+          <p className="hidden md:block text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-6">
             Most solar companies don&apos;t last. Your system needs to work for
             25 years. That gap is the real problem—and it&apos;s exactly what we
             built Flarize to solve.

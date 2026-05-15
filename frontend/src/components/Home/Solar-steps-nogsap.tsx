@@ -100,7 +100,7 @@ export default function SolarStepsNoGSAP() {
       ref={sectionRef}
       className="flex flex-col py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36 relative"
     >
-      <h2 className="text-3xl xl:w-1/2 sm:text-4xl lg:text-4xl font-semibold text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
+      <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
         Go solar in just 3 easy steps
       </h2>
       <div className="w-full max-w-full md:flex space-y-4 md:space-y-0">
@@ -123,7 +123,7 @@ export default function SolarStepsNoGSAP() {
             {/* Step Number */}
             <div
               className={`
-                absolute bottom-[-25px] md:bottom-[-78px] right-3 text-[64px] md:text-[200px] font-extrabold z-0 text-white
+                absolute bottom-[-10px] md:bottom-[-40px] right-3 text-6xl md:text-9xl font-extrabold z-0 text-white
               `}
             >
               {step.id}
@@ -133,7 +133,7 @@ export default function SolarStepsNoGSAP() {
               {/* Title */}
               <h2
                 className={`
-                  text-3xl md:text-[40px] md:w-2/3 font-medium mb-2 text-left transition-all duration-500 ease-in-out
+                  text-4xl md:text-5xl md:w-2/3 font-semibold leading-tight mb-2 text-left transition-all duration-500 ease-in-out
                   ${step.textColor}
                   ${
                     activeCard === step.id
@@ -147,7 +147,7 @@ export default function SolarStepsNoGSAP() {
               {/* Description */}
               <p
                 className={`
-                  text-base md:text-xl md:mb-0 mb-4 font-normal md:w-2/3 transition-all duration-500 ease-in-out text-left
+                  text-sm md:text-xl font-normal leading-relaxed md:mb-0 mb-4 md:w-2/3 transition-all duration-500 ease-in-out text-left
                   ${step.textColor}
                   ${
                     activeCard === step.id

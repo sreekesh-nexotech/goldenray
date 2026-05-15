@@ -37,7 +37,7 @@ export default function SolarTypes({
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Title */}
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white mb-12 md:mb-16 lg:mb-20">
+        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-center text-white mb-12 md:mb-16 lg:mb-20">
           {title}
         </h2>
 
@@ -52,10 +52,10 @@ export default function SolarTypes({
               <div className="flex flex-row items-stretch h-full min-h-[180px] md:min-h-[240px]">
                 {/* Text Content - Left Side */}
                 <div className="flex-1 p-4 md:p-8 flex flex-col justify-center">
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-2 md:mb-4">
+                  <h3 className="text-base md:text-xl lg:text-2xl font-semibold leading-snug text-white mb-2 md:mb-4">
                     {type.title}
                   </h3>
-                  <p className="text-white/90 text-xs md:text-sm lg:text-base leading-relaxed">
+                  <p className="text-white/90 text-xs md:text-sm lg:text-base font-normal leading-normal">
                     {type.description}
                   </p>
                 </div>

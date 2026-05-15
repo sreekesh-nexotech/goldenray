@@ -18,20 +18,20 @@ export default function SubsidyHero() {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-15 sm:py-18 md:py-20 lg:py-24 xl:py-28 2xl:py-32 max-w-7xl flex items-center justify-center h-full">
         {/* Centered Text */}
         <div className="w-full text-center mt-16 sm:mt-18 md:mt-20 lg:mt-12 xl:mt-14 2xl:mt-16">
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-2xl 2xl:text-3xl font-semibold text-[#ED8723] mb-2 sm:mb-3 lg:mb-3 xl:mb-4 2xl:mb-4">
+          <p className="text-base md:text-xl font-semibold leading-snug text-[#ED8723] mb-2 sm:mb-3 lg:mb-3 xl:mb-4 2xl:mb-4">
             🎉 Congratulations!
           </p>
-          <h1 className="text-[2.5rem]/10 sm:text-5xl md:text-5xl lg:text-6xl xl:text-6xl 2xl:text-7xl font-bold text-[#123532] mb-4 sm:mb-5 lg:mb-6 xl:mb-6 2xl:mb-8">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-semibold leading-tight text-[#123532] mb-4 sm:mb-5 lg:mb-6 xl:mb-6 2xl:mb-8">
             Get up to <span className="text-[#ED8723]">₹78,000</span> Back on
             Solar
           </h1>
-          <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-2xl text-[#444444] mb-4 sm:mb-5 lg:mb-5 xl:mb-6 2xl:mb-6 max-w-3xl xl:max-w-4xl 2xl:max-w-4xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-4 sm:mb-5 lg:mb-5 xl:mb-6 2xl:mb-6 max-w-3xl xl:max-w-4xl 2xl:max-w-4xl mx-auto">
             Join 300+ Kerala families who&apos;ve gone solar with Flarize — 8+
             years operating in Kerala, saving ₹5,000+ every month on electricity
             bills. We handle all KSEB paperwork &amp; PM Surya Ghar portal
             filing.
           </p>
-          <p className="text-xs sm:text-sm md:text-sm lg:text-base xl:text-base 2xl:text-lg text-[#666666] mb-6 sm:mb-7 lg:mb-8 xl:mb-8 2xl:mb-10">
+          <p className="text-xs md:text-base font-normal leading-normal text-[#666666] mb-6 sm:mb-7 lg:mb-8 xl:mb-8 2xl:mb-10">
             Government Registered · MNRE Approved · KSEB Compliant
           </p>
 

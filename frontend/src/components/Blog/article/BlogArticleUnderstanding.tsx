@@ -31,7 +31,7 @@ export default function BlogArticleUnderstanding({
       </div>
 
       {/* Section title */}
-      <h2 className="text-lg sm:text-xl md:text-[1.35rem] lg:text-2xl font-bold text-[#1F2937] mb-4 sm:mb-5 leading-snug">
+      <h2 className="text-xl md:text-2xl font-semibold leading-snug text-[#1F2937] mb-4 sm:mb-5">
         {understanding.title}
       </h2>
 
@@ -41,7 +41,7 @@ export default function BlogArticleUnderstanding({
           {understanding.paragraphs.map((para, i) => (
             <p
               key={i}
-              className="text-sm sm:text-base text-[#374151] leading-relaxed sm:leading-loose"
+              className="text-sm md:text-xl font-normal leading-relaxed text-[#374151]"
             >
               {para}
             </p>
@@ -58,7 +58,7 @@ export default function BlogArticleUnderstanding({
                 {understanding.table.headers.map((header, i) => (
                   <th
                     key={i}
-                    className="px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-[#374151] whitespace-nowrap"
+                    className="px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-xs md:text-base font-semibold leading-normal text-[#374151] whitespace-nowrap"
                   >
                     {header}
                   </th>
@@ -74,7 +74,7 @@ export default function BlogArticleUnderstanding({
                   {row.cells.map((cell, ci) => (
                     <td
                       key={ci}
-                      className={`px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-xs sm:text-sm ${
+                      className={`px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-xs md:text-base font-normal leading-normal ${
                         ci === (understanding.table?.highlightColumnIndex ?? -1)
                           ? "text-green-600 font-semibold"
                           : "text-[#374151]"
@@ -97,7 +97,7 @@ export default function BlogArticleUnderstanding({
             {understanding.afterTableParagraphs.map((para, i) => (
               <p
                 key={i}
-                className="text-sm sm:text-base text-[#374151] leading-relaxed sm:leading-loose"
+                className="text-sm md:text-xl font-normal leading-relaxed text-[#374151]"
               >
                 {para}
               </p>
@@ -122,11 +122,11 @@ export default function BlogArticleUnderstanding({
               <path d="M9 18h6" />
               <path d="M10 22h4" />
             </svg>
-            <span className="text-sm sm:text-[0.9rem] font-bold text-[#123532]">
+            <span className="text-xs md:text-base font-semibold leading-normal text-[#123532]">
               Key Insight
             </span>
           </div>
-          <p className="text-sm sm:text-[0.9rem] text-[#374151] leading-relaxed pl-6">
+          <p className="text-sm md:text-base font-normal leading-normal text-[#374151] pl-6">
             {understanding.keyInsight}
           </p>
         </div>

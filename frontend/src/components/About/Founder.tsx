@@ -21,7 +21,7 @@ export default function Founder() {
       </div>
       {/* Left Section: Quote and Name */}
       <div className="lg:w-[34%] flex flex-col justify-between">
-        <p className="text-base sm:text-xl font-normal mb-4 lg:mb-0">
+        <p className="text-sm md:text-xl font-normal leading-relaxed mb-4 lg:mb-0">
           <q>
             At Flarize, our team is made up of passionate solar professionals,
             engineers, and problem-solvers who care deeply about the homes and
@@ -34,7 +34,9 @@ export default function Founder() {
           </q>
         </p>
         <div>
-          <h2 className="text-[32px] sm:text-[40px] font-bold">OUR TEAM</h2>
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight">
+            OUR TEAM
+          </h2>
         </div>
       </div>
 

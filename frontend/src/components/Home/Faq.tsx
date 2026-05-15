@@ -60,10 +60,10 @@ export default function Faq() {
       <div className="container mx-auto flex flex-col items-center justify-center gap-8 lg:gap-12 md:p-10 rounded-xl max-w-full py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36">
         {/* Heading and Description */}
         <div className="w-full text-center">
-          <h2 className="text-4xl md:text-5xl font-semibold text-[#123532] mb-2 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-2">
             Have Any Questions?
           </h2>
-          <p className="text-base md:text-xl text-[#444444]">
+          <p className="text-base md:text-xl font-normal md:font-semibold leading-snug text-[#444444]">
             Get expert advice and find your ideal solar solution — no
             obligations, just answers.
           </p>
@@ -81,7 +81,7 @@ export default function Faq() {
                 onClick={() => toggleFaq(index)}
                 aria-label="toggle FAQ answer"
               >
-                <span className="text-base md:text-lg font-semibold text-[#444444] pr-4">
+                <span className="text-xl md:text-2xl font-semibold leading-snug text-[#444444] pr-4">
                   {faq.question}
                 </span>
                 <span
@@ -93,7 +93,7 @@ export default function Faq() {
                 </span>
               </button>
               {openIndex === index && (
-                <div className="mt-3 text-[#444444] text-sm md:text-base leading-relaxed">
+                <div className="mt-3 text-[#444444] text-xs md:text-base font-normal leading-normal">
                   {faq.answer}
                 </div>
               )}

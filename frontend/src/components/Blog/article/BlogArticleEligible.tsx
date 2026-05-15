@@ -10,12 +10,12 @@ export default function BlogArticleEligible({
   return (
     <section className="mt-10">
       {/* Title */}
-      <h2 className="text-lg sm:text-xl md:text-[1.35rem] lg:text-2xl font-bold text-[#1F2937] mb-4 sm:mb-5 leading-snug">
+      <h2 className="text-xl md:text-2xl font-semibold leading-snug text-[#1F2937] mb-4 sm:mb-5">
         {eligible.title}
       </h2>
 
       {/* Intro */}
-      <p className="text-sm sm:text-base text-[#374151] leading-relaxed sm:leading-loose mb-5 sm:mb-6">
+      <p className="text-sm md:text-xl font-normal leading-relaxed text-[#374151] mb-5 sm:mb-6">
         {eligible.intro}
       </p>
 
@@ -37,7 +37,7 @@ export default function BlogArticleEligible({
                 />
               </svg>
             </span>
-            <span className="text-sm sm:text-base text-[#374151] leading-relaxed">
+            <span className="text-sm md:text-base font-normal leading-normal text-[#374151]">
               {item}
             </span>
           </li>
@@ -60,11 +60,11 @@ export default function BlogArticleEligible({
                 clipRule="evenodd"
               />
             </svg>
-            <span className="text-sm sm:text-[0.9rem] font-bold text-[#92400E]">
+            <span className="text-xs md:text-base font-semibold leading-normal text-[#92400E]">
               Important
             </span>
           </div>
-          <p className="text-sm sm:text-[0.9rem] text-[#374151] leading-relaxed pl-6">
+          <p className="text-sm md:text-base font-normal leading-normal text-[#374151] pl-6">
             {eligible.important}
           </p>
         </div>

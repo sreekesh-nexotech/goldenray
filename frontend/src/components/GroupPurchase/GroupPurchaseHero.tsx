@@ -13,16 +13,19 @@ export default function GroupPurchaseHero() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-12 md:pt-20 md:pb-16  lg:pb-20">
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           <div className="w-full lg:w-[52%] text-center lg:text-left">
-            <h1 className="text-[1.75rem]/[1.12] sm:text-[2.25rem]/[1.12] md:text-[2.75rem]/[1.12] lg:text-[3.25rem]/[1.12] xl:text-[3.5rem]/[1.12] 2xl:text-[3.75rem]/[1.12] text-[#123532]">
-              <span className="block font-medium">Group Solar Purchase</span>
-              <span className="block font-medium">in Kerala &mdash;</span>
-              <span className="block font-medium">
-                <span className="text-[#F18627] font-semibold">Save ₹10,000</span> with
+            <h1 className="text-4xl md:text-7xl font-semibold leading-tight text-[#123532]">
+              <span className="block">Group Solar Purchase</span>
+              <span className="block">in Kerala &mdash;</span>
+              <span className="block">
+                <span className="text-[#F18627] font-semibold">
+                  Save ₹10,000
+                </span>{" "}
+                with
               </span>
-              <span className="block font-medium">Your Neighbours</span>
+              <span className="block">Your Neighbours</span>
             </h1>
             <p
-              className="mt-5 text-sm sm:text-base md:text-lg lg:text-lg xl:text-lg 2xl:text-xl text-[#4B4B4B] font-medium"
+              className="mt-5 text-base md:text-xl font-normal md:font-semibold leading-snug text-[#4B4B4B]"
               lang="ml"
             >
               എല്ലാ മാസവും KSEB ബിൽ കൂടുകയാണോ? ഗ്രൂപ്പ് സോളാർ മാറിയാൽ ₹10,000
@@ -36,7 +39,7 @@ export default function GroupPurchaseHero() {
                 Reserve Your Group Spot
               </Link>
             </div>
-            <p className="mt-5 text-xs sm:text-sm md:text-base lg:text-base xl:text-lg 2xl:text-lg text-[#5A5A5A]">
+            <p className="mt-5 text-xs md:text-base font-normal leading-normal text-[#5A5A5A]">
               Kerala families pay{" "}
               <span className="font-semibold text-[#E13B2E]">₹36,000+</span> per
               year on electricity. After group solar installation, most pay
