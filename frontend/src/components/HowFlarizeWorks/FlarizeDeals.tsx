@@ -12,7 +12,7 @@ const FlarizeDeals = () => {
         <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
           You Deal with Flarize. We Deal with Everyone Else.
         </h2>
-        <p className="hidden sm:block text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
+        <p className="hidden font-light sm:block text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
           Most solar installations in Kerala involve multiple vendors — a panel
           supplier, a local installer, a separate service technician, and KSEB
           for net metering. Coordinating all of them is time-consuming and
@@ -28,10 +28,10 @@ const FlarizeDeals = () => {
           <div className="w-20 h-20 sm:w-30 sm:h-30 rounded-full border-2 border-[#074A4D] flex items-center justify-center mb-2">
             <User size={36} color="#074A4D" fill="#074A4D" />
           </div>
-          <div className="text-base md:text-xl font-semibold leading-snug text-[#074A4D]">
+          <div className=" text-base md:text-xl font-semibold leading-snug text-[#074A4D]">
             Homeowner
           </div>
-          <div className="text-xs md:text-base font-normal leading-normal text-[#757575]">
+          <div className="text-xs md:text-base font-thin  leading-normal text-[#757575]">
             Single Interface
           </div>
         </div>
@@ -45,7 +45,7 @@ const FlarizeDeals = () => {
           <div className="text-base md:text-xl font-semibold leading-snug text-[#074A4D]">
             Flarize
           </div>
-          <div className="text-xs md:text-base font-normal leading-normal text-[#757575]">
+          <div className="text-xs md:text-base font-thin  leading-normal text-[#757575]">
             The Coordinator
           </div>
         </div>
@@ -59,7 +59,7 @@ const FlarizeDeals = () => {
           <div className="text-base md:text-xl font-semibold leading-snug text-[#074A4D]">
             Local Installers
           </div>
-          <div className="text-xs md:text-base font-normal leading-normal text-[#757575]">
+          <div className="text-xs md:text-base font-thin  leading-normal text-[#757575]">
             Local Installers
           </div>
         </div>
@@ -74,7 +74,7 @@ const FlarizeDeals = () => {
           requires:
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-          <ul className="list-none space-y-2 text-[#074A4D] font-semibold text-sm md:text-xl leading-relaxed">
+          <ul className="list-none space-y-2 text-[#074A4D] font-medium  text-sm md:text-xl leading-relaxed">
             <li className="flex items-center gap-2">
               <span className="text-xl">✔</span>Certified local solar installers
             </li>
@@ -87,7 +87,7 @@ const FlarizeDeals = () => {
               technicians
             </li>
           </ul>
-          <ul className="list-none space-y-2 text-[#074A4D] font-semibold text-sm md:text-xl leading-relaxed">
+          <ul className="list-none space-y-2 text-[#074A4D] font-medium  text-sm md:text-xl leading-relaxed">
             <li className="flex items-center gap-2">
               <span className="text-xl">✔</span>KSEB net metering application
               and approval
@@ -98,7 +98,7 @@ const FlarizeDeals = () => {
             </li>
           </ul>
         </div>
-        <div className="bg-white bg-opacity-90 rounded-lg p-4 text-[#123532] text-base md:text-xl font-normal md:font-semibold leading-snug border-l-4 border-[#074A4D]">
+        <div className="bg-white bg-opacity-90 rounded-lg p-4 text-[#123532] text-base md:text-md font-light md:font-light leading-snug border-l-4 border-[#074A4D]">
           &quot;You never deal with installers or suppliers. Flarize is your
           single point of contact for the full 25-year life of your solar
           system.&quot;

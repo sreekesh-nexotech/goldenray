@@ -63,7 +63,7 @@ export default function Faq() {
           <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-2">
             Have Any Questions?
           </h2>
-          <p className="text-base md:text-xl font-normal md:font-semibold leading-snug text-[#444444]">
+          <p className="text-base md:text-xl font-normal md:font-medium leading-snug text-[#444444]">
             Get expert advice and find your ideal solar solution — no
             obligations, just answers.
           </p>
@@ -81,7 +81,7 @@ export default function Faq() {
                 onClick={() => toggleFaq(index)}
                 aria-label="toggle FAQ answer"
               >
-                <span className="text-xl md:text-2xl font-semibold leading-snug text-[#444444] pr-4">
+                <span className="text-xl md:text-2xl font-medium leading-snug text-[#444444] pr-4">
                   {faq.question}
                 </span>
                 <span

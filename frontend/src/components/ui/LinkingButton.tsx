@@ -1,13 +1,14 @@
-import Link from "next/link"
+import Link from "next/link";
 
 type ButtonProps = {
-    content: string;
-    ButtonLink: string;
-    ButtonBg: string;
-    ButtonHover: string;
-    Buttontext: string;
-    ButtonBorder?: string;
-}
+  content: string;
+  ButtonLink: string;
+  ButtonBg: string;
+  ButtonHover: string;
+  Buttontext: string;
+  ButtonBorder?: string;
+  className?: string;
+};
 
 export default function LinkingButton({
   content,
@@ -16,11 +17,14 @@ export default function LinkingButton({
   ButtonHover,
   Buttontext,
   ButtonBorder,
-}:ButtonProps) {
-    return (
-        <Link href={ButtonLink} className={`btn  ${ButtonBg} ${ButtonHover} ${Buttontext}  ${ButtonBorder}`}>
-              {content} 
-        </Link>
-    )
-    
+  className,
+}: ButtonProps) {
+  return (
+    <Link
+      href={ButtonLink}
+      className={`btn ${ButtonBg} ${ButtonHover} ${Buttontext} ${ButtonBorder ?? ""} ${className ?? ""}`}
+    >
+      {content}
+    </Link>
+  );
 }

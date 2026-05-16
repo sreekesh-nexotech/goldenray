@@ -1,31 +1,30 @@
 import React from "react";
 
 const PROBLEM_TITLE_CLASS =
-  "text-xl md:text-2xl font-semibold leading-snug text-[#DC2626]";
-const PROBLEM_DESC_CLASS =
-  "text-[#AC4848] text-xs md:text-base font-normal leading-normal";
+  "text-xs md:text-sm font-semibold leading-snug text-[#D14343]";
+const PROBLEM_DESC_CLASS = "text-[#AC4848] text-xs font-normal leading-relaxed";
 const SOLUTION_TITLE_CLASS =
-  "text-xl md:text-2xl font-semibold leading-snug text-[#008130]";
+  "text-xs md:text-sm font-semibold leading-snug text-[#138A4B]";
 const SOLUTION_DESC_CLASS =
-  "text-[#3A724F] text-xs md:text-base font-normal leading-normal";
+  "text-[#3A724F] text-xs font-normal leading-relaxed";
 const PROBLEM_ICON = (
-  <svg width="30" height="30" fill="none" viewBox="0 0 24 24">
+  <svg width="36" height="36" fill="none" viewBox="0 0 24 24">
     <circle cx="12" cy="12" r="12" fill="#FFFFFF" />
     <path
       d="M15 9L9 15M9 9l6 6"
-      stroke="#EF4444"
-      strokeWidth="2"
+      stroke="#E24A4A"
+      strokeWidth="2.2"
       strokeLinecap="round"
     />
   </svg>
 );
 const SOLUTION_ICON = (
-  <svg width="30" height="30" fill="none" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="12" fill="#D1FAE5" />
+  <svg width="36" height="36" fill="none" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="12" fill="#FFFFFF" />
     <path
       d="M8 12.5l3 3 5-5"
-      stroke="#059669"
-      strokeWidth="2"
+      stroke="#1A9B5A"
+      strokeWidth="2.2"
       strokeLinecap="round"
     />
   </svg>
@@ -73,10 +72,11 @@ const ProblemsSolve = () => {
           Real Problems Kerala Solar Buyers Face — And How Flarize Solves Each
           One
         </h2>
-        <p className="hidden sm:block text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
+        <p className="hidden text-center sm:block text-sm md:text-lg font-normal leading-relaxed text-[#4B5563]">
           Based on real complaints from Kerala&apos;s largest solar community —
-          90,000+ members across Facebook groups, WhatsApp communities, and
-          consumer forums.
+          90,000+ members across Facebook groups,
+          <br />
+          WhatsApp communities, and consumer forums.
         </p>
       </div>
 
@@ -85,20 +85,20 @@ const ProblemsSolve = () => {
         {CARDS.map((card, idx) => (
           <div
             key={idx}
-            className="bg-[#F7F4E6] rounded-xl p-6 flex flex-col gap-4 shadow-sm"
+            className="bg-[#F8F2E1] rounded-2xl p-7 md:p-8 flex flex-col gap-5 border border-[#EFE7D7]"
           >
             {/* Problem */}
-            <div className="flex items-start gap-2">
-              <span className="mt-1 text-red-500">{PROBLEM_ICON}</span>
+            <div className="flex items-start gap-3">
+              <span className="mt-1">{PROBLEM_ICON}</span>
               <div>
                 <div className={PROBLEM_TITLE_CLASS}>{card.problem.title}</div>
                 <div className={PROBLEM_DESC_CLASS}>{card.problem.desc}</div>
               </div>
             </div>
-            <hr className="border-t border-[#FFFFFF]" />
+            <hr className="border-t border-[#E7DEC9]" />
             {/* Solution */}
-            <div className="flex items-start gap-2">
-              <span className="mt-1 text-green-500">{SOLUTION_ICON}</span>
+            <div className="flex items-start gap-3">
+              <span className="mt-1">{SOLUTION_ICON}</span>
               <div>
                 <div className={SOLUTION_TITLE_CLASS}>
                   {card.solution.title}

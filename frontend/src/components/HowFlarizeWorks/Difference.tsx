@@ -62,7 +62,7 @@ const Difference = () => {
             className="bg-[#074A4D] rounded-xl p-7 flex flex-col h-full min-h-[260px]"
           >
             <Layers className="text-white mb-4" size={32} />
-            <div className="text-white text-xl md:text-2xl font-semibold leading-snug mb-2">
+            <div className="text-white text-xl md:text-2xl font-normal leading-snug mb-2">
               {item.title}
             </div>
             <div className="text-[#B2B2B2] text-xs md:text-base font-normal leading-normal">

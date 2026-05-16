@@ -94,10 +94,10 @@ const Support = () => {
             className={`min-w-[75vw] max-w-[75vw] md:min-w-0 md:max-w-none rounded-xl px-3 py-5 flex flex-col items-center text-center gap-3 ${feature.bg}`}
           >
             <div className="mb-2">{feature.icon}</div>
-            <div className="text-xl md:text-2xl font-semibold leading-snug text-[#111827] mb-1">
+            <div className="text-sm md:text-base font-semibold leading-snug text-[#111827] mb-1">
               {feature.title}
             </div>
-            <div className="text-[#4B5563] text-xs md:text-base font-normal leading-normal">
+            <div className="text-[#4B5563] text-xs font-normal leading-relaxed">
               {feature.desc}
             </div>
           </div>

@@ -1,11 +1,13 @@
 type PageIllustrationProps = {
   isGradient?: boolean;
   isGrid?: boolean;
+  gridScale?: number;
 };
 
 export default function PageIllustration({
   isGradient = true,
   isGrid = true,
+  gridScale = 100,
 }: PageIllustrationProps) {
   return (
     <>
@@ -16,7 +18,7 @@ export default function PageIllustration({
             bg-repeat-x 
             bg-center"
           style={{
-            backgroundSize: "100% auto",
+            backgroundSize: `${gridScale}% auto`,
             mask: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
             WebkitMask:
               "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",

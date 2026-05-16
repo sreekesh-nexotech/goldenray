@@ -9,9 +9,11 @@ const Booking = () => {
         <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
           Ready to See Your 3 Solar Options?
         </h2>
-        <p className="text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
+        <p className="text-sm md:text-lg font-thin leading-relaxed text-[#757575]">
           Book a free site visit. Our engineer assesses your roof. You receive 3
-          custom quotes within 24 hours — each with a different panel brand and
+          custom quotes within 24 hours
+          <br/>
+           — each with a different panel brand and
           budget. No obligation, no pressure. Just the information you need to
           make the right decision
         </p>
@@ -31,17 +33,17 @@ const Booking = () => {
         <h2 className="text-xl md:text-2xl font-semibold leading-snug text-[#123532] mb-6 text-left md:text-center">
           Solar Installation Across All 14 Kerala Districts
         </h2>
-        <p className="text-sm md:text-xl font-normal leading-relaxed text-[#757575] text-center">
+        <p className="text-sm md:text-lg font-normal leading-relaxed text-[#757575] text-center">
           Flarize&apos;s local installer network covers all 14 Kerala districts
           —{" "}
           <span className="text-[#444444] font-medium">
-            Ernakulam, Thiruvananthapuram, Kozhikode, Thrissur, Alappuzha,
+            Ernakulam, Thiruvananthapuram, Kozhikode, Thrissur, Alappuzha,<br/>
             Kollam, Kottayam, Palakkad, Malappuram, Kannur, Kasaragod,
             Pathanamthitta, Idukki, and Wayanad
           </span>
-          . When you confirm a solar system, the nearest certified installer in
+          . When you confirm a solar <br/> system, the nearest certified installer in
           your pincode is automatically assigned — which is why Flarize
-          consistently achieves 3-7 day installation timelines even in districts
+          consistently achieves 3-7 day <br/>installation timelines even in districts
           far from a central warehouse
         </p>
       </div>
