@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { SolarComparisonMain } from "@/components/SolarComparison";
 
@@ -54,5 +55,9 @@ export const metadata: Metadata = {
 };
 
 export default function SolarComparisonPage() {
-  return <SolarComparisonMain />;
+  return (
+    <Suspense fallback={null}>
+      <SolarComparisonMain />
+    </Suspense>
+  );
 }

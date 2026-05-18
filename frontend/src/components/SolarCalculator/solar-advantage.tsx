@@ -129,7 +129,7 @@ export default function SolarAdvantage({
     >
       <PageIllustration isGradient={false} />
       <div className="relative max-w-7xl mx-auto text-center px-4 md:px-0">
-        <h2 className="text-4xl md:text-4xl lg:text-4xl 2xl:text-6xl  font-semibold text-[#123532] mb-4">
+        <h2 className="text-4xl md:text-5xl font-semibold text-[#123532] mb-4">
           Calculate Your Solar Advantage Today
         </h2>
         <p className="text-lg text-[#444444] mb-[3.75rem] max-w-2xl mx-auto">

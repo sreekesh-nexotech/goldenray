@@ -79,7 +79,7 @@ const Testimonials = () => {
       setActive((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(id);
-  }, [active]);
+  }, []);
 
   return (
     <section className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-7xl flex flex-col items-center h-full gap-8">

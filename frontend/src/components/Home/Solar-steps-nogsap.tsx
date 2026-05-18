@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 const steps = [
   {
     id: 1,
-    title: "Get a Free Consultation & Quote",
+    title: "Get a Free Consultation \n & Quote",
     description:
       "No generic sales pitch. Our experts analyze your actual KSEB bills, assess your rooftop, and design a system for YOUR consumption. You get a transparent quote — system capacity, solar panel price breakdown, projected savings, and MNRE subsidy eligibility. If solar doesn't make sense for you, we'll say that.",
     bgColor: "bg-[#074A4D]", // Dark teal
@@ -133,7 +133,7 @@ export default function SolarStepsNoGSAP() {
               {/* Title */}
               <h2
                 className={`
-                  text-4xl md:text-5xl md:w-2/3 font-semibold leading-tight mb-2 text-left transition-all duration-500 ease-in-out
+                  text-3xl md:text-4xl md:w-2/3 font-medium leading-tight mb-2 text-left whitespace-pre-line transition-all duration-500 ease-in-out
                   ${step.textColor}
                   ${
                     activeCard === step.id

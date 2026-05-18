@@ -170,7 +170,7 @@ export default function HomeTestimonial() {
       ref={ref} // For useInView to detect section visibility
       className="overflow-hidden py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36 relative"
     >
-      <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-10 text-center xl:text-left xl:whitespace-nowrap">
+      <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] my-10 text-center xl:text-left xl:whitespace-nowrap">
         What our clients have to say
       </h2>
 
@@ -206,14 +206,10 @@ export default function HomeTestimonial() {
                   className="relative rounded-2xl xl:rounded-l-2xl xl:rounded-r-none overflow-hidden h-[300px] sm:h-[400px] xl:h-[500px]"
                   style={{
                     backgroundImage: `url('${testimonial.image}')`,
-                    backgroundSize: "cover",
-                    backgroundPosition:
-                      index === 2
-                        ? "center"
-                        : index === 0
-                          ? "left bottom"
-                          : "bottom",
+                    backgroundSize: "contain",
+                    backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
+                    backgroundColor: "#F7F7F2",
                     width: "100%",
                   }}
                 />

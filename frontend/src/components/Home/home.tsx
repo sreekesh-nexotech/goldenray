@@ -13,7 +13,6 @@ import Partners from "./Partners";
 import SolarAdvantageMain from "../SolarCalculator/SolarAdvantageMain";
 import SolutionBox from "../Solutions/Solution-box";
 
-// import SolarStepsGSAP from './Solar-steps-gsap';
 import SolarStepsNoGSAP from "./Solar-steps-nogsap";
 
 export default function Main() {
@@ -46,8 +45,8 @@ export default function Main() {
       <SolarAdvantageMain />
 
       {/* Services Section Title */}
-      <div className="w-full py-12 px-4 md:px-6 lg:px-8">
-        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-center text-[#123532] mb-2">
+      <div className="w-full py-12 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+        <h2 className=" text-4xl md:text-5xl font-semibold leading-tight text-[#123532] ">
           Services
         </h2>
       </div>

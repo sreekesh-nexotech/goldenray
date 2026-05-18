@@ -1,8 +1,6 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import html2canvas from "html2canvas-pro";
-import jsPDF from "jspdf";
 import QuotationHeader from "./QuotationHeader";
 import QuotationFooter from "./QuotationFooter";
 import Page1Content from "./Page1Content";
@@ -95,6 +93,11 @@ export default function QuotationPdfGenerator({
         onError("No pages found to generate PDF.");
         return;
       }
+
+      const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+        import("jspdf"),
+        import("html2canvas-pro"),
+      ]);
 
       // A4 dimensions in mm
       const pdfWidth = 210;

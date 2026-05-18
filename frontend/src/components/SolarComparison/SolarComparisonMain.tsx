@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import {
   SolarPanel,
+  PanelType,
+  RatingType,
   FilterState,
   DEFAULT_FILTER_STATE,
 } from "@/types/solarPanel";
@@ -28,58 +30,187 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "warranty", label: "Longest Warranty" },
 ];
 
+const VALID_SORTS = new Set<SortOption>([
+  "topRated",
+  "efficiency",
+  "price",
+  "warranty",
+]);
+
+const VALID_PANEL_TYPES = new Set<PanelType>([
+  "Monocrystalline",
+  "Polycrystalline",
+  "Bifacial",
+]);
+
+const VALID_RATINGS = new Set<RatingType>(["Excellent", "Very Good", "Good"]);
+
+const parseCsv = <T extends string>(
+  value: string | null,
+  allowed: Set<T>,
+): T[] => {
+  if (!value) return [];
+  return value
+    .split(",")
+    .map((v) => v.trim())
+    .filter((v): v is T => allowed.has(v as T));
+};
+
+const parseFiltersFromParams = (params: URLSearchParams): FilterState => {
+  const effMin = Number(params.get("effMin"));
+  const effMax = Number(params.get("effMax"));
+  const [defaultMin, defaultMax] = DEFAULT_FILTER_STATE.efficiencyRange;
+
+  return {
+    panelTypes: parseCsv(params.get("panelTypes"), VALID_PANEL_TYPES),
+    ratings: parseCsv(params.get("ratings"), VALID_RATINGS),
+    efficiencyRange: [
+      Number.isFinite(effMin) && effMin > 0 ? effMin : defaultMin,
+      Number.isFinite(effMax) && effMax > 0 ? effMax : defaultMax,
+    ],
+    warranties: {
+      productWarranty12Plus: params.get("pw12") === "1",
+      performanceWarranty30: params.get("pw30") === "1",
+    },
+    brands: params.get("brands")
+      ? params
+          .get("brands")!
+          .split(",")
+          .map((b) => b.trim())
+          .filter(Boolean)
+      : [],
+    keralaClimateRated: params.get("kerala") === "1",
+  };
+};
+
+const filtersToParams = (
+  filters: FilterState,
+  sort: SortOption,
+  selectedPanelIds: string[],
+): URLSearchParams => {
+  const params = new URLSearchParams();
+  if (filters.panelTypes.length)
+    params.set("panelTypes", filters.panelTypes.join(","));
+  if (filters.ratings.length) params.set("ratings", filters.ratings.join(","));
+  const [defaultMin, defaultMax] = DEFAULT_FILTER_STATE.efficiencyRange;
+  if (filters.efficiencyRange[0] !== defaultMin)
+    params.set("effMin", String(filters.efficiencyRange[0]));
+  if (filters.efficiencyRange[1] !== defaultMax)
+    params.set("effMax", String(filters.efficiencyRange[1]));
+  if (filters.warranties.productWarranty12Plus) params.set("pw12", "1");
+  if (filters.warranties.performanceWarranty30) params.set("pw30", "1");
+  if (filters.brands.length) params.set("brands", filters.brands.join(","));
+  if (filters.keralaClimateRated) params.set("kerala", "1");
+  if (sort !== "topRated") params.set("sort", sort);
+  if (selectedPanelIds.length)
+    params.set("selected", selectedPanelIds.join(","));
+  return params;
+};
+
 export default function SolarComparisonMain() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const filters = useMemo<FilterState>(
+    () => parseFiltersFromParams(searchParams),
+    [searchParams],
+  );
+
+  const sortBy = useMemo<SortOption>(() => {
+    const raw = searchParams.get("sort");
+    return raw && VALID_SORTS.has(raw as SortOption)
+      ? (raw as SortOption)
+      : "topRated";
+  }, [searchParams]);
+
+  const selectedPanelIds = useMemo<string[]>(() => {
+    const raw = searchParams.get("selected");
+    if (!raw) return [];
+    return raw
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .slice(0, 3);
+  }, [searchParams]);
+
   const [panels, setPanels] = useState<SolarPanel[]>([]);
   const [allPanels, setAllPanels] = useState<SolarPanel[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTER_STATE);
-  const [sortBy, setSortBy] = useState<SortOption>("topRated");
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [selectedPanelIds, setSelectedPanelIds] = useState<string[]>([]);
   const [availableBrands, setAvailableBrands] = useState<string[]>([]);
 
-  // Fetch panels on mount and when filters/sort change
-  const fetchPanels = useCallback(async () => {
+  const replaceUrl = useCallback(
+    (next: URLSearchParams) => {
+      const qs = next.toString();
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    },
+    [router, pathname],
+  );
+
+  const setFilters = useCallback(
+    (updater: FilterState | ((prev: FilterState) => FilterState)) => {
+      const nextFilters =
+        typeof updater === "function" ? updater(filters) : updater;
+      replaceUrl(filtersToParams(nextFilters, sortBy, selectedPanelIds));
+    },
+    [filters, sortBy, selectedPanelIds, replaceUrl],
+  );
+
+  const setSortBy = useCallback(
+    (next: SortOption) => {
+      replaceUrl(filtersToParams(filters, next, selectedPanelIds));
+    },
+    [filters, selectedPanelIds, replaceUrl],
+  );
+
+  // Fetch filtered panels whenever filters or sort change
+  useEffect(() => {
+    let cancelled = false;
     setLoading(true);
-    try {
-      const filtered = await getFilteredPanels(filters, sortBy);
-      setPanels(filtered);
-    } catch (error) {
-      console.error("Error fetching panels:", error);
-    } finally {
-      setLoading(false);
-    }
+    getFilteredPanels(filters, sortBy)
+      .then((filtered) => {
+        if (!cancelled) setPanels(filtered);
+      })
+      .catch((error) => {
+        if (!cancelled) console.error("Error fetching panels:", error);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [filters, sortBy]);
 
-  // Initial load
+  // Initial load: brands + all panels for the compare dropdown
   useEffect(() => {
-    const init = async () => {
-      const brands = getAvailableBrands();
-      setAvailableBrands(brands);
-      // Get all panels for comparison dropdown
-      const all = await getFilteredPanels(DEFAULT_FILTER_STATE, "topRated");
-      setAllPanels(all);
+    let cancelled = false;
+    const brands = getAvailableBrands();
+    setAvailableBrands(brands);
+    getFilteredPanels(DEFAULT_FILTER_STATE, "topRated").then((all) => {
+      if (!cancelled) setAllPanels(all);
+    });
+    return () => {
+      cancelled = true;
     };
-    init();
   }, []);
 
-  useEffect(() => {
-    fetchPanels();
-  }, [fetchPanels]);
-
-  const handleToggleCompare = (panelId: string) => {
-    setSelectedPanelIds((prev) => {
-      if (prev.includes(panelId)) {
-        return prev.filter((id) => id !== panelId);
+  const handleToggleCompare = useCallback(
+    (panelId: string) => {
+      let next: string[];
+      if (selectedPanelIds.includes(panelId)) {
+        next = selectedPanelIds.filter((id) => id !== panelId);
+      } else if (selectedPanelIds.length >= 3) {
+        return;
+      } else {
+        next = [...selectedPanelIds, panelId];
       }
-      if (prev.length >= 3) {
-        return prev;
-      }
-      return [...prev, panelId];
-    });
-  };
+      replaceUrl(filtersToParams(filters, sortBy, next));
+    },
+    [filters, sortBy, selectedPanelIds, replaceUrl],
+  );
 
   const selectedPanels = allPanels.filter((p) =>
     selectedPanelIds.includes(p.id),

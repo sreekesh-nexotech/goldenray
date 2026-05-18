@@ -10,7 +10,7 @@ export default function Certified() {
     <section className="bg-white py-1 md:py-3 xl:py-2 2xl:py-3">
       <div className="max-w-[95%] lg:max-w-[90rem] mx-auto text-center">
         {/* Heading */}
-        <h2 className="text-base md:text-xl lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold text-gray-800 uppercase tracking-wider">
+        <h2 className="text-base md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-3xl font-semibold text-gray-800 uppercase tracking-wider">
           Certified & KSEB Approved Solar Installer
         </h2>
 

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ProjectMain from "@/components/Projects/ProjectMain";
 import { Metadata } from "next";
 
@@ -45,7 +46,9 @@ export const metadata: Metadata = {
 export default function Projects() {
   return (
     <section className="relative">
-      <ProjectMain />
+      <Suspense fallback={null}>
+        <ProjectMain />
+      </Suspense>
     </section>
   );
 }

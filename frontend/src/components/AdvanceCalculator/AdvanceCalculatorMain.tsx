@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useReducer, useState, useMemo, useRef, useEffect } from "react";
 import { getSolarAdvancedData } from "@/services/CalculatorService";
 import {
   AdvancedCalculatorData,
@@ -17,33 +17,89 @@ import StepIndicator from "./StepIndicator";
 import FormHeading from "./FormHeading";
 import QuotePopup from "@/components/SolarCalculator/QuotePopup";
 
+interface FlowState {
+  currentStep: number;
+  error: string | null;
+  loading: boolean;
+  resultData: AdvancedCalculatorData | null;
+  isPopupOpen: boolean;
+}
+
+type FlowAction =
+  | { type: "GO_TO_STEP"; step: number }
+  | { type: "VALIDATION_ERROR"; message: string }
+  | { type: "START_CALCULATING" }
+  | { type: "CALCULATION_SUCCESS"; data: AdvancedCalculatorData; step: number }
+  | { type: "CALCULATION_FAILURE"; message: string }
+  | { type: "OPEN_POPUP" }
+  | { type: "CLOSE_POPUP" }
+  | { type: "RESET" };
+
+const INITIAL_FLOW_STATE: FlowState = {
+  currentStep: 1,
+  error: null,
+  loading: false,
+  resultData: null,
+  isPopupOpen: false,
+};
+
+const INITIAL_BASIC_INFO: BasicInfoFormData = {
+  home_type: null,
+  grid_type: null,
+  average_bill: "",
+  bill_frequency: null,
+  home_size: "",
+  estimated_base_load: "",
+  backup_hours: 0,
+  actual_backup_time: "",
+  electronic_devices: [],
+};
+
+const INITIAL_USAGE_DETAILS: UsageDetailsFormData = {
+  electronic_devices: [],
+  electric_vehicles: [],
+};
+
+function flowReducer(state: FlowState, action: FlowAction): FlowState {
+  switch (action.type) {
+    case "GO_TO_STEP":
+      return { ...state, currentStep: action.step, error: null };
+    case "VALIDATION_ERROR":
+      return { ...state, error: action.message };
+    case "START_CALCULATING":
+      return { ...state, loading: true, error: null };
+    case "CALCULATION_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        resultData: action.data,
+        currentStep: action.step,
+      };
+    case "CALCULATION_FAILURE":
+      return { ...state, loading: false, error: action.message };
+    case "OPEN_POPUP":
+      return { ...state, isPopupOpen: true };
+    case "CLOSE_POPUP":
+      return { ...state, isPopupOpen: false };
+    case "RESET":
+      return INITIAL_FLOW_STATE;
+    default:
+      return state;
+  }
+}
+
 export default function AdvancedCalculatorMain() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [resultData, setResultData] = useState<AdvancedCalculatorData | null>(
-    null
-  );
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [flow, dispatch] = useReducer(flowReducer, INITIAL_FLOW_STATE);
+  const { currentStep, error, loading, resultData, isPopupOpen } = flow;
 
   const formContainerRef = useRef<HTMLDivElement>(null);
 
-  const [basicInfo, setBasicInfo] = useState<BasicInfoFormData>({
-    home_type: null,
-    grid_type: null,
-    average_bill: "",
-    bill_frequency: null,
-    home_size: "",
-    estimated_base_load: "",
-    backup_hours: 0,
-    actual_backup_time: "",
-    electronic_devices: [],
-  });
-
-  const [usageDetails, setUsageDetails] = useState<UsageDetailsFormData>({
-    electronic_devices: [],
-    electric_vehicles: [],
-  });
+  const [basicInfo, setBasicInfo] =
+    useState<BasicInfoFormData>(INITIAL_BASIC_INFO);
+  const [usageDetails, setUsageDetails] = useState<UsageDetailsFormData>(
+    INITIAL_USAGE_DETAILS
+  );
 
   const totalFormSteps = useMemo(() => {
     return basicInfo.grid_type === "Hybrid" ? 3 : 2;
@@ -62,37 +118,37 @@ export default function AdvancedCalculatorMain() {
   const handleStepNavigation = (step: number) => {
     // Only allow navigation to previous, completed steps
     if (step < currentStep) {
-      setCurrentStep(step);
+      dispatch({ type: "GO_TO_STEP", step });
     }
   };
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      dispatch({ type: "GO_TO_STEP", step: currentStep - 1 });
     }
   };
 
+  const fail = (message: string) =>
+    dispatch({ type: "VALIDATION_ERROR", message });
+
   const handleBasicInfoSubmit = () => {
-    setError(null);
     if (!basicInfo.home_type || !basicInfo.grid_type) {
-      setError("Please select a home type and grid type.");
+      fail("Please select a home type and grid type.");
       return;
     }
     if (basicInfo.home_type === "Existing Home") {
       if (!basicInfo.average_bill || !basicInfo.bill_frequency) {
-        setError(
-          "Please provide your average electricity bill and bill frequency."
-        );
+        fail("Please provide your average electricity bill and bill frequency.");
         return;
       }
       if (parseFloat(basicInfo.average_bill) <= 0) {
-        setError("Please enter a valid positive number for your average bill.");
+        fail("Please enter a valid positive number for your average bill.");
         return;
       }
     }
     if (basicInfo.home_type === "New Home") {
       if (!basicInfo.home_size || parseFloat(basicInfo.home_size) <= 0) {
-        setError(
+        fail(
           "Please enter a valid Home Size (e.g., a positive number in sq. ft.)."
         );
         return;
@@ -103,19 +159,19 @@ export default function AdvancedCalculatorMain() {
         basicInfo.average_bill.replace(/[^0-9.]/g, "")
       );
       if (isNaN(billAmount)) {
-        setError("Please enter a valid number for the average bill");
+        fail("Please enter a valid number for the average bill");
         return;
       } else if (billAmount > 40000) {
-        setError("Maximum average bill should be less than 40,000");
+        fail("Maximum average bill should be less than 40,000");
         return;
       }
     }
-    setCurrentStep(2);
+    dispatch({ type: "GO_TO_STEP", step: 2 });
   };
 
   const handleUsageDetailsSubmit = () => {
     if (basicInfo.grid_type === "Hybrid") {
-      setCurrentStep(3);
+      dispatch({ type: "GO_TO_STEP", step: 3 });
     } else {
       handleCalculate();
     }
@@ -141,7 +197,7 @@ export default function AdvancedCalculatorMain() {
       },
     };
 
-    setLoading(true);
+    dispatch({ type: "START_CALCULATING" });
 
     try {
       const apiData = await getSolarAdvancedData(finalPayload);
@@ -171,40 +227,25 @@ export default function AdvancedCalculatorMain() {
         ...apiData,
         graph_data: transformedgraph_data,
       };
-      setResultData(transformedData);
-      setCurrentStep(totalFormSteps + 1);
+      dispatch({
+        type: "CALCULATION_SUCCESS",
+        data: transformedData,
+        step: totalFormSteps + 1,
+      });
     } catch (err: unknown) {
-      setError(
-        "Failed to calculate solar advantage. Please check your inputs and try again. " +
-          (err instanceof Error ? err.message : "An unknown error occurred.")
-      );
-    } finally {
-      setLoading(false);
-      setError(null);
+      dispatch({
+        type: "CALCULATION_FAILURE",
+        message:
+          "Failed to calculate solar advantage. Please check your inputs and try again. " +
+          (err instanceof Error ? err.message : "An unknown error occurred."),
+      });
     }
   };
 
   const handleStartOver = () => {
-    setCurrentStep(1);
-    setBasicInfo({
-      home_type: null,
-      grid_type: null,
-      average_bill: "",
-      bill_frequency: null,
-      home_size: "",
-      estimated_base_load: "",
-      // --- MODIFIED ---: Reset backup_hours to 3 on start over
-      backup_hours: 0,
-      actual_backup_time: "",
-      electronic_devices: [],
-    });
-    setUsageDetails({
-      electronic_devices: [],
-      electric_vehicles: [],
-    });
-    setResultData(null);
-    setError(null);
-    setIsPopupOpen(false);
+    dispatch({ type: "RESET" });
+    setBasicInfo(INITIAL_BASIC_INFO);
+    setUsageDetails(INITIAL_USAGE_DETAILS);
   };
 
   return (
@@ -298,14 +339,16 @@ export default function AdvancedCalculatorMain() {
             <ResultDisplay
               data={resultData}
               onStartOver={handleStartOver}
-              onGetDetailedQuote={() => setIsPopupOpen(true)}
+              onGetDetailedQuote={() => dispatch({ type: "OPEN_POPUP" })}
               onBack={handleBack}
               grid_type={basicInfo.grid_type}
             />
           )}
         </div>
       </div>
-      {isPopupOpen && <QuotePopup onClose={() => setIsPopupOpen(false)} />}
+      {isPopupOpen && (
+        <QuotePopup onClose={() => dispatch({ type: "CLOSE_POPUP" })} />
+      )}
     </div>
   );
 }

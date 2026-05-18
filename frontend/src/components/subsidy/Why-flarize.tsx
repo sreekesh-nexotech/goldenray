@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function WhyFlarize() {
   const features = [
     {
@@ -54,9 +56,12 @@ export default function WhyFlarize() {
             >
               {/* Yellow Circle with Icon */}
               <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 2xl:w-28 2xl:h-28 bg-[#FEF3C7] rounded-full flex items-center justify-center mb-4 sm:mb-6 lg:mb-8 xl:mb-8 2xl:mb-8 flex-shrink-0">
-                <img
+                <Image
                   src={feature.iconUrl}
                   alt={`${feature.title} icon`}
+                  width={56}
+                  height={56}
+                  sizes="(min-width: 1280px) 56px, (min-width: 1024px) 48px, (min-width: 640px) 40px, 32px"
                   className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 2xl:w-14 2xl:h-14 object-contain"
                 />
               </div>
