@@ -24,7 +24,7 @@ export const localBusinessSchema = {
   },
   sameAs: [
     'https://www.facebook.com/flarize', // UPDATE with real URLs
-    'https://www.instagram.com/flarize',
+    'https://www.instagram.com/flarize.technologies?igsh=MW0zZnJueG01Mm01bQ%3D%3D&utm_source=qr',
     'https://www.linkedin.com/company/flarize',
   ],
 };

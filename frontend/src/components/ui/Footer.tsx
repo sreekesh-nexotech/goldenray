@@ -232,7 +232,7 @@ export default function Footer() {
                   />
                 </Link>
                 <Link
-                  href="https://www.instagram.com/fla.rize?igsh=MW0zZnJueG01Mm01bQ%3D%3D&utm_source=qr"
+                  href="https://www.instagram.com/flarize.technologies?igsh=MW0zZnJueG01Mm01bQ%3D%3D&utm_source=qr"
                   target="new"
                   aria-label="Instagram"
                   className="p-2"

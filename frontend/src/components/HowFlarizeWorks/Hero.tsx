@@ -10,7 +10,7 @@ export default function Hero() {
       <PageIllustration gridScale={80} />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-[90rem] flex flex-col md:flex-row items-stretch h-full xl:gap-24 gap-0">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-6 md:py-20 xl:py-16 flex flex-col md:flex-row items-stretch h-full xl:gap-24 gap-0">
         {/* Left Side - Text */}
         <div className="w-full md:flex-[0.45] text-left h-full flex flex-col justify-center">
           <div className="hidden sm:block text-xs md:text-base font-semibold leading-normal text-[#F7BA41] mb-2">
