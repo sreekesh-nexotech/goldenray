@@ -148,7 +148,7 @@ export default function QuotationPdfGenerator({
       console.error("PDF generation error:", err);
       onError("Failed to generate PDF. Please try again.");
     }
-  }, [data.customerName, quoteNo, onComplete, onError]);
+  }, [onComplete, onError]);
 
   // Trigger PDF generation once rendered
   useEffect(() => {

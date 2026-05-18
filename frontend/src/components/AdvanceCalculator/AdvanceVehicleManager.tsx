@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import { Electric_vehicle, VehicleType } from "@/types/types";
@@ -237,7 +237,7 @@ export default function Electric_vehicleManager({
   };
 
   // Validate before form submission
-  const validateVehicleInputs = () => {
+  const validateVehicleInputs = useCallback(() => {
     if (
       newVehicle.model ||
       newVehicle.no_of_vehicles ||
@@ -247,11 +247,11 @@ export default function Electric_vehicleManager({
       return false;
     }
     return true;
-  };
+  }, [newVehicle]);
 
   useEffect(() => {
     if (validateInputs) validateInputs(validateVehicleInputs);
-  }, [newVehicle, validateInputs]);
+  }, [validateInputs, validateVehicleInputs]);
 
   if (isLoading) {
     return (

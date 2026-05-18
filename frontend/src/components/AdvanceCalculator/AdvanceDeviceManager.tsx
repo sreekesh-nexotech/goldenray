@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import { Electronic_device, DeviceType } from "@/types/types";
@@ -116,7 +116,7 @@ export default function DeviceManager({
     return Object.keys(newErrors).length === 0;
   };
 
-  const validateDeviceInputs = () => {
+  const validateDeviceInputs = useCallback(() => {
     if (
       newDevice.device_type ||
       newDevice.no_of_units ||
@@ -129,13 +129,13 @@ export default function DeviceManager({
       return false;
     }
     return true;
-  };
+  }, [newDevice]);
 
   useEffect(() => {
     if (validateInputs) {
       validateInputs(validateDeviceInputs);
     }
-  }, [newDevice, validateInputs]);
+  }, [validateInputs, validateDeviceInputs]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

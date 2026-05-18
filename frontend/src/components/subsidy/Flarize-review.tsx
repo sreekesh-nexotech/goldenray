@@ -66,7 +66,7 @@ export default function FlarizeReview() {
       window.clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-  }, [reviews.length]);
+  }, []);
 
   const handleSwipedRight = useCallback(() => {
     setCurrentIndex(
@@ -78,7 +78,7 @@ export default function FlarizeReview() {
       window.clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-  }, [reviews.length]);
+  }, []);
 
   const swipeHandlers = useSwipeable({
     onSwipedLeft: handleSwipedLeft,
@@ -104,7 +104,7 @@ export default function FlarizeReview() {
         intervalRef.current = null;
       }
     };
-  }, [reviews.length, isMobile]);
+  }, [isMobile]);
 
   // Dot Navigation Handler
   const handleDotClick = (index: number) => {

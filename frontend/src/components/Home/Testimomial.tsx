@@ -65,7 +65,7 @@ export default function HomeTestimonial() {
       window.clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-  }, [testimonials.length]); // Dependency: testimonials.length to re-create if testimonials change
+  }, []);
 
   const handleSwipedRight = useCallback(() => {
     setCurrentIndex(
@@ -79,7 +79,7 @@ export default function HomeTestimonial() {
       window.clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-  }, [testimonials.length]); // Dependency: testimonials.length
+  }, []);
 
   // Configure and get handlers from useSwipeable hook
   const swipeHandlers = useSwipeable({
@@ -113,7 +113,7 @@ export default function HomeTestimonial() {
         intervalRef.current = null;
       }
     };
-  }, [inView, testimonials.length]); // Dependencies for useEffect
+  }, [inView]);
 
   // --- ReactPlayer Callbacks (commented out - will be restored when video is enabled) ---
   // const handlePlay = () => {

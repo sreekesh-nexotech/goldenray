@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { SolarPanel } from "@/types/solarPanel";
@@ -17,7 +17,10 @@ function ComparisonTableContent() {
   const [loading, setLoading] = useState(true);
 
   // Get panel IDs from URL
-  const panelIds = searchParams.get("panels")?.split(",").filter(Boolean) || [];
+  const panelIds = useMemo(
+    () => searchParams.get("panels")?.split(",").filter(Boolean) || [],
+    [searchParams],
+  );
 
   // Fetch panels data
   const fetchPanels = useCallback(async () => {
@@ -37,7 +40,7 @@ function ComparisonTableContent() {
     } finally {
       setLoading(false);
     }
-  }, [panelIds.join(",")]);
+  }, [panelIds]);
 
   useEffect(() => {
     fetchPanels();

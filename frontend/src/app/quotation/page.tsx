@@ -64,8 +64,9 @@ export default function QuotationPage() {
 
   useEffect(() => {
     // Generate quote number once on mount
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
     const random = String(Math.floor(Math.random() * 999)).padStart(3, "0");
     setQuoteNo(`QUO-GR-AS-${year}-${month}-${random}`);
 
