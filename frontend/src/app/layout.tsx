@@ -1,8 +1,4 @@
 /* src/app/layout.tsx */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import Header from "@/components/ui/Header";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import Footer from "@/components/ui/Footer";
 import "@/styles/globals.css";
 
 import { DM_Sans } from "next/font/google";
@@ -11,14 +7,6 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Suspense } from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import IdleTimeoutPopup from "@/components/common/IdleTimoutPopup";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import ExitIntentPopup from "@/components/common/ExitIntentPopup";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import FloatingChatButton from "@/components/common/FloatingChatBoat";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import FloatingPhoneButton from "@/components/common/FloatingPhoneButton";
 import ConditionalLayout from "@/components/common/ConditionalLayout";
 
 import PageTracker from "@/components/analytics/PageTracker";
