@@ -206,7 +206,7 @@ export default function HomeTestimonial() {
                   className="relative rounded-2xl xl:rounded-l-2xl xl:rounded-r-none overflow-hidden h-[300px] sm:h-[400px] xl:h-[500px]"
                   style={{
                     backgroundImage: `url('${testimonial.image}')`,
-                    backgroundSize: "contain",
+                    backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
                     backgroundColor: "#F7F7F2",
