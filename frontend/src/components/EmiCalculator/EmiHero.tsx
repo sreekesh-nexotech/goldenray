@@ -65,21 +65,21 @@ const EmiHero = () => {
 
         {/* Buttons */}
         <div className="flex flex-row gap-3 mt-2 w-full sm:w-auto">
-          <LinkingButton
-            content="Calculate My EMI — Free"
-            ButtonLink="#"
-            ButtonBg="bg-[#F7BA41]"
-            Buttontext="text-[#272218]"
-            ButtonHover="hover:bg-yellow-500"
-            className="flex-1 sm:flex-none !whitespace-normal sm:!whitespace-nowrap text-center text-xs sm:text-sm md:text-lg"
-          />
-          <LinkingButton
+         <LinkingButton
             content="Compare Bank Rates"
             ButtonLink="#"
             ButtonBorder="border border-[#074A4D]"
             ButtonBg="bg-transparent"
             Buttontext="text-[#074A4D]"
             ButtonHover="hover:bg-[#eeeeee]"
+            className="flex-1 sm:flex-none !whitespace-normal sm:!whitespace-nowrap text-center text-xs sm:text-sm md:text-lg"
+          />
+           <LinkingButton
+            content="Calculate My EMI — Free"
+            ButtonLink="#calculator"
+            ButtonBg="bg-[#F7BA41]"
+            Buttontext="text-[#272218]"
+            ButtonHover="hover:bg-yellow-500"
             className="flex-1 sm:flex-none !whitespace-normal sm:!whitespace-nowrap text-center text-xs sm:text-sm md:text-lg"
           />
         </div>
