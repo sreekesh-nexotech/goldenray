@@ -45,7 +45,7 @@ const solutions = [
 ];
 
 const tools = [
-  { name: "Check Your Monthly Cost", href: "#" },
+  { name: "Check Your Monthly Cost", href: "/emi-calculator" },
   { name: "Review Your Solar Quote", href: "#" },
   { name: "Compare Solar Options", href: "/solar-comparison" },
   { name: "Choose the Right Inverter", href: "#" },
