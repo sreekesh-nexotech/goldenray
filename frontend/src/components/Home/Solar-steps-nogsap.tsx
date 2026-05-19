@@ -123,7 +123,7 @@ export default function SolarStepsNoGSAP() {
             {/* Step Number */}
             <div
               className={`
-                absolute bottom-[-10px] md:bottom-[-40px] right-3 text-6xl md:text-9xl font-extrabold z-0 text-white
+                absolute -bottom-3 md:-bottom-6 right-3 text-6xl md:text-9xl font-extrabold leading-none z-0 text-white
               `}
             >
               {step.id}
