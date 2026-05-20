@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { TrendingUp, ChevronRight, Minus, Plus, Clock, PiggyBank, CloudLightning, Power, Zap, Badge, Award, ArrowRight } from "lucide-react";
+import { TrendingUp,  Minus, Plus, Clock, PiggyBank,  Zap,  Award, ArrowRight } from "lucide-react";
 import LinkingButton from "../ui/LinkingButton";
 
 const SUBSIDY = 78000;
