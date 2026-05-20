@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { TrendingUp,  Minus, Plus, Clock, PiggyBank,  Zap,  Award, ArrowRight } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { TrendingUp,  Minus, Plus, Clock, PiggyBank,  Zap,  Award, ArrowRight, Check } from "lucide-react";
 import LinkingButton from "../ui/LinkingButton";
+import { calculateEMI, EMICalculatorResponse } from "@/services/emiCalculator";
 
 const SUBSIDY = 78000;
 const PANEL_LIFE = 25;
@@ -21,13 +22,6 @@ const RATE_MAX = 18;
 const TENURE_MIN = 1;
 const TENURE_MAX = 10;
 
-function calcEMI(principal: number, annualRate: number, tenureYears: number) {
-  if (principal <= 0 || tenureYears <= 0) return 0;
-  const r = annualRate / 100 / 12;
-  const n = tenureYears * 12;
-  if (r === 0) return principal / n;
-  return (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-}
 
 function fmt(n: number) {
   return Math.round(Math.abs(n)).toLocaleString("en-IN");
@@ -48,12 +42,42 @@ export default function Calculator() {
   const [rate, setRate] = useState(7);
   const [tenure, setTenure] = useState(5);
   const [subsidyOn, setSubsidyOn] = useState(true);
+  const [apiData, setApiData] = useState<EMICalculatorResponse | null>(null);
+  const [apiLoading, setApiLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const { monthlyBill } = SYSTEM_SIZES[sizeIdx];
 
-  const emi = useMemo(() => calcEMI(loanAmount, rate, tenure), [loanAmount, rate, tenure]);
-  const totalPaid = emi * tenure * 12;
-  const totalInterest = Math.max(0, totalPaid - loanAmount);
+  // Fetch EMI calculation from API
+  useEffect(() => {
+    const fetchEMIData = async () => {
+      setApiLoading(true);
+      setApiError(null);
+      try {
+        const systemSize = SYSTEM_SIZES[sizeIdx];
+        const response = await calculateEMI({
+          power_capacity: parseFloat(systemSize.label.replace('kW', '')),
+          property_type: 'Residential',
+          tenure_years: tenure,
+          interest_rate: rate,
+          principal: loanAmount,
+          apply_subsidy: subsidyOn,
+        });
+        setApiData(response);
+      } catch (error) {
+        console.error('Failed to fetch EMI calculation:', error);
+        setApiError(error instanceof Error ? error.message : 'Failed to calculate EMI');
+      } finally {
+        setApiLoading(false);
+      }
+    };
+
+    fetchEMIData();
+  }, [sizeIdx, loanAmount, rate, tenure, subsidyOn]);
+
+  const emi = apiData?.emi_per_month ?? 0;
+  const totalPaid = apiData?.total_payment ?? 0;
+  const totalInterest = apiData?.total_interest ?? 0;
 
   const breakEvenMonths = monthlyBill > 0 ? loanAmount / monthlyBill : null;
   const breakEvenYears = breakEvenMonths ? (breakEvenMonths / 12).toFixed(1) : null;
@@ -63,7 +87,6 @@ export default function Calculator() {
   const savingsAfterBreakEven = monthlyBill * 12 * Math.round(remainingYears);
 
   const monthlySavings = monthlyBill - emi;
-  const sbiEmi = useMemo(() => calcEMI(loanAmount, 5.65, tenure), [loanAmount, tenure]);
 
   const maxBar = Math.max(emi, monthlyBill) * 1.05;
 
@@ -323,20 +346,45 @@ export default function Calculator() {
             <h3 className="text-base sm:text-lg md:text-2xl font-semibold text-[#074A4D]">Your Results</h3>
           {/* Monthly EMI */}
           <div className="bg-[#074A4D] rounded-xl p-5 sm:p-6 text-white">
-            <p className="text-sm font-medium mb-1">Your Monthly EMI</p>
+            {/* Top row: label + optional subsidy badge */}
+            <div className="flex items-start justify-between gap-2 mb-1">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium">Your Monthly EMI</p>
+                {apiLoading && (
+                  <span className="text-xs text-[#ADD6D8] animate-pulse">Calculating...</span>
+                )}
+              </div>
+              {subsidyOn && (
+                <span className="flex items-center gap-1 bg-[#16A34A] text-white text-xs font-medium p-2 rounded-full whitespace-nowrap shrink-0">
+                  <Check size={12} />
+                  PM Surya Ghar Subsidy Applied
+                </span>
+              )}
+            </div>
+            {apiError && (
+              <p className="text-xs text-[#FCA5A5] mb-2">Note: Using estimated calculation</p>
+            )}
+
             <div className="flex items-baseline gap-2 mb-0.5">
               <span className="text-4xl sm:text-5xl font-semibold text-[#F7BA41]">
                 ₹{fmt(emi)}
               </span>
             </div>
-            <p className="text-xs  mb-4">
-              {tenure} {tenure === 1 ? "year" : "years"} · {rate.toFixed(2)}%
-              interest
+            <p className="text-xs mb-4">
+              {tenure} {tenure === 1 ? "year" : "years"} · {rate.toFixed(2)}% interest
             </p>
-            <div className="pt-4 space-y-2">
-              <div className="flex justify-between text-sm font-semibold">
-                <span>Your Loan amount</span>
-                <span className="text-lg">₹{fmt(loanAmount)} Total</span>
+
+            <div className=" pt-4 space-y-2">
+              <div className="flex justify-between items-center text-sm font-semibold">
+                <span>{subsidyOn ? "Your Loan amount after subsidy" : "Your Loan amount"}</span>
+                <span className="flex items-center gap-1.5">
+                  {subsidyOn && (
+                    <span className="text-xs text-[#A7C4C5] line-through font-normal">
+                      ₹{fmt(loanAmount + SUBSIDY)}
+                    </span>
+                  )}
+                  <span className="text-base">₹{fmt(loanAmount)}</span>
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="font-medium">Total Interest</span>
@@ -480,9 +528,7 @@ export default function Calculator() {
                 State Bank of India
               </p>
               <p className="text-sm text-[#123532] mt-0.5">
-                {rate <= 5.65
-                  ? `5.65% Interest · Approval in 5–7 days`
-                  : `Switch to SBI 5.65% — save ₹${fmt(emi - sbiEmi)}/mo`}
+                {rate.toFixed(2)}% Interest · Approval in 5–7 days
               </p>
               <button className="cursor-pointer mt-1.5 flex items-center gap-0.5 text-sm font-semibold text-[#F88A22] hover:underline">
                 See All Bank Options <ArrowRight size={14} />
