@@ -90,7 +90,8 @@ const tools = [
                   isActive("/residential") ||
                   isActive("/commercial") ||
                   isActive("/projects") ||
-                  isActive("/blog")
+                  isActive("/blog") || 
+                  isActive("/group-purchase")
                     ? "font-bold before:w-1/2"
                     : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-500 before:ease-in-out hover:before:w-1/2`}
@@ -142,7 +143,8 @@ const tools = [
             >
               <button
                 className={`relative lg:text-xl flex items-center gap-1 ${
-                  isActive("/tools")
+                  isActive("/emi-calculator") ||
+                  isActive("/solar-comparison")
                     ? "font-bold before:w-1/2"
                     : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-500 before:ease-in-out hover:before:w-1/2`}
