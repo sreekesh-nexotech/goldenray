@@ -4,7 +4,15 @@
 import React, { useState, useRef } from "react";
 import { submitContactForm } from "@/services/basicContactService";
 
-export default function BookingForm() {
+interface BookingFormProps {
+  title?: string;
+  description?: string;
+}
+
+
+export default function BookingForm( 
+  { title = "Book your free consultation", description = "Stop budgeting around your electricity bill. Get an honest assessment — savings potential, system options, MNRE subsidy eligibility, and net metering benefits. No obligations, just answers from a team that’s done this 300+ times."  }: BookingFormProps 
+) {
   const bgImg = "https://golden-ray.b-cdn.net/images/img.jpg";
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -92,13 +100,10 @@ export default function BookingForm() {
       <div className="relative z-10 xl:min-h-screen flex items-center justify-start py-20 md:px-12 px-4 sm:px-6 lg:px-8 xl:px-36">
         <div className="text-white max-w-xl text-center md:text-left">
           <h2 className="text-4xl md:text-5xl font-semibold leading-tight mb-4">
-            Book your free consultation
+            {title}
           </h2>
           <p className="text-sm md:text-xl font-normal leading-relaxed mb-8">
-            Stop budgeting around your electricity bill. Get an honest
-            assessment — savings potential, system options, MNRE subsidy
-            eligibility, and net metering benefits. No obligations, just answers
-            from a team that&apos;s done this 300+ times.
+            {description}
           </p>
           <form
             ref={formRef}

@@ -67,7 +67,7 @@ const EmiHero = () => {
         <div className="flex flex-row gap-3 mt-2 w-full sm:w-auto">
          <LinkingButton
             content="Compare Bank Rates"
-            ButtonLink="#"
+            ButtonLink="#bank-rates"
             ButtonBorder="border border-[#074A4D]"
             ButtonBg="bg-transparent"
             Buttontext="text-[#074A4D]"

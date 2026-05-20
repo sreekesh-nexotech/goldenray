@@ -494,7 +494,7 @@ export default function Calculator() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl items-center justify-center">
             <LinkingButton
                 content="Compare Bank Rates"
-                ButtonLink="#"
+                ButtonLink="#bank-rates"
                 ButtonBorder="border border-[#074A4D]"
                 ButtonBg="bg-transparent"
                 Buttontext="text-[#074A4D]"
