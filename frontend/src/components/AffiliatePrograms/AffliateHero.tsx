@@ -41,7 +41,7 @@ const AffliateHero = () => {
               Rs.8,000+ Per Installation
             </span>
           </div>
-          <h1 className="text-4xl md:text-7xl font-semibold leading-tight text-[#171717]">
+          <h1 className="text-4xl md:text-5xl font-semibold leading-tight text-[#171717]">
             Kerala&apos;s Most Trusted Solar Brand
             <br />
             <span className="text-[#F88A22] font-bold">Now Paying You</span> to

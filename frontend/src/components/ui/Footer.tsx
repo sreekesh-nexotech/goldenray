@@ -97,8 +97,10 @@ export default function Footer() {
       <section className="w-full bg-[#074A4D] rounded-t-3xl text-white py-[clamp(4rem,8vh,8rem)] px-[clamp(1rem,6vw,12rem)] relative overflow-hidden">
         {/* The background grid pattern is unchanged as it doesn't violate guidelines */}
         <div
-          className="absolute inset-0 z-0 opacity-50 pointer-events-none bg-[url('../../public/grid.svg')] bg-no-repeat bg-auto"
+          className="absolute inset-0 z-0 opacity-50 pointer-events-none bg-[url('../../public/grid.svg')] bg-no-repeat"
           style={{
+            backgroundSize: "100% auto",
+            backgroundPosition: "center top",
             WebkitMaskImage: `radial-gradient(farthest-side at 50% 50%, black 20%, transparent 100%), linear-gradient(to right, transparent 1%, black 50%, transparent 99%), linear-gradient(to bottom, transparent 1%, black 50%, transparent 99%)`,
             maskImage: `radial-gradient(farthest-side at 50% 50%, black 20%, transparent 100%), linear-gradient(to right, transparent 1%, black 50%, transparent 99%), linear-gradient(to bottom, transparent 1%, black 50%, transparent 99%)`,
             WebkitMaskComposite: "intersect",
