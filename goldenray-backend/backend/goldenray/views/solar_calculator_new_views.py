@@ -3,30 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import SolarInstallationNew, Pincode, KSEBTariff
 from ..permissions import ApiMethodPermission, non_authenticated_view
-
-
-def emi_calc(final_cost, interest_rate, tenure_years=10):
-    if final_cost <= 0 or interest_rate <= 0:
-        return {
-            "emi_per_month": 0,
-            "total_payment": 0,
-        }
-    
-    monthly_interest_rate = interest_rate / (12 * 100)
-    tenure_months = tenure_years * 12
-    
-    # EMI formula: [P x R x (1+R)^N] / [(1+R)^N - 1]
-    # Where P = Principal loan amount, R = Monthly interest rate, N = Number of months
-    emi_numerator = final_cost * monthly_interest_rate * ((1 + monthly_interest_rate) ** tenure_months)
-    emi_denominator = ((1 + monthly_interest_rate) ** tenure_months) - 1
-    
-    emi_per_month = emi_numerator / emi_denominator
-    total_payment = emi_per_month * tenure_months
-    
-    return {
-        "emi_per_month": round(emi_per_month, 2),
-        "total_payment": round(total_payment, 2),
-    }
+from ..utils.finance import emi_calc
 
 
 class SolarCalculatorNewAPIView(APIView):
@@ -140,7 +117,7 @@ class SolarCalculatorNewAPIView(APIView):
         
         # Calculate EMI for the final cost with 10 years tenure
         emi_details = emi_calc(
-            final_cost=float(row.final_cost),
+            principal=float(row.final_cost),
             interest_rate=float(row.interest_rate) if row.interest_rate else 0,
             tenure_years=10
         )

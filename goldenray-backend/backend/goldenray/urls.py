@@ -18,6 +18,7 @@ from .views.metadata_views import MetadataAPIView
 from .views.room_size_views import RoomSizeAPIView
 from .views.customer_installation_views import CustomerInstallationAPIView, InstallationStatsByPincodeAPIView
 from .views.affiliate_application_views import AffiliateApplicationAPIView
+from .views.emicalculator import EMICalculatorAPIView
 
 urlpatterns = [
     # Batteries
@@ -73,4 +74,6 @@ urlpatterns = [
     path("installation-stats/", InstallationStatsByPincodeAPIView.as_view(), name="installation-stats-by-pincode"),
     # Affiliate Applications
     path("affiliate-applications/", AffiliateApplicationAPIView.as_view(), name="affiliate-application-create"),
+    # EMI Calculator
+    path("emi-calculator/", EMICalculatorAPIView.as_view(), name="emi-calculator"),
 ]
