@@ -1,4 +1,10 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
+import {
+  submitAffiliateApplication,
+  AffiliateApplicationData,
+} from "../../services/affiliateProgramService";
 
 const PROFESSIONS = [
   "Real Estate Agent",
@@ -27,7 +33,95 @@ const DISTRICTS = [
   "Kasaragod",
 ];
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const INDIA_PHONE_REGEX = /^[6-9][0-9]{9}$/;
+
+type FormState = Required<AffiliateApplicationData>;
+
+const INITIAL_STATE: FormState = {
+  full_name: "",
+  phone: "",
+  email: "",
+  profession: "",
+  district: "",
+  website: "",
+};
+
+const normalizePhone = (raw: string): string => {
+  let digits = raw.replace(/[\s\-()+]/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) {
+    digits = digits.slice(2);
+  }
+  return digits;
+};
+
 const Form = () => {
+  const [formData, setFormData] = useState<FormState>(INITIAL_STATE);
+  const [submitting, setSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+    if (errorMessage) setErrorMessage(null);
+    if (successMessage) setSuccessMessage(null);
+  };
+
+  const validate = (): string | null => {
+    if (!formData.full_name.trim()) return "Full name is required.";
+    if (!INDIA_PHONE_REGEX.test(normalizePhone(formData.phone)))
+      return "Enter a valid 10-digit Indian mobile number.";
+    if (!EMAIL_REGEX.test(formData.email.trim()))
+      return "Please enter a valid email address.";
+    if (!formData.profession) return "Please select your profession.";
+    if (!formData.district) return "Please select your district.";
+    return null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSuccessMessage(null);
+    setErrorMessage(null);
+
+    const validationError = validate();
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const payload: AffiliateApplicationData = {
+        full_name: formData.full_name.trim(),
+        phone: normalizePhone(formData.phone),
+        email: formData.email.trim().toLowerCase(),
+        profession: formData.profession,
+        district: formData.district,
+        website: formData.website,
+      };
+      const res = await submitAffiliateApplication(payload);
+      setSuccessMessage(res?.message || "Message sent!");
+      setFormData(INITIAL_STATE);
+    } catch (err) {
+      const apiError = err as { errorData?: { errors?: Record<string, string[]>; message?: string } };
+      const fieldErrors = apiError?.errorData?.errors;
+      if (fieldErrors) {
+        const firstKey = Object.keys(fieldErrors)[0];
+        const firstMsg = fieldErrors[firstKey]?.[0];
+        setErrorMessage(firstMsg || "Submission failed. Please try again.");
+      } else {
+        setErrorMessage(
+          apiError?.errorData?.message || "Submission failed. Please try again."
+        );
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <section
       id="form"
@@ -51,7 +145,11 @@ const Form = () => {
 
         {/* Contact Form */}
 
-        <form className="max-w-2xl mx-auto bg-[#074A4D] rounded-2xl p-5 sm:p-6 ">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="max-w-2xl mx-auto bg-[#074A4D] rounded-2xl p-5 sm:p-6 "
+        >
           <h3 className="hidden sm:block text-4xl md:text-5xl font-semibold leading-tight text-white text-center mb-1">
             Affiliate Application
           </h3>
@@ -61,17 +159,37 @@ const Form = () => {
           </p>
 
           <div className="bg-white rounded-2xl p-5 sm:p-6">
+            {/* Honeypot — hidden from real users; bots that autofill will be rejected */}
+            <input
+              id="website"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={formData.website}
+              onChange={handleChange}
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                left: "-10000px",
+                width: "1px",
+                height: "1px",
+                opacity: 0,
+              }}
+            />
             {/* Full Name */}
             <div className="mb-4">
               <label
-                htmlFor="fullName"
+                htmlFor="full_name"
                 className="block text-xs md:text-base font-medium leading-normal text-[#414651] mb-1.5"
               >
                 Full Name
               </label>
               <input
-                id="fullName"
+                id="full_name"
                 type="text"
+                required
+                value={formData.full_name}
+                onChange={handleChange}
                 placeholder="Enter your name"
                 className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm md:text-base text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D]"
               />
@@ -88,6 +206,9 @@ const Form = () => {
               <input
                 id="phone"
                 type="tel"
+                required
+                value={formData.phone}
+                onChange={handleChange}
                 placeholder="Enter your number"
                 className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm md:text-base text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D]"
               />
@@ -104,6 +225,9 @@ const Form = () => {
               <input
                 id="email"
                 type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Enter your email"
                 className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm md:text-base text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D]"
               />
@@ -119,7 +243,9 @@ const Form = () => {
               </label>
               <select
                 id="profession"
-                defaultValue=""
+                required
+                value={formData.profession}
+                onChange={handleChange}
                 className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm md:text-base text-[#111827] bg-white focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D] cursor-pointer"
               >
                 <option value="" disabled className="text-[#9CA3AF]">
@@ -143,7 +269,9 @@ const Form = () => {
               </label>
               <select
                 id="district"
-                defaultValue=""
+                required
+                value={formData.district}
+                onChange={handleChange}
                 className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm md:text-base text-[#111827] bg-white focus:outline-none focus:border-[#074A4D] focus:ring-1 focus:ring-[#074A4D] cursor-pointer"
               >
                 <option value="" disabled className="text-[#9CA3AF]">
@@ -157,12 +285,30 @@ const Form = () => {
               </select>
             </div>
 
+            {errorMessage && (
+              <p
+                role="alert"
+                className="mb-3 text-sm font-medium text-red-600"
+              >
+                {errorMessage}
+              </p>
+            )}
+            {successMessage && (
+              <p
+                role="status"
+                className="mb-3 text-sm font-medium text-green-700"
+              >
+                {successMessage}
+              </p>
+            )}
+
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-[#F7BA41] hover:bg-[#e5a51f] transition-colors duration-200 text-[#272218] font-semibold text-base md:text-xl leading-snug py-3 rounded-xl cursor-pointer"
+              disabled={submitting}
+              className="w-full bg-[#F7BA41] hover:bg-[#e5a51f] transition-colors duration-200 text-[#272218] font-semibold text-base md:text-xl leading-snug py-3 rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Submit Application
+              {submitting ? "Submitting..." : "Submit Application"}
             </button>
 
             {/* Divider */}
