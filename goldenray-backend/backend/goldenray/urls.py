@@ -17,6 +17,7 @@ from .views.lead_collection_home_views import LeadCollectionHomeAPIView
 from .views.metadata_views import MetadataAPIView
 from .views.room_size_views import RoomSizeAPIView
 from .views.customer_installation_views import CustomerInstallationAPIView, InstallationStatsByPincodeAPIView
+from .views.affiliate_application_views import AffiliateApplicationAPIView
 
 urlpatterns = [
     # Batteries
@@ -70,4 +71,6 @@ urlpatterns = [
     path("customer-installations/<int:pk>/", CustomerInstallationAPIView.as_view(), name="customer-installation-retrieve-update-destroy"),
     # Installation Stats by Pincode
     path("installation-stats/", InstallationStatsByPincodeAPIView.as_view(), name="installation-stats-by-pincode"),
+    # Affiliate Applications
+    path("affiliate-applications/", AffiliateApplicationAPIView.as_view(), name="affiliate-application-create"),
 ]

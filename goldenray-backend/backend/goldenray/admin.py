@@ -1,9 +1,20 @@
 from django.contrib import admin
 from .models import Battery, SolarInstallationNew, CustomerInstallation, SolarPanel
+from .models.affiliate_application import AffiliateApplication
 
 # Register your models here.
 admin.site.register(Battery)
 admin.site.register(SolarInstallationNew)
+
+
+@admin.register(AffiliateApplication)
+class AffiliateApplicationAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'phone', 'email', 'profession', 'district', 'created_at')
+    list_filter = ('profession', 'district', 'created_at')
+    search_fields = ('full_name', 'phone', 'email')
+    date_hierarchy = 'created_at'
+    ordering = ('-created_at',)
+    readonly_fields = ('created_at',)
 
 
 @admin.register(CustomerInstallation)

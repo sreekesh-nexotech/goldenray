@@ -11,3 +11,4 @@ from .solar_installation_new import SolarInstallationNew
 from .solar_panel import SolarPanel
 from .wattage import Wattage
 from .customer_installation import CustomerInstallation
+from .affiliate_application import AffiliateApplication
