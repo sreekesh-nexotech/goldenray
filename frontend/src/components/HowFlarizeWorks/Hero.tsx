@@ -61,16 +61,16 @@ export default function Hero() {
 
           <div className="flex flex-row justify-start mt-6 lg:gap-8 gap-2 mb-6">
             <LinkingButton
-              content="Get Free Solar Estimate"
-              ButtonLink="#solar-estimate"
+              content="Calculate Solar Savings"
+              ButtonLink="/advanced-calculator"
               ButtonBg="bg-[#F7BA41]"
               Buttontext="text-[#272218]"
               ButtonHover="hover:bg-yellow-500"
               className="min-w-[260px] md:min-w-[320px] h-[56px] px-10 text-base md:text-lg rounded-2xl"
             />
             <LinkingButton
-              content="Watch Installation Story"
-              ButtonLink="#installation-story"
+              content="Check EMI Options"
+              ButtonLink="/emi-calculator"
               ButtonBorder="border border-[#074A4D]"
               ButtonBg="bg-[#FFFFFF]"
               Buttontext="text-[#074A4D]"
