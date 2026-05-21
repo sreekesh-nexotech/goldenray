@@ -75,10 +75,7 @@ export default function InverterCard({
       {/* Image Section */}
       <div className="relative bg-white h-44 sm:h-48 flex items-center justify-center">
         <Image
-          src={
-            inverter.imageUrl ||
-            "https://golden-ray.b-cdn.net/images/frame%20(5).png"
-          }
+          src={inverter.imageUrl || "/invertor image.png"}
           alt={inverter.name}
           fill
           className="object-contain px-6"
@@ -118,9 +115,7 @@ export default function InverterCard({
               : " Yr"}{" "}
             Warranty
           </span>
-          <span className="hidden sm:inline">
-            {inverter.mpptTrackers} MPPT
-          </span>
+          <span className="hidden sm:inline">{inverter.mpptTrackers} MPPT</span>
         </div>
 
         {/* Description */}

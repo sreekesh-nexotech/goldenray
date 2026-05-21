@@ -174,8 +174,7 @@ function InverterSelector({
   const [isOpen, setIsOpen] = useState(false);
 
   const available = allInverters.filter(
-    (p) =>
-      !selectedInverterIds.includes(p.id) || p.id === selectedInverter?.id,
+    (p) => !selectedInverterIds.includes(p.id) || p.id === selectedInverter?.id,
   );
 
   const pillSummary = useMemo(() => {
@@ -332,7 +331,8 @@ function VisualSummaryCard({ inverter }: { inverter: SolarInverter }) {
       label: "Brand Trust",
       value: Math.min(
         100,
-        60 + (inverter.warrantyYears >= 12 ? 20 : 10) +
+        60 +
+          (inverter.warrantyYears >= 12 ? 20 : 10) +
           (inverter.corrosionProtection.includes("C5") ? 20 : 10),
       ),
       rightText: scoreToLabel(inverter.ratings.reliability),
@@ -410,8 +410,7 @@ function badgeBuiltIn(value: string): string {
 }
 
 function badgeIVCurve(value: string): string {
-  if (value.toLowerCase().includes("advanced"))
-    return `${value}__ADVANCED__`;
+  if (value.toLowerCase().includes("advanced")) return `${value}__ADVANCED__`;
   if (value.toLowerCase().includes("not available"))
     return `${value}__NOT_AVAILABLE__`;
   return value;
@@ -438,7 +437,9 @@ export default function ComparisonTable({
     [selectedInverters.length],
   );
 
-  const inverterSlots = [0, 1, 2].map((index) => selectedInverters[index] || null);
+  const inverterSlots = [0, 1, 2].map(
+    (index) => selectedInverters[index] || null,
+  );
 
   const handleSelect = (_slotIndex: number, inverterId: string) => {
     onAddInverter(inverterId);
@@ -454,13 +455,11 @@ export default function ComparisonTable({
       | keyof SolarInverter
       | ((inverter: SolarInverter) => string | number | boolean | null),
   ) => {
-    return inverterSlots
-      .slice(0, selectedInverters.length)
-      .map((inverter) => {
-        if (!inverter) return null;
-        if (typeof key === "function") return key(inverter);
-        return inverter[key] as string | number | boolean | null;
-      });
+    return inverterSlots.slice(0, selectedInverters.length).map((inverter) => {
+      if (!inverter) return null;
+      if (typeof key === "function") return key(inverter);
+      return inverter[key] as string | number | boolean | null;
+    });
   };
 
   return (
@@ -538,10 +537,7 @@ export default function ComparisonTable({
                       {inverter && (
                         <div className="relative w-[92%] h-[90%] overflow-hidden">
                           <Image
-                            src={
-                              inverter.imageUrl ||
-                              "https://golden-ray.b-cdn.net/images/frame%20(5).png"
-                            }
+                            src={inverter.imageUrl || "/invertor image.png"}
                             alt={inverter.name}
                             fill
                             className="object-contain scale-[1.15]"
