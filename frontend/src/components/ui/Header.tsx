@@ -11,47 +11,45 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [solutionsDropdownOpen, setSolutionsDropdownOpen] = useState(false);
   const [toolsDropdownOpen, setToolsDropdownOpen] = useState(false);
-  const [serviceLocationDropdownOpen, setServiceLocationDropdownOpen] = useState(false);
-
+  const [serviceLocationDropdownOpen, setServiceLocationDropdownOpen] =
+    useState(false);
 
   const firstLocations = [
-  { name: "Alappuzha", href: "#" },
-  { name: "Thiruvananthapuram", href: "#" },
-  { name: "Malappuram", href: "#" },
-  { name: "Ernakulam", href: "#" },
-  { name: "Kozhikode", href: "#" },
-  { name: "Thrissur", href: "#" },
-];
+    { name: "Alappuzha", href: "#" },
+    { name: "Thiruvananthapuram", href: "#" },
+    { name: "Malappuram", href: "#" },
+    { name: "Ernakulam", href: "#" },
+    { name: "Kozhikode", href: "#" },
+    { name: "Thrissur", href: "#" },
+  ];
 
-const allLocations = [
-  ...firstLocations,
-  { name: "Palakkad", href: "#" },
-  { name: "Kollam", href: "#" },
-  { name: "Idukki", href: "#" },
-  { name: "Kasargod", href: "#" },
-  { name: "Pathanamthitta", href: "#" },
-  { name: "Kannur", href: "#" },
-  { name: "Wayanadu", href: "#" },
-];
+  const allLocations = [
+    ...firstLocations,
+    { name: "Palakkad", href: "#" },
+    { name: "Kollam", href: "#" },
+    { name: "Idukki", href: "#" },
+    { name: "Kasargod", href: "#" },
+    { name: "Pathanamthitta", href: "#" },
+    { name: "Kannur", href: "#" },
+    { name: "Wayanadu", href: "#" },
+  ];
 
-const [showAllLocations, setShowAllLocations] = useState(false);
+  const [showAllLocations, setShowAllLocations] = useState(false);
 
-const solutions = [
-  { name: "Residential", href: "/residential" },
-  { name: "Commercial", href: "/commercial" },
-  { name: "Group Purchase", href: "/group-purchase" },
-  { name: "Our Projects", href: "/projects" },
-  { name: "Blog", href: "/blog" },
-];
+  const solutions = [
+    { name: "Residential", href: "/residential" },
+    { name: "Commercial", href: "/commercial" },
+    { name: "Group Purchase", href: "/group-purchase" },
+    { name: "Our Projects", href: "/projects" },
+    { name: "Blog", href: "/blog" },
+  ];
 
-const tools = [
-  { name: "Check Your Monthly Cost", href: "/emi-calculator" },
-  { name: "Review Your Solar Quote", href: "#" },
-  { name: "Compare Solar Options", href: "/solar-comparison" },
-  { name: "Choose the Right Inverter", href: "#" },
-];
-
-
+  const tools = [
+    { name: "Check Your Monthly Cost", href: "/emi-calculator" },
+    { name: "Review Your Solar Quote", href: "#" },
+    { name: "Compare Solar Options", href: "/solar-comparison" },
+    { name: "Choose the Right Inverter", href: "/inverter-comparison" },
+  ];
 
   const pathname = usePathname();
   const isActive = (href: string) => pathname === href;
@@ -90,7 +88,7 @@ const tools = [
                   isActive("/residential") ||
                   isActive("/commercial") ||
                   isActive("/projects") ||
-                  isActive("/blog") || 
+                  isActive("/blog") ||
                   isActive("/group-purchase")
                     ? "font-bold before:w-1/2"
                     : ""
@@ -143,8 +141,7 @@ const tools = [
             >
               <button
                 className={`relative lg:text-xl flex items-center gap-1 ${
-                  isActive("/emi-calculator") ||
-                  isActive("/solar-comparison")
+                  isActive("/emi-calculator") || isActive("/solar-comparison")
                     ? "font-bold before:w-1/2"
                     : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-500 before:ease-in-out hover:before:w-1/2`}
@@ -185,9 +182,7 @@ const tools = [
             >
               <button
                 className={`relative lg:text-xl flex items-center gap-1 ${
-                  isActive("/locations")
-                    ? "font-bold before:w-1/2"
-                    : ""
+                  isActive("/locations") ? "font-bold before:w-1/2" : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-500 before:ease-in-out hover:before:w-1/2`}
               >
                 Service Locations
@@ -217,7 +212,7 @@ const tools = [
                       >
                         Solar Services In {location.name}
                       </Link>
-                    )
+                    ),
                   )}
                 </div>
 
@@ -226,7 +221,8 @@ const tools = [
                     onClick={() => setShowAllLocations(true)}
                     className="w-full text-left px-6 py-3 text-sm font-medium text-[#074A4D] hover:bg-gray-50"
                   >
-                    View All Locations <ArrowRight size={16} className="inline-block ml-1" />
+                    View All Locations{" "}
+                    <ArrowRight size={16} className="inline-block ml-1" />
                   </button>
                 )}
               </div>
@@ -243,11 +239,24 @@ const tools = [
               </Link>
             </li>
             <li>
-              <LinkingButton content="Contact us" ButtonLink="/contactus" ButtonBorder="border border-[#074A4D]" ButtonBg="bg-[#FFFFFF]" Buttontext="text-[#074A4D]" ButtonHover="hover:bg-[#eeeeee]" />
+              <LinkingButton
+                content="Contact us"
+                ButtonLink="/contactus"
+                ButtonBorder="border border-[#074A4D]"
+                ButtonBg="bg-[#FFFFFF]"
+                Buttontext="text-[#074A4D]"
+                ButtonHover="hover:bg-[#eeeeee]"
+              />
             </li>
 
             <li>
-              <LinkingButton content="Calculate Your Savings" ButtonLink="/advanced-calculator" ButtonBg="bg-[#F7BA41]" Buttontext="text-[#272218]" ButtonHover="hover:bg-yellow-500" />
+              <LinkingButton
+                content="Calculate Your Savings"
+                ButtonLink="/advanced-calculator"
+                ButtonBg="bg-[#F7BA41]"
+                Buttontext="text-[#272218]"
+                ButtonHover="hover:bg-yellow-500"
+              />
             </li>
           </ul>
           <div className="xl:hidden">
@@ -296,13 +305,13 @@ const tools = [
                 : "max-h-0 opacity-0"
             }`}
           >
-            {solutions.map((solution,idx) => (
+            {solutions.map((solution, idx) => (
               <Link
                 key={solution.name + idx}
                 href={solution.href}
                 className={`text-gray-600 text-xl ${
-                isActive(solution.href) ? "font-bold" : ""
-              } `}
+                  isActive(solution.href) ? "font-bold" : ""
+                } `}
               >
                 {solution.name}
               </Link>
@@ -326,9 +335,7 @@ const tools = [
           <button
             onClick={() => setToolsDropdownOpen(!toolsDropdownOpen)}
             className={`relative text-gray-700 font-medium text-xl flex items-center gap-1 ${
-              isActive("#") 
-                ? "font-bold"
-                : ""
+              isActive("#") ? "font-bold" : ""
             }`}
           >
             Tools
@@ -352,22 +359,22 @@ const tools = [
                 key={tool.name + idx}
                 href={tool.href}
                 className={`text-gray-600 text-xl ${
-                isActive(tool.href) ? "font-bold" : ""
-              } `}
+                  isActive(tool.href) ? "font-bold" : ""
+                } `}
               >
                 {tool.name}
               </Link>
             ))}
           </div>
         </li>
-        
+
         <li>
           <button
-            onClick={() => setServiceLocationDropdownOpen(!serviceLocationDropdownOpen)}
+            onClick={() =>
+              setServiceLocationDropdownOpen(!serviceLocationDropdownOpen)
+            }
             className={`relative text-gray-700 font-medium text-xl flex items-center gap-1 ${
-              isActive("#") 
-                ? "font-bold"
-                : ""
+              isActive("#") ? "font-bold" : ""
             }`}
           >
             Service Locations
@@ -391,8 +398,8 @@ const tools = [
                 key={location.name + idx}
                 href={location.href}
                 className={`text-gray-600 text-xl ${
-                isActive(location.href) ? "font-bold" : ""
-              } `}
+                  isActive(location.href) ? "font-bold" : ""
+                } `}
               >
                 Solar Service in {location.name}
               </Link>
