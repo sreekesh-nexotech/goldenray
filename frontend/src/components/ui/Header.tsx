@@ -46,7 +46,7 @@ export default function Header() {
 
   const tools = [
     { name: "Check Your Monthly Cost", href: "/emi-calculator" },
-    { name: "Review Your Solar Quote", href: "#" },
+    { name: "Review Your Solar Quote", href: "/quote-analyser" },
     { name: "Compare Solar Options", href: "/solar-comparison" },
     { name: "Choose the Right Inverter", href: "/inverter-comparison" },
   ];
