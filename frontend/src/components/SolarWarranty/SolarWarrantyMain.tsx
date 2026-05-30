@@ -14,7 +14,7 @@ import Faq from "../Home/Faq";
 
 const SolarWarrantyMain = () => {
   return (
-    <section className="relative">
+    <section className="relative overflow-x-hidden">
       <Hero />
       <Metrics />
       <ThreeLayerSupport />

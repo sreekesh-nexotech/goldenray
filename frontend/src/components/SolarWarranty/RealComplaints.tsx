@@ -4,28 +4,40 @@ import React, { useState } from "react";
 
 const complaints = [
   {
-    tag: "CONCERN #1 — INSTALLER ACCOUNTABILITY",
+    tag: "Concern #1 — Installer Accountability",
     quote:
       "My installer stopped answering calls three months after installation. Phone switched off. No service for over eight months.",
     source: "— Real complaint, Ernakulam",
-    problemTitle: "THE PROBLEM",
+    problemTitle: "The Problem",
     problem:
       "Most solar companies in Kerala subcontract installations to third-party teams. Once the project payment clears, the incentive to support you long-term disappears. Your warranty becomes worthless if the company folds or exits the market.",
-    solutionTitle: "THE SOLUTION",
+    solutionTitle: "The Solution",
     solution:
-      "Your solar service contract is with Flarize directly — not with an individual installer or subcontractor. Even if a field partner leaves our network, your 25-year service obligation continues unchanged. We maintain digital records of your installation, system specs, and full service history so MyFlarize.com.",
+      "Your solar service contract is with Flarize directly — not with an individual installer or subcontractor. Even if a field partner leaves our network, your 25-year service obligation continues unchanged. We maintain digital records of your installation, system specs, and full service history at my.flarize.com.",
   },
   {
-    tag: "CONCERN #2 — LOW GENERATION",
+    tag: "Concern #2 — Low Generation",
     quote:
       "My 3kW system is producing only 12 units per day in peak summer. The company says no one else is complaining.",
     source: "— Real complaint, Thrissur",
+    problemTitle: "The Problem",
+    problem:
+      "Vague reassurances without performance data are useless. Soiling, shading, inverter clipping, incorrect panel orientation, and micro-cracks in bifacial panels all cause generation shortfalls — and most Kerala installers have no monitoring system in place to detect them without a physical visit.",
+    solutionTitle: "The Solution",
+    solution:
+      "Flarize monitors your on-grid solar system's daily output against its site-specific modeled figure. If generation drops more than 8% below expected, our platform flags it automatically and our team diagnoses the cause — remotely first, then on-site if needed. You do not need to notice the problem before we do.",
   },
   {
-    tag: "CONCERN #3 — WARRANTY CLAIM REJECTION",
+    tag: "Concern #3 — Warranty Claim Rejection",
     quote:
       "The inverter failed in Year 4. The manufacturer said the warranty is voided because there are no documented maintenance records.",
     source: "— Real complaint, Kozhikode",
+    problemTitle: "The Problem",
+    problem:
+      "Inverter and panel manufacturers frequently require documented proof of periodic maintenance before approving warranty claims. Without professional service records, claims get rejected — leaving homeowners with a replacement cost of Rs.40,000 to Rs.80,000 that should have been covered.",
+    solutionTitle: "The Solution",
+    solution:
+      "Every Flarize service interaction is logged digitally to your account at my.flarize.com. Your Solar Health Reports serve as documented maintenance records, protecting your manufacturer warranty for panels, inverters, and mounting structures throughout the coverage period. We also file all warranty claims on your behalf — no paperwork, no manufacturer negotiations, no cost to you.",
   },
 ];
 

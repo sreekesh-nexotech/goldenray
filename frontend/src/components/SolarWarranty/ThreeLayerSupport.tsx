@@ -60,12 +60,75 @@ const ThreeLayerSupport = () => {
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-[#757575] max-w-5xl xl:max-w-6xl leading-relaxed">
             80% of solar system issues in Kerala are resolved without a single
-            site visit. Here is exactly how we <br/>work through every problem — from
-            inverter error codes to physical panel faults.
+            site visit. Here is exactly how we <br />
+            work through every problem — from inverter error codes to physical
+            panel faults.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+        <div className="flex gap-4 overflow-x-auto pb-2 md:hidden snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {layers.map((layer) => (
+            <div
+              key={layer.title}
+              className="min-w-[85%] bg-[#0E3A3A] rounded-2xl p-6 sm:p-7 text-white flex flex-col snap-start"
+            >
+              <div className="flex items-center justify-between mb-5">
+                <span className="text-xs tracking-widest font-semibold text-white/70">
+                  {layer.level}
+                </span>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#1B5C5C] text-[#A9E3C3] tracking-wider">
+                  {layer.badge}
+                </span>
+              </div>
+
+              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#F7BA41] leading-none mb-2">
+                {layer.percent}
+              </div>
+              <div className="text-xs tracking-widest font-semibold text-white/70 mb-5">
+                {layer.sub}
+              </div>
+
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xl">{layer.icon}</span>
+                <h3 className="text-lg sm:text-xl font-semibold text-white">
+                  {layer.title}
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm leading-relaxed text-white/85 mb-5">
+                {layer.description}
+              </p>
+
+              <ul className="mt-auto space-y-2">
+                {layer.bullets.map((b) => (
+                  <li
+                    key={b}
+                    className="flex items-start gap-2 text-xs sm:text-sm text-white/90"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      className="mt-0.5 shrink-0"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m5 12 5 5L20 7"
+                        stroke="#3DD68C"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden md:grid grid-cols-3 gap-5 md:gap-6">
           {layers.map((layer) => (
             <div
               key={layer.title}
@@ -140,7 +203,7 @@ const ThreeLayerSupport = () => {
             content={
               <div className="flex items-center gap-3">
                 <Image
-                  src="/images/sollarWarranty/imageComponentsBreakpoints/Whatsappicon.png"
+                  src="https://golden-ray.b-cdn.net/icons/Vector%20(22).png"
                   alt="WhatsApp icon"
                   width={20}
                   height={20}

@@ -30,7 +30,88 @@ const FreeVsChargeable = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div className="flex gap-4 overflow-x-auto pb-2 md:hidden snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {/* Mobile: horizontally scrollable cards */}
+          <div className="min-w-[85%] rounded-2xl border border-[#BFE5C8] bg-[#EAF7EE] p-6 sm:p-8">
+            <p className="text-xs tracking-widest font-semibold text-[#15803D] mb-2">
+              FREE VISIT
+            </p>
+            <h3 className="text-2xl sm:text-3xl font-semibold text-[#123532] mb-5">
+              Zero cost to you
+            </h3>
+            <ul className="space-y-3">
+              {freeItems.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-3 text-xs sm:text-sm text-[#1F2937] leading-relaxed"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="mt-0.5 shrink-0"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="m5 12 5 5L20 7"
+                      stroke="#16A34A"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="min-w-[85%] rounded-2xl border border-[#F3D4B8] bg-[#DC26261A] p-6 sm:p-8">
+            <p className="text-xs tracking-widest font-semibold text-[#FF383C] mb-2">
+              CHARGEABLE VISIT
+            </p>
+            <h3 className="text-2xl sm:text-3xl font-semibold text-[#DC2626] mb-5">
+              When costs apply
+            </h3>
+            <ul className="space-y-3">
+              {chargeableItems.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-3 text-xs sm:text-sm text-[#1F2937] leading-relaxed"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="mt-0.5 shrink-0"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      stroke="#EA580C"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M12 7v6"
+                      stroke="#EA580C"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <circle cx="12" cy="16.5" r="1" fill="#EA580C" />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Desktop: two-column grid (unchanged) */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {/* Free Visit */}
           <div className="rounded-2xl border border-[#BFE5C8] bg-[#EAF7EE] p-6 sm:p-8">
             <p className="text-xs tracking-widest font-semibold text-[#15803D] mb-2">

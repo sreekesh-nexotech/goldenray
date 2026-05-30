@@ -3,7 +3,13 @@ import React from "react";
 const services = [
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
         <path
           d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"
           stroke="currentColor"
@@ -25,7 +31,13 @@ const services = [
   },
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
         <path
           d="M3 9 12 3l9 6M5 9v10h14V9"
           stroke="currentColor"
@@ -46,7 +58,13 @@ const services = [
   },
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
         <path
           d="m13 2-9 12h7l-1 8 9-12h-7l1-8Z"
           stroke="currentColor"
@@ -61,7 +79,13 @@ const services = [
   },
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
         <path
           d="m4 17 6-6 4 4 6-7"
           stroke="currentColor"
@@ -97,14 +121,33 @@ const ZeroStressSupport = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+        <div className="md:hidden flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {services.map((s) => (
+            <div
+              key={s.title}
+              className="min-w-[85%] snap-start rounded-2xl bg-[#0E3A3A] text-white p-6 sm:p-7 flex flex-col"
+            >
+              <div className="mb-5 text-white">{s.icon}</div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3">
+                {s.title}
+              </h3>
+              <p className="text-xs sm:text-sm leading-relaxed text-white/85">
+                {s.description}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
           {services.map((s) => (
             <div
               key={s.title}
               className="rounded-2xl bg-[#0E3A3A] text-white p-6 sm:p-7 flex flex-col"
             >
               <div className="mb-5 text-white">{s.icon}</div>
-              <h3 className="text-lg sm:text-xl font-semibold mb-3">{s.title}</h3>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3">
+                {s.title}
+              </h3>
               <p className="text-xs sm:text-sm leading-relaxed text-white/85">
                 {s.description}
               </p>

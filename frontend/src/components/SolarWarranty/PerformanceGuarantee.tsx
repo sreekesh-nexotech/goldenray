@@ -46,7 +46,32 @@ const PerformanceGuarantee = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="md:hidden flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {steps.map((step, idx) => (
+            <div
+              key={step.number}
+              onMouseEnter={() => setActiveIdx(idx)}
+              onMouseLeave={() => setActiveIdx(1)}
+              className={`min-w-[85%] snap-start rounded-2xl px-6 py-7 transition-all duration-300 cursor-pointer ${
+                activeIdx === idx
+                  ? "bg-white shadow-xl -translate-y-1"
+                  : "bg-transparent"
+              }`}
+            >
+              <div className="text-sm font-semibold text-[#9CA3AF] mb-3">
+                {step.number}
+              </div>
+              <h3 className="text-xl font-semibold text-[#123532] leading-snug mb-3">
+                {step.title}
+              </h3>
+              <p className="text-sm text-[#4B5563] leading-relaxed">
+                {step.description}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {steps.map((step, idx) => (
             <div
               key={step.number}

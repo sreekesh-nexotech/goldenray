@@ -41,7 +41,46 @@ const WarrantyGrid = () => {
           </h2>
         </div>
 
-        <div className="rounded-2xl overflow-hidden border border-[#F0E6C8]">
+        <div className="md:hidden flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {rows.map((row) => (
+            <div
+              key={row.component}
+              className="min-w-[85%] snap-start rounded-2xl border border-[#F0E6C8] bg-[#FBF3E2] px-5 py-5"
+            >
+              <div className="border-b border-[#F0E6C8] pb-4 mb-4">
+                <div className="text-sm font-semibold text-[#123532]">
+                  {row.component}
+                </div>
+                <div className="text-xs text-[#6B7280] mt-0.5">
+                  {row.subtitle}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-start gap-2 text-sm font-semibold text-[#111827]">
+                  <span className="shrink-0 text-xs font-medium text-[#6B7280]">
+                    Standard:
+                  </span>
+                  <span>{row.standard}</span>
+                </div>
+                <div className="flex items-start gap-2 text-sm font-semibold text-[#111827]">
+                  <span className="shrink-0 text-xs font-medium text-[#6B7280]">
+                    Flarize:
+                  </span>
+                  <span>{row.flarize}</span>
+                </div>
+                <div className="flex items-start gap-2 text-sm font-semibold text-[#15803D]">
+                  <span className="shrink-0 text-xs font-medium text-[#6B7280]">
+                    Saving:
+                  </span>
+                  <span>{row.saving}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden md:block rounded-2xl overflow-hidden border border-[#F0E6C8]">
           {/* Header */}
           <div className="hidden md:grid grid-cols-4 bg-[#0E3A3A] text-white">
             <div className="px-6 py-4 text-sm font-semibold tracking-wide">
@@ -99,9 +138,9 @@ const WarrantyGrid = () => {
         </div>
 
         <div className="mt-6 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] px-5 py-4 text-xs sm:text-sm leading-relaxed text-[#4B5563]">
-          <span className="font-semibold text-[#FF8A1E]">Important:</span> Flarize
-          workmanship warranty covers faults caused by our installation. We assist
-          with all manufacturer warranty claims at no extra charge.
+          <span className="font-semibold text-[#FF8A1E]">Important:</span>{" "}
+          Flarize workmanship warranty covers faults caused by our installation.
+          We assist with all manufacturer warranty claims at no extra charge.
         </div>
       </div>
     </section>
