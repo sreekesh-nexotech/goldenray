@@ -114,6 +114,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_THROTTLE_RATES": {
         "affiliate_application": "5/min",
+        "warranty_service_request": "5/min",
     },
 }
 

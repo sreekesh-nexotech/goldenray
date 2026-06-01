@@ -20,6 +20,7 @@ from .views.room_size_views import RoomSizeAPIView
 from .views.customer_installation_views import CustomerInstallationAPIView, InstallationStatsByPincodeAPIView
 from .views.affiliate_application_views import AffiliateApplicationAPIView
 from .views.emicalculator import EMICalculatorAPIView
+from .views.warranty_service_request_views import WarrantyServiceRequestAPIView
 
 urlpatterns = [
     # Batteries
@@ -80,4 +81,10 @@ urlpatterns = [
     path("affiliate-applications/", AffiliateApplicationAPIView.as_view(), name="affiliate-application-create"),
     # EMI Calculator
     path("emi-calculator/", EMICalculatorAPIView.as_view(), name="emi-calculator"),
+    # Warranty / Support Service Requests
+    path(
+        "warranty-service-requests/",
+        WarrantyServiceRequestAPIView.as_view(),
+        name="warranty-service-request-create",
+    ),
 ]
