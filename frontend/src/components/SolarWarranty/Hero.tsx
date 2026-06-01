@@ -50,7 +50,7 @@ const Hero = () => {
           <div className="mt-6 flex w-full max-w-[20.5rem] flex-col gap-3">
             <LinkingButton
               content="Get a Free Service Call"
-              ButtonLink="#contact"
+              ButtonLink="/solar-warranty#contact"
               ButtonBg="bg-[#F7BA41]"
               Buttontext="text-[#272218]"
               ButtonHover="hover:bg-yellow-500"
@@ -130,7 +130,7 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-3">
           <LinkingButton
             content="Get a Free Service Call"
-            ButtonLink="#contact"
+            ButtonLink="/solar-warranty#contact"
             ButtonBg="bg-[#F7BA41]"
             Buttontext="text-[#272218]"
             ButtonHover="hover:bg-yellow-500"

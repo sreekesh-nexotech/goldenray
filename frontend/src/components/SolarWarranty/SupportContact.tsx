@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
+import { submitWarrantyServiceRequest } from "../../services/warrantyServiceRequestService";
 
 const issueTypes = [
   "Low Generation",
@@ -10,6 +12,8 @@ const issueTypes = [
   "Warranty Claim",
   "Other",
 ];
+
+type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
 const PhoneIcon = () => (
   <svg
@@ -65,6 +69,78 @@ const EmailIcon = () => (
 
 const SupportContact = () => {
   const [issue, setIssue] = useState("Low Generation");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [description, setDescription] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
+  const [feedback, setFeedback] = useState<string>("");
+
+  const resetForm = () => {
+    setFullName("");
+    setPhone("");
+    setDescription("");
+    setIssue("Low Generation");
+    setWebsite("");
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (submitStatus === "submitting") return;
+
+    const trimmedName = fullName.trim();
+    const trimmedPhone = phone.trim();
+
+    if (!trimmedName) {
+      setSubmitStatus("error");
+      setFeedback("Please enter your full name.");
+      return;
+    }
+    const phoneDigits = trimmedPhone.replace(/[\s\-()+]/g, "");
+    const normalizedPhone =
+      phoneDigits.length === 12 && phoneDigits.startsWith("91")
+        ? phoneDigits.slice(2)
+        : phoneDigits;
+    if (!/^[6-9][0-9]{9}$/.test(normalizedPhone)) {
+      setSubmitStatus("error");
+      setFeedback("Enter a valid 10-digit Indian mobile number.");
+      return;
+    }
+
+    setSubmitStatus("submitting");
+    setFeedback("");
+
+    try {
+      const response = await submitWarrantyServiceRequest({
+        full_name: trimmedName,
+        phone: normalizedPhone,
+        issue_type: issue,
+        description: description.trim(),
+        website,
+      });
+      setSubmitStatus("success");
+      setFeedback(
+        response.message ||
+          "Service request received. Our team will contact you shortly."
+      );
+      resetForm();
+    } catch (err) {
+      const error = err as {
+        errorData?: { message?: string; errors?: Record<string, string[]> };
+        message?: string;
+      };
+      const fieldError = error.errorData?.errors
+        ? Object.values(error.errorData.errors)[0]?.[0]
+        : undefined;
+      setSubmitStatus("error");
+      setFeedback(
+        fieldError ||
+          error.errorData?.message ||
+          error.message ||
+          "Something went wrong. Please try again."
+      );
+    }
+  };
 
   return (
     <section
@@ -135,7 +211,7 @@ const SupportContact = () => {
         {/* Right form */}
         <div className="rounded-2xl bg-[#0E3A3A] p-3 sm:p-4 h-full">
           <form
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit}
             className="bg-white rounded-xl p-5 sm:p-7 h-full flex flex-col gap-5"
           >
             <div>
@@ -144,7 +220,10 @@ const SupportContact = () => {
               </label>
               <input
                 type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
                 placeholder="Enter your name"
+                required
                 className="w-full border border-[#E5E7EB] rounded-lg px-4 py-3 text-sm placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#074A4D]"
               />
             </div>
@@ -154,7 +233,11 @@ const SupportContact = () => {
               </label>
               <input
                 type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter your number"
+                required
+                inputMode="tel"
                 className="w-full border border-[#E5E7EB] rounded-lg px-4 py-3 text-sm placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#074A4D]"
               />
             </div>
@@ -180,16 +263,50 @@ const SupportContact = () => {
               </label>
               <textarea
                 rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe the problem..."
                 className="w-full flex-1 min-h-28 border border-[#E5E7EB] rounded-lg px-4 py-3 text-sm placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#074A4D] resize-none"
               />
             </div>
 
+            {/* Honeypot — kept visually hidden but reachable to bots */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                left: "-10000px",
+                width: "1px",
+                height: "1px",
+                overflow: "hidden",
+              }}
+            >
+              <label>
+                Website
+                <input
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </label>
+            </div>
+
+            {submitStatus === "error" && feedback && (
+              <p role="alert" className="text-sm text-red-600">
+                {feedback}
+              </p>
+            )}
+
             <button
               type="submit"
-              className="w-full bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg cursor-pointer"
+              disabled={submitStatus === "submitting"}
+              className="w-full bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Request Service Call
+              {submitStatus === "submitting"
+                ? "Submitting..."
+                : "Request Service Call"}
             </button>
 
             <p className="text-center text-sm text-[#6B7280]">or</p>
@@ -204,6 +321,52 @@ const SupportContact = () => {
           </form>
         </div>
       </div>
+
+      {submitStatus === "success" && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="warranty-success-title"
+          className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-md bg-black/10"
+        >
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md px-8 py-10 text-center">
+            <div className="mx-auto mb-6 w-16 h-16 rounded-full bg-[#0E3A3A] flex items-center justify-center">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="m5 12.5 4.5 4.5L19 7"
+                  stroke="#fff"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <h3
+              id="warranty-success-title"
+              className="text-2xl sm:text-3xl font-semibold text-[#123532] leading-tight mb-3"
+            >
+              Thanks! We&apos;ve
+              <br />
+              received your request.
+            </h3>
+            <p className="text-sm sm:text-base text-[#6B7280] mb-8">
+              Our team will get back to you within 24 hours
+            </p>
+            <Link
+              href="/"
+              className="block w-full bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg"
+            >
+              Go back to home
+            </Link>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
