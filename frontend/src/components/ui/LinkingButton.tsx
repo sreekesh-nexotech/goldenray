@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { ReactNode } from "react";
 
 type ButtonProps = {
-  content: string;
+  content: ReactNode;
   ButtonLink: string;
   ButtonBg: string;
   ButtonHover: string;
