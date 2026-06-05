@@ -54,6 +54,13 @@ export default function Header() {
   const pathname = usePathname();
   const isActive = (href: string) => pathname === href;
 
+  const closeMobileMenu = () => {
+    setIsOpen(false);
+    setSolutionsDropdownOpen(false);
+    setToolsDropdownOpen(false);
+    setServiceLocationDropdownOpen(false);
+  };
+
   const logo =
     "https://gym-manager-pull.b-cdn.net/golden_ray/home/logo_header.png";
   return (
@@ -309,6 +316,7 @@ export default function Header() {
               <Link
                 key={solution.name + idx}
                 href={solution.href}
+                onClick={closeMobileMenu}
                 className={`text-gray-600 text-xl ${
                   isActive(solution.href) ? "font-bold" : ""
                 } `}
@@ -358,6 +366,7 @@ export default function Header() {
               <Link
                 key={tool.name + idx}
                 href={tool.href}
+                onClick={closeMobileMenu}
                 className={`text-gray-600 text-xl ${
                   isActive(tool.href) ? "font-bold" : ""
                 } `}
@@ -397,6 +406,7 @@ export default function Header() {
               <Link
                 key={location.name + idx}
                 href={location.href}
+                onClick={closeMobileMenu}
                 className={`text-gray-600 text-xl ${
                   isActive(location.href) ? "font-bold" : ""
                 } `}
