@@ -372,6 +372,7 @@ function VisualSummarySection({
 }: {
   selectedInverters: SolarInverter[];
 }) {
+  const isTwoPanelLayout = selectedInverters.length === 2;
   return (
     <section className="mt-6 sm:mt-7 md:mt-8 lg:mt-9 xl:mt-10 2xl:mt-12">
       <div className="text-center mb-4 sm:mb-5 md:mb-5 lg:mb-6 xl:mb-7 2xl:mb-8">
@@ -381,7 +382,11 @@ function VisualSummarySection({
       </div>
 
       <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
-        <div className="flex gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-4 md:gap-4 lg:gap-5 xl:gap-5 2xl:gap-6">
+        <div
+          className={`flex gap-3 sm:grid sm:gap-4 md:gap-4 lg:gap-5 xl:gap-5 2xl:gap-6 ${
+            isTwoPanelLayout ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"
+          }`}
+        >
           {selectedInverters.map((inverter) => (
             <div
               key={inverter.id}
@@ -466,7 +471,7 @@ export default function ComparisonTable({
     <div className="bg-[#F7F8FA] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Inverter Selector row */}
-        <div className="overflow-x-auto pb-2 mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="overflow-x-auto sm:overflow-visible pb-2 mb-8 sm:mb-10 -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-3 bg-[#F3F3F3] border border-[#E4E4E4] rounded-lg px-3 sm:px-4 py-3 min-w-max sm:min-w-0">
             <InverterSelector
               selectedInverter={inverterSlots[0]}
