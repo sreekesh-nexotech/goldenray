@@ -51,6 +51,7 @@ export interface WorkSectionData {
 export interface SolarType {
   title: string;
   description: string;
+  image?: string;
 }
 
 export interface SolutionPageData {
