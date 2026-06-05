@@ -97,8 +97,7 @@ export const residentialPageData: SolutionPageData = {
     title: "How Do Residential Solar Panels Work?",
     description:
       "Sunlight converts into DC electricity. An inverter converts DC to AC for home use. Surplus energy flows to the KSEB grid through KSEB net metering Kerala and offsets your bill. The on-grid solar system Kerala runs automatically from sunrise to sunset.",
-    image:
-      "https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png",
+    image: "/ourSolutions1.png",
   },
   panelTypes: [
     {

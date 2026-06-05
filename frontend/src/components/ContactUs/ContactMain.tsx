@@ -12,7 +12,7 @@ export default function ContactMain() {
       <ContactHero />
 
       {/* Contact Form and Image Section */}
-      <div className="mx-auto px-4 sm:px-6 lg:px-8 xl:px-36 py-12 md:py-16 lg:py-20">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 xl:px-36 pt-1 pb-8 md:pt-2 md:pb-12 lg:pt-4 lg:pb-16">
         <div className="flex flex-col-reverse lg:grid lg:grid-cols-5 gap-8 lg:gap-12 xl:gap-16 max-w-7xl mx-auto">
           {/* Contact Form */}
           <div className="lg:col-span-3">

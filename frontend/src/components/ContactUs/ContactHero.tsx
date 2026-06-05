@@ -4,7 +4,7 @@ import PageIllustration from "@/components/ui/page-illustration";
 
 export default function ContactHero() {
   return (
-    <div className="relative bg-white py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 2xl:py-32 mt-16 sm:mt-0 overflow-hidden">
+    <div className="relative bg-white py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 2xl:py-32 overflow-hidden">
       <PageIllustration />
 
       <div className="relative z-10 mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-36 2xl:px-48">
