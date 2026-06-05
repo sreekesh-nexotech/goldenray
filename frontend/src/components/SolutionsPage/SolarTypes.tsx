@@ -4,6 +4,7 @@ import Image from "next/image";
 interface SolarType {
   title: string;
   description: string;
+  image?: string;
 }
 
 interface SolarTypesProps {
@@ -63,7 +64,7 @@ export default function SolarTypes({
                 {/* Card Image - Right Side */}
                 <div className="relative w-[140px] md:w-1/2 overflow-hidden flex-shrink-0">
                   <Image
-                    src={cardImage}
+                    src={type.image || cardImage}
                     alt={type.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"

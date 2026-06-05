@@ -104,19 +104,19 @@ export const residentialPageData: SolutionPageData = {
       name: "Monocrystalline Panels",
       description:
         "Highest efficiency. Ideal for limited roof space.",
-      image: "https://golden-ray.b-cdn.net/images/monocrystalline-panel.png",
+      image: "/1.jpeg",
     },
     {
       name: "Polycrystalline Panels",
       description:
         "Lower cost, reliable output.",
-      image: "https://golden-ray.b-cdn.net/images/polycrystalline-panel.png",
+      image: "/2.jpeg",
     },
     {
       name: "Hybrid Solar Systems",
       description:
         "Solar + battery storage for outage protection. Hybrid solar system Kerala.",
-      image: "https://golden-ray.b-cdn.net/images/hybrid-panel.png",
+      image: "/3.jpeg",
     },
   ],
   solarTypes: [
@@ -124,16 +124,19 @@ export const residentialPageData: SolutionPageData = {
       title: "Monocrystalline",
       description:
         "Most efficient. Best for solar panels Kerala homes with limited roof space.",
+      image: "/1.jpeg",
     },
     {
       title: "Polycrystalline",
       description:
         "Budget-friendly. Reliable solar panel for house Kerala.",
+      image: "/2.jpeg",
     },
     {
       title: "Hybrid",
       description:
         "Battery backup enabled. Off-grid solar system Kerala + hybrid solar system Kerala.",
+      image: "/3.jpeg",
     },
   ],
   milestones: [
@@ -188,19 +191,19 @@ export const residentialPageData: SolutionPageData = {
       name: "Monocrystalline Panels",
       description:
         "Highest efficiency. Solar panels Kerala — best for limited roof space.",
-      image: "https://golden-ray.b-cdn.net/images/monocrystalline-panel.png",
+      image: "/1.jpeg",
     },
     {
       name: "Polycrystalline Panels",
       description:
         "Budget-friendly. Reliable solar panel for house Kerala.",
-      image: "https://golden-ray.b-cdn.net/images/polycrystalline-panel.png",
+      image: "/2.jpeg",
     },
     {
       name: "Hybrid Solar Systems",
       description:
         "Battery backup enabled. Hybrid solar system Kerala for outage protection.",
-      image: "https://golden-ray.b-cdn.net/images/hybrid-panel.png",
+      image: "/3.jpeg",
     },
   ],
   faqTitle: "Have any questions about residential solar installation Kerala?",
@@ -291,19 +294,19 @@ export const commercialPageData: SolutionPageData = {
       name: "Monocrystalline Panels",
       description:
         "20–22% efficiency — best for limited rooftop space.",
-      image: "https://golden-ray.b-cdn.net/images/monocrystalline-panel.png",
+      image: "/1.jpeg",
     },
     {
       name: "Polycrystalline Panels",
       description:
         "16–18% efficiency — cost-effective for large rooftops.",
-      image: "https://golden-ray.b-cdn.net/images/polycrystalline-panel.png",
+      image: "/2.jpeg",
     },
     {
       name: "Bifacial Panels",
       description:
         "22–25% yield — dual-side generation for industrial rooftops.",
-      image: "https://golden-ray.b-cdn.net/images/hybrid-panel.png",
+      image: "/3.jpeg",
     },
   ],
   solarTypes: [
@@ -311,16 +314,19 @@ export const commercialPageData: SolutionPageData = {
       title: "Monocrystalline Panels",
       description:
         "20–22% efficiency — best for limited rooftop space.",
+      image: "/1.jpeg",
     },
     {
       title: "Polycrystalline Panels",
       description:
         "16–18% efficiency — cost-effective for large rooftops.",
+      image: "/2.jpeg",
     },
     {
       title: "Bifacial Panels",
       description:
         "22–25% yield — dual-side generation for industrial rooftops.",
+      image: "/3.jpeg",
     },
   ],
   milestones: [
@@ -372,19 +378,19 @@ export const commercialPageData: SolutionPageData = {
       name: "Monocrystalline Panels",
       description:
         "20–22% efficiency — best for limited rooftop space.",
-      image: "https://golden-ray.b-cdn.net/images/monocrystalline-panel.png",
+      image: "/1.jpeg",
     },
     {
       name: "Polycrystalline Panels",
       description:
         "16–18% efficiency — cost-effective for large rooftops.",
-      image: "https://golden-ray.b-cdn.net/images/polycrystalline-panel.png",
+      image: "/2.jpeg",
     },
     {
       name: "Bifacial Panels",
       description:
         "22–25% yield — dual-side generation for industrial rooftops.",
-      image: "https://golden-ray.b-cdn.net/images/hybrid-panel.png",
+      image: "/3.jpeg",
     },
   ],
   faqTitle: "Have any questions about solar installation for business Kerala?",
