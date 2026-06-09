@@ -1,7 +1,7 @@
 "use client";
 
 export default function ComparisonCTA() {
-  const whatsappNumber = "919876543210";
+  const whatsappNumber = "6282922988";
   const whatsappMessage = encodeURIComponent(
     "Hi! I'm comparing solar panels on your website and would like help choosing the right one. Here's my KSEB bill:",
   );

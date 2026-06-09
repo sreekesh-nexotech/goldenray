@@ -1,10 +1,19 @@
 // src/utils/fetchApi.ts
 import { API_BASE_URL } from "../config";
 
+// Optional caching controls, forwarded to the Next.js fetch layer.
+// `revalidate` opts the request into the Next.js Data Cache (ISR) for the
+// given number of seconds. Leave undefined for the default `no-store` behavior
+// (correct for mutations / per-request data).
+export interface FetchApiOptions {
+  revalidate?: number;
+}
+
 export async function fetchApi<T>(
   endpoint: string,
   method: string = "GET",
-  body?: object | null
+  body?: object | null,
+  init?: FetchApiOptions
 ): Promise<T> {
   // Use relative URL for proxying (uncomment if using next.config.js proxy)
   // const url = `/api/${endpoint}`;
@@ -17,6 +26,10 @@ export async function fetchApi<T>(
     },
     // credentials: "include", // Uncomment only if credentials are required
   };
+
+  if (typeof init?.revalidate === "number") {
+    options.next = { revalidate: init.revalidate };
+  }
 
   if (body) {
     options.body = JSON.stringify(body);

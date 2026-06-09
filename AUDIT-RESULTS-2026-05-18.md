@@ -28,6 +28,24 @@ Five prompts from `AUDIT.md` were executed in order. This document summarises fi
 
 ---
 
+## Follow-up Session — 2026-06-09 (fixes applied)
+
+A second pass re-ran all five prompts and applied the fixes below. **`tsc --noEmit` and `next build` both pass — exit 0, zero warnings, 42 routes generated.** All fixes were verified to leave the rendered UI unchanged.
+
+| # | Prompt | Issue | File(s) | What changed | Prior status |
+|---|---|---|---|---|---|
+| F1 | 1 | `FilterContent` defined inside render body → full subtree unmount/remount every render (destroys slider focus/scroll, kills reconciliation) | [SolarComparison/FilterSidebar.tsx](frontend/src/components/SolarComparison/FilterSidebar.tsx), [InverterComparison/FilterSidebar.tsx](frontend/src/components/InverterComparison/FilterSidebar.tsx) | Hoisted `FilterContent` to module scope; pass `expandedSections`/`toggleSection`/`availableBrands` as props. Identical JSX → no UI change. | New (this pass) |
+| F2 | 1 / 3 | Comparison pages were `"use client"` fetching on mount (no SSR/ISR) | [comparison-table/page.tsx](frontend/src/app/comparison-table/page.tsx), [inverter-comparison-table/page.tsx](frontend/src/app/inverter-comparison-table/page.tsx) | Converted to async **Server Components** reading `searchParams`; interactive add/remove moved to new client islands `ComparisonTableClient.tsx` (both folders); added `loading.tsx` (both) preserving the exact spinner. **Resolves P3-C5.** | P3-C5 was deferred |
+| F3 | 3 | `fetchApi` used uncached `fetch` (`no-store`), so segment `revalidate=3600` cached nothing — backend hit every request | [utils/fetchApi.ts](frontend/src/utils/fetchApi.ts), [services/apiService.ts](frontend/src/services/apiService.ts), [services/solarPanelService.ts](frontend/src/services/solarPanelService.ts), [services/solarInverterService.ts](frontend/src/services/solarInverterService.ts) | Added `FetchApiOptions { revalidate }` → `options.next`; threaded through `apiCall`; `getAllPanels`/`getPanelsByIds`/`getAllInverters`/`getInvertersByIds` now pass `{ revalidate: 3600 }` (mutations stay `no-store`). Completes F2's ISR caching. | New (this pass) |
+| F4 | 4 | **Broken `tel:` link** — leading invisible `U+2060` (WORD JOINER) produced `tel:⁠6282922988`, breaking the dialer | [common/FloatingPhoneButton.tsx:7](frontend/src/components/common/FloatingPhoneButton.tsx#L7) | Stripped the raw UTF-8 bytes; number is now exactly `"6282922988"`. | New (this pass) |
+| F5 | 4 | Placeholder WhatsApp number `919876543210` shipping to users | [SolarComparison/ComparisonCTA.tsx:4](frontend/src/components/SolarComparison/ComparisonCTA.tsx#L4), [InverterComparison/ComparisonCTA.tsx:4](frontend/src/components/InverterComparison/ComparisonCTA.tsx#L4) | Replaced with canonical `6282922988`. **Resolves the previously-reverted P4 WhatsApp item.** | Was "reverted/left as-is" |
+| F6 | 2 / 3 / 4 | `console.log` of OTP send/verify responses in production | [SolarCalculator/QuotePopup.tsx:45-51](frontend/src/components/SolarCalculator/QuotePopup.tsx#L45) | Removed both logs; dropped the now-unused `response` var on the send path. **Resolves P2-C4 / P3-H5.** | Was open |
+| F7 | — | Floating chatbot WhatsApp link (user request) | [common/FloatingChatBoat.tsx:8](frontend/src/components/common/FloatingChatBoat.tsx#L8) | Updated to `api.whatsapp.com/send` with phone `919995083579` and a new prefilled advertisement message. | User-requested |
+
+**Re-audit corrections to the original report:** several originally-flagged items were found already-resolved or false positives in this pass — `SolarComparisonMain`/`InverterComparisonMain` are now exemplary URL-synced components (no fix needed), `src/app/error.tsx` + `src/app/not-found.tsx` **now exist** (P4-C5/P4-C6 resolved), and the codebase has **0 real `: any`** (the "1 any" was prose inside string literals). The inline status tables below are annotated where this session changed them.
+
+---
+
 ## Prompt 1 — State & Data Fetching
 
 **Result:** 7 CRITICAL, 18 HIGH, 12 MEDIUM. **Tech-debt score: 4.2 / 10.**
@@ -79,7 +97,7 @@ Highlights of what was *not* touched:
 | **P2-C1** | `goldenray-backend/.env` (git-tracked) | Real Twilio Account SID, Auth Token, Verify Service SID + `DB_PASSWORD=root` + Django secret key committed. **Rotate immediately**, scrub history with `git-filter-repo`. |
 | **P2-C2** | [goldenray-backend/backend/goldenray/serializers/otp_serializer.py:3-9](goldenray-backend/backend/goldenray/serializers/otp_serializer.py#L3-L9) | OTP serializers accept any string up to max_length — no regex for phone / 6-digit OTP. |
 | **P2-C3** | [goldenray-backend/backend/goldenray/views/lead_collection_home_views.py:8-38](goldenray-backend/backend/goldenray/views/lead_collection_home_views.py#L8-L38) | Public `GET` returns full lead list. `POST` returns 200 vs 201 → user enumeration. No rate limit. |
-| **P2-C4** | [QuotePopup.tsx:46, :51](frontend/src/components/SolarCalculator/QuotePopup.tsx#L46) | `console.log` of OTP send/verify responses in production. |
+| ~~**P2-C4**~~ ✅ FIXED (2026-06-09, F6) | [QuotePopup.tsx:45-51](frontend/src/components/SolarCalculator/QuotePopup.tsx#L45) | `console.log` of OTP send/verify responses in production. **Done — both logs removed.** |
 | **P2-C5** | [frontend/next.config.ts](frontend/next.config.ts) | No `headers()` function. Missing CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy. |
 
 ### HIGH — All still open
@@ -120,12 +138,12 @@ Highlights of what was *not* touched:
 | # | Location | Issue | Notes |
 |---|---|---|---|
 | **P3-C4** | [frontend/public/](frontend/public/) | 8+ PNGs > 500KB (`Residential-4.png` 1.4MB, `testimonial.png` 1.3MB, `heroImg.png` 875KB, etc.) | **Manual step** — needs `sharp` / `cwebp` / squoosh. Cannot do from code alone. |
-| **P3-C5** | [app/comparison-table/page.tsx](frontend/src/app/comparison-table/page.tsx) | Client-side panel fetch should be Server Component | Deferred — backend URL is hardcoded `127.0.0.1:8000`; needs env-var migration first. |
+| ~~P3-C5~~ ✅ FIXED (2026-06-09, F2+F3) | [app/comparison-table/page.tsx](frontend/src/app/comparison-table/page.tsx) | Client-side panel fetch should be Server Component | **Done** — converted both comparison pages to Server Components with client islands + `loading.tsx`, and added ISR caching (`revalidate: 3600`) via `fetchApi`. |
 | P3-H1 | 76 files | Too many `"use client"` directives | Audit + push deeper |
 | P3-H2 | Quotation pages | `<Image fill>` without parent dimensions | CLS risk |
 | P3-H3 | ~38 spots | `.map(... key={index})` | Use stable IDs |
 | P3-H4 | [AdvanceResult.tsx:19-28](frontend/src/components/AdvanceCalculator/AdvanceResult.tsx#L19-L28), [SolarCalculator/basic-result.tsx](frontend/src/components/SolarCalculator/basic-result.tsx) | `ChartJS.register(...)` at module load | Defer to mount |
-| P3-H5 | [QuotePopup.tsx:46, :51](frontend/src/components/SolarCalculator/QuotePopup.tsx#L46) | `console.log` in prod (also Sec C4) | Remove or env-gate |
+| ~~P3-H5~~ ✅ FIXED (2026-06-09, F6) | [QuotePopup.tsx:45-51](frontend/src/components/SolarCalculator/QuotePopup.tsx#L45) | `console.log` in prod (also Sec C4) | **Done** — both OTP logs removed. |
 | P3-H6 | [data/blog-content.ts](frontend/src/data/blog-content.ts) (1025 lines) | TS module with hardcoded blog content | Strapi already used; remove module |
 | P3-H7 | [layout.tsx:145-160](frontend/src/app/layout.tsx#L145-L160) | GTM with `strategy="beforeInteractive"` | Change to `afterInteractive` |
 | P3-M1 | [package.json](frontend/package.json) | `@heroicons/react` declared but never imported | Drop |
@@ -153,7 +171,7 @@ Highlights of what was *not* touched:
 | **P4-C3** | [QuotationPdfGenerator.tsx:71](frontend/src/components/Quotation/QuotationPdfGenerator.tsx#L71) | Second `proposalBy = "XXX"` | Same root issue. |
 | **P4-C5** | `src/app/error.tsx` | **Missing.** | Next.js default crash UI shown on render errors. |
 | **P4-C6** | `src/app/not-found.tsx` | **Missing.** | Unmatched routes hit Next's built-in 404. |
-| **(was C1)** | [ComparisonCTA.tsx:4](frontend/src/components/SolarComparison/ComparisonCTA.tsx#L4) | Placeholder WhatsApp `919876543210` — replacement was reverted by user; left as-is. |
+| ~~**(was C1)**~~ ✅ FIXED (2026-06-09, F5) | [ComparisonCTA.tsx:4](frontend/src/components/SolarComparison/ComparisonCTA.tsx#L4) | Placeholder WhatsApp `919876543210` → replaced with canonical `6282922988` in both Solar + Inverter `ComparisonCTA`. |
 
 ### Still open (HIGH highlights)
 
@@ -265,10 +283,10 @@ After the prompt-driven fixes, `npm run build` had been emitting 11 `react-hooks
 Ordered by what must clear before shipping:
 
 1. **Rotate Twilio + DB + Django secrets** (P2-C1). Scrub `goldenray-backend/.env` from git history with `git-filter-repo`. Add `.env` to `.gitignore`.
-2. **Replace production placeholders** (P4-C1, P4-C2, P4-C3, and P4-C(WhatsApp)): `proposalBy = "XXX"`, bank A/C, IFSC, WhatsApp number `919876543210`.
+2. **Replace production placeholders** (P4-C1, P4-C2, P4-C3): `proposalBy = "XXX"`, bank A/C, IFSC. ✅ WhatsApp `919876543210` **fixed** (2026-06-09, F5); the broken `tel:` invisible-char number **fixed** (F4). `proposalBy`/bank/IFSC still open (await real values).
 3. **Add `src/app/error.tsx` and `src/app/not-found.tsx`** (P4-C5, P4-C6).
 4. **Add security headers** in `next.config.ts` (P2-C5 / P4): CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy.
-5. **Remove `console.log` of OTP responses** in [QuotePopup.tsx:46, :51](frontend/src/components/SolarCalculator/QuotePopup.tsx#L46) (P2-C4 / P3-H5).
+5. ~~**Remove `console.log` of OTP responses**~~ ✅ **DONE** (2026-06-09, F6) — both removed from [QuotePopup.tsx](frontend/src/components/SolarCalculator/QuotePopup.tsx#L45) (P2-C4 / P3-H5).
 6. **Add OTP / Lead-collection input validators + rate limiting** (P2-C2, P2-C3, P2-H4).
 7. **Sanitize backend error responses** — never return raw `str(e)` (P2-H6).
 8. **Add `rel="noopener noreferrer"` to 6 external links** (P4-H), and replace misused `<Link target="_blank">` with `<a>` (2 sites).

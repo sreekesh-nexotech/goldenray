@@ -164,6 +164,8 @@ export async function getAllInverters(): Promise<SolarInverter[]> {
     const response = await apiCall<SolarInvertersResponse>(
       "solar-inverters",
       "GET",
+      null,
+      { revalidate: 3600 },
     );
     return response.data.map(transformInverterData);
   } catch (error) {
@@ -195,6 +197,8 @@ export async function getInvertersByIds(
     const response = await apiCall<SolarInvertersResponse>(
       `solar-inverters?ids=${idsParam}`,
       "GET",
+      null,
+      { revalidate: 3600 },
     );
     return response.data.map(transformInverterData);
   } catch (error) {

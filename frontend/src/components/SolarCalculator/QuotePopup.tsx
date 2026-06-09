@@ -42,13 +42,11 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
       try {
         if (!showOtpInput) {
           // Send OTP
-          const response = await sendOtp(name, phoneNumber);
-          console.log("Send OTP response:", response);
+          await sendOtp(name, phoneNumber);
           setShowOtpInput(true);
         } else {
           // Verify OTP
           const response = await verifyOtp(name, phoneNumber, code);
-          console.log("Verify OTP response:", response);
           if (response.status == "approved") {
             setFormSubmitted(true);
             setTimeout(() => {

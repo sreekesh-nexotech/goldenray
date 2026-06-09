@@ -1,95 +1,29 @@
-"use client";
-
-import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { SolarInverter } from "@/types/solarInverter";
 import {
   getAllInverters,
   getInvertersByIds,
 } from "@/services/solarInverterService";
-import ComparisonTable from "@/components/InverterComparison/ComparisonTable";
+import ComparisonTableClient from "@/components/InverterComparison/ComparisonTableClient";
 import PageIllustration from "@/components/ui/page-illustration";
 import { ChevronRight } from "lucide-react";
 
-function InverterComparisonTableContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const [selectedInverters, setSelectedInverters] = useState<SolarInverter[]>(
-    [],
-  );
-  const [allInverters, setAllInverters] = useState<SolarInverter[]>([]);
-  const [loading, setLoading] = useState(true);
+// Revalidate the cached inverter data hourly (ISR).
+export const revalidate = 3600;
 
-  const inverterIds = useMemo(
-    () => searchParams.get("inverters")?.split(",").filter(Boolean) || [],
-    [searchParams],
-  );
+export default async function InverterComparisonTablePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ inverters?: string }>;
+}) {
+  const params = await searchParams;
+  const inverterIds = params.inverters?.split(",").filter(Boolean) || [];
 
-  const fetchInverters = useCallback(async () => {
-    setLoading(true);
-    try {
-      const all = await getAllInverters();
-      setAllInverters(all);
-
-      if (inverterIds.length > 0) {
-        const selected = await getInvertersByIds(inverterIds);
-        setSelectedInverters(selected);
-      }
-    } catch (error) {
-      console.error("Error fetching inverters:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [inverterIds]);
-
-  useEffect(() => {
-    fetchInverters();
-  }, [fetchInverters]);
-
-  const updateURL = useCallback(
-    (newIds: string[]) => {
-      const params = new URLSearchParams();
-      if (newIds.length > 0) {
-        params.set("inverters", newIds.join(","));
-      }
-      router.replace(`/inverter-comparison-table?${params.toString()}`, {
-        scroll: false,
-      });
-    },
-    [router],
-  );
-
-  const handleRemoveInverter = (inverterId: string) => {
-    const newSelected = selectedInverters.filter((p) => p.id !== inverterId);
-    setSelectedInverters(newSelected);
-    updateURL(newSelected.map((p) => p.id));
-  };
-
-  const handleAddInverter = (inverterId: string) => {
-    if (selectedInverters.length >= 3) return;
-    const toAdd = allInverters.find((p) => p.id === inverterId);
-    if (toAdd && !selectedInverters.find((p) => p.id === inverterId)) {
-      const newSelected = [...selectedInverters, toAdd];
-      setSelectedInverters(newSelected);
-      updateURL(newSelected.map((p) => p.id));
-    }
-  };
-
-  const handleBack = () => {
-    router.push("/inverter-comparison");
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#F7F8FA] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#074A4D] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading comparison...</p>
-        </div>
-      </div>
-    );
-  }
+  const [allInverters, selectedInverters] = await Promise.all([
+    getAllInverters(),
+    inverterIds.length > 0
+      ? getInvertersByIds(inverterIds)
+      : Promise.resolve([]),
+  ]);
 
   return (
     <div className="min-h-screen bg-[#F7F8FA]">
@@ -135,30 +69,10 @@ function InverterComparisonTableContent() {
         </div>
       </section>
 
-      <ComparisonTable
-        selectedInverters={selectedInverters}
+      <ComparisonTableClient
+        initialSelectedInverters={selectedInverters}
         allInverters={allInverters}
-        onRemoveInverter={handleRemoveInverter}
-        onAddInverter={handleAddInverter}
-        onClose={handleBack}
       />
     </div>
-  );
-}
-
-export default function InverterComparisonTablePage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-[#F7F8FA] flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-[#074A4D] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading comparison...</p>
-          </div>
-        </div>
-      }
-    >
-      <InverterComparisonTableContent />
-    </Suspense>
   );
 }

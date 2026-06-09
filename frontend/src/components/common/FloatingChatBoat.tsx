@@ -4,11 +4,8 @@
 import React from "react";
 
 const FloatingChatButton = () => {
-  const whatsappNumber = "6282922988";
-  const message = encodeURIComponent(
-    "Hi, I'd like to know more about Flarize solar solutions.",
-  );
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+  const whatsappUrl =
+    "https://api.whatsapp.com/send/?phone=919995083579&text=Hello%2C+I+saw+your+advertisement+and+I’m+interested+in+learning+more.+Could+you+please+share+more+details%3F&type=phone_number&app_absent=0";
 
   return (
     <a

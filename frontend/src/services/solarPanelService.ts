@@ -126,7 +126,9 @@ export async function getAllPanels(): Promise<SolarPanel[]> {
   try {
     const response = await apiCall<SolarPanelsResponse>(
       "solar-panels",
-      "GET"
+      "GET",
+      null,
+      { revalidate: 3600 }
     );
     return response.data.map(transformPanelData);
   } catch (error) {
@@ -155,7 +157,9 @@ export async function getPanelsByIds(ids: string[]): Promise<SolarPanel[]> {
     const idsParam = ids.join(",");
     const response = await apiCall<SolarPanelsResponse>(
       `solar-panels?ids=${idsParam}`,
-      "GET"
+      "GET",
+      null,
+      { revalidate: 3600 }
     );
     return response.data.map(transformPanelData);
   } catch (error) {
