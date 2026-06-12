@@ -1,21 +1,18 @@
 import FaqMain from "@/components/Faq/FaqMain";
 import { Metadata } from "next";
+import JsonLD from "@/components/JsonLD";
+import { faqPageSchema } from "@/data/faq-data";
 
 export const metadata: Metadata = {
-  title: "Solar Subsidy & Rooftop Solar FAQs in Kerala",
+  title:
+    "Solar Panel FAQs Kerala 2026: Subsidy, Price, KSEB & Installation",
   description:
-    "Find answers on solar subsidies, pricing, net metering, and rooftop solar systems in Kerala before going solar.",
-  keywords: [
-    "solar subsidy kerala",
-    "rooftop solar FAQ kerala",
-    "net metering kerala solar",
-    "solar panel price kerala FAQ",
-    "on grid solar subsidy kerala",
-  ],
+    "Answers to Kerala's top solar questions: How much does solar cost? What is the PM Surya Ghar subsidy? How does KSEB net metering work? How long does installation take? Updated 2026.",
   openGraph: {
-    title: "Solar Subsidy & Rooftop Solar FAQs in Kerala",
+    title:
+      "Solar Panel FAQs Kerala 2026: Subsidy, Price, KSEB & Installation | Flarize",
     description:
-      "Find answers on solar subsidies, pricing, net metering, and rooftop solar systems in Kerala before going solar.",
+      "Answers to Kerala's top solar questions: subsidy amounts, pricing, KSEB net metering, installation timeline, and which panels qualify for PM Surya Ghar. Updated 2026.",
     url: "https://www.flarize.com/faq",
     siteName: "Flarize",
     images: [
@@ -26,9 +23,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Solar Subsidy & Rooftop Solar FAQs in Kerala",
+    title:
+      "Solar Panel FAQs Kerala 2026: Subsidy, Price, KSEB & Installation | Flarize",
     description:
-      "Find answers on solar subsidies, pricing, net metering, and rooftop solar systems in Kerala before going solar.",
+      "Answers to Kerala's top solar questions: subsidy amounts, pricing, KSEB net metering, installation timeline, and which panels qualify for PM Surya Ghar. Updated 2026.",
     images: ["/heroImg.png"],
   },
   icons: {
@@ -44,5 +42,10 @@ export const metadata: Metadata = {
 };
 
 export default function FaqPage() {
-  return <FaqMain />;
+  return (
+    <>
+      <JsonLD data={faqPageSchema} />
+      <FaqMain />
+    </>
+  );
 }

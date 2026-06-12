@@ -20,38 +20,12 @@ export const metadata: Metadata = {
   title:
     "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering",
   description:
-    "Install on-grid solar panels for your home in Kerala. Get ₹78,000 PM Surya Ghar subsidy, KSEB net metering & MNRE-approved installation. Best solar company Kerala. Solar panel price Kerala from ₹1.1 lakh. Free quote from Flarize.",
-  keywords: [
-    "solar panels Kerala",
-    "solar panels for home Kerala",
-    "solar panel installation Kerala",
-    "residential solar installation Kerala",
-    "rooftop solar system Kerala",
-    "on-grid solar system Kerala",
-    "solar panel price Kerala",
-    "solar panel for house Kerala",
-    "3kW solar system price Kerala",
-    "5kW solar system Kerala",
-    "PM Surya Ghar subsidy Kerala",
-    "KSEB solar subsidy",
-    "MNRE solar subsidy Kerala",
-    "KSEB net metering Kerala",
-    "solar installation cost Kerala",
-    "MNRE approved solar installer Kerala",
-    "off-grid solar system Kerala",
-    "hybrid solar system Kerala",
-    "rooftop solar subsidy Kerala 2025",
-    "home solar power system Kerala",
-    "best solar company Kerala",
-    "DCR panels Kerala ALMM approved",
-    "1kW solar system Kerala",
-    "2kW solar system Kerala",
-  ],
+    "Install solar panels for your Kerala home from ₹1.1 lakh after ₹78,000 PM Surya Ghar subsidy. MNRE-approved, KSEB net metering, 25-year warranty. Free quote from Flarize — Kerala's solar EPC.",
   openGraph: {
     title:
-      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering",
+      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering | Flarize",
     description:
-      "Install on-grid solar panels for your home in Kerala. Get ₹78,000 PM Surya Ghar subsidy, KSEB net metering & MNRE-approved residential solar installation Kerala. Free quote from Flarize.",
+      "Solar panels for Kerala homes from ₹1.1 lakh after subsidy. MNRE-approved installer. KSEB net metering. 25-year warranty. Free quote from Flarize.",
     url: "https://www.flarize.com/residential",
     siteName: "Flarize",
     images: [
@@ -68,9 +42,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering",
+      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering | Flarize",
     description:
-      "Install on-grid solar panels for your home in Kerala. Get ₹78,000 PM Surya Ghar subsidy, KSEB net metering & MNRE-approved installation. Free quote from Flarize.",
+      "Solar panels for Kerala homes from ₹1.1 lakh after subsidy. MNRE-approved installer. KSEB net metering. 25-year warranty. Free quote from Flarize.",
     images: [residentialPageData.hero.image],
   },
   icons: {
@@ -93,6 +67,25 @@ export default function ResidentialPage() {
       <JsonLD data={residentialServiceSchema} />
       {/* Hero Section */}
       <SolutionHero data={data.hero} />
+
+      {/* Citable Answer Block — first substantive paragraph below the H1 */}
+      <section className="px-4 md:px-6 lg:px-8 pt-8 md:pt-10">
+        <p className="max-w-7xl mx-auto text-base md:text-lg leading-relaxed text-[#444444]">
+          Residential solar panel installation in Kerala costs
+          ₹1,85,000–₹2,15,000 for a 3 kW on-grid system before subsidy. After
+          the ₹78,000 PM Surya Ghar central subsidy, the net cost drops to
+          ₹1,07,000–₹1,37,000. Most Kerala homes consuming 300–500 KSEB units
+          per month need a 3–5 kW system, which generates 12–20 units per day
+          and can reduce the electricity bill to near-zero via KSEB net
+          metering. Flarize is an MNRE-empanelled EPC company operating across
+          all 14 Kerala districts including Alappuzha, Ernakulam,
+          Thiruvananthapuram, Kozhikode, and Thrissur. Installation takes 2–3
+          days for a typical residential system. The process includes site
+          assessment, KSEB feasibility approval, panel installation, electrical
+          inspector sign-off, and net meter activation. Flarize handles every
+          step end-to-end with a 25-year platform accountability guarantee.
+        </p>
+      </section>
 
       {/* What Are Residential Solar Panels */}
       <InfoSection data={data.whatSection} variant="boxed" />

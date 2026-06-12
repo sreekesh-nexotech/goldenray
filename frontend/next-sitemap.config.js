@@ -18,12 +18,29 @@ module.exports = {
     "/resources",
   ],
   robotsTxtOptions: {
+    // NOTE: this file is auto-generated into /public/robots.txt on every build
+    // (generateRobotsTxt: true). Edit the policies HERE, not the generated file,
+    // or your changes get overwritten on the next `next build`.
+    // The wildcard "*" rule below already allows every crawler — the explicit
+    // AI-bot entries are belt-and-suspenders so an audit can see them clearly.
+    // Sitemap + Host lines are emitted automatically from siteUrl above.
     policies: [
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/manifest.json"],
+        disallow: ["/api/", "/admin/", "/manifest.json"],
       },
+      { userAgent: "Googlebot", allow: "/" },
+      { userAgent: "Bingbot", allow: "/" },
+      { userAgent: "GPTBot", allow: "/" },
+      { userAgent: "ChatGPT-User", allow: "/" },
+      { userAgent: "OAI-SearchBot", allow: "/" },
+      { userAgent: "Google-Extended", allow: "/" },
+      { userAgent: "PerplexityBot", allow: "/" },
+      { userAgent: "ClaudeBot", allow: "/" },
+      { userAgent: "anthropic-ai", allow: "/" },
+      { userAgent: "Claude-Web", allow: "/" },
+      { userAgent: "Applebot", allow: "/" },
     ],
   },
   transform: async (config, path) => {
