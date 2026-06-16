@@ -23,7 +23,7 @@ const companyLinks = [
 ];
 
 const resourceLinks = [
-  { label: "Solar Warranty", href: "#" },
+  { label: "Solar Warranty", href: "/solar-warranty" },
   { label: "Government Subsidies", href: "#" },
   { label: "FAQs", href: "/faq" },
   { label: "Blogs", href: "/blog" },

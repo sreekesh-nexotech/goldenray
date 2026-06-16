@@ -10,8 +10,8 @@ const PANEL_LIFE = 25;
 
 const SYSTEM_SIZES = [
   { label: "3kW", displayPrice: 80000, loanDefault: 107000, monthlyBill: 3000 },
-  { label: "7kW", displayPrice: 280000, loanDefault: 280000, monthlyBill: 7000 },
   { label: "5kW", displayPrice: 150000, loanDefault: 150000, monthlyBill: 5000 },
+  { label: "7kW", displayPrice: 280000, loanDefault: 280000, monthlyBill: 7000 },
   { label: "10kW", displayPrice: 500000, loanDefault: 422000, monthlyBill: 10000 },
 ];
 
@@ -345,7 +345,7 @@ export default function Calculator() {
        <div className="flex flex-col gap-5 pt-5 sm:pt-7 h-full">
             <h3 className="text-base sm:text-lg md:text-2xl font-semibold text-[#074A4D]">Your Results</h3>
           {/* Monthly EMI */}
-          <div className="bg-[#074A4D] rounded-xl p-5 sm:p-6 text-white">
+          <div className="bg-[#16A34A] rounded-xl p-5 sm:p-6 text-white">
             {/* Top row: label + optional subsidy badge */}
             <div className="flex items-start justify-between gap-2 mb-1">
               <div className="flex items-center gap-2">
@@ -355,7 +355,7 @@ export default function Calculator() {
                 )}
               </div>
               {subsidyOn && (
-                <span className="flex items-center gap-1 bg-[#16A34A] text-white text-xs font-medium p-2 rounded-full whitespace-nowrap shrink-0">
+                <span className="flex items-center gap-1 bg-white/20 text-white text-xs font-medium p-2 rounded-full whitespace-nowrap shrink-0">
                   <Check size={12} />
                   PM Surya Ghar Subsidy Applied
                 </span>
@@ -366,7 +366,7 @@ export default function Calculator() {
             )}
 
             <div className="flex items-baseline gap-2 mb-0.5">
-              <span className="text-4xl sm:text-5xl font-semibold text-[#F7BA41]">
+              <span className="text-4xl sm:text-5xl font-semibold text-white">
                 ₹{fmt(emi)}
               </span>
             </div>
@@ -453,13 +453,13 @@ export default function Calculator() {
               <div>
                 <div className="flex justify-between text-sm mb-1.5">
                   <span className="text-[#123532]">Solar EMI</span>
-                  <span className="font-bold text-[#38C76C]">
+                  <span className="font-bold text-[#16A34A]">
                     ₹{fmt(emi)}
                   </span>
                 </div>
                 <div className="w-full h-4 bg-[#F3F4F6] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#074A4D] rounded-full transition-all duration-500"
+                    className="h-full bg-[#16A34A] rounded-full transition-all duration-500"
                     style={{
                       width: `${Math.min(100, (emi / maxBar) * 100)}%`,
                     }}
@@ -475,7 +475,7 @@ export default function Calculator() {
                 </div>
                 <div className="w-full h-4 bg-[#F3F4F6] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#074A4D] rounded-full transition-all duration-500"
+                    className="h-full bg-[#DC2626] rounded-full transition-all duration-500"
                     style={{
                       width: `${Math.min(100, (monthlyBill / maxBar) * 100)}%`,
                     }}
