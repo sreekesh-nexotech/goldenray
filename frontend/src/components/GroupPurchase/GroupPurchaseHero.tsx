@@ -13,7 +13,7 @@ export default function GroupPurchaseHero() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-12 md:pt-20 md:pb-16  lg:pb-20">
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           <div className="w-full lg:w-[52%] text-center lg:text-left">
-            <h1 className="text-4xl md:text-7xl font-semibold leading-tight text-[#123532]">
+            <h1 className="text-5xl md:text-6xl font-semibold  leading-tight text-[#123532]">
               <span className="block">Group Solar Purchase</span>
               <span className="block">in Kerala &mdash;</span>
               <span className="block">

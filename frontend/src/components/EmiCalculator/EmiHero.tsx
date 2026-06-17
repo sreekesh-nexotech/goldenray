@@ -16,7 +16,7 @@ const EmiHero = () => {
       <div className="relative z-10 container mx-auto px-4 py-15 max-w-6xl  flex flex-col items-center text-center gap-5 sm:gap-6">
 
         {/* Main Heading */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-semibold text-[#111827] leading-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-semibold text-[#111827] leading-tight">
           Let the Government and the Sun Pay Your Bills.
         </h1>
 
