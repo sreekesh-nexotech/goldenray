@@ -1,6 +1,6 @@
+import { Suspense } from "react";
 import ServiceAreaHero from "./ServiceAreaHero";
-import ServiceAreaSearch from "./ServiceAreaSearch";
-import PopularServiceAreas from "./PopularServiceAreas";
+import ServiceAreaExplorer from "./ServiceAreaExplorer";
 import ExploreByLocation from "./ExploreByLocation";
 import LocalSupport from "./LocalSupport";
 import ServiceAreaCTA from "./ServiceAreaCTA";
@@ -11,11 +11,10 @@ export default function ServiceAreaMain() {
       {/* 1. Hero section */}
       <ServiceAreaHero />
 
-      {/* 2. Search & filter bar */}
-      <ServiceAreaSearch />
-
-      {/* 3. Popular service areas */}
-      <PopularServiceAreas />
+      {/* 2. Search & filter bar + 3. Popular service areas (shared filter state) */}
+      <Suspense fallback={null}>
+        <ServiceAreaExplorer />
+      </Suspense>
 
       {/* 4. Explore solar services by location */}
       <ExploreByLocation />

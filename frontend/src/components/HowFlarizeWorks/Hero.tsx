@@ -25,11 +25,10 @@ export default function Hero() {
             </span>
           </h1>
           <p className="text-sm md:text-xl font-light leading-relaxed text-[#444444] mb-6">
-            Kerala&apos;s solar booking platform. Share your KSEB electricity
-            bill, get a free roof assessment, and receive 3 fully customised
-            quotes — each with a different panel brand and budget. Your system
-            is installed in 3-7 days. KSEB net metering handled. Subsidy
-            processed. Savings begin.
+            Going solar in Kerala usually means dealing with installers,
+            suppliers, and KSEB on your own. With Flarize, you deal with one
+            team. We check the installer, do the paperwork, and stay with you
+            for 25 years.
           </p>
 
           <div className="flex flex-row gap-23 justify-start mb-4">

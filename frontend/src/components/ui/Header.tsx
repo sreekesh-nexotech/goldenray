@@ -14,24 +14,27 @@ export default function Header() {
   const [serviceLocationDropdownOpen, setServiceLocationDropdownOpen] =
     useState(false);
 
+  const locationHref = (name: string) =>
+    `/service-area?region=${encodeURIComponent(name)}`;
+
   const firstLocations = [
-    { name: "Alappuzha", href: "#" },
-    { name: "Thiruvananthapuram", href: "#" },
-    { name: "Malappuram", href: "#" },
-    { name: "Ernakulam", href: "#" },
-    { name: "Kozhikode", href: "#" },
-    { name: "Thrissur", href: "#" },
+    { name: "Alappuzha", href: locationHref("Alappuzha") },
+    { name: "Thiruvananthapuram", href: locationHref("Thiruvananthapuram") },
+    { name: "Malappuram", href: locationHref("Malappuram") },
+    { name: "Ernakulam", href: locationHref("Ernakulam") },
+    { name: "Kozhikode", href: locationHref("Kozhikode") },
+    { name: "Thrissur", href: locationHref("Thrissur") },
   ];
 
   const allLocations = [
     ...firstLocations,
-    { name: "Palakkad", href: "#" },
-    { name: "Kollam", href: "#" },
-    { name: "Idukki", href: "#" },
-    { name: "Kasargod", href: "#" },
-    { name: "Pathanamthitta", href: "#" },
-    { name: "Kannur", href: "#" },
-    { name: "Wayanadu", href: "#" },
+    { name: "Palakkad", href: locationHref("Palakkad") },
+    { name: "Kollam", href: locationHref("Kollam") },
+    { name: "Idukki", href: locationHref("Idukki") },
+    { name: "Kasargod", href: locationHref("Kasargod") },
+    { name: "Pathanamthitta", href: locationHref("Pathanamthitta") },
+    { name: "Kannur", href: locationHref("Kannur") },
+    { name: "Wayanadu", href: locationHref("Wayanadu") },
   ];
 
   const [showAllLocations, setShowAllLocations] = useState(false);
