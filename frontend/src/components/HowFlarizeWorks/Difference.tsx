@@ -1,164 +1,90 @@
 "use client";
-import React, { useRef } from "react";
-import { Layers } from "lucide-react";
+import React from "react";
+import Link from "next/link";
+import {
+  HardHat,
+  Layers,
+  FileText,
+  SearchCheck,
+  SunMedium,
+  UserSearch,
+} from "lucide-react";
 
 const differences = [
   {
-    title: "3 Quotes, Not 1",
-    desc: "Most solar companies give you a single quote and that’s the one—you have no way to know if it’s fair. Flarize gives you three options with different panel brands and budgets. You compare, you choose. We show you what the fair price looks like so you seeing multiple market-rate options at once.",
+    icon: HardHat,
+    title: "Pre-qualified installers",
+    desc: "You never meet a random installer. Each is checked for licence, past work, service history, and customer feedback before they touch your roof.",
   },
   {
-    title: "Fastest Solar Installation in Kerala — 3-7 Days",
-    desc: "Other companies order materials per customer (1-2 weeks), ship from a central warehouse (3-5 days), and send installation teams from a central office. Total 3–4 weeks before you go solar. Flarize sources pre-specified system kits and the nearest certified local installer in your pincode — resulting in 3-7 day installation.",
+    icon: Layers,
+    title: "3 reviewed options, not 1 quote",
+    desc: "Three checked choices — different brands and budgets, same guarantee. You pick. No guessing if the price is fair.",
   },
   {
-    title: "Energy Loss Guarantee — Unique to Flarize",
-    desc: "If your solar system has a reported outage lasting more than 48 hours, Flarize compensates you for lost electricity production. No other solar company in Kerala offers this structure. It means Flarize’s financial interests are directly tied to your system uptime — not just your installation day.",
+    icon: FileText,
+    title: "You pay as the work is done",
+    desc: "Payment follows real progress. Nobody is paid for work they haven't finished. The risk stays off you.",
   },
   {
-    title: "Uber-Style Service Network",
-    desc: "When your system needs attention, the nearest contracted Flarize service technician is automatically dispatched to your location — not a central-office team somewhere across the district. Local technician, fast response, full accountability.",
+    icon: SearchCheck,
+    title: "We inspect the finished job",
+    desc: "Before you sign off, a Flarize engineer checks the install against our standard. If it's not right, we fix it.",
   },
   {
-    title: "One Brand for the Full 25 Years",
-    desc: "Most Kerala solar installers are small local companies. If they close in three years, who services your system? Flarize owns the complete customer relationship from installation and beyond for the system’s 25-year life. One brand. One number. One responsibility. No handoffs!",
+    icon: SunMedium,
+    title: "One brand, one responsibility",
+    desc: "You always deal with Flarize — never a chain of vendors blaming each other. One number, for 25 years.",
+  },
+  {
+    icon: UserSearch,
+    title: "Nearby support, when you need it",
+    desc: "Checked technicians work in your district and answer to Flarize, so help is close and someone always owns the problem.",
   },
 ];
 
 const Difference = () => {
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-
-  // Carousel scroll for mobile
-  const scroll = (dir: "left" | "right") => {
-    if (scrollRef.current) {
-      const card = scrollRef.current.firstElementChild as HTMLElement | null;
-      const scrollAmount = card ? card.offsetWidth + 16 : 320;
-      scrollRef.current.scrollBy({
-        left: dir === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
-
   return (
-    <section className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-7xl flex flex-col items-center h-full gap-8">
+    <section className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-7xl flex flex-col items-center h-full gap-10">
       {/* Heading */}
-      <div className="w-full max-w-7xl mx-auto text-center mb-8">
-        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
-          Why Flarize Is Different from Any Other Kerala Solar Company
+      <div className="w-full max-w-4xl mx-auto text-center">
+        <h2 className="text-3xl md:text-5xl font-semibold leading-tight text-[#123532]">
+          Why Flarize is different from any other Kerala solar company
         </h2>
-        <p className="hidden sm:block text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
-          Five structural differences — not marketing claims — that change how
-          you experience solar installation and ownership in Kerala
-        </p>
       </div>
 
-      {/* Grid for desktop, carousel for mobile */}
-      <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-        {/* Top row: 3 cards */}
-        {differences.slice(0, 3).map((item, idx) => (
+      {/* 3 x 2 grid of cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        {differences.map(({ icon: Icon, title, desc }, idx) => (
           <div
             key={idx}
-            className="bg-[#074A4D] rounded-xl p-7 flex flex-col h-full min-h-[260px]"
+            className="group bg-[#0E3B38] rounded-2xl p-8 flex flex-col items-center text-center transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl"
           >
-            <Layers className="text-white mb-4" size={32} />
-            <div className="text-white text-xl md:text-2xl font-normal leading-snug mb-2">
-              {item.title}
+            <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-white/20">
+              <Icon className="text-white" size={24} strokeWidth={1.75} />
             </div>
-            <div className="text-[#B2B2B2] text-xs md:text-base font-normal leading-normal">
-              {item.desc}
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-        {/* Bottom row: 2 cards */}
-        {differences.slice(3).map((item, idx) => (
-          <div
-            key={idx}
-            className="bg-[#074A4D] rounded-xl p-7 flex flex-col h-full min-h-[260px]"
-          >
-            <Layers className="text-white mb-4" size={32} />
-            <div className="text-white text-xl md:text-2xl font-semibold leading-snug mb-2">
-              {item.title}
-            </div>
-            <div className="text-[#B2B2B2] text-xs md:text-base font-normal leading-normal">
-              {item.desc}
-            </div>
+            <h3 className="text-white text-xl font-semibold leading-snug mb-3">
+              {title}
+            </h3>
+            <p className="text-[#A9B6B3] text-sm md:text-[15px] font-normal leading-relaxed">
+              {desc}
+            </p>
           </div>
         ))}
       </div>
 
-      {/* Carousel for mobile */}
-      <div className="w-full md:hidden relative">
-        <div
-          className="flex gap-4 overflow-x-auto no-scrollbar pb-2 snap-x snap-mandatory scroll-smooth"
-          ref={scrollRef}
+      {/* CTA buttons */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2">
+        <button className="bg-[#EFB44A] text-[#123532] font-semibold px-8 py-3 rounded-lg transition-colors duration-200 hover:bg-[#e3a534]">
+          Get my free quotes
+        </button>
+        <Link
+          href="/solar-comparison"
+          className="bg-white text-[#123532] font-medium px-8 py-3 rounded-lg border border-[#D9D9D9] transition-colors duration-200 hover:border-[#0D2B23]"
         >
-          {differences.map((item, idx) => (
-            <div
-              key={idx}
-              className="min-w-[70vw] max-w-[70vw] bg-[#074A4D] rounded-xl p-6 flex flex-col snap-start h-auto"
-            >
-              <Layers className="text-white mb-4" size={32} />
-              <div className="text-white text-xl md:text-2xl font-semibold leading-snug mb-2">
-                {item.title}
-              </div>
-              <div className="text-[#B2B2B2] text-xs md:text-base font-normal leading-normal">
-                {item.desc}
-              </div>
-            </div>
-          ))}
-        </div>
-        {/* Carousel controls */}
-        <div className="flex justify-end gap-2 mt-2 pr-2">
-          <button
-            onClick={() => scroll("left")}
-            className="w-8 h-8 rounded-full border border-[#D9D9D9] flex items-center justify-center text-[#A5A5A5] hover:border-[#0D2B23] hover:text-[#0D2B23] transition-all"
-            aria-label="Previous difference"
-          >
-            <svg
-              width="16"
-              height="16"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-          <button
-            onClick={() => scroll("right")}
-            className="w-8 h-8 rounded-full border border-[#0D2B23] flex items-center justify-center text-[#0D2B23] bg-white hover:bg-[#0D2B23] hover:text-white transition-all"
-            aria-label="Next difference"
-          >
-            <svg
-              width="16"
-              height="16"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-        </div>
+          Compare solar options
+        </Link>
       </div>
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </section>
   );
 };

@@ -9,7 +9,7 @@ const Booking = () => {
         <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
           Ready to See Your 3 Solar Options?
         </h2>
-        <p className="text-sm md:text-lg font-thin leading-relaxed text-[#757575]">
+        <p className="text-sm md:text-xl font-thin leading-relaxed text-[#757575]">
           Book a free site visit. Our engineer assesses your roof. You receive 3
           custom quotes within 24 hours
           <br/>
@@ -30,10 +30,10 @@ const Booking = () => {
       </div>
 
       <div className="w-full max-w-7xl mx-auto">
-        <h2 className="text-xl md:text-2xl font-semibold leading-snug text-[#123532] mb-6 text-left md:text-center">
+        <h2 className="text-xl md:text-4xl font-semibold leading-snug text-[#444444] mb-6 text-left md:text-center">
           Solar Installation Across All 14 Kerala Districts
         </h2>
-        <p className="text-sm md:text-lg font-normal leading-relaxed text-[#757575] text-center">
+        <p className="text-sm md:text-xl font-normal leading-relaxed text-[#757575] text-center">
           Flarize&apos;s local installer network covers all 14 Kerala districts
           —{" "}
           <span className="text-[#444444] font-medium">

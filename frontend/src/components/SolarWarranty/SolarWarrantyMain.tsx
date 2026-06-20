@@ -10,7 +10,7 @@ import LongTermSupport from "./LongTermSupport";
 import RealComplaints from "./RealComplaints";
 import SupportContact from "./SupportContact";
 import ProtectInvestment from "./ProtectInvestment";
-import Faq from "../Home/Faq";
+import Faq from "./WarrantyFaq";
 
 const SolarWarrantyMain = () => {
   return (

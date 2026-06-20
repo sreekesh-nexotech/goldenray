@@ -11,27 +11,27 @@ const faqs: FAQItem[] = [
   {
     question: "What is the best solar inverter for Kerala?",
     answer:
-      "There's no single best inverter — it depends on your roof complexity, budget, and grid reliability. Microinverters (Enphase) win for shaded or complex rooftops; optimized strings (SolarEdge) give panel-level monitoring at lower cost; quality string inverters (Sungrow, Fronius) deliver the best efficiency-per-rupee for clean, unshaded roofs.",
+      "It depends on your priorities. For shaded roofs or complex layouts, Enphase microinverters give you the best per-panel optimization. For maximum efficiency, SolarEdge's 99% HD-Wave is unmatched. For the best value-to-quality ratio, Sungrow SG5.0RS offers world-class reliability at mid-range pricing. For budget installs, Growatt delivers strong efficiency at the lowest cost.",
   },
   {
-    question: "String Inverter vs microinverter — which is better for Kerala?",
+    question: "String inverter vs microinverter — which is better for Kerala?",
     answer:
-      "If your roof has any shading from coconut trees, water tanks, or chimneys, microinverters easily win — each panel works independently so shading on one doesn't drag down the rest. For a clean unshaded roof on a budget, a quality string inverter from Sungrow or Fronius is the smarter pick.",
+      "String inverters are more affordable and work well on unshaded, uniform roofs — which covers most Kerala homes. Microinverters are better for partially shaded roofs, multi-directional layouts, or when you want panel-level monitoring. If your roof has no shading issues and faces a consistent direction, a quality string inverter gives you the best ROI.",
   },
   {
     question: "Do I need a hybrid inverter for my Kerala home?",
     answer:
-      "Only if you plan to add battery storage now or in the next 2-3 years. Hybrid inverters cost ~30-50% more than string inverters. If you don't need backup power and Kerala's net-metering works for you, a plain on-grid string inverter is the more cost-effective choice.",
+      "Only if you plan to add battery storage within the next 2-3 years. A hybrid inverter like Fronius GEN24 lets you connect a battery later without replacing the inverter. But if you're doing standard grid-tie solar with KSEB net metering — which is what most Kerala homes opt for — a regular string inverter is more cost-effective. Don't pay for hybrid capability you may never use.",
   },
   {
     question: "How does Kerala's climate affect inverter performance?",
     answer:
-      "High humidity and salt air (coastal areas) can corrode internal components, so an IP65+ rating with C5 corrosion protection matters. High ambient temperatures can derate inverter output — look for inverters specced for 60°C operation with active or natural cooling that won't throttle on hot afternoons.",
+      "Kerala's high humidity (often above 80%) and ambient temperatures exceeding 35°C stress inverters significantly. Humidity can cause internal corrosion if the IP rating isn't adequate. Heat causes derating — the inverter reduces output to protect itself. Look for IP65+ protection, C5 corrosion rating for coastal areas, and derating curves that maintain full output up to at least 45°C.",
   },
   {
     question: "What inverter size do I need for my home?",
     answer:
-      "Inverter capacity should typically be 80-100% of your panel DC capacity. A 5 kWp panel array pairs well with a 4-5 kW inverter. Going smaller (DC oversizing 110-130%) is common in Kerala because panel output rarely hits nameplate — but check your inverter's max DC input rating before oversizing.",
+      "Your inverter size should match your panel system size. A 3kW panel system needs a 3kW inverter. A 5kW system needs a 5kW inverter. For microinverters, you need one per panel — so a 5kW system with 9 panels needs 9 microinverters. All the 5kW inverters on this page work with systems between 3kW and 7kW depending on DC oversizing capabilities. Your installer will help size it correctly based on your roof and KSEB connection.",
   },
 ];
 

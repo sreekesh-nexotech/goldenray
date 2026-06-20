@@ -18,8 +18,9 @@ export default function Hero() {
           </div>
           <h1 className="text-4xl md:text-5xl font-semibold leading-tight text-[#111827] mb-6">
             <span className="block md:whitespace-nowrap">
-              One brand. Three options.
+              One brand. Three reviewed .
             </span>
+            
             <span className="block md:whitespace-nowrap text-[#F88A22] font-bold">
               You pick, we handle the rest.
             </span>

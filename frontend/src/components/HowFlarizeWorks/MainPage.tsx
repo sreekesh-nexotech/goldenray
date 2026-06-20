@@ -6,7 +6,7 @@ import Difference from './Difference'
 import InstallationDifference from './InstallationDifference'
 import ProblemsSolve from './ProblemsSolve'
 import Quotes from './Quotes'
-import Faq from '../Home/Faq'
+import Faq from './Faq'
 import Support from './Support'
 import Booking from './Booking'
 

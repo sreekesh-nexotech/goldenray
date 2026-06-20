@@ -11,28 +11,28 @@ const faqs: FAQItem[] = [
   {
     question: "What is the best solar panel for Kerala's climate?",
     answer:
-      "Monocrystalline panels with strong humidity resistance, low temperature coefficient (around -0.30%/°C or better), and long product warranty usually perform best in Kerala. Focus on certified panels from brands with solid local service support.",
+      "The best panel depends on your roof space, budget, and energy needs. For Kerala, prioritize panels with a low temperature coefficient (below -0.35%/°C), IP68-rated junction boxes for humidity resistance, and proven tropical degradation rates. N-type TOPCon panels from Adani and Saatvik currently score highest in our Kerala Climate Rating due to superior heat tolerance and lower degradation. Waaree and Vikram Solar's bifacial models are also strong contenders with proven Kerala track records.",
   },
   {
     question:
       "How important is temperature coefficient for solar panels in Kerala?",
     answer:
-      "It is very important. Kerala's warm climate can reduce panel output at higher temperatures, so panels with lower temperature coefficient lose less efficiency during peak heat and deliver more stable yearly generation.",
+      "Very important. Kerala regularly sees ambient temps above 35°C, pushing panel surfaces to 55-65°C. A panel rated -0.30%/°C loses about 12% output at 65°C, while one at -0.40%/°C loses about 16%. That 4% daily difference over 25 years compounds to a significant gap in total generation and returns on your investment.",
   },
   {
     question: "Does high humidity affect solar panel performance?",
     answer:
-      "Yes, high humidity can affect long-term durability if panel build quality is poor. That is why corrosion resistance, quality encapsulation, and proper installation standards are critical for reliable performance in Kerala.",
+      "Yes. Kerala's humidity (often above 80%) accelerates potential-induced degradation (PID), corrodes poorly sealed junction boxes, and causes micro-cracks in lower-quality cells. Panels with IP68-rated junction boxes, anti-PID certification, and tropical-grade encapsulants perform significantly better over their 25-year lifespan. This is why we weight humidity resistance heavily in our Kerala Climate Score.",
   },
   {
     question: "What does a 25-year solar panel warranty actually cover?",
     answer:
-      "Most 25-year warranties are performance warranties, which guarantee minimum power output over time. Product warranty is separate and usually covers manufacturing defects for 10-15 years depending on the panel brand.",
+      "Most panels have two separate warranties. The product warranty (typically 12 years) covers manufacturing defects — cell cracking, delamination, junction box failure. The performance warranty (25-30 years) guarantees minimum output, usually 80-87% at term end. In Kerala, the product warranty matters more because humidity and heat stress-test build quality early. Always confirm the warranty is manufacturer-backed, not just installer-backed.",
   },
   {
     question: "How many solar panels do I need for my home in Kerala?",
     answer:
-      "It depends on your monthly usage, roof area, and sunlight exposure. As a quick estimate, most homes need around 6-12 panels for a 3-5 kW system, but a proper site assessment gives the most accurate number.",
+      "Divide your monthly KSEB bill by ₹1,000 for approximate system size in kW. A 3kW system needs 5-6 panels (550W each) for bills up to ₹3,000/month. A 5kW system needs 9-10 panels for bills up to ₹5,000/month. Your actual requirement depends on roof direction, shading, and whether you plan to add high-consumption appliances like an EV charger in the coming years. A site visit gives the most accurate number.",
   },
 ];
 

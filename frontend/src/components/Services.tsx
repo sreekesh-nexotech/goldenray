@@ -38,19 +38,19 @@ export default function Services({ serviceTitle }: servicesProps) {
             bgColor="#FDF6D2"
           />
 
-          {/* Service Item 2: 10 Year Warranty period */}
+          {/* Service Item 2: Transparent Pricing */}
           <ServiceItem
             icon={
               <Image
                 src={vector2}
                 width={40}
                 height={40}
-                alt="10 Year Warranty"
+                alt="Transparent Pricing"
                 className="w-6 h-6 sm:w-10 sm:h-10"
               />
             }
-            title="10 Year Warranty Period"
-            description="Panels, inverters, workmanship — all protected. Backed by a company that's been here 8+ years."
+            title="Transparent Pricing"
+            description="Compare options clearly before you decide. No hidden charges, confusing upgrades, or last-minute surprises."
             bgColor="#D4EEF0"
           />
 

@@ -34,31 +34,31 @@ const CARDS = [
   {
     problem: {
       title: "One Quote, Take it or Leave it",
-      desc: "Most solar companies give one quote at one price. No comparison possible. You search Facebook groups asking for reviews — because you have no way to know.",
+      desc: "Hard to know if the price is fair or the system is right for your home.",
     },
     solution: {
       title: "3 Transparent Quotes, You Compare",
-      desc: "Flarize gives you 3 detailed quotes — different panel + inverter brands at different prices. Same Flarize installation quality across all three. You always know the fair price because you’re comparing options.",
+      desc: "Three checked choices — different brands and budgets, same guarantee. You can see what's fair.",
     },
   },
   {
     problem: {
       title: "Weeks of Waiting After Payment",
-      desc: "Order materials per-customer (1–2 weeks). Ship from warehouse (3–5 days). Send installation team from central office (travel time). Total: 3–6 weeks sitting and hoping.",
+      desc: "Many installers order parts only after you pay, so everything drags.",
     },
     solution: {
-      title: "Pre-Packed + Local Installer = Days",
-      desc: "Your system kit is already boxed. Flarize algorithm pings the nearest certified installer in your pincode — already in your area. Materials dispatched, local team installs. 3–7 days total.",
+      title: "Installation in Days, Not Weeks",
+      desc: "Pre-packed kits and a local team. Payment follows real progress, so no one is paid for unfinished work.",
     },
   },
   {
     problem: {
-      title: "Installer Vanishes After Payment",
-      desc: "Phone switched off. No service. No accountability. 75% of solar complaints happen post-installation — and most companies aren’t around to hear them.",
+      title: "Support Ends After Installation",
+      desc: "When something fails later, homeowners struggle to get anyone to help.",
     },
     solution: {
-      title: "One Brand. One Number. 25 Years",
-      desc: "Flarize owns the relationship. 3 layer support, digital dashboard, and if we can’t fix your system in 48 hours — we pay you for lost energy. No other Kerala company offers this.",
+      title: "One Brand. Long-Term Support.",
+      desc: "You deal with Flarize for 25 years — monitoring, service, and a written guarantee. One number, the whole time.",
     },
   },
 ];

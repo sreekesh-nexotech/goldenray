@@ -300,7 +300,7 @@ export default function SolarAdvantage({
           Starting From ₹2,000/mo EMI
         </div>
         <div className="absolute hidden xl:block bottom-1/3 right-1/4 transform translate-x-1/2 translate-y-1/2 bg-[#FBDFD0] text-[#124944] px-4 py-2 rounded-lg text-sm font-semibold rotate-[-6.84deg]">
-          10 Years Warranty
+          Save Upto 90% on bills
         </div>
       </div>
     </div>

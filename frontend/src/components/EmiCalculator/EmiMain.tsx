@@ -5,7 +5,7 @@ import FourSteps from './FourSteps'
 import Partners from '../Home/Partners';
 import BookingForm from '../Home/Booking';
 import HomeTestimonial from '../Home/Testimomial';
-import Faq from '../Home/Faq';
+import Faq from './EmiFaq';
 import BankRates from './BankRates';
 
 

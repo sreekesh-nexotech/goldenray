@@ -12,27 +12,26 @@ import {
 
 import FlarizeLogo from "../../../public/logo_header.png";
 
+// NOTE: "Careers" and "Newsletters" links are intentionally hidden until those
+// pages go live. "Service Locations" lives in the header (/service-area); the
+// footer link pointed to a non-existent /locations route and was removed.
 const companyLinks = [
   { label: "Affiliate Program", href: "/affiliate-programs" },
   { label: "How Flarize Works", href: "/how-flarize-works" },
   { label: "Our Projects", href: "/projects" },
-  { label: "Service Locations", href: "/locations" },
-  { label: "Careers", href: "/careers" },
   { label: "Contact Us", href: "/contactus" },
   { label: "About Us", href: "/about" },
 ];
 
 const resourceLinks = [
   { label: "Solar Warranty", href: "/solar-warranty" },
-  { label: "Government Subsidies", href: "#" },
+  { label: "Government Subsidies", href: "/subsidy" },
   { label: "FAQs", href: "/faq" },
   { label: "Blogs", href: "/blog" },
-  { label: "Newsletters", href: "#" },
 ];
 
+// Cookie Policy and Legal Policy removed until those pages exist.
 const legalLinks = [
-  { label: "Cookie Policy", href: "#" },
-  { label: "Legal Policy", href: "#" },
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
 ];

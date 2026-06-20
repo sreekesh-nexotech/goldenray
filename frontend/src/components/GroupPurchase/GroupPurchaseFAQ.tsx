@@ -9,39 +9,54 @@ export default function Faq() {
   // Array of FAQ data (questions and answers)
   const faqs = [
     {
-      question: "Will panels work during Kerala monsoon?",
+      question: "What is a group solar purchase?",
       answer:
-        "Yes. Solar panels generate electricity from sunlight, not rain. While output drops on cloudy days, Kerala's abundant sunshine during the rest of the year more than makes up for it. Flarize's high-efficiency panels perform well even in low-light conditions, and our performance monitoring ensures you get the most out of your system year-round.",
+        "A group solar purchase allows nearby homeowners to install solar together. By combining multiple installations in the same area, costs are reduced and installation becomes more efficient.",
     },
     {
-      question: "Is our roof strong enough?",
+      question: "How many families are required to form a group?",
       answer:
-        "Most roofs are suitable for solar panels. We conduct a free roof assessment to check structural integrity, shading, and orientation. If your roof isn't ideal, we can explore ground-mounted or carport solar options to ensure you can still benefit from solar energy.",
+        "A group is confirmed when at least 5 families in the same area complete their booking. Once confirmed, installations are scheduled together.",
     },
     {
-      question: "Do group members have to be neighbours?",
+      question: "What happens to my ₹1,000 booking amount?",
       answer:
-        "No, group members don't have to be neighbours. You can form a group with anyone interested in purchasing solar panels together, regardless of their location.",
+        "Your ₹1,000 booking amount reserves your spot in the group and is fully adjusted against your final solar system cost.",
     },
     {
-      question: "Do we need ITR for the loan?",
+      question: "What if the group does not form?",
       answer:
-        "Most financing options for solar panels do not require Income Tax Returns (ITR) for loan approval. However, requirements can vary based on the lender and the specific loan product. We recommend checking with your chosen financing provider for their documentation requirements.",
+        "If the required number of families is not reached within the specified period, you can either receive a full refund, or continue with an individual installation while retaining your locked pricing (if applicable).",
     },
     {
-      question: "What about KSEB paperwork and subsidy?",
+      question: "Is the solar system quality different from individual bookings?",
       answer:
-        "Flarize handles all KSEB paperwork and subsidy applications on your behalf. We ensure that your net metering application is submitted correctly and that you receive any eligible subsidies without you having to navigate the complex process yourself.",
+        "No. Group purchase customers receive the same panels, inverter brands, installation standards, warranty coverage, and service support as individual customers.",
     },
     {
-      question: "Can anyone earn referral rewards?",
+      question: "How much can I save through a group purchase?",
       answer:
-        "Yes, anyone can earn referral rewards by referring friends and family to join the group purchase. We offer incentives for successful referrals that lead to reservations, making it a win-win for everyone involved.",
+        "Savings vary based on system size and location, but most homeowners can save up to ₹10,000 compared to standard individual pricing.",
     },
     {
-      question: "What happens during a power outage?",
+      question: "How long does installation take after a group is confirmed?",
       answer:
-        "Standard on-grid solar systems shut down during power outages for safety reasons. However, if you opt for a hybrid system with battery storage, you can continue to have power during outages. We can help you choose the right setup based on your needs.",
+        "Once a group is confirmed, installations are typically completed within the scheduled group installation week, usually faster than individual installations.",
+    },
+    {
+      question: "Can I join if I already have a solar quotation?",
+      answer:
+        "Yes. You can still join the group purchase program. Our team can review your existing quotation and help you compare costs, specifications, and potential savings.",
+    },
+    {
+      question: "How do I know the status of my group?",
+      answer:
+        "After booking, you'll receive updates via WhatsApp, SMS, or phone regarding the number of families joined, group formation progress, installation schedule, and next steps.",
+    },
+    {
+      question: "Why is group solar cheaper?",
+      answer:
+        "Group installations reduce logistics, survey, transportation, and crew mobilization costs by serving multiple nearby homes during the same installation period. These savings are passed directly to homeowners without compromising quality.",
     },
   ];
 
