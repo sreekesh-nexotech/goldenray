@@ -7,23 +7,21 @@ export default function Working() {
   const steps = [
     {
       number: "01",
-      title: "Register for Free",
-      description:
-        "Fill in the online application form. Our partner team reviews your profile and sends confirmation within 24-48 hours. There is no registration fee, no deposit, and no commitment beyond the partner agreement terms",
+      title: "Apply for Free",
+      description: "Complete the short application and get approved within 24–48 hours. No fees, no deposits, no targets.",
       badge: "24–48 hour approval",
     },
     {
       number: "02",
-      title: "Receive Your Unique Referral Link and Marketing Materials",
-      description:
-        "Every approved affiliate receives a personalised tracking link and a set of digital marketing materials — WhatsApp messages, social media graphics, and conversation guides tailored for different partner types. Share through any channel: WhatsApp, Instagram, in-person conversations, or your professional email list",
+      title: "Get Your Referral Link & Kit",
+      description:"Receive a unique tracking link, ready-to-use content, and a dedicated partner manager for every lead.",
       badge: "Unique tracking link",
     },
     {
       number: "03",
-      title: " Earn Commission Within 7-14 Days of Installation",
+      title: "Earn on Successful Installations",
       description:
-        "When a customer you referred completes their solar installation, your commission is credited to your partner account. Payouts follow a monthly cycle. Every credit is traceable in your real-time partner dashboard — no chasing required",
+        "When your referral installs solar, your fixed commission is credited to your partner account — tracked end to end.",
       badge: "7–14 day credit",
     },
   ];
@@ -40,12 +38,8 @@ export default function Working() {
       <div className="mx-auto max-w-7xl px-4 sm:px-2 space-y-15">
         {/* Heading */}
         <h2 className="text-center text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
-          How the Flarize Solar Affiliate Program Works — 3 Steps
+          How the Flarize Solar Affiliate Program Works
         </h2>
-        <p className="text-center hidden sm:block text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
-          Starting your Kerala solar affiliate journey takes less than five
-          minutes. Once registered you can submit referrals immediately
-        </p>
 
         {/* Three Column Grid */}
         <div className="w-full max-w-7xl flex overflow-x-auto gap-4 lg:grid  lg:grid-cols-3 md:gap-6 no-scrollbar ">
@@ -71,7 +65,7 @@ export default function Working() {
               </h3>
 
               {/* Description */}
-              <p className="text-[#525252] text-xs md:text-base font-normal leading-normal mb-4 sm:mb-5 md:mb-6">
+              <p className="text-[#525252] text-xs md:text-base font-light leading-normal mb-4 sm:mb-5 md:mb-6">
                 {step.description}
               </p>
 

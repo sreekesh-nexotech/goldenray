@@ -42,19 +42,14 @@ const AffliateHero = () => {
             </span>
           </div>
           <h1 className="text-4xl md:text-5xl font-semibold leading-tight text-[#171717]">
-            Kerala&apos;s Most Trusted Solar Brand
-            <br />
-            <span className="text-[#F88A22] font-bold">Now Paying You</span> to
-            Refer.
+            Refer Solar
+            <span className="text-[#F88A22] font-bold">
+              {" "}Without Risking <br className="hidden md:block" /> Your Name
+            </span>
           </h1>
           <p className="text-[#444444] w-full max-w-2xl text-sm md:text-xl font-normal leading-relaxed">
-            Earn a{" "}
-            <span className="text-[#16A34A]">
-              structured commission for every successful solar installation you
-              refer
-            </span>{" "}
-            with zero investment, no solar expertise required, and a dedicated
-            partner manager handling every lead you send.
+Introduce a homeowner. Flarize handles the entire solar journey—
+from consultation to after-sales support—so you can refer with confidence.
           </p>
           <div className="flex flex-row gap-2 sm:gap-3 mt-2 w-full sm:w-auto">
             <LinkingButton
@@ -73,6 +68,11 @@ const AffliateHero = () => {
               ButtonHover="hover:bg-[#eeeeee]"
             />
           </div>
+
+          <p className="mt-2text-sm md:text-xl font-medium leading-relaxed text-[#123532]">
+            A Flarize Partner Program · Powered by Golden Ray Energy · Flarize
+            Technologies Pvt Ltd · Founder-led by Harikrishnan K.R
+          </p>
 
           {/* Mobile-only hero image */}
           <div className="lg:hidden w-full rounded-xl overflow-hidden mt-4">

@@ -7,43 +7,43 @@ const steps = [
     title: "Share Your KSEB Electricity Bill",
     description:
       "Send it on WhatsApp or our site. Flarize sizes your system from your real usage, so it's never too big or too small.",
-    image: "/images/7steps/1.png",
+    image: "https://golden-ray.b-cdn.net/images/1.png",
   },
   {
     title: "Get your 3 reviewed options",
     description:
       "Within 24 hours. Three brands and budgets we've already checked. Same size, same guarantee. You choose.",
-    image: "/images/7steps/2.png",
+    image: "https://golden-ray.b-cdn.net/images/2.png",
   },
   {
     title: "Free Roof Site Assessment",
     description:
       "A Flarize engineer checks your roof space, sunlight, structure, and wiring before suggesting anything.",
-    image: "/images/7steps/3.png",
+    image: "https://golden-ray.b-cdn.net/images/3.png",
   },
   {
     title: "We do your paperwork",
     description:
       "Flarize files your KSEB net-metering and your ₹78,000 subsidy. You don't stand in any government queue.",
-    image: "/images/7steps/4.png",
+    image: "https://golden-ray.b-cdn.net/images/4.png",
   },
   {
     title: "Your installation in 3–7 days",
     description:
       "A checked local team does the work. You pay in stages as it's done — never up front for work that hasn't happened.",
-    image: "/images/7steps/5.png",
+    image: "https://golden-ray.b-cdn.net/images/5.png",
   },
   {
     title: "Inspection & switch-on",
     description:
       "A Flarize engineer checks the finished job before you sign off. Then KSEB approves and your meter runs backward.",
-    image: "/images/7steps/6.png",
+    image: "https://golden-ray.b-cdn.net/images/6.png",
   },
   {
     title: "Support for 25 years",
     description:
       "App monitoring, service visits, and a written energy-loss guarantee. One number, for the life of your system.",
-    image: "/images/7steps/7.png",
+    image: "https://golden-ray.b-cdn.net/images/7.png",
   },
 ];
 

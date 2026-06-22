@@ -1,5 +1,7 @@
 import React from 'react'
 import AffliateHero from './AffliateHero'
+import WhyNoRefer from './WhyNoRefer'
+import PartnersChooseFlarize from './PartnersChooseFlarize'
 import { WhoCanJoin } from './WhoCanJoin'
 import Earnings from './Earnings'
 import Working from './Working'
@@ -16,6 +18,8 @@ const AffiliateMainPage = () => {
   return (
     <section className="relative">
       <AffliateHero/>
+      <WhyNoRefer/>
+      <PartnersChooseFlarize/>
       <WhoCanJoin/>
       <Earnings/>
       <Working/>
