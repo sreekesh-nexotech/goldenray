@@ -46,7 +46,7 @@ const WhyFlarize = () => {
         {/* Banner image — full bleed, edge to edge */}
         <div className="hidden md:block relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-hidden">
           <img
-            src="/images/Whyflarize/Rectangle 172.png"
+            src="https://golden-ray.b-cdn.net/images/Rectangle%20172.png"
             alt="Flarize affiliate partners in front of a solar-powered home"
             className="w-full h-[660px] object-cover"
           />

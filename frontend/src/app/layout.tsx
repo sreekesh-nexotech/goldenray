@@ -11,7 +11,7 @@ import ConditionalLayout from "@/components/common/ConditionalLayout";
 
 import PageTracker from "@/components/analytics/PageTracker";
 import { isGtmEnabled } from "@/utils/gtm";
-import { GTM_ID } from "@/config";
+import { GTM_ID, GA_MEASUREMENT_ID } from "@/config";
 
 /* -------------------- Fonts -------------------- */
 
@@ -125,6 +125,29 @@ export default function RootLayout({
           content="yPvkA7y4qK17chMlAbn958D0Nfhe7AWGEAIzwGJ4Cec"
         />
         <meta name="apple-mobile-web-app-title" content="Flarize" />
+
+        {/* Google tag (gtag.js) — GA4 */}
+        {GA_MEASUREMENT_ID.length > 0 && (
+          <>
+            <Script
+              id="ga4-src"
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+            />
+            <Script
+              id="ga4-init"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_MEASUREMENT_ID}');
+                `,
+              }}
+            />
+          </>
+        )}
 
         {/* Inline Google Tag Manager using next/script for GA compatibility */}
         {isGtmEnabled() && (

@@ -44,7 +44,6 @@ export default function Header() {
     { name: "Commercial", href: "/commercial" },
     { name: "Group Purchase", href: "/group-purchase" },
     { name: "Our Projects", href: "/projects" },
-    { name: "Blog", href: "/blog" },
   ];
 
   const tools = [
@@ -52,7 +51,6 @@ export default function Header() {
     { name: "Review Your Solar Quote", href: "/quote-analyser" },
     { name: "Compare Solar Options", href: "/solar-comparison" },
     { name: "Choose the Right Inverter", href: "/inverter-comparison" },
-    { name: "Solar Warranty", href: "/solar-warranty" },
   ];
 
   const pathname = usePathname();
@@ -406,18 +404,30 @@ export default function Header() {
                 : "max-h-0 opacity-0"
             }`}
           >
-            {allLocations.map((location, idx) => (
-              <Link
-                key={location.name + idx}
-                href={location.href}
-                onClick={closeMobileMenu}
-                className={`text-gray-600 text-xl ${
-                  isActive(location.href) ? "font-bold" : ""
-                } `}
+            {(showAllLocations ? allLocations : firstLocations).map(
+              (location, idx) => (
+                <Link
+                  key={location.name + idx}
+                  href={location.href}
+                  onClick={closeMobileMenu}
+                  className={`text-gray-600 text-xl ${
+                    isActive(location.href) ? "font-bold" : ""
+                  } `}
+                >
+                  Solar Services In {location.name}
+                </Link>
+              ),
+            )}
+
+            {!showAllLocations && (
+              <button
+                onClick={() => setShowAllLocations(true)}
+                className="text-left text-base font-medium text-[#074A4D]"
               >
-                Solar Service in {location.name}
-              </Link>
-            ))}
+                View All Locations{" "}
+                <ArrowRight size={16} className="inline-block ml-1" />
+              </button>
+            )}
           </div>
         </li>
 
