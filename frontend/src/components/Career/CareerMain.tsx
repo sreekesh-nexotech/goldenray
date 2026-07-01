@@ -3,6 +3,7 @@ import CareerStats from "./CareerStats";
 import BuildingMore from "./BuildingMore";
 import WhyFlarize from "./WhyFlarize";
 import WhatWeBelieveCareer from "./WhatWeBelieveCareer";
+import LifeAtFlarize from "./LifeAtFlarize";
 import OpenPositions from "./OpenPositions";
 import ResumeCTA from "./ResumeCTA";
 import JoinCTA from "./JoinCTA";
@@ -26,7 +27,7 @@ export default function CareerMain() {
       <WhatWeBelieveCareer />
 
       {/* Life at Flarize — Official Frames (left for later) */}
-      {/* <LifeAtFlarize /> */}
+      <LifeAtFlarize />
 
       {/* Open positions */}
       <OpenPositions />
