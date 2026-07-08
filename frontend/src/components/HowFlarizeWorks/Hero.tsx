@@ -37,7 +37,7 @@ export default function Hero() {
               <div className="text-xl md:text-2xl font-semibold leading-snug text-[#074A4D]">
                 3-7 Days
               </div>
-              <div className="font-light text-xs md:text-base font-normal leading-normal text-[#444444]">
+              <div className="text-xs md:text-base font-normal leading-normal text-[#444444]">
                 Installation Timeline
               </div>
             </div>
@@ -45,7 +45,7 @@ export default function Hero() {
               <div className="text-xl md:text-2xl font-semibold leading-snug text-[#074A4D]">
                 300+
               </div>
-              <div className=" font-light text-xs md:text-base font-normal leading-normal text-[#444444]">
+              <div className=" text-xs md:text-base font-normal leading-normal text-[#444444]">
                 Kerala Homes Installed
               </div>
             </div>
@@ -53,7 +53,7 @@ export default function Hero() {
               <div className="text-xl md:text-2xl font-semibold leading-snug text-[#074A4D]">
                 4.9★
               </div>
-              <div className=" font-light text-xs md:text-base font-normal leading-normal text-[#444444]">
+              <div className=" text-xs md:text-base font-normal leading-normal text-[#444444]">
                 Customer Rating
               </div>
             </div>
