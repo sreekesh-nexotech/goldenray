@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import Link from "next/link";
 import { Briefcase, ChevronDown, MapPin, PenTool, Search, Tag, Truck } from "lucide-react";
 
 type Job = {
@@ -8,6 +9,7 @@ type Job = {
   department: string;
   location: string;
   icon: React.ComponentType<{ className?: string }>;
+  href?: string;
 };
 
 const jobs: Job[] = [
@@ -22,6 +24,7 @@ const jobs: Job[] = [
     department: "Design",
     location: "Alappuzha",
     icon: PenTool,
+    href: "/career/ui-ux-designer",
   },
   {
     title: "Field Sales Lead",
@@ -140,12 +143,21 @@ export default function OpenPositions() {
                       </span>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    className="flex-shrink-0 bg-[#F7BA41] hover:bg-yellow-500 transition-colors rounded-lg px-5 py-2.5 text-sm font-semibold text-[#272218] cursor-pointer"
-                  >
-                    View Details
-                  </button>
+                  {job.href ? (
+                    <Link
+                      href={job.href}
+                      className="flex-shrink-0 bg-[#F7BA41] hover:bg-yellow-500 transition-colors rounded-lg px-5 py-2.5 text-sm font-semibold text-[#272218] cursor-pointer"
+                    >
+                      View Details
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      className="flex-shrink-0 bg-[#F7BA41] hover:bg-yellow-500 transition-colors rounded-lg px-5 py-2.5 text-sm font-semibold text-[#272218] cursor-pointer"
+                    >
+                      View Details
+                    </button>
+                  )}
                 </div>
               );
             })
