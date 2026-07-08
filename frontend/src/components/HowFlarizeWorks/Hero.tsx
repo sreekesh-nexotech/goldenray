@@ -32,7 +32,7 @@ export default function Hero() {
             for 25 years.
           </p>
 
-          <div className="flex flex-row gap-23 justify-start mb-4">
+          <div className="flex flex-row justify-start gap-x-4 sm:gap-x-10 mb-4">
             <div className="text-left">
               <div className="text-xl md:text-2xl font-semibold leading-snug text-[#074A4D]">
                 3-7 Days
@@ -59,14 +59,14 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="flex flex-row justify-start mt-6 lg:gap-8 gap-2 mb-6">
+          <div className="flex flex-row justify-start mt-6 lg:gap-8 gap-3 mb-6">
             <LinkingButton
               content="Calculate Solar Savings"
               ButtonLink="/advanced-calculator"
               ButtonBg="bg-[#F7BA41]"
               Buttontext="text-[#272218]"
               ButtonHover="hover:bg-yellow-500"
-              className="min-w-[260px] md:min-w-[320px] h-[56px] px-10 text-base md:text-lg rounded-2xl"
+              className="flex-1 sm:flex-none min-w-0 min-h-14 px-3 sm:px-8 md:px-10 text-xs sm:text-base md:text-lg rounded-2xl whitespace-normal!"
             />
             <LinkingButton
               content="Check EMI Options"
@@ -75,7 +75,7 @@ export default function Hero() {
               ButtonBg="bg-[#FFFFFF]"
               Buttontext="text-[#074A4D]"
               ButtonHover="hover:bg-[#eeeeee]"
-              className="min-w-[260px] md:min-w-[320px] h-[56px] px-10 text-base md:text-lg rounded-2xl"
+              className="flex-1 sm:flex-none min-w-0 min-h-14 px-3 sm:px-8 md:px-10 text-xs sm:text-base md:text-lg rounded-2xl whitespace-normal!"
             />
           </div>
         </div>

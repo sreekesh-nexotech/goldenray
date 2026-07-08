@@ -48,17 +48,17 @@ const Difference = () => {
     <section className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-7xl flex flex-col items-center h-full gap-10">
       {/* Heading */}
       <div className="w-full max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl md:text-5xl font-semibold leading-tight text-[#123532]">
+        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532]">
           Why Flarize is different from any other Kerala solar company
         </h2>
       </div>
 
-      {/* 3 x 2 grid of cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+      {/* Horizontally scrollable on mobile, 3 x 2 grid from sm+ */}
+      <div className="w-full flex overflow-x-auto gap-4 no-scrollbar sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 sm:overflow-visible">
         {differences.map(({ icon: Icon, title, desc }, idx) => (
           <div
             key={idx}
-            className="group bg-[#0E3B38] rounded-2xl p-8 flex flex-col items-center text-center transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl"
+            className="group shrink-0 min-w-[80vw] max-w-[80vw] sm:min-w-0 sm:max-w-none bg-[#0E3B38] rounded-2xl p-8 flex flex-col items-center text-center transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl"
           >
             <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-white/20">
               <Icon className="text-white" size={24} strokeWidth={1.75} />
@@ -85,6 +85,16 @@ const Difference = () => {
           Compare solar options
         </Link>
       </div>
+
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </section>
   );
 };

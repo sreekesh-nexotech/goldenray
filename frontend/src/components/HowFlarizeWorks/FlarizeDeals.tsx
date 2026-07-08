@@ -60,12 +60,12 @@ const FlarizeDeals = () => {
         <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
           
         </h2>
-        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4 whitespace-nowrap">
+        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4 md:whitespace-nowrap">
             You Deal with Flarize. We Deal with Everyone Else.
         </h2>
         <p className="font-normal  text-sm md:text-lg leading-relaxed text-[#4B5563]">
           Dealing with panels, installation, service, and net metering through
-          different parties gets confusing — <br/> especially  when something goes
+          different parties gets confusing — <br className="hidden md:block"/> especially  when something goes
           wrong.
         </p>
       </div>

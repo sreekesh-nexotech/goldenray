@@ -51,7 +51,7 @@ export default function Faq() {
         <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-10 items-start">
           {/* Left: Heading and Description */}
           <div className="lg:pt-6">
-            <h2 className="text-4xl md:text-5xl font-bold leading-tight text-[#123532] mb-4">
+            <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
               Have any questions?
             </h2>
             <p className="text-base md:text-lg font-normal leading-relaxed text-[#444444] max-w-md">

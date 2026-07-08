@@ -71,8 +71,8 @@ const InstallationJourney = () => {
     <section className="bg-linear-to-b from-[#F8F2E1] to-[#FFFFFF] py-20 font-sans overflow-hidden">
       {/* Header Container*/}
       <div className="max-w-7xl mx-auto px-6 md:px-10 mb-14">
-        <div className="w-full max-w-7xl mx-auto text-center mb-8">
-          <h2 className="text-3xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
+        <div className="w-full max-w-7xl mx-auto text-left md:text-center mb-8">
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
             Your solar journey in Kerala — 7 steps explained
           </h2>
           <p className="text-center text-sm md:text-lg font-normal leading-relaxed text-[#4B5563]">
