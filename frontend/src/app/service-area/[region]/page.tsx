@@ -8,6 +8,7 @@ import {
   getServiceAreaBySlug,
 } from "@/data/service-area-data";
 import ServiceAreaHero from "@/components/ServiceArea/ServiceAreaHero";
+import WhySolar from "@/components/ServiceArea/WhySolar";
 import ServiceAreaCTA from "@/components/ServiceArea/ServiceAreaCTA";
 
 const SITE_ORIGIN = "https://www.flarize.com";
@@ -30,7 +31,7 @@ export async function generateMetadata({
   const district = getCanonicalDistrictName(region);
   if (!district) return {};
 
-  const title = `Solar Installation in ${district} | Flarize Kerala`;
+  const title = `Solar Installation in ${district}`;
   const description = `Rooftop & commercial solar installation in ${district}, Kerala. Residential solar, group purchase, KSEB & PM Surya Ghar subsidy assistance, and SolarCare maintenance with local ${district} technicians.`;
   const canonical = `${SITE_ORIGIN}/service-area/${region}`;
 
@@ -79,6 +80,7 @@ export default async function ServiceAreaRegionPage({
   return (
     <section className="relative">
       <ServiceAreaHero district={district} />
+      <WhySolar district={district} />
       <ServiceAreaCTA />
     </section>
   );
