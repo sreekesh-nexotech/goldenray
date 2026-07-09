@@ -29,17 +29,17 @@ const InstallationDifference = () => {
               3–6 Weeks
             </span>
           </div>
-          <div className="flex rounded-xl overflow-hidden h-12 w-full bg-[#F7F2F2]">
-            <div className="flex-1 flex items-center justify-center text-xs md:text-base font-normal leading-normal text-[#222] bg-[#F7F2F2] ">
+          <div className="flex rounded-xl overflow-hidden min-h-12 w-full bg-[#F7F2F2]">
+            <div className="flex-1 flex items-center justify-center text-center px-1 text-xs md:text-base font-normal leading-tight text-[#222] bg-[#F7F2F2] ">
               ORDER
             </div>
-            <div className="flex-1 flex items-center justify-center text-xs md:text-base font-normal leading-normal text-[#222] bg-[#DFDADA] ">
+            <div className="flex-1 flex items-center justify-center text-center px-1 text-xs md:text-base font-normal leading-tight text-[#222] bg-[#DFDADA] ">
               SHIPPING
             </div>
-            <div className="flex-1 flex items-center justify-center text-xs md:text-base font-normal leading-normal text-[#222] bg-[#D2D0D0] ">
+            <div className="flex-1 flex items-center justify-center text-center px-1 text-xs md:text-base font-normal leading-tight text-[#222] bg-[#D2D0D0] ">
               TRAVEL
             </div>
-            <div className="flex-1 flex items-center justify-center text-xs md:text-base font-normal leading-normal text-[#222] bg-[#B2B2B2]">
+            <div className="flex-1 flex items-center justify-center text-center px-1 text-xs md:text-base font-normal leading-tight text-[#222] bg-[#B2B2B2]">
               INSTALL
             </div>
           </div>
@@ -52,18 +52,21 @@ const InstallationDifference = () => {
               Flarize
             </span>
             <span className="text-base md:text-xl font-normal md:font-semibold leading-snug text-[#15803D]">
-              3–7 Days
+              5–12 Days
             </span>
           </div>
-          <div className="flex rounded-xl overflow-hidden h-12 w-full">
-            <div className="flex-1 flex items-center justify-center text-xs md:text-base font-normal leading-normal text-[#222] bg-[#FFE5B2]">
+          <div className="flex rounded-xl overflow-hidden min-h-12 w-full">
+            <div className="flex-1 flex items-center justify-center text-left sm:text-center px-2 text-xs md:text-base font-normal leading-tight text-[#222] bg-[#FFE5B2]">
               PRE-PACKED SYSTEM
             </div>
-            <div className="flex-1 flex items-center justify-center text-xs md:text-base font-normal leading-normal text-[#222] bg-[#F9CD76]">
-              LOCAL INSTALLER
+            <div className="flex-1 flex items-center justify-center text-left sm:text-center px-2 text-xs md:text-base font-normal leading-tight text-[#222] bg-[#FFDA91]">
+              CERTIFIED INSTALLER
             </div>
-            <div className="flex-1 flex items-center justify-center text-xs md:text-base font-normal leading-normal text-[#222] bg-[#F7BA41]">
-              INSTALLATION
+            <div className="flex-1 flex items-center justify-center text-left sm:text-center px-2 text-xs md:text-base font-normal leading-tight text-[#222] bg-[#FFCA61]">
+              QUALITY CHECK
+            </div>
+            <div className="flex-1 flex items-center justify-center text-left sm:text-center px-2 text-xs md:text-base font-normal leading-tight text-[#222] bg-[#F7BA41]">
+              HANDOVER
             </div>
           </div>
         </div>

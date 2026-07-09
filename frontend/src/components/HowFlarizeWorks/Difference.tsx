@@ -58,7 +58,7 @@ const Difference = () => {
         {differences.map(({ icon: Icon, title, desc }, idx) => (
           <div
             key={idx}
-            className="group shrink-0 min-w-[80vw] max-w-[80vw] sm:min-w-0 sm:max-w-none bg-[#0E3B38] rounded-2xl p-8 flex flex-col items-center text-center transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl"
+            className="group shrink-0 min-w-[80vw] max-w-[80vw] sm:min-w-0 sm:max-w-none bg-[#074A4D] rounded-2xl p-8 flex flex-col items-center text-center transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl"
           >
             <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-white/20">
               <Icon className="text-white" size={24} strokeWidth={1.75} />
@@ -75,9 +75,9 @@ const Difference = () => {
 
       {/* CTA buttons */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2">
-        <button className="bg-[#EFB44A] text-[#123532] font-semibold px-8 py-3 rounded-lg transition-colors duration-200 hover:bg-[#e3a534]">
+        <Link href="/contactus" className="bg-[#EFB44A] text-[#123532] font-semibold px-8 py-3 rounded-lg transition-colors duration-200 hover:bg-[#e3a534]">
           Get my free quotes
-        </button>
+        </Link>
         <Link
           href="/solar-comparison"
           className="bg-white text-[#123532] font-medium px-8 py-3 rounded-lg border border-[#D9D9D9] transition-colors duration-200 hover:border-[#0D2B23]"

@@ -37,7 +37,7 @@ const CARDS = [
       desc: "Hard to know if the price is fair or the system is right for your home.",
     },
     solution: {
-      title: "3 Transparent Quotes, You Compare",
+      title: "3 reviewed options",
       desc: "Three checked choices — different brands and budgets, same guarantee. You can see what's fair.",
     },
   },

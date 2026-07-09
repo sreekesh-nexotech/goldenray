@@ -5,7 +5,7 @@ import React from "react";
 const SUPPORT_FEATURES = [
   {
     title: "Energy Loss Guarantee",
-    desc: "If your solar system has a reported outage lasting more than 48 hours, Flarize compensates you for the lost energy production. This is the only energy loss guarantee offered by a solar company in Kerala — and it means our incentive to resolve issues quickly is directly tied to your system uptime",
+    desc: "If your system is down beyond the terms in your agreement, we credit you for the lost power. Written down, not vague.",
     bg: "bg-[#FDF6D280]",
     icon: (
       <div className="bg-[#FDF6D2] rounded-full p-5">
@@ -15,7 +15,11 @@ const SUPPORT_FEATURES = [
   },
   {
     title: "3-Layer Support System",
-    desc: "WhatsApp support for quick queries and real-time updates. Remote diagnostics for system performance issues — most inverter faults are resolved without a site visit. Local technician visits when physical intervention is required. Three layers, one point of contact",
+    desc: [
+      "WhatsApp Support First",
+      "Remote Troubleshooting",
+      "On-Site Technician When Needed",
+    ],
     bg: "bg-[#ADD6D880]",
     icon: (
       <div className="bg-[#ADD6D8] rounded-full p-5">
@@ -25,7 +29,7 @@ const SUPPORT_FEATURES = [
   },
   {
     title: "Real-Time Digital Dashboard",
-    desc: "Monitor your solar generation, electricity savings, and system health from the Flarize app. Daily generation reports, performance alerts, monthly energy summaries, and net metering unit tracking — all updated in real time from your inverter",
+    desc: "Track your power, savings, and any alerts from one simple app on your phone.",
     bg: "bg-[#C3DFBD80]",
     icon: (
       <div className="bg-[#C3DFBD] rounded-full p-5">
@@ -48,7 +52,7 @@ const SUPPORT_FEATURES = [
   },
   {
     title: "Solar Care Plans",
-    desc: "Annual maintenance packages starting from Rs.249/month. Includes preventive panel cleaning, electrical safety checks, inverter health monitoring, and priority technician response. A properly maintained system retains efficiency for the full 25-year panel performance period",
+    desc: "Optional yearly cleaning, checks, and priority service. Free for your first year.",
     bg: "bg-[#FBE8DA80]",
     icon: (
       <div className="bg-[#FFE8D7] rounded-full p-5">
@@ -98,7 +102,15 @@ const Support = () => {
               {feature.title}
             </div>
             <div className="text-[#4B5563] text-xs font-normal leading-relaxed">
-              {feature.desc}
+              {Array.isArray(feature.desc) ? (
+                <ul className="list-disc list-outside text-left pl-4 space-y-1">
+                  {feature.desc.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                feature.desc
+              )}
             </div>
           </div>
         ))}

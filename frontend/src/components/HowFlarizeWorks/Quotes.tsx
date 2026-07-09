@@ -5,39 +5,40 @@ import React, { useState } from "react";
 
 const QUOTES = [
   {
-    label: "Value",
-    price: "₹1,56,000",
+    label: "Base",
+    price: "₹1.30 – 1.50 lakh",
     tag: "Best Price",
-    tagClass: "bg-[#2563EB] text-white",
+    tagClass: "bg-[#EEF2FF] text-[#2563EB]",
     border: "border-[#E5E5E5]",
     system: "3kW On-Grid",
     panels: "Adani Solar",
     inverter: "Growatt",
-    structure: "Aluminium",
+    structure: "GP Structure",
     features: ["Full Flarize guarantee", "Same installation quality"],
   },
   {
-    label: "Balanced",
-    price: "₹1,78,000",
+    label: "Value",
+    price: "₹1.50 – 2 lakh",
     tag: "Most Popular",
     tagClass: "bg-[#16A34A] text-white",
+    centered: true,
     border: "border-[#074A4D]",
     system: "3kW On-Grid",
     panels: "Waaree HJT",
     inverter: "Sungrow",
-    structure: "Aluminium",
+    structure: "GI Structure",
     features: ["Full Flarize guarantee", "Best monsoon performance"],
   },
   {
     label: "Premium",
-    price: "₹2,05,000",
+    price: "₹2 – 3 lakh",
     tag: "Best Performance",
-    tagClass: "bg-[#F7BA41] text-[#123532]",
+    tagClass: "bg-[#FEF3C7] text-[#B45309]",
     border: "border-[#E5E5E5]",
     system: "3kW On-Grid",
-    panels: "Axitec",
-    inverter: "Fronius",
-    structure: "Aluminium",
+    panels: "Waaree HJT",
+    inverter: "Enphase",
+    structure: "GI Structure",
     features: ["Full Flarize guarantee", "30-year performance warranty"],
   },
 ];
@@ -71,19 +72,32 @@ const Quotes = () => {
                 isActive ? "border-[#074A4D] shadow-lg scale-[1.02]" : q.border
               }`}
             >
-              <span
-                className={`absolute -top-3 left-1/2 -translate-x-1/2 ${q.tagClass} text-xs md:text-base font-light leading-normal px-3 py-1 rounded-xl whitespace-nowrap`}
-              >
-                {q.tag}
-              </span>
-              <div
-                className={`text-base md:text-xl font-normal md:font-normal leading-snug text-[#525252] mb-1 mt-2 md:mt-0`}
-              >
-                {q.label}
+              {q.centered && (
+                <span
+                  className={`absolute -top-3 left-1/2 -translate-x-1/2 ${q.tagClass} text-xs md:text-base font-light leading-normal px-3 py-1 rounded-xl whitespace-nowrap`}
+                >
+                  {q.tag}
+                </span>
+              )}
+              <div className="flex items-start justify-between gap-2 mb-1">
+                <div
+                  className={`text-base md:text-xl font-normal md:font-normal leading-snug text-[#525252] ${
+                    q.centered ? "mt-2 md:mt-0" : ""
+                  }`}
+                >
+                  {q.label}
+                </div>
+                {!q.centered && (
+                  <span
+                    className={`${q.tagClass} text-xs md:text-sm font-medium leading-normal px-3 py-1 rounded-lg whitespace-nowrap`}
+                  >
+                    {q.tag}
+                  </span>
+                )}
               </div>
               <div className="flex md:flex-col items-center md:items-start justify-between">
-                <div className="text-xl md:text-2xl font-semibold leading-snug text-[#059669] mb-1">
-                  {q.price}
+                <div className="text-xl md:text-2xl font-semibold leading-snug flex items-center  gap-2 text-[#059669] mb-1">
+                  {q.price} <span className="text-sm md:text-base font-normal leading-normal text-[#757575]">(After Subsidy)</span>
                 </div>
                 <div className="text-sm md:text-lg font-normal leading-relaxed text-[#525252] mb-2">
                   {q.system}
