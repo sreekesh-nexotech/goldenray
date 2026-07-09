@@ -10,6 +10,7 @@ import {
 import ServiceAreaHero from "@/components/ServiceArea/ServiceAreaHero";
 import WhySolar from "@/components/ServiceArea/WhySolar";
 import ServiceAreaCTA from "@/components/ServiceArea/ServiceAreaCTA";
+import SolarAdvantageMain from "@/components/SolarCalculator/SolarAdvantageMain";
 
 const SITE_ORIGIN = "https://www.flarize.com";
 
@@ -81,7 +82,8 @@ export default async function ServiceAreaRegionPage({
     <section className="relative">
       <ServiceAreaHero district={district} />
       <WhySolar district={district} />
-      <ServiceAreaCTA />
+      <SolarAdvantageMain />
+      <ServiceAreaCTA district={district} />
     </section>
   );
 }
