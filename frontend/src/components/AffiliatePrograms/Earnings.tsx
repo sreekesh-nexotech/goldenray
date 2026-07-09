@@ -1,5 +1,5 @@
 "use client";
-import { ChartLine, Rocket } from "lucide-react";
+import { ChartLine } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -41,7 +41,7 @@ const Earnings = () => {
                 How many successful installations can you refer per month?
               </h2>
 
-              <p className="text-[#F7BA41] text-base md:text-xl font-normal md:font-semibold leading-snug mt-4">
+              <p className="text-[#F7BA41] text-base md:text-xl font-normal  leading-snug mt-4">
                 Drag the slider to see your earning potential
               </p>
 
@@ -75,8 +75,8 @@ const Earnings = () => {
               <div className="text-[#F5B301] text-lg mt-[1px]">💡</div>
 
               <p className="text-xs md:text-base font-normal leading-normal text-[#123532]">
-                Referring just 1 home per week could generate steady monthly
-                income.
+                Referring just one home a week builds a steady, predictable income — with Flarize doing all the work, and standing behind your name, after your introduction.
+
               </p>
             </div>
           </div>
@@ -133,21 +133,14 @@ const Earnings = () => {
             href="#form"
             className="bg-[#F7BA41] w-full lg:w-fit text-base md:text-xl font-semibold leading-snug cursor-pointer hover:bg-[#e5a51f] transition-all duration-300 text-[#000000] px-10 md:px-20 py-4 rounded-xl shadow-[0_10px_25px_rgba(242,178,51,0.35)] flex items-center justify-center gap-3"
           >
-            <span>
-              <Rocket />
-            </span>
-            Start Earning Today
+            
+            Apply as Partner
           </Link>
         </div>
 
         {/* FOOTER TEXT */}
         <p className="hidden lg:block text-center text-xs md:text-base font-normal leading-normal text-[#757575] mt-4 mx-auto">
-          Most active Flarize partners refer between 3 and 8 homes per month. At
-          the standard residential commission, that translates to
-          Rs.24,000-Rs.48,000 monthly without any capital investment, inventory,
-          or sales pressure. Unlike pay-per-lead programs, you earn a fixed
-          amount per installation not per form fill. This protects you from lead
-          quality variability.
+          Unlike pay-per-lead programs, you earn a fixed amount per completed installation, not per form fill — so lead-quality swings never cut your payout, and a deal that stalls is Flarize&apos;s problem to finish, not yours.
         </p>
       </div>
 

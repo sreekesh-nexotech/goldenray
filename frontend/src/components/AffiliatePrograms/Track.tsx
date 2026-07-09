@@ -12,11 +12,7 @@ const Track = () => {
           Track Every Referral from Lead to Bank Credit
         </h2>
         <p className="hidden sm:block text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
-          Your partner dashboard shows the full referral lifecycle in real time:
-          lead submission, site assessment scheduling, installation completion,
-          and commission credit status. Every update is logged, timestamped, and
-          accessible from your account. You never need to follow up with the
-          Flarize team to confirm a payout.
+          Your partner dashboard shows the full referral lifecycle in real time — submission, site assessment, installation and commission credit. After your introduction, a single Flarize team owns everything: sales, install, KSEB, subsidy, complaints and service. The problem is never yours; the credit always is.
         </p>
       </div>
 
