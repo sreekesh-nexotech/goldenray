@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
 
 import { submitContactForm } from "@/services/basicContactService";
+import { allLocations } from "@/data/locations";
 import FlarizeLogo from "../../../public/logoFooter.png";
 
 const companyLinks = [
@@ -287,6 +288,22 @@ export default function Footer() {
               <LinkColumn title="Resources" links={resourceLinks} />
               <LinkColumn title="Legal" links={legalLinks} />
             </div>
+          </div>
+        </div>
+
+        {/* ---------- Our Locations ---------- */}
+        <div className="mx-auto mt-10 max-w-7xl rounded-2xl  bg-white/5 px-[clamp(1.5rem,4vw,3.5rem)] py-[clamp(1.5rem,3vw,2.5rem)]">
+          <h3 className="text-2xl md:text-4xl font-semibold text-[#F3F4F6]">Our Locations</h3>
+          <div className="mt-6 flex flex-wrap gap-x-12 gap-y-4">
+            {allLocations.map((location) => (
+              <Link
+                key={location.name}
+                href={location.href}
+                className="text-base md:text-[22px] text-white transition-colors duration-300 hover:text-[#F7BA41]"
+              >
+                Solar Services In {location.name}
+              </Link>
+            ))}
           </div>
         </div>
 

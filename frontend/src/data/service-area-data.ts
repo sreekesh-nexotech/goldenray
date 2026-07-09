@@ -384,3 +384,29 @@ export const locationServiceCards: { title: string; description: string }[] = [
       "Join neighbors to unlock group purchase benefits and subsidies.",
   },
 ];
+
+// --- Slug helpers for the per-district dynamic route (/service-area/[region]) ---
+
+/** Turn any district name/spelling into a canonical URL slug, e.g. "Kochi" -> "ernakulam". */
+export function slugifyDistrict(name: string): string {
+  return normalizeDistrict(name)
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Canonical slugs for all 14 Kerala districts, used by generateStaticParams. */
+export const districtSlugs: string[] = keralaDistricts.map(slugifyDistrict);
+
+/** Canonical district display name for a slug, e.g. "ernakulam" -> "Ernakulam". */
+export function getCanonicalDistrictName(slug: string): string | undefined {
+  return keralaDistricts.find((district) => slugifyDistrict(district) === slug);
+}
+
+/** The service-area card for a slug (matched via the normalized district name). */
+export function getServiceAreaBySlug(
+  slug: string,
+): ServiceAreaCard | undefined {
+  return allServiceAreas.find((area) => slugifyDistrict(area.district) === slug);
+}

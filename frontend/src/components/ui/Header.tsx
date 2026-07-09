@@ -1,7 +1,7 @@
 /* golden-ray/frontend/src/components/ui/Header.tsx */
 "use client";
 import { useState } from "react";
-import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -11,33 +11,6 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [solutionsDropdownOpen, setSolutionsDropdownOpen] = useState(false);
   const [toolsDropdownOpen, setToolsDropdownOpen] = useState(false);
-  const [serviceLocationDropdownOpen, setServiceLocationDropdownOpen] =
-    useState(false);
-
-  const locationHref = (name: string) =>
-    `/service-area?region=${encodeURIComponent(name)}`;
-
-  const firstLocations = [
-    { name: "Alappuzha", href: locationHref("Alappuzha") },
-    { name: "Thiruvananthapuram", href: locationHref("Thiruvananthapuram") },
-    { name: "Malappuram", href: locationHref("Malappuram") },
-    { name: "Ernakulam", href: locationHref("Ernakulam") },
-    { name: "Kozhikode", href: locationHref("Kozhikode") },
-    { name: "Thrissur", href: locationHref("Thrissur") },
-  ];
-
-  const allLocations = [
-    ...firstLocations,
-    { name: "Palakkad", href: locationHref("Palakkad") },
-    { name: "Kollam", href: locationHref("Kollam") },
-    { name: "Idukki", href: locationHref("Idukki") },
-    { name: "Kasargod", href: locationHref("Kasargod") },
-    { name: "Pathanamthitta", href: locationHref("Pathanamthitta") },
-    { name: "Kannur", href: locationHref("Kannur") },
-    { name: "Wayanadu", href: locationHref("Wayanadu") },
-  ];
-
-  const [showAllLocations, setShowAllLocations] = useState(false);
 
   const solutions = [
     { name: "Residential", href: "/residential" },
@@ -60,7 +33,6 @@ export default function Header() {
     setIsOpen(false);
     setSolutionsDropdownOpen(false);
     setToolsDropdownOpen(false);
-    setServiceLocationDropdownOpen(false);
   };
 
   const logo =
@@ -181,59 +153,6 @@ export default function Header() {
                     {tool.name}
                   </Link>
                 ))}
-              </div>
-            </li>
-
-            <li
-              className="relative"
-              onMouseEnter={() => setServiceLocationDropdownOpen(true)}
-              onMouseLeave={() => setServiceLocationDropdownOpen(false)}
-            >
-              <button
-                className={`relative lg:text-xl flex items-center gap-1 ${
-                  isActive("/locations") ? "font-bold before:w-1/2" : ""
-                } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-500 before:ease-in-out hover:before:w-1/2`}
-              >
-                Service Locations
-                <ChevronDown
-                  size={16}
-                  className={`transition-transform duration-200 ${
-                    serviceLocationDropdownOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              {/* Dropdown Menu */}
-              <div
-                className={`absolute top-full -left-50 mt-2 bg-white shadow-lg rounded-lg overflow-hidden transition-all duration-200 min-w-[650px] ${
-                  serviceLocationDropdownOpen
-                    ? "opacity-100 visible translate-y-0"
-                    : "opacity-0 invisible -translate-y-2"
-                }`}
-              >
-                <div className="grid grid-cols-2 gap-y-2 px-4 py-3">
-                  {(showAllLocations ? allLocations : firstLocations).map(
-                    (location, index) => (
-                      <Link
-                        key={index}
-                        href={location.href}
-                        className="block px-2 py-2 text-gray-700 hover:bg-gray-50 whitespace-nowrap"
-                      >
-                        Solar Services In {location.name}
-                      </Link>
-                    ),
-                  )}
-                </div>
-
-                {!showAllLocations && (
-                  <button
-                    onClick={() => setShowAllLocations(true)}
-                    className="w-full text-left px-6 py-3 text-sm font-medium text-[#074A4D] hover:bg-gray-50"
-                  >
-                    View All Locations{" "}
-                    <ArrowRight size={16} className="inline-block ml-1" />
-                  </button>
-                )}
               </div>
             </li>
 
@@ -376,58 +295,6 @@ export default function Header() {
                 {tool.name}
               </Link>
             ))}
-          </div>
-        </li>
-
-        <li>
-          <button
-            onClick={() =>
-              setServiceLocationDropdownOpen(!serviceLocationDropdownOpen)
-            }
-            className={`relative text-gray-700 font-medium text-xl flex items-center gap-1 ${
-              isActive("#") ? "font-bold" : ""
-            }`}
-          >
-            Service Locations
-            <ChevronDown
-              size={16}
-              className={`transition-transform duration-200 ${
-                serviceLocationDropdownOpen ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-          {/* Mobile Dropdown Items */}
-          <div
-            className={`flex flex-col items-start gap-3 overflow-x-hidden overflow-scroll transition-all duration-300 ${
-              serviceLocationDropdownOpen
-                ? "max-h-50 mt-3 opacity-100"
-                : "max-h-0 opacity-0"
-            }`}
-          >
-            {(showAllLocations ? allLocations : firstLocations).map(
-              (location, idx) => (
-                <Link
-                  key={location.name + idx}
-                  href={location.href}
-                  onClick={closeMobileMenu}
-                  className={`text-gray-600 text-xl ${
-                    isActive(location.href) ? "font-bold" : ""
-                  } `}
-                >
-                  Solar Services In {location.name}
-                </Link>
-              ),
-            )}
-
-            {!showAllLocations && (
-              <button
-                onClick={() => setShowAllLocations(true)}
-                className="text-left text-base font-medium text-[#074A4D]"
-              >
-                View All Locations{" "}
-                <ArrowRight size={16} className="inline-block ml-1" />
-              </button>
-            )}
           </div>
         </li>
 
