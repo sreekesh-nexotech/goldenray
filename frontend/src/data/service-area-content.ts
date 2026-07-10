@@ -8,6 +8,13 @@ export type WhySolarPoint = {
   description: string;
 };
 
+export type InstallStep = {
+  title: string;
+  description: string;
+  /** Optional inline link rendered under the description. */
+  link?: { label: string; href: string };
+};
+
 export type ServiceLocation = {
   /** Town / locality name shown on the card and map pin. */
   name: string;
@@ -34,6 +41,11 @@ export type ServiceAreaContent = {
     headingDescription: string;
     places: ServiceLocation[];
   };
+  installation: {
+    steps: InstallStep[];
+    /** Bolded panchayat list in the "We also serve …" footer line. */
+    alsoServe: string;
+  };
 };
 
 // ─── Shared defaults ──────────────────────────────────────────────────────────
@@ -48,6 +60,38 @@ const DEFAULT_FEATURES = [
   "₹78,000 Subsidy Available",
   "25-Year Warranty",
 ];
+
+// The 5 installation steps are identical across districts except the
+// "Custom Design" step, which references the local wind-load conditions.
+function makeInstallSteps(designNote: string): InstallStep[] {
+  return [
+    {
+      title: "Site Survey",
+      description:
+        "Certified engineer assesses your rooftop, shade, structural load, and KSEB consumption data. Written proposal within 24 hours.",
+    },
+    {
+      title: "Custom Design",
+      description: designNote,
+    },
+    {
+      title: "Permitting",
+      description:
+        "We submit your KSEB net metering application and PM Surya Ghar subsidy to MNRE — fully handled. KSEB approval takes 5–7 working days.",
+      link: { label: "KSEB net metering", href: "/kseb-net-metering" },
+    },
+    {
+      title: "Installation",
+      description:
+        "Certified team completes mounting and wiring in 1–2 days. HDGI rails, BIS-certified cables, surge protection, earthing to MNRE standards.",
+    },
+    {
+      title: "Activation",
+      description:
+        "KSEB installs bidirectional net meter. System registered on monitoring portal. Full documentation handed over. 25-year warranty activates.",
+    },
+  ];
+}
 
 // ─── Per-district content ─────────────────────────────────────────────────────
 
@@ -139,6 +183,12 @@ export const districtContent: Record<string, ServiceAreaContent> = {
         },
       ],
     },
+    installation: {
+      steps: makeInstallSteps(
+        "System designed for your roof orientation, Alappuzha coastal wind loads, and consumption pattern. Includes inverter sizing and generation forecast.",
+      ),
+      alsoServe: "Mannar, Bharanikavu, Pulincunnoo",
+    },
   },
 
   Ernakulam: {
@@ -227,6 +277,12 @@ export const districtContent: Record<string, ServiceAreaContent> = {
           lng: 76.3470,
         },
       ],
+    },
+    installation: {
+      steps: makeInstallSteps(
+        "System designed for your roof orientation, Ernakulam urban high-rise wind loads, and consumption pattern. Includes inverter sizing and generation forecast.",
+      ),
+      alsoServe: "Kalady, Chottanikkara, Njarakkal",
     },
   },
 
@@ -317,6 +373,12 @@ export const districtContent: Record<string, ServiceAreaContent> = {
         },
       ],
     },
+    installation: {
+      steps: makeInstallSteps(
+        "System designed for your roof orientation, Kannur coastal wind loads, and consumption pattern. Includes inverter sizing and generation forecast.",
+      ),
+      alsoServe: "Azhikode, Chirakkal, Valapattanam",
+    },
   },
 };
 
@@ -359,6 +421,12 @@ function makeDefault(district: string): ServiceAreaContent {
       // No bespoke town-level map data for this district yet — the Locations
       // section falls back to heading-only when `places` is empty.
       places: [],
+    },
+    installation: {
+      steps: makeInstallSteps(
+        `System designed for your roof orientation, ${district}'s local wind loads, and consumption pattern. Includes inverter sizing and generation forecast.`,
+      ),
+      alsoServe: "",
     },
   };
 }
