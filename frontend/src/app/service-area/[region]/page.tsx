@@ -2,24 +2,25 @@
 
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getCanonicalDistrictName } from "@/data/service-area-data";
 import {
-  districtSlugs,
-  getCanonicalDistrictName,
-  getServiceAreaBySlug,
-} from "@/data/service-area-data";
+  isServedDistrict,
+  servedDistrictSlugs,
+} from "@/data/service-area-content";
 import ServiceAreaHero from "@/components/ServiceArea/ServiceAreaHero";
 import WhySolar from "@/components/ServiceArea/WhySolar";
 import ServiceAreaCTA from "@/components/ServiceArea/ServiceAreaCTA";
 import SolarAdvantageMain from "@/components/SolarCalculator/SolarAdvantageMain";
+import Locations from "@/components/ServiceArea/Locations";
 
 const SITE_ORIGIN = "https://www.flarize.com";
 
-// The 14 districts are a fixed, complete set — reject anything else with a 404.
+// Only the districts we actively serve get a page — anything else 404s.
 export const dynamicParams = false;
 
-// ─── Static params — one page per canonical district slug ─────────────────────
+// ─── Static params — one page per served district slug ────────────────────────
 export function generateStaticParams() {
-  return districtSlugs.map((region) => ({ region }));
+  return servedDistrictSlugs.map((region) => ({ region }));
 }
 
 // ─── Metadata — unique per district for local SEO ─────────────────────────────
@@ -30,7 +31,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { region } = await params;
   const district = getCanonicalDistrictName(region);
-  if (!district) return {};
+  if (!district || !isServedDistrict(district)) return {};
 
   const title = `Solar Installation in ${district}`;
   const description = `Rooftop & commercial solar installation in ${district}, Kerala. Residential solar, group purchase, KSEB & PM Surya Ghar subsidy assistance, and SolarCare maintenance with local ${district} technicians.`;
@@ -74,15 +75,15 @@ export default async function ServiceAreaRegionPage({
 }) {
   const { region } = await params;
   const district = getCanonicalDistrictName(region);
-  const area = getServiceAreaBySlug(region);
 
-  if (!district || !area) notFound();
+  if (!district || !isServedDistrict(district)) notFound();
 
   return (
     <section className="relative">
       <ServiceAreaHero district={district} />
       <WhySolar district={district} />
       <SolarAdvantageMain />
+      <Locations district={district} />
       <ServiceAreaCTA district={district} />
     </section>
   );

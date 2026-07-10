@@ -1,3 +1,4 @@
+import { slugifyDistrict } from "@/data/service-area-data";
 
 export type WhySolarIcon = "sun" | "roof" | "grid";
 
@@ -7,8 +8,17 @@ export type WhySolarPoint = {
   description: string;
 };
 
+export type ServiceLocation = {
+  /** Town / locality name shown on the card and map pin. */
+  name: string;
+  /** Short line describing what we do there. */
+  description: string;
+  /** Real coordinates — drive the map marker and the Google Maps redirect. */
+  lat: number;
+  lng: number;
+};
+
 export type ServiceAreaContent = {
-  /** Hero section copy. Heading is derived in the component. */
   hero: {
     badge: string;
     subtext: string;
@@ -16,12 +26,14 @@ export type ServiceAreaContent = {
     trustLine: string;
     features: string[];
   };
-  /** "Why Solar Works Well in <district>" section. */
   whySolar: {
     intro: string;
     points: WhySolarPoint[];
   };
-  // Future sections go here (services, subsidies, testimonials, faq, …).
+  locations: {
+    headingDescription: string;
+    places: ServiceLocation[];
+  };
 };
 
 // ─── Shared defaults ──────────────────────────────────────────────────────────
@@ -73,6 +85,60 @@ export const districtContent: Record<string, ServiceAreaContent> = {
         },
       ],
     },
+    locations: {
+      headingDescription:
+        "From the historic canals of Alappuzha town to the Kuttanad lowlands — our certified local installation teams are stationed across the district, enabling 2-day on-site installation with zero waiting periods.",
+      places: [
+        {
+          name: "Cherthala",
+          description: "Coastal installations with salt-air-rated hardware",
+          lat: 9.6841,
+          lng: 76.3388,
+        },
+        {
+          name: "Ambalappuzha",
+          description: "Residential + hybrid inverter options for backup power",
+          lat: 9.3835,
+          lng: 76.3339,
+        },
+        {
+          name: "Kayamkulam",
+          description: "Active commercial solar hub — seafood and coir industries",
+          lat: 9.1795,
+          lng: 76.5010,
+        },
+        {
+          name: "Haripad",
+          description: "Full PM Surya Ghar subsidy paperwork handled",
+          lat: 9.2870,
+          lng: 76.4590,
+        },
+        {
+          name: "Chengannur",
+          description: "Subsidy applications processed within 7 working days",
+          lat: 9.3163,
+          lng: 76.6146,
+        },
+        {
+          name: "Mavelikkara",
+          description: "Residential and commercial — strong KSEB net metering",
+          lat: 9.2588,
+          lng: 76.5510,
+        },
+        {
+          name: "Kuttanad",
+          description: "Elevated mounting for water-adjacent and flood-risk zones",
+          lat: 9.4000,
+          lng: 76.4500,
+        },
+        {
+          name: "Aroor",
+          description: "Coastal residential — humidity-rated, anti-corrosion hardware",
+          lat: 9.8667,
+          lng: 76.3000,
+        },
+      ],
+    },
   },
 
   Ernakulam: {
@@ -108,6 +174,60 @@ export const districtContent: Record<string, ServiceAreaContent> = {
         },
       ],
     },
+    locations: {
+      headingDescription:
+        "From the Kochi waterfront to the eastern highland towns — our certified local installation teams are stationed across the district, enabling 2-day on-site installation with zero waiting periods.",
+      places: [
+        {
+          name: "Kochi",
+          description: "High-rise and commercial rooftops — wind-load-rated mounting",
+          lat: 9.9312,
+          lng: 76.2673,
+        },
+        {
+          name: "Aluva",
+          description: "Residential + hybrid inverter options for backup power",
+          lat: 10.1004,
+          lng: 76.3570,
+        },
+        {
+          name: "Kakkanad",
+          description: "IT-park commercial hub — large C&I rooftop systems",
+          lat: 10.0159,
+          lng: 76.3419,
+        },
+        {
+          name: "Perumbavoor",
+          description: "Industrial and plywood-cluster solar installations",
+          lat: 10.1074,
+          lng: 76.4750,
+        },
+        {
+          name: "Muvattupuzha",
+          description: "Full PM Surya Ghar subsidy paperwork handled",
+          lat: 9.9895,
+          lng: 76.5790,
+        },
+        {
+          name: "Angamaly",
+          description: "Residential and commercial — strong KSEB net metering",
+          lat: 10.1960,
+          lng: 76.3860,
+        },
+        {
+          name: "Kothamangalam",
+          description: "Highland rooftops — optimised tilt for hill terrain",
+          lat: 10.0614,
+          lng: 76.6300,
+        },
+        {
+          name: "Tripunithura",
+          description: "Subsidy applications processed within 7 working days",
+          lat: 9.9450,
+          lng: 76.3470,
+        },
+      ],
+    },
   },
 
   Kannur: {
@@ -140,6 +260,60 @@ export const districtContent: Record<string, ServiceAreaContent> = {
           title: "Grid Connectivity",
           description:
             "KSEB net metering operates across Kannur district with reliable credit for exported units. We handle site inspection, application, and grid synchronisation end to end.",
+        },
+      ],
+    },
+    locations: {
+      headingDescription:
+        "From the Kannur coastline to the eastern hill towns of Iritty — our certified local installation teams are stationed across the district, enabling 2-day on-site installation with zero waiting periods.",
+      places: [
+        {
+          name: "Kannur",
+          description: "Coastal installations with salt-air-rated hardware",
+          lat: 11.8745,
+          lng: 75.3704,
+        },
+        {
+          name: "Thalassery",
+          description: "Residential + hybrid inverter options for backup power",
+          lat: 11.7480,
+          lng: 75.4929,
+        },
+        {
+          name: "Payyannur",
+          description: "Full PM Surya Ghar subsidy paperwork handled",
+          lat: 12.0947,
+          lng: 75.2020,
+        },
+        {
+          name: "Taliparamba",
+          description: "Residential and commercial — strong KSEB net metering",
+          lat: 12.0361,
+          lng: 75.3599,
+        },
+        {
+          name: "Mattannur",
+          description: "Subsidy applications processed within 7 working days",
+          lat: 11.9330,
+          lng: 75.5750,
+        },
+        {
+          name: "Iritty",
+          description: "Highland rooftops — optimised tilt for hill terrain",
+          lat: 11.9860,
+          lng: 75.6320,
+        },
+        {
+          name: "Kuthuparamba",
+          description: "Active commercial solar hub for the central taluk",
+          lat: 11.8300,
+          lng: 75.5700,
+        },
+        {
+          name: "Panoor",
+          description: "Coastal residential — humidity-rated, anti-corrosion hardware",
+          lat: 11.7660,
+          lng: 75.5330,
         },
       ],
     },
@@ -180,6 +354,12 @@ function makeDefault(district: string): ServiceAreaContent {
         },
       ],
     },
+    locations: {
+      headingDescription: `Our certified local installation teams are stationed across ${district}, enabling fast on-site installation with zero waiting periods.`,
+      // No bespoke town-level map data for this district yet — the Locations
+      // section falls back to heading-only when `places` is empty.
+      places: [],
+    },
   };
 }
 
@@ -187,4 +367,20 @@ function makeDefault(district: string): ServiceAreaContent {
 export function getServiceAreaContent(district?: string): ServiceAreaContent {
   if (district && districtContent[district]) return districtContent[district];
   return makeDefault(district ?? "Kerala");
+}
+
+// ─── Served districts ─────────────────────────────────────────────────────────
+// Only districts with bespoke content in `districtContent` get a live page.
+// Everything else 404s. Add a district's content above to make it live.
+
+/** Canonical names of the districts we currently have live pages for. */
+export const servedDistricts: string[] = Object.keys(districtContent);
+
+/** Canonical URL slugs for the served districts (e.g. "alappuzha"). */
+export const servedDistrictSlugs: string[] =
+  servedDistricts.map(slugifyDistrict);
+
+/** True if the given canonical district name has a live service-area page. */
+export function isServedDistrict(district?: string): boolean {
+  return Boolean(district && district in districtContent);
 }
