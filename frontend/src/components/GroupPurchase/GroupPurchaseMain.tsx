@@ -1,5 +1,6 @@
 import Certified from "../certified-by";
 import Activate from "./Activate";
+import CalculateRewards from "./CalculateRewards";
 import GroupLeader from "./GroupLeader";
 import Faq from "./GroupPurchaseFAQ";
 import GroupPurchaseHero from "./GroupPurchaseHero";
@@ -14,7 +15,8 @@ export default function GroupPurchaseMain() {
       <GroupPurchaseHero />
         <Certified/>
         <SolarInstallation />
-        <What />  
+        <What />
+        <CalculateRewards />
         <SolarSlots />
         <Reserve/>
         <GroupLeader/>
