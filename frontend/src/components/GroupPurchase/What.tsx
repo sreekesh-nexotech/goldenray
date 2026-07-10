@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Check, HelpCircle } from "lucide-react";
 
 export default function What() {
   const features = [
@@ -71,6 +72,37 @@ export default function What() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Risk-free reassurance card */}
+        <div className="mt-8 sm:mt-10 md:mt-12 rounded-2xl border border-[#001F1D1A] bg-[#ADD6D880] px-5 py-5 sm:px-7 sm:py-6">
+          <div className="flex items-start justify-between gap-4">
+            <h3 className="flex items-center gap-2 text-black text-base sm:text-lg md:text-xl font-medium leading-snug">
+              <HelpCircle
+                size={18}
+                className="shrink-0 text-black"
+              />
+              What if the group isn&apos;t completed?
+            </h3>
+            <span className="shrink-0 rounded-full bg-[#16A34A] px-3 py-1 text-xs  font-medium text-white">
+              Zero risk either way
+            </span>
+          </div>
+
+          <p className="mt-3 text-[#444444] text-lg sm:text-xl leading-relaxed">
+            A group is formed when{" "}
+            <span className="font-semibold ">
+              at least 5 families join
+            </span>
+            . If the required group size isn&apos;t reached within the specified
+            period, you can receive a full refund or continue individually at your
+            locked price.
+          </p>
+
+          <div className="mt-3 flex items-center gap-2 text-[#444444] text-lg sm:text-xl">
+            <Check size={16} className="shrink-0 " />
+            Full refund within 48 hours
           </div>
         </div>
       </div>
