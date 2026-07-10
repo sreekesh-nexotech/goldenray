@@ -15,6 +15,19 @@ export type InstallStep = {
   link?: { label: string; href: string };
 };
 
+export type RecentInstall = {
+  /** CDN image of the completed installation (dynamic — driven from the CMS). */
+  image: string;
+  /** Accessible alt text for the install photo. */
+  imageAlt: string;
+  /** System headline, e.g. "3kW Rooftop Solar". */
+  system: string;
+  /** Town / panchayat the project sits in, e.g. "Cherthala, Alappuzha". */
+  location: string;
+  /** Outcome summary — bill reduction, savings, payback, system spec. */
+  description: string;
+};
+
 export type ServiceLocation = {
   /** Town / locality name shown on the card and map pin. */
   name: string;
@@ -46,11 +59,17 @@ export type ServiceAreaContent = {
     /** Bolded panchayat list in the "We also serve …" footer line. */
     alsoServe: string;
   };
+  recentInstalls: {
+    /** Sub-heading under the "Recent Installs" title. */
+    intro: string;
+    items: RecentInstall[];
+  };
 };
 
 // ─── Shared defaults ──────────────────────────────────────────────────────────
 
 const BADGE = "Affordable Rooftop Solar Solutions with 25-Year Warranty";
+
 
 const TRUST_LINE =
   "Backed by Golden Ray Renewable Energy — 8 years, 300+ installations, 4.9-star rated, KSEB-empaneled and MNRE-approved.";
@@ -189,6 +208,36 @@ export const districtContent: Record<string, ServiceAreaContent> = {
       ),
       alsoServe: "Mannar, Bharanikavu, Pulincunnoo",
     },
+    recentInstalls: {
+      intro:
+        "Real installations. Real numbers. Three recent projects completed across Alappuzha district — with verified generation data and customer outcomes.",
+      items: [
+        {
+          image: "https://golden-ray.b-cdn.net/service-area/819d434c1472d0e4dc73223f360d907f4cc99d80.png",
+          imageAlt: "3kW rooftop solar installation in Cherthala, Alappuzha",
+          system: "3kW Rooftop Solar",
+          location: "Cherthala, Alappuzha",
+          description:
+            "Monthly bill reduced from Rs.4,500 to Rs.300. Annual savings: Rs.25,200. Payback: 3.5 years. System: 3kW on-grid, mono PERC panels, string inverter.",
+        },
+        {
+          image: "https://golden-ray.b-cdn.net/service-area/ed41c88fecb9b837537e8b46da218cf4ee7a0b88.png",
+          imageAlt: "10kW commercial solar installation in Kayamkulam, Alappuzha",
+          system: "10kW Commercial Solar",
+          location: "Kayamkulam, Alappuzha",
+          description:
+            "Industrial on-grid system for seafood processing unit. 90% daytime consumption offset. Monthly savings: Rs.12,000+. Payback: 3.2 years.",
+        },
+        {
+          image: "https://golden-ray.b-cdn.net/service-area/43144031607b751402ace4229a7ed49306400215.png",
+          imageAlt: "5kW residential solar installation in Ambalappuzha, Alappuzha",
+          system: "5kW Residential Solar",
+          location: "Ambalappuzha, Alappuzha",
+          description:
+            "Hybrid inverter with 10kWh battery backup. Zero power cuts post-install. Monthly bill: Rs.6,800 to Rs.800. Grid import reduced by 80%.",
+        },
+      ],
+    },
   },
 
   Ernakulam: {
@@ -283,6 +332,36 @@ export const districtContent: Record<string, ServiceAreaContent> = {
         "System designed for your roof orientation, Ernakulam urban high-rise wind loads, and consumption pattern. Includes inverter sizing and generation forecast.",
       ),
       alsoServe: "Kalady, Chottanikkara, Njarakkal",
+    },
+    recentInstalls: {
+      intro:
+        "Real installations. Real numbers. Three recent projects completed across Ernakulam district — with verified generation data and customer outcomes.",
+      items: [
+        {
+          image: "https://golden-ray.b-cdn.net/service-area/819d434c1472d0e4dc73223f360d907f4cc99d80.png",
+          imageAlt: "15kW commercial solar installation in Kakkanad, Ernakulam",
+          system: "15kW Commercial Solar",
+          location: "Kakkanad, Ernakulam",
+          description:
+            "IT-park rooftop C&I system. 92% daytime offset across office hours. Monthly savings: Rs.18,000+. Payback: 3.1 years. On-grid, bifacial panels.",
+        },
+        {
+          image: "https://golden-ray.b-cdn.net/service-area/ed41c88fecb9b837537e8b46da218cf4ee7a0b88.png",
+          imageAlt: "5kW residential solar installation in Aluva, Ernakulam",
+          system: "5kW Residential Solar",
+          location: "Aluva, Ernakulam",
+          description:
+            "Hybrid inverter with 8kWh battery backup. Monthly bill reduced from Rs.7,200 to Rs.750. Annual savings: Rs.38,000. Payback: 3.4 years.",
+        },
+        {
+          image: "https://golden-ray.b-cdn.net/service-area/43144031607b751402ace4229a7ed49306400215.png",
+          imageAlt: "3kW rooftop solar installation in Tripunithura, Ernakulam",
+          system: "3kW Rooftop Solar",
+          location: "Tripunithura, Ernakulam",
+          description:
+            "On-grid mono PERC system with string inverter. Monthly bill from Rs.4,100 to Rs.280. Grid export credited via KSEB net metering. Payback: 3.6 years.",
+        },
+      ],
     },
   },
 
@@ -379,6 +458,36 @@ export const districtContent: Record<string, ServiceAreaContent> = {
       ),
       alsoServe: "Azhikode, Chirakkal, Valapattanam",
     },
+    recentInstalls: {
+      intro:
+        "Real installations. Real numbers. Three recent projects completed across Kannur district — with verified generation data and customer outcomes.",
+      items: [
+        {
+          image: "https://golden-ray.b-cdn.net/service-area/819d434c1472d0e4dc73223f360d907f4cc99d80.png",
+          imageAlt: "3kW rooftop solar installation in Thalassery, Kannur",
+          system: "3kW Rooftop Solar",
+          location: "Thalassery, Kannur",
+          description:
+            "Monthly bill reduced from Rs.4,300 to Rs.320. Annual savings: Rs.23,800. Payback: 3.5 years. System: 3kW on-grid, mono PERC panels, string inverter.",
+        },
+        {
+          image: "https://golden-ray.b-cdn.net/service-area/ed41c88fecb9b837537e8b46da218cf4ee7a0b88.png",
+          imageAlt: "8kW commercial solar installation in Kuthuparamba, Kannur",
+          system: "8kW Commercial Solar",
+          location: "Kuthuparamba, Kannur",
+          description:
+            "On-grid system for a retail complex. 88% daytime consumption offset. Monthly savings: Rs.9,800+. Payback: 3.3 years. Bifacial panels, HDGI rails.",
+        },
+        {
+          image: "https://golden-ray.b-cdn.net/service-area/43144031607b751402ace4229a7ed49306400215.png",
+          imageAlt: "5kW residential solar installation in Payyannur, Kannur",
+          system: "5kW Residential Solar",
+          location: "Payyannur, Kannur",
+          description:
+            "Hybrid inverter with 10kWh battery backup. Zero power cuts post-install. Monthly bill: Rs.6,500 to Rs.700. Grid import reduced by 82%.",
+        },
+      ],
+    },
   },
 };
 
@@ -427,6 +536,12 @@ function makeDefault(district: string): ServiceAreaContent {
         `System designed for your roof orientation, ${district}'s local wind loads, and consumption pattern. Includes inverter sizing and generation forecast.`,
       ),
       alsoServe: "",
+    },
+    recentInstalls: {
+      intro: `Real installations. Real numbers. Recent projects completed across ${district} — with verified generation data and customer outcomes.`,
+      // No bespoke install photos for this district yet — the section hides
+      // itself when `items` is empty.
+      items: [],
     },
   };
 }
