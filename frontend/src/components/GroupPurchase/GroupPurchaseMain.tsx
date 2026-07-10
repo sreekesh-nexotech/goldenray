@@ -4,6 +4,7 @@ import CalculateRewards from "./CalculateRewards";
 import GroupLeader from "./GroupLeader";
 import Faq from "./GroupPurchaseFAQ";
 import GroupPurchaseHero from "./GroupPurchaseHero";
+import GroupTestimonial from "./GroupTestimonial";
 import Quality from "./Quality";
 import Reserve from "./Reserve";
 import SolarInstallation from "./SolarInstallation";
@@ -22,7 +23,7 @@ export default function GroupPurchaseMain() {
         <SolarSlots />
         <GroupLeader/>
         <Reserve/>
-        
+        <GroupTestimonial/>
         <Faq/>
         <Activate/>
     </section>
