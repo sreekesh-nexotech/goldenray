@@ -13,6 +13,7 @@ import ServiceAreaCTA from "@/components/ServiceArea/ServiceAreaCTA";
 import SolarAdvantageMain from "@/components/SolarCalculator/SolarAdvantageMain";
 import Locations from "@/components/ServiceArea/Locations";
 import RecentInstalls from "@/components/ServiceArea/RecentInstalls";
+import LocalStory from "@/components/ServiceArea/LocalStory";
 import InstallationProcess from "@/components/ServiceArea/InstallationProcess";
 
 const SITE_ORIGIN = "https://www.flarize.com";
@@ -88,6 +89,7 @@ export default async function ServiceAreaRegionPage({
       <Locations district={district} />
       <InstallationProcess district={district} />
       <RecentInstalls district={district} />
+      <LocalStory district={district} />
       <ServiceAreaCTA district={district} />
     </section>
   );

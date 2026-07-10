@@ -28,6 +28,11 @@ export type RecentInstall = {
   description: string;
 };
 
+export type FaqItem = {
+  question: string;
+  answer: string;
+};
+
 export type ServiceLocation = {
   /** Town / locality name shown on the card and map pin. */
   name: string;
@@ -64,6 +69,16 @@ export type ServiceAreaContent = {
     intro: string;
     items: RecentInstall[];
   };
+  narrative: {
+    /** Full-bleed background CDN image behind the quote (dynamic — from CMS). */
+    image: string;
+    /** Accessible alt text for the background image. */
+    imageAlt: string;
+    /** Local-story quote rendered centered over the image. Empty = hide section. */
+    quote: string;
+  };
+  /** District-specific FAQ accordion. Empty = hide section. */
+  faqs: FaqItem[];
 };
 
 // ─── Shared defaults ──────────────────────────────────────────────────────────
@@ -108,6 +123,41 @@ function makeInstallSteps(designNote: string): InstallStep[] {
       title: "Activation",
       description:
         "KSEB installs bidirectional net meter. System registered on monitoring portal. Full documentation handed over. 25-year warranty activates.",
+    },
+  ];
+}
+
+// The FAQ set is identical across districts apart from the district name woven
+// into each question and answer.
+function makeFaqs(district: string): FaqItem[] {
+  return [
+    {
+      question: `How much does solar installation cost in ${district}?`,
+      answer:
+        "A typical 3kW home system costs around ₹1.6–1.8 lakh before subsidy. After the PM Surya Ghar subsidy of up to ₹78,000, most homes pay it back in 3–4 years through bill savings. You get three checked options with exact numbers after a free site survey.",
+    },
+    {
+      question: `Does Flarize handle KSEB net metering in ${district}?`,
+      answer: `Yes. We file your KSEB net metering application and follow it through approval — you don't deal with KSEB yourself. Sanction typically takes 5–7 working days across ${district}.`,
+    },
+    {
+      question: "How long does installation take?",
+      answer:
+        "Once your option and KSEB approval are through, mounting and wiring take 1–2 days. We use pre-packed kits and a local team, so there's no long wait for parts.",
+    },
+    {
+      question: `Which areas of ${district} do you cover?`,
+      answer: `Our certified local teams are stationed across ${district}, so we install district-wide with on-site technician visits within 48 hours — no waiting for someone to travel from another district. Not sure if we reach your panchayat? WhatsApp us and we'll confirm within minutes.`,
+    },
+    {
+      question: "What subsidy can I claim?",
+      answer:
+        "Homes can claim the PM Surya Ghar (MNRE) subsidy — up to ₹78,000 for systems of 3kW and above. We handle the full subsidy paperwork and submission for you as part of the install.",
+    },
+    {
+      question: "What happens after installation?",
+      answer:
+        "You stay with Flarize. App-based generation monitoring, service visits, and a written 25-year warranty. One number to call for the life of the system.",
     },
   ];
 }
@@ -238,6 +288,14 @@ export const districtContent: Record<string, ServiceAreaContent> = {
         },
       ],
     },
+    narrative: {
+      image:
+        "https://golden-ray.b-cdn.net/service-area/0318176579a5b2167a99295fc9b9a3814e033cc2.png",
+      imageAlt: "Aerial view of the Alappuzha coast and Kuttanad backwaters",
+      quote:
+        "Flarize has been installing solar systems across Alappuzha district since 2018, working across both coastal towns and the unique conditions of the Kuttanad lowlands. Our local installation team understands Alappuzha's specific challenges — salt air corrosion in coastal zones, flood-risk elevation requirements in Kuttanad, and humidity-accelerated degradation that affects non-rated mounting hardware. Every system uses HDGI-treated aluminium rails, IP-65 rated junction boxes, and UV-stabilised DC cabling rated for coastal conditions. Our Alappuzha service team guarantees on-site technician visits within 48 hours — no waiting for someone to travel from another district. We operate as a KSEB-empaneled vendor under MNRE's Rooftop Solar Phase II programme, serving residential and commercial customers across all 9 taluks of the district.",
+    },
+    faqs: makeFaqs("Alappuzha"),
   },
 
   Ernakulam: {
@@ -363,6 +421,14 @@ export const districtContent: Record<string, ServiceAreaContent> = {
         },
       ],
     },
+    narrative: {
+      image:
+        "https://golden-ray.b-cdn.net/service-area/0318176579a5b2167a99295fc9b9a3814e033cc2.png",
+      imageAlt: "Aerial view of Kochi's waterfront and Ernakulam skyline",
+      quote:
+        "Flarize has been installing solar systems across Ernakulam and Kochi since 2018, from high-rise commercial rooftops on the waterfront to residential terraces in the eastern highland towns. Our local team understands Ernakulam's specific conditions — high-rise wind loads on the Kochi skyline, mixed RCC and sloped commercial roofs, and dense grid infrastructure that demands clean net-metering synchronisation. Every system uses HDGI-treated aluminium rails, IP-65 rated junction boxes, and BIS-certified DC cabling sized for urban high-rise exposure. Our Ernakulam service team guarantees on-site technician visits within 48 hours — no waiting for someone to travel from another district. We operate as a KSEB-empaneled vendor under MNRE's Rooftop Solar Phase II programme, serving residential and commercial customers across the district.",
+    },
+    faqs: makeFaqs("Ernakulam"),
   },
 
   Kannur: {
@@ -488,6 +554,14 @@ export const districtContent: Record<string, ServiceAreaContent> = {
         },
       ],
     },
+    narrative: {
+      image:
+        "https://golden-ray.b-cdn.net/service-area/43144031607b751402ace4229a7ed49306400215.png",
+      imageAlt: "Aerial view of the Kannur coastline and northern Kerala hills",
+      quote:
+        "Flarize has been installing solar systems across Kannur district since 2018, working from the bright northern coastline to the eastern hill towns of Iritty. Our local installation team understands Kannur's specific challenges — salt air corrosion along the coast, monsoon exposure on traditional tiled roofs, and optimised tilt for highland terrain. Every system uses HDGI-treated aluminium rails, IP-65 rated junction boxes, and UV-stabilised DC cabling rated for coastal and monsoon conditions. Our Kannur service team guarantees on-site technician visits within 48 hours — no waiting for someone to travel from another district. We operate as a KSEB-empaneled vendor under MNRE's Rooftop Solar Phase II programme, serving residential and commercial customers across all taluks of the district.",
+    },
+    faqs: makeFaqs("Kannur"),
   },
 };
 
@@ -543,6 +617,14 @@ function makeDefault(district: string): ServiceAreaContent {
       // itself when `items` is empty.
       items: [],
     },
+    narrative: {
+      // No bespoke local story for this district yet — an empty quote hides
+      // the section entirely.
+      image: "",
+      imageAlt: "",
+      quote: "",
+    },
+    faqs: makeFaqs(district),
   };
 }
 
