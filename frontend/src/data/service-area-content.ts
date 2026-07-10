@@ -127,37 +127,26 @@ function makeInstallSteps(designNote: string): InstallStep[] {
   ];
 }
 
-// The FAQ set is identical across districts apart from the district name woven
-// into each question and answer.
+
 function makeFaqs(district: string): FaqItem[] {
   return [
     {
-      question: `How much does solar installation cost in ${district}?`,
+      question: `What happens if my original installer goes out of business?`,
       answer:
-        "A typical 3kW home system costs around ₹1.6–1.8 lakh before subsidy. After the PM Surya Ghar subsidy of up to ₹78,000, most homes pay it back in 3–4 years through bill savings. You get three checked options with exact numbers after a free site survey.",
+        `Flarize ${district} is your single point of contact for the life of your system. We handle all service, maintenance, and warranty claims — even if your original installer is no longer in business.`,
     },
     {
-      question: `Does Flarize handle KSEB net metering in ${district}?`,
-      answer: `Yes. We file your KSEB net metering application and follow it through approval — you don't deal with KSEB yourself. Sanction typically takes 5–7 working days across ${district}.`,
+      question: `Does Flarize charge for initial visits?`,
+      answer: `No. Our certified engineers visit your home or business for a free site survey, and provide a written proposal within 24 hours. We also handle KSEB net metering and PM Surya Ghar subsidy paperwork at no extra cost.`,
     },
     {
-      question: "How long does installation take?",
+      question: "Is panel cleaning included in the basic plan?",
       answer:
-        "Once your option and KSEB approval are through, mounting and wiring take 1–2 days. We use pre-packed kits and a local team, so there's no long wait for parts.",
+        "Yes. Flarize provides a free panel cleaning service once per year for the life of your system. Additional cleanings are available at a nominal fee.",
     },
     {
-      question: `Which areas of ${district} do you cover?`,
-      answer: `Our certified local teams are stationed across ${district}, so we install district-wide with on-site technician visits within 48 hours — no waiting for someone to travel from another district. Not sure if we reach your panchayat? WhatsApp us and we'll confirm within minutes.`,
-    },
-    {
-      question: "What subsidy can I claim?",
-      answer:
-        "Homes can claim the PM Surya Ghar (MNRE) subsidy — up to ₹78,000 for systems of 3kW and above. We handle the full subsidy paperwork and submission for you as part of the install.",
-    },
-    {
-      question: "What happens after installation?",
-      answer:
-        "You stay with Flarize. App-based generation monitoring, service visits, and a written 25-year warranty. One number to call for the life of the system.",
+      question: `How does the Energy Loss Guarantee work?`,
+      answer: "Flarize guarantees that your system will generate at least 90% of the expected output for the first 5 years. If it falls short, we will service your system and compensate you for the lost energy.",
     },
   ];
 }
