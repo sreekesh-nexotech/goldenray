@@ -4,27 +4,27 @@ export default function What() {
   const features = [
     {
       number: "01",
-      title: "10 families in your area book together",
+      title: "Lower Installation Cost",
       description:
-        "You reserve a spot with ₹1,000 (fully refundable). Flarize matches your home with 9 other families within your pincode area. Groups typically form in 10-15 days. You never need to contact or coordinate with other members.",
+        "Group purchasing helps reduce logistics and installation costs.",
     },
     {
       number: "02",
-      title: "All 10 homes installed in the same week",
+      title: "Faster Project Scheduling",
       description:
-        "Our installation crew travels to your area once and completes all 10 systems in 5-7 days. No repeat travel, no repeat logistics. Same batch of Waaree or Adani mono PERC panels. Same Sungrow grid-tied inverter. All 10 KSEB net metering applications filed together for faster processing.",
+        "Homes are installed together, reducing waiting time.",
     },
     {
       number: "03",
-      title: "Same quality as individual booking — just ₹10,000 cheaper",
+      title: "Same Equipment & Warranty",
       description:
-        "Your panels, inverter, warranty, and installation are identical to a solo booking. ALMM-listed, BIS-certified, DCR-compliant panels. 25-year panel warranty. 10-year inverter warranty. PM Surya Ghar subsidy (up to ₹78,000) filed by Flarize. The only difference is the group discount.",
+        "You receive the same panels, inverter, and warranty as individual customers.",
     },
     {
       number: "04",
-      title: "If the group doesn't form — full refund and locked pricing",
+      title: "Risk-Free Participation",
       description:
-        "If we cannot find 10 families in your area within 30 days, your ₹1,000 is refunded to your original payment method within 48 hours. And your individual pricing stays locked at the group rate anyway. Zero risk either way.",
+        "Refund available if the group doesn't form.",
     },
   ];
 
@@ -32,19 +32,11 @@ export default function What() {
     <section className="relative py-8 sm:py-10 md:py-12 lg:py-14 xl:py-16 ">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <h2 className="text-[#123532] text-4xl md:text-5xl font-semibold leading-tight mb-3 sm:mb-4 md:mb-5 lg:mb-6">
-          What Is Group Solar Purchasing?
+        <h2 className="text-[#123532] text-4xl md:text-5xl font-semibold leading-tight mb-3 sm:mb-4 md:mb-8 lg:mb-12">
+          Why Homeowners Choose Group Solar
         </h2>
 
-        {/* Description */}
-        <p className="text-sm md:text-xl font-normal leading-relaxed mb-6 sm:mb-8 md:mb-10 lg:mb-12">
-          Group solar purchasing is a bulk installation model exclusive to
-          Flarize. 10 families in the same Kerala locality book together, and we
-          install all homes in a single coordinated week. Each home gets its own
-          dedicated on-grid solar system with individual KSEB net metering. The
-          group element is purely logistical — shared scheduling and bulk
-          material ordering drive costs down by ₹10,000 per home.
-        </p>
+        
 
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
@@ -65,16 +57,16 @@ export default function What() {
               <div key={index} className="flex flex-col">
                 {/* Number and Title */}
                 <div className="flex items-start gap-2 sm:gap-3 mb-1">
-                  <span className="text-[#F59E0B] text-base md:text-xl font-semibold leading-snug flex-shrink-0">
+                  <span className="text-[#F59E0B] text-base md:text-lg font-medium leading-snug flex-shrink-0">
                     {feature.number}
                   </span>
-                  <h3 className="text-[#123532] text-xl md:text-2xl font-semibold leading-snug">
+                  <h3 className="text-[#123532] text-lg md:text-xl font-medium leading-snug">
                     {feature.title}
                   </h3>
                 </div>
 
                 {/* Description */}
-                <p className="text-[#6B7280] text-xs md:text-base font-normal leading-normal pl-6 sm:pl-8 md:pl-9">
+                <p className="text-[#6B7280] text-xs md:text-base font-medium leading-normal pl-6 sm:pl-8 md:pl-9">
                   {feature.description}
                 </p>
               </div>

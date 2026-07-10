@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Main App component for the FAQ section
 export default function Faq() {
@@ -66,50 +66,60 @@ export default function Faq() {
   };
 
   return (
-    <div className="flex items-center justify-center ">
-      <div className="container mx-auto flex flex-col items-center justify-center gap-8 lg:gap-12 md:p-10 rounded-xl max-w-full py-10 xl:py-8 px-4 sm:px-6 lg:px-8 xl:px-36">
-        {/* Heading and Description */}
-        <div className="w-full text-center">
-          <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-2">
-            Frequently Asked Questions About Group Solar Purchase
-          </h2>
-          <p className="text-base md:text-xl font-normal md:font-semibold leading-snug text-[#444444]">
-            Solar + group purchase — the full picture.
-          </p>
-        </div>
+    <section className="w-full bg-white py-12 md:py-20">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.2fr] gap-8 lg:gap-10 items-start">
+          {/* Left: Heading and Description */}
+          <div className="lg:pt-6">
+            <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
+              Frequently Asked Questions About Group Solar Purchase
+            </h2>
+            <p className="text-base md:text-lg font-normal leading-relaxed text-[#444444] max-w-md">
+              Solar + group purchase — the full picture.
+            </p>
+          </div>
 
-        {/* FAQ Accordion */}
-        <div className="w-full max-w-8xl p-6 rounded-3xl bg-[#F6F2EF]">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="border-b border-gray-200 last:border-b-0 py-4"
-            >
-              <button
-                className="flex justify-between items-center w-full text-left focus:outline-none cursor-pointer"
-                onClick={() => toggleFaq(index)}
-                aria-label="toggle FAQ answer"
+          {/* Right: FAQ Accordion */}
+          <div className="w-full p-6 md:p-8 rounded-3xl bg-[#F6F2EF]">
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="border-b border-[#E2DDD8] last:border-b-0"
               >
-                <span className="text-xl md:text-2xl font-semibold leading-snug text-[#444444] pr-4">
-                  {faq.question}
-                </span>
-                <span
-                  className={`text-2xl font-light text-[#000000] transition-transform duration-300 ${
-                    openIndex === index ? "rotate-45" : "rotate-0"
+                <button
+                  className="flex justify-between items-center gap-4 w-full text-left py-5 focus:outline-none cursor-pointer"
+                  onClick={() => toggleFaq(index)}
+                  aria-label="toggle FAQ answer"
+                >
+                  <span className="text-base md:text-xl font-normal leading-snug text-[#2D3B39]">
+                    {faq.question}
+                  </span>
+                  <span
+                    className={`shrink-0 text-2xl font-light text-[#2D3B39] transition-transform duration-300 ${
+                      openIndex === index ? "rotate-45" : "rotate-0"
+                    }`}
+                  >
+                    +
+                  </span>
+                </button>
+                <div
+                  className={`grid transition-all duration-300 ease-out ${
+                    openIndex === index
+                      ? "grid-rows-[1fr] opacity-100 pb-5"
+                      : "grid-rows-[0fr] opacity-0"
                   }`}
                 >
-                  +
-                </span>
-              </button>
-              {openIndex === index && (
-                <div className="mt-3 text-[#444444] text-xs md:text-base font-normal leading-normal">
-                  {faq.answer}
+                  <div className="overflow-hidden">
+                    <p className="text-sm md:text-base font-normal leading-relaxed text-[#555555] pr-8">
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

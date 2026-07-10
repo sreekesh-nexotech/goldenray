@@ -1,11 +1,10 @@
 import {
+  ChevronDown,
   CircleMinus,
   IndianRupee,
   PhoneCall,
   WalletMinimal,
 } from "lucide-react";
-import React from "react";
-import Button from "../ui/Button";
 
 const INFO_ITEMS = [
   {
@@ -51,7 +50,9 @@ const INFO_ITEMS = [
   },
 ];
 
-const LOCATIONS = [
+const ROLES = ["Group Coordinator", "Referral Partner"];
+
+const DISTRICTS = [
   "Thiruvananthapuram",
   "Kollam",
   "Pathanamthitta",
@@ -68,12 +69,106 @@ const LOCATIONS = [
   "Kasaragod",
 ];
 
+const ESTIMATES = ["5","6","7","8","9","10","10+"];
+
 const BILL_RANGES = [
   "Below ₹2,000",
   "₹2,000 – ₹5,000",
   "₹5,000 – ₹10,000",
   "Above ₹10,000",
 ];
+
+// ─── Shared field styling ─────────────────────────────────────────────────────
+const FIELD =
+  "w-full rounded-lg border border-[#E5E7EB] px-4 py-3.5 text-sm md:text-base text-[#123532] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0B4740]/30";
+
+function FieldLabel({
+  htmlFor,
+  label,
+  required,
+}: {
+  htmlFor: string;
+  label: string;
+  required?: boolean;
+}) {
+  return (
+    <label
+      htmlFor={htmlFor}
+      className="mb-1.5 block text-sm font-medium text-[#111827]"
+    >
+      {label}
+      {required && <span className="text-[#111827]"> *</span>}
+    </label>
+  );
+}
+
+function InputField({
+  id,
+  label,
+  placeholder,
+  type = "text",
+  required,
+}: {
+  id: string;
+  label: string;
+  placeholder: string;
+  type?: string;
+  required?: boolean;
+}) {
+  return (
+    <div>
+      <FieldLabel htmlFor={id} label={label} required={required} />
+      <input
+        id={id}
+        name={id}
+        type={type}
+        placeholder={placeholder}
+        className={FIELD}
+      />
+    </div>
+  );
+}
+
+function SelectField({
+  id,
+  label,
+  placeholder,
+  options,
+  required,
+}: {
+  id: string;
+  label: string;
+  placeholder: string;
+  options: string[];
+  required?: boolean;
+}) {
+  return (
+    <div>
+      <FieldLabel htmlFor={id} label={label} required={required} />
+      <div className="relative">
+        <select
+          id={id}
+          name={id}
+          defaultValue=""
+          className={`${FIELD} appearance-none bg-white pr-11`}
+        >
+          <option value="" disabled>
+            {placeholder}
+          </option>
+          {options.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+        <ChevronDown
+          size={18}
+          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#6B7280]"
+        />
+      </div>
+    </div>
+  );
+}
 
 const Reserve = () => {
   return (
@@ -86,7 +181,7 @@ const Reserve = () => {
         <h2 className="text-[#123532] text-4xl md:text-5xl font-semibold leading-tight text-left mb-3 sm:mb-4">
           Reserve Your Group Solar Spot in Kerala
         </h2>
-        <p className="text-[#6B7280] text-sm md:text-xl font-normal leading-relaxed text-left mb-8 sm:mb-10 md:mb-12 lg:mb-14">
+        <p className="text-[#6B7280] text-sm md:text-xl font-normal leading-relaxed text-left mb-8 sm:mb-10 ">
           We&apos;ll call you within 15 minutes during business hours to confirm
           your spot, explain group status in your area, and answer any questions
           — no pressure.
@@ -99,10 +194,10 @@ const Reserve = () => {
                 {item.icon}
               </div>
               <div>
-                <div className="text-[#123532] text-xl md:text-2xl font-semibold leading-snug mb-1">
+                <div className="text-[#123532] text-base md:text-lg font-medium leading-snug mb-1">
                   {item.title}
                 </div>
-                <div className="text-[#757575] text-xs md:text-base font-normal leading-normal">
+                <div className="text-[#757575] text-xs md:text-sm font-light leading-normal">
                   {item.desc}
                 </div>
               </div>
@@ -111,82 +206,89 @@ const Reserve = () => {
         </div>
       </div>
 
-      {/* Right Form Section */}
-      <div className="flex-1 w-full max-w-7xl bg-[#0B4740] rounded-2xl p-6 flex flex-col gap-6 min-h-full justify-center">
-        <form className="flex flex-col justify-between bg-white rounded-2xl px-4 py-10 h-full">
-          <div>
-            <label
-              htmlFor="reserve-name"
-              className="block text-[#123532] font-medium mb-1 text-xs md:text-base leading-normal"
-            >
-              Name
-            </label>
-            <input
-              id="reserve-name"
-              type="text"
+      {/* Right Form Section — teal frame around a white card */}
+      <div className="flex-1 w-full max-w-2xl bg-[#0B4740] rounded-3xl p-2.5 md:p-3 flex">
+        <form className="flex w-full flex-col rounded-2xl bg-white px-6 py-8 md:px-8 md:py-10">
+          <div className="grid grid-cols-1 gap-x-5 gap-y-5 sm:grid-cols-2">
+            <InputField
+              id="name"
+              label="Name"
               placeholder="Enter your name"
-              className="w-full rounded-lg border border-[#E5E7EB] px-4 py-4 text-base focus:outline-none focus:ring-2 focus:ring-[#0B4740]"
+              required
             />
-          </div>
-          <div>
-            <label
-              htmlFor="reserve-phone"
-              className="block text-[#123532] font-medium mb-1 text-xs md:text-base leading-normal"
-            >
-              Phone Number
-            </label>
-            <input
-              id="reserve-phone"
-              type="text"
+            <InputField
+              id="phone"
+              label="Phone Number"
               placeholder="Enter your number"
-              className="w-full rounded-lg border border-[#E5E7EB] px-4 py-4 text-base focus:outline-none focus:ring-2 focus:ring-[#0B4740]"
+              type="tel"
+              required
             />
+            <InputField
+              id="email"
+              label="Email Address"
+              placeholder="Enter your email"
+              type="email"
+              required
+            />
+            <SelectField
+              id="role"
+              label="Role Selection"
+              placeholder="Select your role"
+              options={ROLES}
+              required
+            />
+            <SelectField
+              id="district"
+              label="District"
+              placeholder="Select your district"
+              options={DISTRICTS}
+              required
+            />
+            {/* Localities are area-specific — wire these to your
+                district → locality data source when available. */}
+            <SelectField
+              id="locality"
+              label="Locality / Area Name"
+              placeholder="Select your Locality / Area"
+              options={[]}
+              required
+            />
+            <SelectField
+              id="estimate"
+              label="Interested Family Estimate"
+              placeholder="Select Estimate"
+              options={ESTIMATES}
+            />
+            <SelectField
+              id="bill"
+              label="Your Monthly Electricity Bill"
+              placeholder="Select bill range"
+              options={BILL_RANGES}
+            />
+            <div className="sm:col-span-2">
+              <InputField
+                id="group-name"
+                label="Group Name (Optional)"
+                placeholder="eg. Alappuzha solar group"
+              />
+            </div>
           </div>
-          <div>
-            <label
-              htmlFor="reserve-location"
-              className="block text-[#123532] font-medium mb-1 text-xs md:text-base leading-normal"
+
+          {/* Actions */}
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <button
+              type="button"
+              className="w-full rounded-lg border border-[#123532]/25 px-6 py-3.5 text-base font-semibold text-[#123532] transition-colors hover:bg-[#123532]/5"
             >
-              Location
-            </label>
-            <select
-              id="reserve-location"
-              className="w-full rounded-lg border border-[#E5E7EB] px-4 py-4 text-base bg-white focus:outline-none focus:ring-2 focus:ring-[#0B4740]"
-              defaultValue=""
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="w-full rounded-lg bg-[#F7BA41] px-6 py-3.5 text-base font-semibold text-[#123532] transition-colors hover:bg-yellow-500"
             >
-              <option value="" disabled>
-                Select location
-              </option>
-              {LOCATIONS.map((loc, idx) => (
-                <option key={idx} value={loc}>
-                  {loc}
-                </option>
-              ))}
-            </select>
+              Submit Group Request
+            </button>
           </div>
-          <div>
-            <label
-              htmlFor="reserve-bill"
-              className="block text-[#123532] font-medium mb-1 text-xs md:text-base leading-normal"
-            >
-              Average Monthly Electricity Bill
-            </label>
-            <select
-              id="reserve-bill"
-              className="w-full rounded-lg border border-[#E5E7EB] px-4 py-4 text-base bg-white focus:outline-none focus:ring-2 focus:ring-[#0B4740]"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select bill range
-              </option>
-              {BILL_RANGES.map((bill, idx) => (
-                <option key={idx} value={bill}>
-                  {bill}
-                </option>
-              ))}
-            </select>
-          </div>
-          <Button>Reserve My Group Spot →</Button>
         </form>
       </div>
     </section>
