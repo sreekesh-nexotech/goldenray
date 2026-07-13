@@ -26,14 +26,14 @@ const gridImages = [
 
 export default function LifeAtFlarize() {
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8">
+    <section  className="py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Heading */}
-        <div className="text-center mb-10 md:mb-14">
-          <h2 className="text-3xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
             Life at Flarize
           </h2>
-          <p className="text-sm md:text-lg font-normal leading-relaxed text-[#444444] max-w-3xl mx-auto whitespace-nowrap">
+          <p className="text-sm md:text-lg font-normal leading-relaxed text-[#444444]">
             From field visits and customer meetings to product planning and team discussions, every day looks different.
           </p>
         </div>

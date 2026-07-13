@@ -27,7 +27,7 @@ export default function ResumeCTA() {
         </p>
         <LinkingButton
           content="Send Your Resume"
-          ButtonLink="/contactus"
+          ButtonLink="/career/general-application-form"
           ButtonBg="bg-[#F7BA41]"
           Buttontext="text-[#272218]"
           ButtonHover="hover:bg-yellow-500"

@@ -8,6 +8,7 @@ import ApplicationForm from "@/components/Career/ApplicationForm";
 import OpenPositions from "@/components/Career/OpenPositions";
 import ResumeCTA from "@/components/Career/ResumeCTA";
 import JoinCTA from "@/components/Career/JoinCTA";
+import PerksBenefits from "@/components/Career/PerksBenefits";
 
 export const metadata: Metadata = {
   title: "UI/UX Designer | Careers at Flarize",
@@ -48,6 +49,7 @@ export default function UiUxDesignerPage() {
       <CareerStats />
       <JobDetail />
       <ApplicationForm />
+      <PerksBenefits/>
       <OpenPositions />
       <ResumeCTA />
       <JoinCTA />

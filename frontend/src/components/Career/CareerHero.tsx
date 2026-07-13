@@ -3,8 +3,16 @@ import LinkingButton from "../ui/LinkingButton";
 export default function CareerHero() {
   return (
     <section className="relative w-full overflow-hidden">
-      {/* TODO: replace with final background image (provided later) */}
-      <div className="absolute inset-0 z-0 bg-[#123532]" />
+      {/* Background image */}
+      <div
+        className="absolute inset-0 z-0 bg-cover bg-center"
+        style={{
+          backgroundImage:
+            "url('https://golden-ray.b-cdn.net/images/568f4aca0ddfc431cf07eb3eb195f26e8bfbe791.jpg')",
+        }}
+      />
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 z-0 bg-black/50" />
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 pb-24 md:pt-44 md:pb-28 flex flex-col items-center text-center">
@@ -27,8 +35,8 @@ export default function CareerHero() {
           <LinkingButton
             content="Explore Life at Flarize"
             ButtonLink="#why-flarize"
-            ButtonBg="bg-transparent"
-            Buttontext="text-white"
+            ButtonBg="bg-white"
+            Buttontext="text-black"
             ButtonHover="hover:bg-white/10"
             ButtonBorder="border border-white/40"
           />
