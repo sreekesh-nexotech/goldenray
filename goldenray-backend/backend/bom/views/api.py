@@ -215,7 +215,23 @@ class BomCalculateView(APIView):
         # ── Fetch all required data ───────────────────────────────────────────
         costs = GlobalCosts.objects.first()
         if not costs:
-            return Response({"error": "System not configured (GlobalCosts missing)."}, status=503)
+            # DB not yet populated — bootstrap it from catalog.json automatically
+            # so the BOM engine works out-of-the-box with no manual `seed_catalog`
+            # step. catalog.json is the single source of truth for the catalog.
+            from django.core.management import call_command
+            try:
+                call_command("seed_catalog")
+            except Exception as exc:  # noqa: BLE001 — surface any load failure to the client
+                return Response(
+                    {"error": f"Failed to auto-load catalog.json: {exc}"},
+                    status=503,
+                )
+            costs = GlobalCosts.objects.first()
+            if not costs:
+                return Response(
+                    {"error": "catalog.json did not provide GlobalCosts data."},
+                    status=503,
+                )
 
         template = (
             BomTemplate.objects

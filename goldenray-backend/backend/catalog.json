@@ -10,8 +10,8 @@
     "elevatedStructureRate": 5000,
     "sheetStructureRate": 3000,
     "gpRatePerKg": 85,
-    "giRatePerKg": 98.3,
-    "structureLabor": 3000,
+    "giRatePerKg": 130,
+    "structureLabor": 1500,
     "structureRepairPct": 10
   },
   "categories": {
@@ -24,12 +24,21 @@
           "name": "Waaree Mono perc Bifacial 540W DCR",
           "brand": "Waaree",
           "tiers": [
-            "base"
+            "base",
+            "value"
           ],
           "watt": 540,
           "perWatt": 24.3,
           "price": 13122,
-          "dcr": true
+          "dcr": true,
+          "voc": 49.6,
+          "vmp": 41.5,
+          "isc": 13.83,
+          "imp": 13.01,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p2",
@@ -39,9 +48,17 @@
             "value"
           ],
           "watt": 550,
-          "perWatt": 25.9,
-          "price": 14245,
-          "dcr": true
+          "perWatt": 26,
+          "price": 14300,
+          "dcr": true,
+          "voc": 50,
+          "vmp": 41.9,
+          "isc": 14,
+          "imp": 13.13,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p3",
@@ -52,9 +69,17 @@
             "value"
           ],
           "watt": 620,
-          "perWatt": 26.9,
-          "price": 16678,
-          "dcr": true
+          "perWatt": 27,
+          "price": 16740,
+          "dcr": true,
+          "voc": 49.6,
+          "vmp": 41.4,
+          "isc": 15.91,
+          "imp": 14.98,
+          "tempCoeffVoc": -0.23,
+          "tempCoeffPmax": -0.28,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p4",
@@ -66,7 +91,15 @@
           "watt": 540,
           "perWatt": 25.25,
           "price": 13635,
-          "dcr": true
+          "dcr": true,
+          "voc": 49.6,
+          "vmp": 41.5,
+          "isc": 13.83,
+          "imp": 13.01,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p5",
@@ -78,7 +111,15 @@
           "watt": 600,
           "perWatt": 26.25,
           "price": 15750,
-          "dcr": true
+          "dcr": true,
+          "voc": 51.5,
+          "vmp": 43.2,
+          "isc": 14.8,
+          "imp": 13.89,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p6",
@@ -90,7 +131,15 @@
           "watt": 540,
           "perWatt": 23.5,
           "price": 12690,
-          "dcr": true
+          "dcr": true,
+          "voc": 49.6,
+          "vmp": 41.5,
+          "isc": 13.83,
+          "imp": 13.01,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p7",
@@ -103,7 +152,15 @@
           "watt": 545,
           "perWatt": 24.4,
           "price": 13298,
-          "dcr": true
+          "dcr": true,
+          "voc": 49.8,
+          "vmp": 41.7,
+          "isc": 13.9,
+          "imp": 13.07,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p8",
@@ -114,8 +171,16 @@
           ],
           "watt": 545,
           "perWatt": 23.5,
-          "price": 12808,
-          "dcr": true
+          "price": 12807.5,
+          "dcr": true,
+          "voc": 49.8,
+          "vmp": 41.7,
+          "isc": 13.9,
+          "imp": 13.07,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p9",
@@ -128,7 +193,15 @@
           "watt": 540,
           "perWatt": 25,
           "price": 13500,
-          "dcr": true
+          "dcr": true,
+          "voc": 49.6,
+          "vmp": 41.5,
+          "isc": 13.83,
+          "imp": 13.01,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p10",
@@ -140,7 +213,15 @@
           "watt": 550,
           "perWatt": 23.5,
           "price": 12925,
-          "dcr": true
+          "dcr": true,
+          "voc": 50,
+          "vmp": 41.9,
+          "isc": 14,
+          "imp": 13.13,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p11",
@@ -152,7 +233,15 @@
           "watt": 540,
           "perWatt": 23,
           "price": 12420,
-          "dcr": true
+          "dcr": true,
+          "voc": 49.6,
+          "vmp": 41.5,
+          "isc": 13.83,
+          "imp": 13.01,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p12",
@@ -163,8 +252,16 @@
           ],
           "watt": 565,
           "perWatt": 26.5,
-          "price": 14973,
-          "dcr": true
+          "price": 14972.5,
+          "dcr": true,
+          "voc": 50.5,
+          "vmp": 42.3,
+          "isc": 14.2,
+          "imp": 13.36,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p13",
@@ -176,7 +273,15 @@
           "watt": 570,
           "perWatt": 19,
           "price": 10830,
-          "dcr": true
+          "dcr": true,
+          "voc": 50.6,
+          "vmp": 42.4,
+          "isc": 14.3,
+          "imp": 13.44,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p14",
@@ -188,7 +293,15 @@
           "watt": 550,
           "perWatt": 23.7,
           "price": 13035,
-          "dcr": false
+          "dcr": false,
+          "voc": 50,
+          "vmp": 41.9,
+          "isc": 14,
+          "imp": 13.13,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p15",
@@ -200,7 +313,15 @@
           "watt": 565,
           "perWatt": 26,
           "price": 14916,
-          "dcr": true
+          "dcr": true,
+          "voc": 50.5,
+          "vmp": 42.3,
+          "isc": 14.2,
+          "imp": 13.36,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p16",
@@ -212,7 +333,15 @@
           "watt": 545,
           "perWatt": 15,
           "price": 8175,
-          "dcr": false
+          "dcr": false,
+          "voc": 49.8,
+          "vmp": 41.7,
+          "isc": 13.9,
+          "imp": 13.07,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p17",
@@ -225,7 +354,15 @@
           "watt": 575,
           "perWatt": 16,
           "price": 9200,
-          "dcr": false
+          "dcr": false,
+          "voc": 50.8,
+          "vmp": 42.6,
+          "isc": 14.4,
+          "imp": 13.5,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p18",
@@ -237,7 +374,15 @@
           "watt": 550,
           "perWatt": 16,
           "price": 8800,
-          "dcr": false
+          "dcr": false,
+          "voc": 50,
+          "vmp": 41.9,
+          "isc": 14,
+          "imp": 13.13,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p19",
@@ -249,7 +394,15 @@
           "watt": 545,
           "perWatt": 15,
           "price": 8175,
-          "dcr": false
+          "dcr": false,
+          "voc": 49.8,
+          "vmp": 41.7,
+          "isc": 13.9,
+          "imp": 13.07,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p20",
@@ -261,7 +414,15 @@
           "watt": 600,
           "perWatt": 15.8,
           "price": 9480,
-          "dcr": false
+          "dcr": false,
+          "voc": 51.5,
+          "vmp": 43.2,
+          "isc": 14.8,
+          "imp": 13.89,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p21",
@@ -272,8 +433,16 @@
           ],
           "watt": 545,
           "perWatt": 15.9,
-          "price": 8666,
-          "dcr": false
+          "price": 8665.5,
+          "dcr": false,
+          "voc": 49.8,
+          "vmp": 41.7,
+          "isc": 13.9,
+          "imp": 13.07,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p22",
@@ -284,8 +453,16 @@
           ],
           "watt": 550,
           "perWatt": 17.25,
-          "price": 9488,
-          "dcr": false
+          "price": 9487.5,
+          "dcr": false,
+          "voc": 50,
+          "vmp": 41.9,
+          "isc": 14,
+          "imp": 13.13,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p23",
@@ -297,7 +474,15 @@
           "watt": 600,
           "perWatt": 16.7,
           "price": 10020,
-          "dcr": false
+          "dcr": false,
+          "voc": 51.5,
+          "vmp": 43.2,
+          "isc": 14.8,
+          "imp": 13.89,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p24",
@@ -309,7 +494,15 @@
           "watt": 545,
           "perWatt": 15.2,
           "price": 8284,
-          "dcr": false
+          "dcr": false,
+          "voc": 49.8,
+          "vmp": 41.7,
+          "isc": 13.9,
+          "imp": 13.07,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p25",
@@ -321,7 +514,15 @@
           "watt": 590,
           "perWatt": 15.5,
           "price": 9145,
-          "dcr": false
+          "dcr": false,
+          "voc": 51.3,
+          "vmp": 43.1,
+          "isc": 14.6,
+          "imp": 13.7,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p26",
@@ -333,7 +534,15 @@
           "watt": 540,
           "perWatt": 14.8,
           "price": 7992,
-          "dcr": false
+          "dcr": false,
+          "voc": 49.6,
+          "vmp": 41.5,
+          "isc": 13.83,
+          "imp": 13.01,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p27",
@@ -345,7 +554,15 @@
           "watt": 580,
           "perWatt": 14.5,
           "price": 8410,
-          "dcr": false
+          "dcr": false,
+          "voc": 51,
+          "vmp": 42.8,
+          "isc": 14.45,
+          "imp": 13.55,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p28",
@@ -357,7 +574,15 @@
           "watt": 620,
           "perWatt": 17,
           "price": 10540,
-          "dcr": false
+          "dcr": false,
+          "voc": 49.6,
+          "vmp": 41.4,
+          "isc": 15.91,
+          "imp": 14.98,
+          "tempCoeffVoc": -0.23,
+          "tempCoeffPmax": -0.28,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p29",
@@ -369,7 +594,15 @@
           "watt": 600,
           "perWatt": 16,
           "price": 9600,
-          "dcr": false
+          "dcr": false,
+          "voc": 51.5,
+          "vmp": 43.2,
+          "isc": 14.8,
+          "imp": 13.89,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p30",
@@ -381,7 +614,15 @@
           "watt": 580,
           "perWatt": 16,
           "price": 9280,
-          "dcr": false
+          "dcr": false,
+          "voc": 51,
+          "vmp": 42.8,
+          "isc": 14.45,
+          "imp": 13.55,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p31",
@@ -393,7 +634,15 @@
           "watt": 580,
           "perWatt": 16,
           "price": 9280,
-          "dcr": false
+          "dcr": false,
+          "voc": 51,
+          "vmp": 42.8,
+          "isc": 14.45,
+          "imp": 13.55,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p32",
@@ -405,7 +654,15 @@
           "watt": 640,
           "perWatt": 16,
           "price": 10240,
-          "dcr": false
+          "dcr": false,
+          "voc": 51.8,
+          "vmp": 43.5,
+          "isc": 15.6,
+          "imp": 14.71,
+          "tempCoeffVoc": -0.24,
+          "tempCoeffPmax": -0.29,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "p33",
@@ -417,7 +674,15 @@
           "watt": 555,
           "perWatt": 15,
           "price": 8325,
-          "dcr": false
+          "dcr": false,
+          "voc": 50.3,
+          "vmp": 42.1,
+          "isc": 14,
+          "imp": 13.18,
+          "tempCoeffVoc": -0.26,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "pa_0006870e2e7d",
@@ -430,7 +695,15 @@
           "price": 9900,
           "watt": 550,
           "perWatt": 18,
-          "dcr": true
+          "dcr": true,
+          "voc": 50,
+          "vmp": 41.9,
+          "isc": 14,
+          "imp": 13.13,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "pa_a2ea75b89b4d",
@@ -443,7 +716,15 @@
           "price": 0,
           "watt": 550,
           "perWatt": 0,
-          "dcr": true
+          "dcr": true,
+          "voc": 50,
+          "vmp": 41.9,
+          "isc": 14,
+          "imp": 13.13,
+          "tempCoeffVoc": -0.28,
+          "tempCoeffPmax": -0.35,
+          "cells": 144,
+          "maxSysVoltage": 1500
         },
         {
           "id": "pa_9e35d4adf2a3",
@@ -451,12 +732,21 @@
           "brand": "adani",
           "tiers": [
             "value",
-            "premium"
+            "premium",
+            "base"
           ],
-          "price": 14400,
+          "price": 15420,
           "watt": 600,
-          "perWatt": 24,
-          "dcr": true
+          "perWatt": 25.7,
+          "dcr": true,
+          "voc": 51.5,
+          "vmp": 43.2,
+          "isc": 14.8,
+          "imp": 13.89,
+          "tempCoeffVoc": -0.25,
+          "tempCoeffPmax": -0.3,
+          "cells": 144,
+          "maxSysVoltage": 1500
         }
       ]
     },
@@ -475,7 +765,15 @@
           "kw": 3,
           "model": "MIC 3000TL-X",
           "type": "ongrid",
-          "price": 16600
+          "price": 16600,
+          "mpptCount": 1,
+          "mpptVoltageMin": 50,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 80,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16.25
         },
         {
           "id": "i2",
@@ -488,7 +786,15 @@
           "kw": 3.3,
           "model": "MIC 3300TL-X",
           "type": "ongrid",
-          "price": 16700
+          "price": 16700,
+          "mpptCount": 1,
+          "mpptVoltageMin": 50,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 80,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16.25
         },
         {
           "id": "i3",
@@ -501,7 +807,15 @@
           "kw": 4.2,
           "model": "MIN 4200 TL-X",
           "type": "ongrid",
-          "price": 30850
+          "price": 30850,
+          "mpptCount": 2,
+          "mpptVoltageMin": 50,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 80,
+          "maxInputCurrent": 13.5,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16.9
         },
         {
           "id": "i4",
@@ -514,7 +828,15 @@
           "kw": 5,
           "model": "MIN 5000 TL-X",
           "type": "ongrid",
-          "price": 29200
+          "price": 29200,
+          "mpptCount": 2,
+          "mpptVoltageMin": 50,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 80,
+          "maxInputCurrent": 13.5,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16.9
         },
         {
           "id": "i5",
@@ -527,7 +849,15 @@
           "kw": 6,
           "model": "5000 TL3-S",
           "type": "ongrid",
-          "price": 47600
+          "price": 47600,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i6",
@@ -540,7 +870,15 @@
           "kw": 6,
           "model": "6000 TL3-S",
           "type": "ongrid",
-          "price": 50400
+          "price": 50400,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i7",
@@ -553,7 +891,15 @@
           "kw": 8,
           "model": "MOD 8000 TL3-X",
           "type": "ongrid",
-          "price": 53200
+          "price": 53200,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i8",
@@ -566,7 +912,15 @@
           "kw": 10,
           "model": "MOD 10000 TL3-X",
           "type": "ongrid",
-          "price": 54500
+          "price": 54500,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i9",
@@ -579,7 +933,15 @@
           "kw": 12,
           "model": "MOD 12000 TL3-X",
           "type": "ongrid",
-          "price": 64800
+          "price": 64800,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i10",
@@ -592,7 +954,15 @@
           "kw": 15,
           "model": "MOD 15000 TL3-X",
           "type": "ongrid",
-          "price": 66650
+          "price": 66650,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i11",
@@ -605,7 +975,15 @@
           "kw": 20,
           "model": "MID 20 KTL3-X",
           "type": "ongrid",
-          "price": 86700
+          "price": 86700,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27.5
         },
         {
           "id": "i12",
@@ -618,7 +996,15 @@
           "kw": 25,
           "model": "MID 25 KTL3-X",
           "type": "ongrid",
-          "price": 91650
+          "price": 91650,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27.5
         },
         {
           "id": "i13",
@@ -631,7 +1017,15 @@
           "kw": 30,
           "model": "MID 30 KTL3-X",
           "type": "ongrid",
-          "price": 121350
+          "price": 121350,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27.5
         },
         {
           "id": "i14",
@@ -644,7 +1038,15 @@
           "kw": 33,
           "model": "MID 33 KTL3-X",
           "type": "ongrid",
-          "price": 126500
+          "price": 126500,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27.5
         },
         {
           "id": "i15",
@@ -657,7 +1059,15 @@
           "kw": 40,
           "model": "MID 40 KTL3-X",
           "type": "ongrid",
-          "price": 143950
+          "price": 143950,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27.5
         },
         {
           "id": "i16",
@@ -670,7 +1080,15 @@
           "kw": 50,
           "model": "MAC 50 KTL3-X",
           "type": "ongrid",
-          "price": 161850
+          "price": 161850,
+          "mpptCount": 4,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i17",
@@ -683,7 +1101,15 @@
           "kw": 80,
           "model": "MAX 80KTL3-LV",
           "type": "ongrid",
-          "price": 236033
+          "price": 236033,
+          "mpptCount": 6,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i18",
@@ -696,7 +1122,15 @@
           "kw": 100,
           "model": "MAX 100KTL3-X-LV",
           "type": "ongrid",
-          "price": 292000
+          "price": 292000,
+          "mpptCount": 8,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i19",
@@ -709,7 +1143,15 @@
           "kw": 125,
           "model": "MAX 125KTL3-X-LV",
           "type": "ongrid",
-          "price": 312000
+          "price": 312000,
+          "mpptCount": 10,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i20",
@@ -722,7 +1164,15 @@
           "kw": 3,
           "model": "SG 3.0RT",
           "type": "ongrid",
-          "price": 16000
+          "price": 18250,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 560,
+          "maxInputVoltage": 600,
+          "startVoltage": 100,
+          "maxInputCurrent": 12.5,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 15
         },
         {
           "id": "i21",
@@ -735,7 +1185,15 @@
           "kw": 3.3,
           "model": "SG 3.3RT",
           "type": "ongrid",
-          "price": 22000
+          "price": 22000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 560,
+          "maxInputVoltage": 600,
+          "startVoltage": 100,
+          "maxInputCurrent": 12.5,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 15
         },
         {
           "id": "i22",
@@ -748,7 +1206,15 @@
           "kw": 4,
           "model": "SG 4.0RT",
           "type": "ongrid",
-          "price": 28500
+          "price": 28500,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 560,
+          "maxInputVoltage": 600,
+          "startVoltage": 100,
+          "maxInputCurrent": 12.5,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 15
         },
         {
           "id": "i23",
@@ -761,7 +1227,15 @@
           "kw": 5,
           "model": "SG5K-D",
           "type": "ongrid",
-          "price": 32000
+          "price": 30600,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 560,
+          "maxInputVoltage": 600,
+          "startVoltage": 100,
+          "maxInputCurrent": 12.5,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 15
         },
         {
           "id": "i24",
@@ -774,7 +1248,15 @@
           "kw": 5,
           "model": "SG5.0RT",
           "type": "ongrid",
-          "price": 54500
+          "price": 54500,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 960,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 18.8
         },
         {
           "id": "i25",
@@ -787,7 +1269,15 @@
           "kw": 6,
           "model": "SG6.0RT",
           "type": "ongrid",
-          "price": 55000
+          "price": 56000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 960,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 18.8
         },
         {
           "id": "i26",
@@ -800,7 +1290,15 @@
           "kw": 8,
           "model": "SG8.0RT",
           "type": "ongrid",
-          "price": 61500
+          "price": 58500,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 960,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 18.8
         },
         {
           "id": "i27",
@@ -813,7 +1311,15 @@
           "kw": 10,
           "model": "SG10.0RT",
           "type": "ongrid",
-          "price": 61000
+          "price": 64500,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 960,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 18.8
         },
         {
           "id": "i28",
@@ -826,7 +1332,15 @@
           "kw": 12,
           "model": "SG12.0RT",
           "type": "ongrid",
-          "price": 66000
+          "price": 66500,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 960,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 18.8
         },
         {
           "id": "i29",
@@ -839,7 +1353,15 @@
           "kw": 15,
           "model": "SG15.0RT",
           "type": "ongrid",
-          "price": 87000
+          "price": 87000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 960,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27
         },
         {
           "id": "i30",
@@ -852,7 +1374,15 @@
           "kw": 20,
           "model": "SG20KTL-M",
           "type": "ongrid",
-          "price": 91000
+          "price": 93000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 960,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27
         },
         {
           "id": "i31",
@@ -865,7 +1395,15 @@
           "kw": 33,
           "model": "SG33CX",
           "type": "ongrid",
-          "price": 133000
+          "price": 133000,
+          "mpptCount": 3,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i32",
@@ -878,7 +1416,15 @@
           "kw": 50,
           "model": "SG50CX",
           "type": "ongrid",
-          "price": 168000
+          "price": 168000,
+          "mpptCount": 4,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i33",
@@ -891,7 +1437,15 @@
           "kw": 110,
           "model": "SG110CX",
           "type": "ongrid",
-          "price": 317000
+          "price": 317000,
+          "mpptCount": 9,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i34",
@@ -904,7 +1458,15 @@
           "kw": 125,
           "model": "SG125HX",
           "type": "ongrid",
-          "price": 347000
+          "price": 347000,
+          "mpptCount": 9,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i35",
@@ -917,7 +1479,16 @@
           "kw": 3,
           "model": "SE3000H",
           "type": "ongrid",
-          "price": 39000
+          "price": 39000,
+          "mpptCount": 1,
+          "mpptVoltageMin": 380,
+          "mpptVoltageMax": 480,
+          "maxInputVoltage": 480,
+          "startVoltage": 380,
+          "maxInputCurrent": 10,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 12,
+          "optimizerBased": true
         },
         {
           "id": "i36",
@@ -930,7 +1501,16 @@
           "kw": 5,
           "model": "SE5K",
           "type": "ongrid",
-          "price": 75000
+          "price": 75000,
+          "mpptCount": 1,
+          "mpptVoltageMin": 380,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 850,
+          "startVoltage": 380,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20,
+          "optimizerBased": true
         },
         {
           "id": "i37",
@@ -943,7 +1523,16 @@
           "kw": 8,
           "model": "SE8K",
           "type": "ongrid",
-          "price": 60000
+          "price": 60000,
+          "mpptCount": 1,
+          "mpptVoltageMin": 380,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 850,
+          "startVoltage": 380,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20,
+          "optimizerBased": true
         },
         {
           "id": "i38",
@@ -956,7 +1545,16 @@
           "kw": 15,
           "model": "SE15K",
           "type": "ongrid",
-          "price": 88000
+          "price": 88000,
+          "mpptCount": 1,
+          "mpptVoltageMin": 380,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 850,
+          "startVoltage": 380,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20,
+          "optimizerBased": true
         },
         {
           "id": "i39",
@@ -969,7 +1567,16 @@
           "kw": 17,
           "model": "SE17K",
           "type": "ongrid",
-          "price": 89000
+          "price": 89000,
+          "mpptCount": 1,
+          "mpptVoltageMin": 380,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 850,
+          "startVoltage": 380,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20,
+          "optimizerBased": true
         },
         {
           "id": "i40",
@@ -982,7 +1589,16 @@
           "kw": 27.6,
           "model": "SE27.6K",
           "type": "ongrid",
-          "price": 112000
+          "price": 112000,
+          "mpptCount": 1,
+          "mpptVoltageMin": 380,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 850,
+          "startVoltage": 380,
+          "maxInputCurrent": 32,
+          "maxStringsPerMppt": 4,
+          "maxIsc": 40,
+          "optimizerBased": true
         },
         {
           "id": "i41",
@@ -995,7 +1611,16 @@
           "kw": 33.3,
           "model": "SE-33.3KW",
           "type": "ongrid",
-          "price": 118000
+          "price": 118000,
+          "mpptCount": 1,
+          "mpptVoltageMin": 380,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 850,
+          "startVoltage": 380,
+          "maxInputCurrent": 32,
+          "maxStringsPerMppt": 4,
+          "maxIsc": 40,
+          "optimizerBased": true
         },
         {
           "id": "i42",
@@ -1008,7 +1633,16 @@
           "kw": 66,
           "model": "SE66K",
           "type": "ongrid",
-          "price": 228000
+          "price": 228000,
+          "mpptCount": 1,
+          "mpptVoltageMin": 560,
+          "mpptVoltageMax": 960,
+          "maxInputVoltage": 1100,
+          "startVoltage": 560,
+          "maxInputCurrent": 60,
+          "maxStringsPerMppt": 8,
+          "maxIsc": 75,
+          "optimizerBased": true
         },
         {
           "id": "i43",
@@ -1021,7 +1655,16 @@
           "kw": 100,
           "model": "SE 100kw",
           "type": "ongrid",
-          "price": 315000
+          "price": 315000,
+          "mpptCount": 1,
+          "mpptVoltageMin": 560,
+          "mpptVoltageMax": 960,
+          "maxInputVoltage": 1100,
+          "startVoltage": 560,
+          "maxInputCurrent": 60,
+          "maxStringsPerMppt": 8,
+          "maxIsc": 75,
+          "optimizerBased": true
         },
         {
           "id": "i44",
@@ -1034,7 +1677,15 @@
           "kw": 3,
           "model": "On-Grid 1P",
           "type": "ongrid",
-          "price": 14900
+          "price": 15700,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 100,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16.5
         },
         {
           "id": "i45",
@@ -1047,7 +1698,15 @@
           "kw": 3.3,
           "model": "On-Grid 1P",
           "type": "ongrid",
-          "price": 18672
+          "price": 18672,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 100,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16.5
         },
         {
           "id": "i46",
@@ -1060,7 +1719,15 @@
           "kw": 4,
           "model": "On-Grid 1P",
           "type": "ongrid",
-          "price": 19975
+          "price": 19975,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 100,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16.5
         },
         {
           "id": "i47",
@@ -1073,7 +1740,15 @@
           "kw": 5,
           "model": "On-Grid 1P",
           "type": "ongrid",
-          "price": 26500
+          "price": 26500,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 100,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16.5
         },
         {
           "id": "i48",
@@ -1086,7 +1761,15 @@
           "kw": 5,
           "model": "On-Grid 3P",
           "type": "ongrid",
-          "price": 45696
+          "price": 45696,
+          "mpptCount": 2,
+          "mpptVoltageMin": 180,
+          "mpptVoltageMax": 800,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i49",
@@ -1099,7 +1782,15 @@
           "kw": 6,
           "model": "On-Grid 3P",
           "type": "ongrid",
-          "price": 46502
+          "price": 46502,
+          "mpptCount": 2,
+          "mpptVoltageMin": 180,
+          "mpptVoltageMax": 800,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i50",
@@ -1112,7 +1803,15 @@
           "kw": 8,
           "model": "On-Grid 3P",
           "type": "ongrid",
-          "price": 48115
+          "price": 48115,
+          "mpptCount": 2,
+          "mpptVoltageMin": 180,
+          "mpptVoltageMax": 800,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i51",
@@ -1125,7 +1824,15 @@
           "kw": 10,
           "model": "On-Grid 3P",
           "type": "ongrid",
-          "price": 49728
+          "price": 49728,
+          "mpptCount": 2,
+          "mpptVoltageMin": 180,
+          "mpptVoltageMax": 800,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i52",
@@ -1138,7 +1845,15 @@
           "kw": 15,
           "model": "On-Grid 3P",
           "type": "ongrid",
-          "price": 60000
+          "price": 60000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 180,
+          "mpptVoltageMax": 800,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 15,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i53",
@@ -1151,7 +1866,15 @@
           "kw": 20,
           "model": "On-Grid 3P",
           "type": "ongrid",
-          "price": 69750
+          "price": 69750,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27
         },
         {
           "id": "i54",
@@ -1164,7 +1887,15 @@
           "kw": 33,
           "model": "On-Grid 3P",
           "type": "ongrid",
-          "price": 110611
+          "price": 110611,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27
         },
         {
           "id": "i55",
@@ -1177,7 +1908,15 @@
           "kw": 40,
           "model": "On-Grid 3P",
           "type": "ongrid",
-          "price": 140238
+          "price": 140238,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27
         },
         {
           "id": "i56",
@@ -1191,7 +1930,15 @@
           "kw": 3,
           "model": "Hybrid 3-48v",
           "type": "hybrid",
-          "price": 66458
+          "price": 67100,
+          "mpptCount": 2,
+          "mpptVoltageMin": 90,
+          "mpptVoltageMax": 450,
+          "maxInputVoltage": 500,
+          "startVoltage": 100,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i57",
@@ -1205,7 +1952,15 @@
           "kw": 3.6,
           "model": "Hybrid 3.6-48v",
           "type": "hybrid",
-          "price": 72140
+          "price": 74786,
+          "mpptCount": 2,
+          "mpptVoltageMin": 90,
+          "mpptVoltageMax": 450,
+          "maxInputVoltage": 500,
+          "startVoltage": 100,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i58",
@@ -1219,7 +1974,15 @@
           "kw": 5,
           "model": "Hybrid 5-48v",
           "type": "hybrid",
-          "price": 79212
+          "price": 81730,
+          "mpptCount": 2,
+          "mpptVoltageMin": 90,
+          "mpptVoltageMax": 450,
+          "maxInputVoltage": 500,
+          "startVoltage": 100,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i59",
@@ -1233,7 +1996,15 @@
           "kw": 6,
           "model": "Hybrid 6-48v",
           "type": "hybrid",
-          "price": 83456
+          "price": 86076,
+          "mpptCount": 2,
+          "mpptVoltageMin": 90,
+          "mpptVoltageMax": 450,
+          "maxInputVoltage": 500,
+          "startVoltage": 100,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i60",
@@ -1247,7 +2018,15 @@
           "kw": 8,
           "model": "Hybrid 8-48v",
           "type": "hybrid",
-          "price": 148532
+          "price": 152719,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 800,
+          "maxInputVoltage": 1000,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i61",
@@ -1261,7 +2040,15 @@
           "kw": 10,
           "model": "Hybrid 10-48v",
           "type": "hybrid",
-          "price": 161563
+          "price": 162136,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 800,
+          "maxInputVoltage": 1000,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i62",
@@ -1275,7 +2062,15 @@
           "kw": 12,
           "model": "Hybrid 12-48v",
           "type": "hybrid",
-          "price": 168438
+          "price": 168438,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 800,
+          "maxInputVoltage": 1000,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i63",
@@ -1289,7 +2084,15 @@
           "kw": 30,
           "model": "Hybrid 30-48v",
           "type": "hybrid",
-          "price": 353925
+          "price": 353925,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 28,
+          "maxStringsPerMppt": 3,
+          "maxIsc": 35
         },
         {
           "id": "i64",
@@ -1303,7 +2106,15 @@
           "kw": 40,
           "model": "Hybrid 40-48v",
           "type": "hybrid",
-          "price": 423833
+          "price": 423833,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 28,
+          "maxStringsPerMppt": 3,
+          "maxIsc": 35
         },
         {
           "id": "i65",
@@ -1317,7 +2128,15 @@
           "kw": 80,
           "model": "Hybrid 80-48v",
           "type": "hybrid",
-          "price": 686205
+          "price": 686205,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 28,
+          "maxStringsPerMppt": 3,
+          "maxIsc": 35
         },
         {
           "id": "i66",
@@ -1330,7 +2149,15 @@
           "kw": 3.3,
           "model": "ZIP-3.3kw",
           "type": "ongrid",
-          "price": 19800
+          "price": 19800,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 100,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16
         },
         {
           "id": "i67",
@@ -1343,7 +2170,15 @@
           "kw": 5,
           "model": "ZIP-5kw",
           "type": "ongrid",
-          "price": 32700
+          "price": 32700,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 100,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16
         },
         {
           "id": "i68",
@@ -1356,7 +2191,15 @@
           "kw": 3,
           "model": "PV BLINK 3kW",
           "type": "ongrid",
-          "price": 17500
+          "price": 17500,
+          "mpptCount": 1,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 100,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16
         },
         {
           "id": "i69",
@@ -1369,7 +2212,15 @@
           "kw": 5,
           "model": "PV BLINK 5kW",
           "type": "ongrid",
-          "price": 31200
+          "price": 31200,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 100,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16
         },
         {
           "id": "i70",
@@ -1382,7 +2233,15 @@
           "kw": 5,
           "model": "PV BLINK 5kW",
           "type": "ongrid",
-          "price": 50700
+          "price": 50700,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 950,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i71",
@@ -1395,7 +2254,15 @@
           "kw": 6,
           "model": "PV BLINK 6kW",
           "type": "ongrid",
-          "price": 53350
+          "price": 53350,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 950,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i72",
@@ -1408,7 +2275,15 @@
           "kw": 8,
           "model": "PV BLINK 8kW",
           "type": "ongrid",
-          "price": 60200
+          "price": 60200,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 950,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i73",
@@ -1421,7 +2296,15 @@
           "kw": 10,
           "model": "PV BLINK 10kW",
           "type": "ongrid",
-          "price": 61250
+          "price": 61250,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 950,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i74",
@@ -1434,7 +2317,15 @@
           "kw": 12,
           "model": "PV BLINK 12kW",
           "type": "ongrid",
-          "price": 68700
+          "price": 68700,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 950,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i75",
@@ -1447,7 +2338,15 @@
           "kw": 15,
           "model": "PV BLINK 15kW",
           "type": "ongrid",
-          "price": 71800
+          "price": 71800,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 950,
+          "maxInputVoltage": 1100,
+          "startVoltage": 200,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 20
         },
         {
           "id": "i76",
@@ -1460,7 +2359,15 @@
           "kw": 20,
           "model": "PV BLINK 20kW",
           "type": "ongrid",
-          "price": 87700
+          "price": 87700,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27
         },
         {
           "id": "i77",
@@ -1473,7 +2380,15 @@
           "kw": 25,
           "model": "PV BLINK 25kW",
           "type": "ongrid",
-          "price": 102000
+          "price": 102000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27
         },
         {
           "id": "i78",
@@ -1486,7 +2401,15 @@
           "kw": 30,
           "model": "PV BLINK 30kW",
           "type": "ongrid",
-          "price": 110000
+          "price": 110000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 22,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 27
         },
         {
           "id": "i79",
@@ -1499,7 +2422,15 @@
           "kw": 3,
           "model": "Solis 3kW",
           "type": "ongrid",
-          "price": 17900
+          "price": 17900,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 560,
+          "maxInputVoltage": 600,
+          "startVoltage": 100,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i80",
@@ -1512,7 +2443,15 @@
           "kw": 5,
           "model": "Solis 5kW",
           "type": "ongrid",
-          "price": 30000
+          "price": 30000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 560,
+          "maxInputVoltage": 600,
+          "startVoltage": 100,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i81",
@@ -1525,7 +2464,15 @@
           "kw": 5,
           "model": "Solis 5kW",
           "type": "ongrid",
-          "price": 54000
+          "price": 54000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i82",
@@ -1538,7 +2485,15 @@
           "kw": 8,
           "model": "Solis 8kW",
           "type": "ongrid",
-          "price": 58000
+          "price": 58000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i83",
@@ -1551,7 +2506,15 @@
           "kw": 10,
           "model": "Solis 10kW",
           "type": "ongrid",
-          "price": 59000
+          "price": 59000,
+          "mpptCount": 2,
+          "mpptVoltageMin": 160,
+          "mpptVoltageMax": 850,
+          "maxInputVoltage": 1000,
+          "startVoltage": 200,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i84",
@@ -1564,7 +2527,15 @@
           "kw": 20,
           "model": "Solis 20kW",
           "type": "ongrid",
-          "price": 85129
+          "price": 85129,
+          "mpptCount": 4,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i85",
@@ -1577,7 +2548,15 @@
           "kw": 40,
           "model": "Solis 40kW",
           "type": "ongrid",
-          "price": 142000
+          "price": 142000,
+          "mpptCount": 4,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i86",
@@ -1590,7 +2569,15 @@
           "kw": 50,
           "model": "Solis 50kW",
           "type": "ongrid",
-          "price": 152000
+          "price": 152000,
+          "mpptCount": 4,
+          "mpptVoltageMin": 200,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 250,
+          "maxInputCurrent": 16,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 20
         },
         {
           "id": "i87",
@@ -1603,7 +2590,15 @@
           "kw": 3.3,
           "model": "Foxess 3.3kW",
           "type": "ongrid",
-          "price": 16300
+          "price": 16300,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 550,
+          "maxInputVoltage": 600,
+          "startVoltage": 100,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i88",
@@ -1616,7 +2611,15 @@
           "kw": 5,
           "model": "Foxess 5kW",
           "type": "ongrid",
-          "price": 31500
+          "price": 31500,
+          "mpptCount": 2,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 550,
+          "maxInputVoltage": 600,
+          "startVoltage": 100,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 17.5
         },
         {
           "id": "i89",
@@ -1629,7 +2632,15 @@
           "kw": 6,
           "model": "Foxess 6kW",
           "type": "ongrid",
-          "price": 55900
+          "price": 55900,
+          "mpptCount": 2,
+          "mpptVoltageMin": 140,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 140,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 18
         },
         {
           "id": "i90",
@@ -1642,7 +2653,15 @@
           "kw": 8,
           "model": "Foxess 8kW",
           "type": "ongrid",
-          "price": 58500
+          "price": 58500,
+          "mpptCount": 2,
+          "mpptVoltageMin": 140,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 140,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 18
         },
         {
           "id": "i91",
@@ -1655,7 +2674,15 @@
           "kw": 10,
           "model": "Foxess 10kW",
           "type": "ongrid",
-          "price": 59900
+          "price": 59900,
+          "mpptCount": 2,
+          "mpptVoltageMin": 140,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 140,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 18
         },
         {
           "id": "i92",
@@ -1668,7 +2695,15 @@
           "kw": 15,
           "model": "Foxess 15kW",
           "type": "ongrid",
-          "price": 67800
+          "price": 67800,
+          "mpptCount": 2,
+          "mpptVoltageMin": 140,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 140,
+          "maxInputCurrent": 14,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 18
         },
         {
           "id": "i93",
@@ -1681,7 +2716,15 @@
           "kw": 20,
           "model": "Foxess 20kW",
           "type": "ongrid",
-          "price": 77900
+          "price": 77900,
+          "mpptCount": 2,
+          "mpptVoltageMin": 140,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 140,
+          "maxInputCurrent": 28,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 35
         },
         {
           "id": "i94",
@@ -1694,7 +2737,15 @@
           "kw": 25,
           "model": "Foxess 25kW",
           "type": "ongrid",
-          "price": 83900
+          "price": 83900,
+          "mpptCount": 2,
+          "mpptVoltageMin": 140,
+          "mpptVoltageMax": 1000,
+          "maxInputVoltage": 1100,
+          "startVoltage": 140,
+          "maxInputCurrent": 28,
+          "maxStringsPerMppt": 2,
+          "maxIsc": 35
         },
         {
           "id": "i95",
@@ -1707,7 +2758,15 @@
           "kw": 3,
           "model": "Eastman 3kW",
           "type": "ongrid",
-          "price": 14800
+          "price": 14800,
+          "mpptCount": 1,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 100,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16
         },
         {
           "id": "i96",
@@ -1720,7 +2779,15 @@
           "kw": 5,
           "model": "Eastman 5kW",
           "type": "ongrid",
-          "price": 24900
+          "price": 24900,
+          "mpptCount": 1,
+          "mpptVoltageMin": 80,
+          "mpptVoltageMax": 500,
+          "maxInputVoltage": 550,
+          "startVoltage": 100,
+          "maxInputCurrent": 13,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 16
         },
         {
           "id": "i97",
@@ -1733,7 +2800,16 @@
           "kw": 0.48,
           "model": "IQ8P Micro",
           "type": "micro",
-          "price": 8200
+          "price": 8200,
+          "mpptCount": 1,
+          "mpptVoltageMin": 16,
+          "mpptVoltageMax": 58,
+          "maxInputVoltage": 60,
+          "startVoltage": 22,
+          "maxInputCurrent": 12,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 15,
+          "isMicro": true
         },
         {
           "id": "i98",
@@ -1746,7 +2822,16 @@
           "kw": 0.5,
           "model": "Micro Inverter",
           "type": "micro",
-          "price": 7500
+          "price": 7500,
+          "mpptCount": 1,
+          "mpptVoltageMin": 16,
+          "mpptVoltageMax": 60,
+          "maxInputVoltage": 65,
+          "startVoltage": 22,
+          "maxInputCurrent": 12.5,
+          "maxStringsPerMppt": 1,
+          "maxIsc": 15,
+          "isMicro": true
         }
       ]
     },
@@ -1772,7 +2857,7 @@
             "value"
           ],
           "phase": "1P",
-          "price": 2030
+          "price": 2800
         },
         {
           "id": "d3",
@@ -1782,7 +2867,7 @@
             "value"
           ],
           "phase": "1P",
-          "price": 2800
+          "price": 3226
         },
         {
           "id": "d4",
@@ -1793,7 +2878,7 @@
             "premium"
           ],
           "phase": "1P",
-          "price": 2800
+          "price": 2030
         },
         {
           "id": "d5",
@@ -1803,7 +2888,7 @@
             "premium"
           ],
           "phase": "1P",
-          "price": 3200
+          "price": 2473
         },
         {
           "id": "d6",
@@ -1813,7 +2898,7 @@
             "base"
           ],
           "phase": "3P",
-          "price": 4000
+          "price": 1525
         },
         {
           "id": "d7",
@@ -1823,7 +2908,7 @@
             "value"
           ],
           "phase": "3P",
-          "price": 5594
+          "price": 3700
         },
         {
           "id": "d8",
@@ -1834,7 +2919,7 @@
             "premium"
           ],
           "phase": "3P",
-          "price": 5594
+          "price": 1858
         },
         {
           "id": "d9",
@@ -1845,7 +2930,7 @@
             "value"
           ],
           "phase": "1P-HYB",
-          "price": 2800
+          "price": 3226
         },
         {
           "id": "d10",
@@ -1873,7 +2958,7 @@
             "value"
           ],
           "phase": "1P",
-          "price": 1628
+          "price": 1600
         },
         {
           "id": "a2",
@@ -1883,7 +2968,7 @@
             "value"
           ],
           "phase": "1P",
-          "price": 1700
+          "price": 2282
         },
         {
           "id": "a3",
@@ -1893,7 +2978,7 @@
             "value"
           ],
           "phase": "1P",
-          "price": 1800
+          "price": 1858
         },
         {
           "id": "a4",
@@ -1935,7 +3020,7 @@
             "value"
           ],
           "phase": "1P-HYB",
-          "price": 1628
+          "price": 8100
         },
         {
           "id": "a8",
@@ -1946,7 +3031,7 @@
             "value"
           ],
           "phase": "3P-HYB",
-          "price": 3700
+          "price": 12100
         },
         {
           "id": "ac_hyb_en1p",
@@ -1968,7 +3053,7 @@
           ],
           "phase": "3P-HYB",
           "type": "hybrid",
-          "price": 5500
+          "price": 10612
         }
       ]
     },
@@ -1992,10 +3077,11 @@
           "brand": "Genius",
           "tiers": [
             "value",
-            "premium"
+            "premium",
+            "base"
           ],
           "phase": "1P",
-          "price": 1610
+          "price": 1440.68
         },
         {
           "id": "m3",
@@ -2008,17 +3094,6 @@
           "price": 3950
         },
         {
-          "id": "m4",
-          "name": "Genius Three Phase Energy Meter",
-          "brand": "Genius",
-          "tiers": [
-            "value",
-            "premium"
-          ],
-          "phase": "3P",
-          "price": 4650
-        },
-        {
           "id": "m5",
           "name": "L&T 1P Meter",
           "brand": "L&T",
@@ -2026,7 +3101,7 @@
             "value"
           ],
           "phase": "1P",
-          "price": 1800
+          "price": 1398.36
         },
         {
           "id": "m6",
@@ -2036,7 +3111,7 @@
             "value"
           ],
           "phase": "3P",
-          "price": 4200
+          "price": 4323
         },
         {
           "id": "m7",
@@ -2047,7 +3122,7 @@
             "value"
           ],
           "phase": "3P",
-          "price": 4000
+          "price": 3899
         }
       ]
     },
@@ -2077,13 +3152,13 @@
         },
         {
           "id": "dc3",
-          "name": "DC-APAR 6sqmm",
+          "name": "DC-APAR 4sqmm",
           "brand": "APAR",
           "tiers": [
             "value"
           ],
-          "sqmm": 6,
-          "price": 55
+          "sqmm": 4,
+          "price": 64
         },
         {
           "id": "dc4",
@@ -2094,7 +3169,7 @@
             "premium"
           ],
           "sqmm": 4,
-          "price": 60
+          "price": 58
         },
         {
           "id": "dc5",
@@ -2115,6 +3190,16 @@
           ],
           "sqmm": 6,
           "price": 54
+        },
+        {
+          "id": "dc_8398622e03ee",
+          "name": "DC-FINOLEX 4sqmm",
+          "brand": "FINOLEX",
+          "tiers": [
+            "base"
+          ],
+          "price": 54,
+          "sqmm": 4
         }
       ]
     },
@@ -2164,6 +3249,16 @@
           ],
           "sqmm": 6,
           "price": 61
+        },
+        {
+          "id": "ac_a0473dd3b8ec",
+          "name": "AC-FINOLEX 6sqmm",
+          "brand": "FINOLEX",
+          "tiers": [
+            "value"
+          ],
+          "price": 76,
+          "sqmm": 4
         }
       ]
     },
@@ -2187,7 +3282,8 @@
           "brand": "L&T",
           "tiers": [
             "value",
-            "premium"
+            "premium",
+            "base"
           ],
           "phase": "3P",
           "price": 623
@@ -2236,29 +3332,34 @@
         },
         {
           "id": "cb4",
-          "name": "CB Rod 14mm 250u 1.2m",
-          "brand": "Generic",
-          "tiers": [
-            "value"
-          ],
-          "price": 900
-        },
-        {
-          "id": "cb5",
-          "name": "CB Rod 17.2mm 250u 1.2m",
+          "name": "CB Rod 14mm 250u 1.0m",
           "brand": "Generic",
           "tiers": [
             "value",
+            "base",
             "premium"
           ],
-          "price": 900
+          "price": 470
+        },
+        {
+          "id": "cb5",
+          "name": "CB Rod 17.2mm 250u 1.5m",
+          "brand": "Generic",
+          "tiers": [
+            "value",
+            "premium",
+            "base"
+          ],
+          "price": 750
         },
         {
           "id": "cb6",
           "name": "CB Rod 17.2mm 250u 2m",
           "brand": "Generic",
           "tiers": [
-            "premium"
+            "premium",
+            "base",
+            "value"
           ],
           "price": 1000
         }
@@ -2270,13 +3371,13 @@
       "items": [
         {
           "id": "ec1",
-          "name": "16sqmm Green Cable FLEXGUARD",
-          "brand": "FLEXGUARD",
+          "name": "16sqmm Green Cable ",
+          "brand": "kanberry ",
           "tiers": [
             "base"
           ],
           "sqmm": 16,
-          "price": 21.6
+          "price": 26
         },
         {
           "id": "ec2",
@@ -2311,10 +3412,11 @@
           "brand": "Excel",
           "tiers": [
             "value",
-            "premium"
+            "premium",
+            "base"
           ],
           "sqmm": 8,
-          "price": 72
+          "price": 84
         },
         {
           "id": "la2",
@@ -2409,7 +3511,8 @@
           "tiers": [
             "premium"
           ],
-          "price": 5150
+          "price": 5150,
+          "gstOverride": 18
         },
         {
           "id": "en5",
@@ -3320,12 +4423,12 @@
           "variable": true,
           "gst": 18,
           "qty": {
-            "3": 40,
-            "6": 40,
+            "3": 50,
+            "6": 50,
             "8": 80,
             "10": 100,
-            "5sp": 40,
-            "5tp": 40
+            "5sp": 50,
+            "5tp": 50
           }
         },
         {
@@ -3447,7 +4550,7 @@
         {
           "name": "SS Terminal Strip 4P",
           "gst": 18,
-          "price": 150,
+          "price": 140,
           "qty": {
             "3": 2,
             "6": 2,
@@ -3460,7 +4563,7 @@
         {
           "name": "Earthing Chamber 180x180mm",
           "gst": 18,
-          "price": 270,
+          "price": 250,
           "qty": {
             "3": 3,
             "6": 3,
@@ -3473,7 +4576,7 @@
         {
           "name": "Lightning Arrester 16mm 1m",
           "gst": 18,
-          "price": 600,
+          "price": 517,
           "qty": {
             "3": 1,
             "6": 1,
@@ -3499,7 +4602,7 @@
         {
           "name": "Earth Pit Compound",
           "gst": 18,
-          "price": 167,
+          "price": 180,
           "qty": {
             "3": 1,
             "6": 1,
@@ -3872,201 +4975,6 @@
             "5sp": 12,
             "5tp": 12
           }
-        },
-        {
-          "name": "1.5x1.5 Sq Tube 16g GI",
-          "gst": 18,
-          "price": 1130,
-          "qty": {
-            "3": 3,
-            "6": 4,
-            "8": 6,
-            "10": 7,
-            "5sp": 4,
-            "5tp": 4
-          }
-        },
-        {
-          "name": "2.5x1.5 Sq Tube 16g GI",
-          "gst": 18,
-          "price": 1024,
-          "qty": {
-            "3": 3,
-            "6": 4,
-            "8": 6,
-            "10": 7,
-            "5sp": 4,
-            "5tp": 4
-          }
-        },
-        {
-          "name": "4x4 Base Plate",
-          "gst": 18,
-          "price": 1740,
-          "qty": {
-            "3": 1,
-            "6": 1,
-            "8": 1,
-            "10": 2,
-            "5sp": 1,
-            "5tp": 1
-          }
-        },
-        {
-          "name": "MS Square Plate 5x5",
-          "gst": 18,
-          "price": 16,
-          "qty": {
-            "3": 4,
-            "6": 6,
-            "8": 8,
-            "10": 10,
-            "5sp": 6,
-            "5tp": 6
-          }
-        },
-        {
-          "name": "Anchor Bolt 8mm",
-          "gst": 18,
-          "price": 26,
-          "qty": {
-            "3": 16,
-            "6": 24,
-            "8": 32,
-            "10": 40,
-            "5sp": 24,
-            "5tp": 24
-          }
-        },
-        {
-          "name": "Epoxy Primer",
-          "gst": 18,
-          "price": 398,
-          "qty": {
-            "3": 1,
-            "6": 1,
-            "8": 1,
-            "10": 2,
-            "5sp": 1,
-            "5tp": 1
-          }
-        },
-        {
-          "name": "Thinner D13",
-          "gst": 18,
-          "price": 158,
-          "qty": {
-            "3": 1,
-            "6": 1,
-            "8": 1,
-            "10": 2,
-            "5sp": 1,
-            "5tp": 1
-          }
-        },
-        {
-          "name": "Paint Roller 4in",
-          "gst": 18,
-          "price": 19,
-          "qty": {
-            "3": 2,
-            "6": 3,
-            "8": 3,
-            "10": 5,
-            "5sp": 3,
-            "5tp": 3
-          }
-        },
-        {
-          "name": "Cotton Waste",
-          "gst": 18,
-          "price": 130,
-          "qty": {
-            "3": 50,
-            "6": 50,
-            "8": 50,
-            "10": 100,
-            "5sp": 50,
-            "5tp": 50
-          }
-        },
-        {
-          "name": "Cutting Wheel 4in",
-          "gst": 18,
-          "price": 130,
-          "qty": {
-            "3": 3,
-            "6": 3,
-            "8": 3,
-            "10": 8,
-            "5sp": 3,
-            "5tp": 3
-          }
-        },
-        {
-          "name": "Welding Electrode",
-          "gst": 18,
-          "price": 1.2,
-          "qty": {
-            "3": 1,
-            "6": 1,
-            "8": 1,
-            "10": 2,
-            "5sp": 1,
-            "5tp": 1
-          }
-        },
-        {
-          "name": "3/4in Self Screw",
-          "gst": 18,
-          "price": 1.5,
-          "qty": {
-            "3": 25,
-            "6": 25,
-            "8": 25,
-            "10": 20,
-            "5sp": 25,
-            "5tp": 25
-          }
-        },
-        {
-          "name": "Self Bolt Corroshield",
-          "gst": 18,
-          "price": 1.2,
-          "qty": {
-            "3": 20,
-            "6": 20,
-            "8": 20,
-            "10": 25,
-            "5sp": 20,
-            "5tp": 20
-          }
-        },
-        {
-          "name": "End Cap 2.5x1.5",
-          "gst": 18,
-          "price": 16,
-          "qty": {
-            "3": 4,
-            "6": 12,
-            "8": 12,
-            "10": 12,
-            "5sp": 12,
-            "5tp": 12
-          }
-        },
-        {
-          "name": "End Cap 1.5x1.5",
-          "gst": 18,
-          "price": 26,
-          "qty": {
-            "3": 8,
-            "6": 12,
-            "8": 12,
-            "10": 16,
-            "5sp": 12,
-            "5tp": 12
-          }
         }
       ]
     },
@@ -4307,7 +5215,7 @@
           "variable": true,
           "gst": 18,
           "qty": {
-            "3": 40,
+            "3": 50,
             "5": 50,
             "8": 120,
             "10": 120
@@ -4796,171 +5704,6 @@
             "5": 12,
             "8": 14,
             "10": 14
-          }
-        },
-        {
-          "name": "1.5x1.5 Sq Tube 16g GI",
-          "gst": 18,
-          "price": 1130,
-          "qty": {
-            "3": 3,
-            "5": 4,
-            "8": 7,
-            "10": 8
-          }
-        },
-        {
-          "name": "2.5x1.5 Sq Tube 16g GI",
-          "gst": 18,
-          "price": 1024,
-          "qty": {
-            "3": 3,
-            "5": 4,
-            "8": 5,
-            "10": 5
-          }
-        },
-        {
-          "name": "4x4 Base Plate GI",
-          "gst": 18,
-          "price": 1740,
-          "qty": {
-            "3": 1,
-            "5": 1,
-            "8": 1,
-            "10": 1
-          }
-        },
-        {
-          "name": "MS Square Plate 5x5",
-          "gst": 18,
-          "price": 16,
-          "qty": {
-            "3": 4,
-            "5": 6,
-            "8": 8,
-            "10": 10
-          }
-        },
-        {
-          "name": "Anchor Bolt 8mm",
-          "gst": 18,
-          "price": 26,
-          "qty": {
-            "3": 16,
-            "5": 24,
-            "8": 32,
-            "10": 40
-          }
-        },
-        {
-          "name": "Epoxy Primer",
-          "gst": 18,
-          "price": 398,
-          "qty": {
-            "3": 1,
-            "5": 1,
-            "8": 1,
-            "10": 1
-          }
-        },
-        {
-          "name": "Thinner D13",
-          "gst": 18,
-          "price": 158,
-          "qty": {
-            "3": 0.5,
-            "5": 0.5,
-            "8": 1,
-            "10": 1
-          }
-        },
-        {
-          "name": "Roller 4 inch",
-          "gst": 18,
-          "price": 19,
-          "qty": {
-            "3": 3,
-            "5": 3,
-            "8": 3,
-            "10": 3
-          }
-        },
-        {
-          "name": "Cotton Waste",
-          "gst": 18,
-          "price": 130,
-          "qty": {
-            "3": 50,
-            "5": 50,
-            "8": 50,
-            "10": 100
-          }
-        },
-        {
-          "name": "4in Cutting Wheel",
-          "gst": 18,
-          "price": 130,
-          "qty": {
-            "3": 3,
-            "5": 3,
-            "8": 3,
-            "10": 5
-          }
-        },
-        {
-          "name": "Welding Electrodes 2.50",
-          "gst": 18,
-          "price": 1.2,
-          "qty": {
-            "3": 1,
-            "5": 1,
-            "8": 1,
-            "10": 1
-          }
-        },
-        {
-          "name": "3/4in Self Screw",
-          "gst": 18,
-          "price": 1.5,
-          "qty": {
-            "3": 25,
-            "5": 25,
-            "8": 40,
-            "10": 40
-          }
-        },
-        {
-          "name": "Self Bolt Corroshield",
-          "gst": 18,
-          "price": 1.2,
-          "qty": {
-            "3": 20,
-            "5": 20,
-            "8": 35,
-            "10": 35
-          }
-        },
-        {
-          "name": "2.5x1.5 End Cap",
-          "gst": 18,
-          "price": 16,
-          "qty": {
-            "3": 8,
-            "5": 8,
-            "8": 12,
-            "10": 12
-          }
-        },
-        {
-          "name": "1.5x1.5 End Cap",
-          "gst": 18,
-          "price": 26,
-          "qty": {
-            "3": 8,
-            "5": 8,
-            "8": 8,
-            "10": 8
           }
         },
         {
@@ -5602,7 +6345,7 @@
   "adminPassword": "golden@123",
   "marketRates": {
     "ongrid_base": {
-      "3": 0,
+      "3": 202539.3,
       "6": 0,
       "8": 0,
       "10": 0,
@@ -5610,7 +6353,7 @@
       "5tp": 0
     },
     "ongrid_value": {
-      "3": 200000,
+      "3": 230000,
       "6": 0,
       "8": 0,
       "10": 0,
@@ -5690,6 +6433,18 @@
     },
     "upgrade_8_10": {
       "rate": 0
+    },
+    "ongrid_base_diffBase": {
+      "3": 12065
+    },
+    "ongrid_base_up5sp": {
+      "3": 2300000
+    },
+    "ongrid_base_up5sp_diffBase": {
+      "3": 0
+    },
+    "ongrid_value_diffBase": {
+      "3": 0
     }
   },
   "structureTemplates": {
@@ -5849,6 +6604,30 @@
             "3": 16,
             "5": 24,
             "8": 32,
+            "10": 40
+          }
+        },
+        {
+          "name": "3/4in Self Screw",
+          "type": "fixed",
+          "price": 1.5,
+          "unit": "nos",
+          "qty": {
+            "3": 25,
+            "5": 25,
+            "8": 50,
+            "10": 50
+          }
+        },
+        {
+          "name": "Self Bolt Corroshield",
+          "type": "fixed",
+          "price": 1.2,
+          "unit": "nos",
+          "qty": {
+            "3": 20,
+            "5": 20,
+            "8": 40,
             "10": 40
           }
         }
@@ -6034,6 +6813,30 @@
             "3": 16,
             "5": 16,
             "8": 32,
+            "10": 40
+          }
+        },
+        {
+          "name": "3/4in Self Screw",
+          "type": "fixed",
+          "price": 1.5,
+          "unit": "nos",
+          "qty": {
+            "3": 25,
+            "5": 25,
+            "8": 50,
+            "10": 50
+          }
+        },
+        {
+          "name": "Self Bolt Corroshield",
+          "type": "fixed",
+          "price": 1.2,
+          "unit": "nos",
+          "qty": {
+            "3": 20,
+            "5": 20,
+            "8": 40,
             "10": 40
           }
         }
@@ -6245,6 +7048,30 @@
             "8": 2.5,
             "10": 3
           }
+        },
+        {
+          "name": "3/4in Self Screw",
+          "type": "fixed",
+          "price": 1.5,
+          "unit": "nos",
+          "qty": {
+            "3": 25,
+            "5": 25,
+            "8": 50,
+            "10": 50
+          }
+        },
+        {
+          "name": "Self Bolt Corroshield",
+          "type": "fixed",
+          "price": 1.2,
+          "unit": "nos",
+          "qty": {
+            "3": 20,
+            "5": 20,
+            "8": 40,
+            "10": 40
+          }
         }
       ]
     }
@@ -6256,5 +7083,18 @@
     "2.5x1.5": 15.3,
     "3x1.5": 19
   },
-  "offers": []
+  "offers": [
+    {
+      "id": "offer_1778395223186",
+      "name": "hari",
+      "type": "flat",
+      "value": 10000,
+      "appliesTo": "ongrid",
+      "appliesToTier": "all",
+      "startDate": "2026-05-10",
+      "endDate": "2026-05-11",
+      "active": true,
+      "createdAt": "2026-05-10T06:40:23.186Z"
+    }
+  ]
 }
