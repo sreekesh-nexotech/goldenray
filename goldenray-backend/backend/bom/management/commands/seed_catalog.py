@@ -14,6 +14,7 @@ Populates:
 import json
 import os
 
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
@@ -31,12 +32,10 @@ from bom.models import (
     TubeWeight,
 )
 
-# Default path: catalog.json sits two levels above manage.py (repo root)
-DEFAULT_CATALOG_PATH = os.path.join(
-    os.path.dirname(__file__),  # management/commands/
-    "..", "..", "..", "..", "..", "..",  # → repo root
-    "catalog.json",
-)
+# Default path: catalog.json sits next to manage.py (the Django project root,
+# which is settings.BASE_DIR). Anchoring to BASE_DIR is robust regardless of
+# where this command file lives in the package tree.
+DEFAULT_CATALOG_PATH = os.path.join(settings.BASE_DIR, "catalog.json")
 
 
 class Command(BaseCommand):
