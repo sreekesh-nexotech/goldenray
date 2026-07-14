@@ -32,10 +32,17 @@ from bom.models import (
     TubeWeight,
 )
 
-# Default path: catalog.json sits next to manage.py (the Django project root,
-# which is settings.BASE_DIR). Anchoring to BASE_DIR is robust regardless of
-# where this command file lives in the package tree.
-DEFAULT_CATALOG_PATH = os.path.join(settings.BASE_DIR, "catalog.json")
+# Catalog source. The backend ships its OWN copy of catalog.json (next to
+# manage.py / settings.BASE_DIR) so it is fully self-contained and does NOT
+# depend on the separate Golden-Ray-BOM repo being present on disk. The data in
+# it is kept in sync with Golden-Ray-BOM/data/catalog.json (copy it over when
+# that file changes). For a deploy that wants to point at a shared catalog
+# instead, set the BOM_CATALOG_PATH env var to an absolute path.
+def _resolve_default_catalog_path() -> str:
+    return os.getenv("BOM_CATALOG_PATH") or os.path.join(settings.BASE_DIR, "catalog.json")
+
+
+DEFAULT_CATALOG_PATH = _resolve_default_catalog_path()
 
 
 class Command(BaseCommand):
@@ -305,31 +312,37 @@ class Command(BaseCommand):
         for key, rates in market_rates.items():
             parts = key.split("_")
 
-            if parts[0] == "ongrid":
-                # ongrid_base / ongrid_value / ongrid_premium
+            # Match ONLY the exact canonical key shapes. The catalog file may
+            # carry experimental variant keys (e.g. "ongrid_base_diffBase",
+            # "ongrid_base_up5sp") used by the standalone tool but unknown to
+            # this engine. Those must NOT be interpreted loosely, or their extra
+            # suffix gets dropped and they collapse onto — and overwrite — the
+            # canonical rate (e.g. "ongrid_base"), silently corrupting pricing.
+            if parts[0] == "ongrid" and len(parts) == 2:
+                # ongrid_<tier>
                 system_type = "ongrid"
-                tier = parts[1] if len(parts) > 1 else ""
+                tier = parts[1]
                 bat_config = ""
                 from_size = ""
                 to_size = ""
                 size_rates = rates
 
-            elif parts[0] == "hybrid":
+            elif parts[0] == "hybrid" and len(parts) == 3:
                 # hybrid_<tier>_<batcfg>
                 system_type = "hybrid"
-                tier = parts[1] if len(parts) > 1 else ""
-                bat_config = parts[2] if len(parts) > 2 else ""
+                tier = parts[1]
+                bat_config = parts[2]
                 from_size = ""
                 to_size = ""
                 size_rates = rates
 
-            elif parts[0] == "upgrade":
+            elif parts[0] == "upgrade" and len(parts) == 3:
                 # upgrade_<from>_<to>
                 system_type = "upgrade"
                 tier = ""
                 bat_config = ""
-                from_size = parts[1] if len(parts) > 1 else ""
-                to_size = parts[2] if len(parts) > 2 else ""
+                from_size = parts[1]
+                to_size = parts[2]
                 # {"rate": 0} → store as-is
                 size_rates = rates
 
