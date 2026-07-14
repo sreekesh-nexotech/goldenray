@@ -13,6 +13,7 @@ import Page7Content from "./Page7Content";
 import Page8Content from "./Page8Content";
 import Page9Content from "./Page9Content";
 import Page10Content from "./Page10Content";
+import type { QuotationBom } from "@/services/bomService";
 
 export interface QuotationPdfData {
   customerName: string;
@@ -29,6 +30,7 @@ export interface QuotationPdfData {
       data: number[];
     }[];
   };
+  bom?: QuotationBom;
 }
 
 interface QuotationPdfGeneratorProps {
@@ -66,9 +68,9 @@ export default function QuotationPdfGenerator({
   const random = String(Math.floor(Math.random() * 999)).padStart(3, "0");
   const quoteNo = `QUO-GR-AS-${year}-${month}-${random}`;
 
-  const proposalBy = "XXX";
+  const proposalBy = data.bom?.salesPerson || "Golden Ray Team";
   const gstNo = "32AAUFG1464A1ZP";
-  const companyRegistration = "5 kW";
+  const companyRegistration = data.systemSize;
 
   // Wait for images to load after render
   useEffect(() => {
@@ -225,7 +227,7 @@ export default function QuotationPdfGenerator({
       </PageShell>
 
       <PageShell>
-        <Page5Content systemPrice={data.systemPrice} />
+        <Page5Content bom={data.bom} />
       </PageShell>
 
       <PageShell>
