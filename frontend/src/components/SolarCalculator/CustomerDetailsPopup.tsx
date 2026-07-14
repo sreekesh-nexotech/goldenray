@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { getQuotationBom, type QuotationBom } from "@/services/bomService";
 
 const QuotationPdfGenerator = dynamic(
   () => import("@/components/Quotation/QuotationPdfGenerator"),
@@ -38,6 +39,7 @@ export interface QuotationData {
       data: number[];
     }[];
   };
+  bom?: QuotationBom;
 }
 
 export default function CustomerDetailsPopup({
@@ -78,29 +80,34 @@ export default function CustomerDetailsPopup({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (validateForm()) {
-      const quotationData: QuotationData = {
-        customerName,
-        address,
-        phoneNumber,
-        pincode,
-        monthlyBill,
-        systemSize,
-        systemPrice,
-        emiPerMonth,
-        graphData,
-      };
+    if (!validateForm()) return;
 
-      // Also store in sessionStorage for the /quotation page fallback
-      sessionStorage.setItem("quotationData", JSON.stringify(quotationData));
+    setIsGenerating(true);
 
-      // Trigger PDF generation
-      setIsGenerating(true);
-      setPdfData(quotationData);
-    }
+    // Fetch the Bill of Materials from the backend BOM engine (best-effort).
+    const bom = await getQuotationBom({ systemSize, customerName });
+
+    const quotationData: QuotationData = {
+      customerName,
+      address,
+      phoneNumber,
+      pincode,
+      monthlyBill,
+      systemSize,
+      systemPrice,
+      emiPerMonth,
+      graphData,
+      bom: bom ?? undefined,
+    };
+
+    // Also store in sessionStorage for the /quotation page fallback
+    sessionStorage.setItem("quotationData", JSON.stringify(quotationData));
+
+    // Trigger PDF generation
+    setPdfData(quotationData);
   };
 
   const handlePdfComplete = () => {

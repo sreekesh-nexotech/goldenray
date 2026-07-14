@@ -1,342 +1,236 @@
 "use client";
 
+// Bill of Materials page — shows the BOM line items + pricing summary produced
+// by the backend BOM engine (via bomService). Replaces the old static
+// "Technical Specifications" comparison table.
+import type { QuotationBom, QuotationBomLine } from "@/services/bomService";
+
 interface Page5ContentProps {
-  systemPrice: number;
+  bom?: QuotationBom;
 }
 
-export default function Page5Content({ systemPrice }: Page5ContentProps) {
-  // Calculate three tier prices (same logic as Page4)
-  const smartSystemPrice = systemPrice;
-  const basicSystemPrice = smartSystemPrice - 70000;
-  const premiumSystemPrice = smartSystemPrice + 70000;
+const EMPTY_BOM: QuotationBom = {
+  lines: [],
+  basePrice: 0,
+  addOnTotal: 0,
+  discountAmt: 0,
+  discountLabel: "",
+  finalPrice: 0,
+  subsidy: 0,
+  subsidyLabel: "",
+  priceAfterSubsidy: 0,
+  customerName: "",
+  salesPerson: "",
+  systemLabel: "",
+  tierLabel: "",
+};
 
-  const subsidy = 78000;
-  const smartSystemBeforeSubsidy = smartSystemPrice + subsidy;
-  const basicSystemBeforeSubsidy = basicSystemPrice + subsidy;
-  const premiumSystemBeforeSubsidy = premiumSystemPrice + subsidy;
+export default function Page5Content({ bom }: Page5ContentProps) {
+  const b = bom ?? EMPTY_BOM;
+  const fmt = (n: number) => `₹${Math.round(n || 0).toLocaleString("en-IN")}`;
+  const lines = b.lines || [];
 
-  const formatPrice = (val: number) => `₹${val.toLocaleString("en-IN")}`;
-
-  // Specification data
-  const solarPanelRows = [
-    {
-      item: "Module Brand",
-      basic: "Premier / Renew",
-      recommended: "Adani / Saatvik",
-      premium: "Adani / Saatvik",
-    },
-    {
-      item: "Module Power",
-      basic: "540–550W",
-      recommended: "560–580W",
-      premium: "560–580W",
-    },
-    {
-      item: "Number of Panels",
-      basic: "9",
-      recommended: "9",
-      premium: "9",
-    },
-    {
-      item: "Total Capacity",
-      basic: "~4.9–5.0 kW",
-      recommended: "~5.0–5.2 kW",
-      premium: "~5.0–5.2 kW",
-    },
-    {
-      item: "Panel Type",
-      basic: "Bifacial half-cut",
-      recommended: "Bifacial / TopCon",
-      premium: "Bifacial / TopCon",
-    },
-    {
-      item: "Panel Warranty",
-      basic: "12yr product / 25yr perf",
-      recommended: "12yr product / 30yr perf",
-      premium: "12yr product / 25yr perf",
-    },
-  ];
-
-  const inverterRows = [
-    {
-      item: "Type",
-      basic: "String (Single Phase)",
-      recommended: "String (Single Phase)",
-      premium: "Microinverter",
-    },
-    {
-      item: "Brand",
-      basic: "Deye / equivalent",
-      recommended: "PV Blink / Foxess / Sungrow",
-      premium: "Enphase / Hoymiles",
-    },
-    {
-      item: "Warranty",
-      basic: "8 years",
-      recommended: "7 years",
-      premium: "15 years",
-    },
-  ];
-
-  const balanceRows = [
-    {
-      item: "Mounting Structure",
-      basic: "GP Structure – Apollo",
-      recommended: "GI Structure – Apollo",
-      premium: "GI Structure – Apollo",
-    },
-    {
-      item: "ACDB / DCDB",
-      basic: "Havells",
-      recommended: "ETN-MCB, Mersen-SPD",
-      premium: "ABB-MCB, Citel-SPD",
-    },
-    {
-      item: "DC Cable",
-      basic: "4 mm² (generic)",
-      recommended: "4 mm² (Polycab)",
-      premium: "4 mm² (Polycab)",
-    },
-    {
-      item: "AC Cable",
-      basic: "4 sqm (Flexolite)",
-      recommended: "4 sqm (Polycab)",
-      premium: "4 sqm (Polycab)",
-    },
-    {
-      item: "Earthing",
-      basic: "4 FT – 100 micron",
-      recommended: "4 FT – 250 micron",
-      premium: "4 FT – 250 micron",
-    },
-  ];
+  // Split lines into two columns for compactness
+  const splitAt = Math.ceil(lines.length / 2);
+  const col1 = lines.slice(0, splitAt);
+  const col2 = lines.slice(splitAt);
 
   return (
     <div className="flex flex-col h-full">
-      {/* Title */}
-      <div className="text-center mt-4 mb-1">
-        <h1 className="text-[32px] font-bold text-[#1a1a1a] mb-1">
-          Technical Specifications
+      <div className="text-center mt-2 mb-2">
+        <h1 className="text-[28px] font-bold text-[#1a1a1a] mb-1">
+          Your Bill of Materials
         </h1>
-        <p className="text-[13px] text-gray-500 italic">
-          Every component, every specification — total transparency for your
-          peace of mind.
+        <p className="text-[12px] text-gray-500 italic">
+          Every component included in your {b.systemLabel || "solar system"} —
+          full transparency.
         </p>
       </div>
 
-      {/* Specifications Table */}
-      <div className="mt-5 mx-2">
-        <table className="w-full border-collapse text-[11px]">
-          {/* Column widths */}
-          <colgroup>
-            <col style={{ width: "25%" }} />
-            <col style={{ width: "25%" }} />
-            <col style={{ width: "25%" }} />
-            <col style={{ width: "25%" }} />
-          </colgroup>
-
-          {/* Header */}
-          <thead>
-            <tr>
-              <th className="text-left py-2.5 px-3 text-white text-[11.5px] font-semibold bg-[#123532] rounded-tl-lg">
-                Item
-              </th>
-              <th className="text-center py-2.5 px-3 text-white text-[11.5px] font-semibold bg-[#123532]">
-                Basic
-              </th>
-              <th className="text-center py-2.5 px-3 text-white text-[11.5px] font-semibold bg-[#F88A22]">
-                ★ Recommended
-              </th>
-              <th className="text-center py-2.5 px-3 text-white text-[11.5px] font-semibold bg-[#1B5E20] rounded-tr-lg">
-                Premium
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {/* Solar Panels Section Header */}
-            <tr>
-              <td
-                colSpan={2}
-                className="py-2 px-3 text-[11.5px] font-bold text-[#1a1a1a] bg-gray-50"
-              >
-                Solar Panels
-              </td>
-              <td className="py-2 px-3 bg-[#F88A224D]"></td>
-              <td className="py-2 px-3 bg-gray-50"></td>
-            </tr>
-
-            {/* Solar Panel Rows */}
-            {solarPanelRows.map((row, idx) => (
-              <tr key={`sp-${idx}`} className="border-b border-gray-100">
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 font-medium">
-                  {row.item}
-                </td>
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center">
-                  {row.basic}
-                </td>
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center bg-[#F88A224D]">
-                  {row.recommended}
-                </td>
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center">
-                  {row.premium}
-                </td>
-              </tr>
-            ))}
-
-            {/* Blank separator row */}
-            <tr>
-              <td className="py-4"></td>
-              <td className="py-4"></td>
-              <td className="py-4 bg-[#F88A224D]"></td>
-              <td className="py-4"></td>
-            </tr>
-
-            {/* Inverter Rows (no section header per the image) */}
-            {inverterRows.map((row, idx) => (
-              <tr key={`inv-${idx}`} className="border-b border-gray-100">
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 font-medium">
-                  {row.item}
-                </td>
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center">
-                  {row.basic}
-                </td>
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center bg-[#F88A224D]">
-                  {row.recommended}
-                </td>
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center">
-                  {row.premium}
-                </td>
-              </tr>
-            ))}
-
-            {/* Balance of System Section Header */}
-            <tr>
-              <td
-                colSpan={2}
-                className="py-2 px-3 text-[11.5px] font-bold text-[#1a1a1a] bg-gray-50"
-              >
-                Balance of System
-              </td>
-              <td className="py-2 px-3 bg-[#F88A224D]"></td>
-              <td className="py-2 px-3 bg-gray-50"></td>
-            </tr>
-
-            {/* Balance of System Rows */}
-            {balanceRows.map((row, idx) => (
-              <tr key={`bos-${idx}`} className="border-b border-gray-100">
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 font-medium">
-                  {row.item}
-                </td>
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center">
-                  {row.basic}
-                </td>
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center bg-[#F88A224D]">
-                  {row.recommended}
-                </td>
-                <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center">
-                  {row.premium}
-                </td>
-              </tr>
-            ))}
-
-            {/* Blank row before pricing */}
-            <tr>
-              <td className="py-1"></td>
-              <td className="py-1"></td>
-              <td className="py-1 bg-[#F88A224D]"></td>
-              <td className="py-1"></td>
-            </tr>
-
-            {/* System Cost Row */}
-            <tr className="border-b border-gray-100">
-              <td className="py-[7px] px-3 text-[11px] text-gray-700 font-medium">
-                System Cost
-              </td>
-              <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center font-semibold">
-                {formatPrice(basicSystemBeforeSubsidy)}
-              </td>
-              <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center font-semibold bg-[#F88A224D]">
-                {formatPrice(smartSystemBeforeSubsidy)}
-              </td>
-              <td className="py-[7px] px-3 text-[11px] text-gray-700 text-center font-semibold">
-                {formatPrice(premiumSystemBeforeSubsidy)}
-              </td>
-            </tr>
-
-            {/* Subsidy Row */}
-            <tr className="border-b border-gray-100">
-              <td className="py-[7px] px-3 text-[11px] text-[#16a34a] font-medium">
-                Subsidy
-              </td>
-              <td className="py-[7px] px-3 text-[11px] text-[#16a34a] text-center font-semibold">
-                – {formatPrice(subsidy)}
-              </td>
-              <td className="py-[7px] px-3 text-[11px] text-[#16a34a] text-center font-semibold bg-[#F88A224D]">
-                – {formatPrice(subsidy)}
-              </td>
-              <td className="py-[7px] px-3 text-[11px] text-[#16a34a] text-center font-semibold">
-                – {formatPrice(subsidy)}
-              </td>
-            </tr>
-
-            {/* After Subsidy Row - orange bar */}
-            <tr>
-              <td className="py-2.5 px-3 text-[12px] text-white font-bold bg-[#F88A22] rounded-bl-lg">
-                After Subsidy
-              </td>
-              <td className="py-2.5 px-3 text-[13px] text-white font-bold text-center bg-[#F88A22]">
-                {formatPrice(basicSystemPrice)}
-              </td>
-              <td className="py-2.5 px-3 text-[13px] text-white font-bold text-center bg-[#F88A22]">
-                {formatPrice(smartSystemPrice)}
-              </td>
-              <td className="py-2.5 px-3 text-[13px] text-white font-bold text-center bg-[#F88A22] rounded-br-lg">
-                {formatPrice(premiumSystemPrice)}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      {/* Customer + System info strip */}
+      <div className="grid grid-cols-3 gap-2 mx-2 mb-3">
+        <InfoBox label="Customer" value={b.customerName} />
+        <InfoBox label="System" value={b.systemLabel} />
+        <InfoBox label="Package" value={b.tierLabel} />
       </div>
 
-      {/* Bottom Notes */}
-      <div className="mt-5 mx-2 space-y-3">
-        {/* 5-Year Warranty Note */}
-        <div
-          className="rounded-lg p-3.5 bg-[#16A34A1A]"
-          style={{
-            borderWidth: "0px 5px 0px 5px",
-            borderStyle: "solid",
-            borderColor: "#16A34A",
-          }}
-        >
-          <p className="text-[11px] text-[#16a34a] leading-relaxed">
-            <span className="font-bold ">✓ </span>
-            <span className="font-semibold">
-              5-Year Comprehensive Installation Warranty
-            </span>{" "}
-            — covers all manufacturing and technical defects. All components
-            from MNRE-approved Tier-1 manufacturers.
-          </p>
+      {/* BOM table — split into two columns */}
+      <div className="mx-2 grid grid-cols-2 gap-3 mb-3">
+        <BomTable items={col1} startIdx={1} />
+        <BomTable items={col2} startIdx={col1.length + 1} />
+      </div>
+
+      {/* Pricing summary */}
+      <div className="mx-2 grid grid-cols-2 gap-4 mt-auto">
+        <div className="bg-[#FFF8E9] border border-[#E5D5B8] rounded-xl p-3">
+          <h3 className="text-[13px] font-bold text-[#123532] mb-2">
+            Pricing Summary
+          </h3>
+          <table className="w-full text-[11px]">
+            <tbody>
+              <Row
+                label={`System Price (${b.tierLabel})`}
+                value={fmt(b.basePrice)}
+              />
+              {b.addOnTotal > 0 && (
+                <Row
+                  label="Add-Ons (Structure / Cable / Transport)"
+                  value={`+ ${fmt(b.addOnTotal)}`}
+                />
+              )}
+              {b.discountAmt > 0 && (
+                <Row
+                  label={`Offer: ${b.discountLabel}`}
+                  value={`– ${fmt(b.discountAmt)}`}
+                  green
+                />
+              )}
+              <tr>
+                <td colSpan={2} className="pt-1.5">
+                  <div className="border-t border-gray-300" />
+                </td>
+              </tr>
+              <Row label="Total Price" value={fmt(b.finalPrice)} bold />
+              {b.subsidy > 0 && (
+                <>
+                  <Row
+                    label={b.subsidyLabel}
+                    value={`– ${fmt(b.subsidy)}`}
+                    amber
+                  />
+                  <tr>
+                    <td colSpan={2} className="pt-1.5">
+                      <div className="border-t border-green-300" />
+                    </td>
+                  </tr>
+                  <Row
+                    label="You Pay (after subsidy)"
+                    value={fmt(b.priceAfterSubsidy)}
+                    bold
+                    green
+                  />
+                </>
+              )}
+            </tbody>
+          </table>
         </div>
 
-        {/* Zero Downtime Promise Note */}
-        <div
-          className="rounded-lg p-3.5 bg-[#1E40AF33]"
-          style={{
-            borderWidth: "0px 5px 0px 5px",
-            borderStyle: "solid",
-            borderColor: "#1E3A8A",
-          }}
-        >
-          <p className="text-[11px] text-[#1E3A8A] leading-relaxed">
-            <span className="font-bold">✨ </span>
-            <span className="font-semibold">Zero Downtime Promise</span> —
-            standby inverter provided during any inverter failure or repair
-            period. Your system keeps generating without interruption.
-          </p>
+        <div className="bg-[#16A34A1A] border-l-4 border-[#16A34A] rounded-xl p-3 flex flex-col">
+          <h3 className="text-[13px] font-bold text-[#123532] mb-2">
+            What&apos;s Included
+          </h3>
+          <ul className="space-y-1 text-[10.5px] text-gray-700">
+            <li className="flex gap-2">
+              <span className="text-[#16a34a]">✓</span> Complete installation by
+              certified team
+            </li>
+            <li className="flex gap-2">
+              <span className="text-[#16a34a]">✓</span> 5-year comprehensive
+              workmanship warranty
+            </li>
+            <li className="flex gap-2">
+              <span className="text-[#16a34a]">✓</span> KSEB net-metering
+              paperwork &amp; coordination
+            </li>
+            <li className="flex gap-2">
+              <span className="text-[#16a34a]">✓</span> PM Surya Ghar subsidy
+              application
+            </li>
+            <li className="flex gap-2">
+              <span className="text-[#16a34a]">✓</span> Free panel-wash service
+              in first year
+            </li>
+            <li className="flex gap-2">
+              <span className="text-[#16a34a]">✓</span> Standby inverter during
+              repair (zero downtime)
+            </li>
+          </ul>
+          <div className="mt-auto pt-2">
+            <p className="text-[10px] text-gray-500 italic">
+              Quote prepared by:{" "}
+              <span className="font-semibold">{b.salesPerson || "—"}</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function InfoBox({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg px-3 py-1.5">
+      <p className="text-[9px] text-gray-500 uppercase tracking-wider">
+        {label}
+      </p>
+      <p className="text-[12px] font-semibold text-[#123532] truncate">
+        {value || "—"}
+      </p>
+    </div>
+  );
+}
+
+function BomTable({
+  items,
+  startIdx,
+}: {
+  items: QuotationBomLine[];
+  startIdx: number;
+}) {
+  if (!items || items.length === 0) return <div />;
+  return (
+    <table className="w-full border-collapse text-[10px]">
+      <thead>
+        <tr>
+          <th className="text-left py-1.5 px-2 text-white bg-[#123532] font-semibold w-6">
+            #
+          </th>
+          <th className="text-left py-1.5 px-2 text-white bg-[#123532] font-semibold">
+            Material / Brand
+          </th>
+          <th className="text-center py-1.5 px-2 text-white bg-[#123532] font-semibold w-10">
+            Qty
+          </th>
+          <th className="text-left py-1.5 px-2 text-white bg-[#123532] font-semibold w-10">
+            Unit
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((item, i) => (
+          <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+            <td className="px-2 py-1 text-gray-400">{startIdx + i}</td>
+            <td className="px-2 py-1 text-gray-800 font-medium">{item.name}</td>
+            <td className="px-2 py-1 text-center text-gray-700 font-semibold">
+              {item.qty}
+            </td>
+            <td className="px-2 py-1 text-gray-500">{item.unit || "nos"}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function Row({
+  label,
+  value,
+  bold,
+  green,
+  amber,
+}: {
+  label: string;
+  value: string;
+  bold?: boolean;
+  green?: boolean;
+  amber?: boolean;
+}) {
+  const labelClass = `py-1 text-left ${bold ? "font-bold text-[#123532]" : ""} ${green ? "text-[#16a34a]" : ""} ${amber ? "text-amber-700" : ""}`;
+  const valClass = `py-1 text-right font-semibold ${bold ? "font-bold text-[#123532]" : ""} ${green ? "text-[#16a34a]" : ""} ${amber ? "text-amber-700" : ""}`;
+  return (
+    <tr>
+      <td className={labelClass}>{label}</td>
+      <td className={valClass}>{value}</td>
+    </tr>
   );
 }
