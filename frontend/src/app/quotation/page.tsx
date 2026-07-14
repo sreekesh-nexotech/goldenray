@@ -15,6 +15,7 @@ import {
   Page9Content,
   Page10Content,
 } from "@/components/Quotation";
+import type { QuotationBom } from "@/services/bomService";
 
 interface QuotationData {
   customerName: string;
@@ -31,6 +32,7 @@ interface QuotationData {
       data: number[];
     }[];
   };
+  bom?: QuotationBom;
 }
 
 export default function QuotationPage() {
@@ -42,7 +44,6 @@ export default function QuotationPage() {
   const [quoteNo, setQuoteNo] = useState("");
 
   // Static data
-  const proposalBy = "XXX";
   const currentDate = new Date();
   const validUntilDate = new Date(currentDate);
   validUntilDate.setMonth(validUntilDate.getMonth() + 1);
@@ -55,7 +56,6 @@ export default function QuotationPage() {
   };
 
   const gstNo = "32AAUFG1464A1ZP";
-  const companyRegistration = "5 kW";
 
   const logo =
     "https://gym-manager-pull.b-cdn.net/golden_ray/home/logo_header.png";
@@ -92,6 +92,9 @@ export default function QuotationPage() {
   if (!quotationData) {
     return null;
   }
+
+  const proposalBy = quotationData.bom?.salesPerson || "Golden Ray Team";
+  const companyRegistration = quotationData.systemSize;
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-4 gap-4 print:py-0 print:gap-0 print:bg-white">
@@ -142,7 +145,7 @@ export default function QuotationPage() {
 
       {/* Page 6 */}
       <QuotationPageWrapper logo={logo}>
-        <Page5Content systemPrice={quotationData.systemPrice} />
+        <Page5Content bom={quotationData.bom} />
       </QuotationPageWrapper>
 
       {/* Page 7 */}
