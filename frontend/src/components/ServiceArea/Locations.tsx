@@ -16,7 +16,7 @@ const LocationsMap = dynamic(() => import("./LocationsMap"), {
 const Locations = ({ district }: { district?: string }) => {
   const { headingDescription, places } =
     getServiceAreaContent(district).locations;
-  const [activeIndex, setActiveIndex] = useState<number>(-1);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
 
   return (
     <section className="relative px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
@@ -39,7 +39,8 @@ const Locations = ({ district }: { district?: string }) => {
                 <button
                   key={place.name}
                   type="button"
-                  onClick={() => setActiveIndex(isActive ? -1 : i)}
+                  onClick={() => setActiveIndex(i)}
+                  onMouseEnter={() => setActiveIndex(i)}
                   aria-pressed={isActive}
                   className={`flex flex-col gap-1.5 rounded-xl border p-4 text-left transition-colors ${
                     isActive
@@ -64,12 +65,16 @@ const Locations = ({ district }: { district?: string }) => {
 
           {/* Real interactive map */}
           <div className="relative z-0 h-[420px] w-full overflow-hidden rounded-2xl border border-[#EDEFF2] shadow-sm [isolation:isolate] md:h-[520px]">
-            <LocationsMap places={places} activeIndex={activeIndex} />
+            <LocationsMap
+              places={places}
+              activeIndex={activeIndex}
+              onSelect={setActiveIndex}
+            />
           </div>
 
           <p className="mt-4 text-center text-xs text-[#9AA1AC]">
-            Tap a location card to highlight it on the map — or tap a pin to open
-            it in Google Maps.
+            Tap a location card to highlight it on the map — or tap a pin to see
+            its details.
           </p>
         </div>
       )}
