@@ -252,7 +252,7 @@ export default function Footer() {
               <div className="w-[clamp(8.5rem,12vw,11rem)]">
                 <Image
                   src={FlarizeLogo}
-                  alt="Golden Ray"
+                  alt="Flarize Logo"
                   priority={false}
                   sizes="(max-width: 768px) 150px, 176px"
                   className="h-auto w-full"
@@ -260,7 +260,7 @@ export default function Footer() {
               </div>
 
               <p className="mt-6 max-w-sm text-base leading-relaxed text-[#4B5563]">
-                Golden Ray is a company working to bring accessible energy to
+                Flarize is a company working to bring accessible energy to
                 everyone. Our mission is to empower people to be in charge of
                 their own power
               </p>
@@ -310,7 +310,7 @@ export default function Footer() {
         {/* ---------- Copyright ---------- */}
         <div className="mx-auto mt-8 max-w-7xl">
           <p className="text-center text-sm text-white/60">
-            © 2025 Goldenray All rights reserved
+            &copy; 2025 Flarize All rights reserved
           </p>
         </div>
       </footer>

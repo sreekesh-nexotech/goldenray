@@ -16,7 +16,7 @@ export default function QuotationHeader({ logo }: QuotationHeaderProps) {
         height={30}
         className="h-5 w-auto object-contain"
       />
-      <span className="text-xs text-gray-500">by Golden Ray</span>
+      <span className="text-xs text-gray-500">by Flarize</span>
     </div>
   );
 }

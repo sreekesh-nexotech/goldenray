@@ -15,7 +15,7 @@ const steps = [
     id: 2,
     title: "Custom Design & Professional Installation",
     description:
-      "System designed for your energy needs, roof type, and future plans — EV charger, new rooms, growing family. Golden Ray's certified technicians handle mounting, wiring, and safety checks. Most residential systems installed in 2–6 days. Zero disruption.",
+      "System designed for your energy needs, roof type, and future plans — EV charger, new rooms, growing family. Flarize's certified technicians handle mounting, wiring, and safety checks. Most residential systems installed in 2–6 days. Zero disruption.",
     bgColor: "bg-[#ADD6D8]", // Light blue
     textColor: "text-[#333333]",
     zIndex: "z-20",

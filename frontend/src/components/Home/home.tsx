@@ -57,7 +57,7 @@ export default function Main() {
         TextColor="text-[#FFFFFF]"
         showYellowBtn={true}
         BoxTitle="Residential Solar Panel Installation & Energy Solutions"
-        BoxDescription="Stop paying ₹4,000–₹8,000 every month to KSEB. Our end-to-end residential solar panel installation — from site assessment to net metering activation — is backed by Golden Ray Renewable Energy (8+ years, 300+ installations). We handle KSEB approvals, PM Surya Ghar subsidy applications, and post-installation support. Your bill drops. Your AC guilt disappears. Explore residential solar →"
+        BoxDescription="Stop paying ₹4,000–₹8,000 every month to KSEB. Our end-to-end residential solar panel installation — from site assessment to net metering activation — is backed by Flarize Renewable Energy (8+ years, 300+ installations). We handle KSEB approvals, PM Surya Ghar subsidy applications, and post-installation support. Your bill drops. Your AC guilt disappears. Explore residential solar →"
         BoxImg="https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png"
         flexReverse={true}
       />

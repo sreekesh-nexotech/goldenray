@@ -17,7 +17,6 @@ export const metadata: Metadata = {
     "Sales jobs Kerala",
     "Work at Flarize",
     "Renewable energy careers",
-    "Golden Ray careers",
   ],
   openGraph: {
     title: "Careers | Join Kerala's Fastest Growing Solar Platform",

@@ -34,7 +34,7 @@ export default function Services({ serviceTitle }: servicesProps) {
               />
             }
             title="Fastest Installation"
-            description="Golden Ray's certified team: 2–6 days from start to activation. 300+ installations. No delays, no excuses."
+            description="Flarize's certified team: 2–6 days from start to activation. 300+ installations. No delays, no excuses."
             bgColor="#FDF6D2"
           />
 
