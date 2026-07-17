@@ -536,7 +536,7 @@ export default function Page4Content({
               <p className="text-gray-700">
                 A/c Name:{" "}
                 <span className="font-bold text-[#F88A22]">
-                  Flarize / Golden Ray Renewable Energy LLP
+                  Flarize Renewable Energy LLP
                 </span>
               </p>
               <p className="text-gray-700">

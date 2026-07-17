@@ -38,7 +38,7 @@ export default function HeroHome() {
           </h1>
           <p className="text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-6">
             India&apos;s first solar booking platform. Your KSEB bill isn&apos;t
-            going down — we stop it from going up. Backed by Golden Ray (300+
+            going down — we stop it from going up. Backed by Flarize (300+
             installations, 4.9★). KSEB approved solar EPC company for homes and
             businesses.
           </p>

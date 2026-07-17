@@ -51,13 +51,14 @@ const AffliateHero = () => {
 Introduce a homeowner. Flarize handles the entire solar journey—
 from consultation to after-sales support—so you can refer with confidence.
           </p>
-          <div className="flex flex-row gap-2 sm:gap-3 mt-2 w-full sm:w-auto">
+          <div className="flex flex-row justify-center md:justify-start text-xs lg:text-lg lg:gap-4 gap-2 mt-2 w-full sm:w-auto">
             <LinkingButton
               content="Apply as Affiliate Partner "
               ButtonLink="#form"
               ButtonBg="bg-[#F7BA41]"
               Buttontext="text-[#272218]"
               ButtonHover="hover:bg-yellow-500"
+              className="flex-1 justify-center sm:flex-none"
             />
             <LinkingButton
               content="See How It works"
@@ -66,10 +67,11 @@ from consultation to after-sales support—so you can refer with confidence.
               ButtonBg="bg-transparent"
               Buttontext="text-[#074A4D]"
               ButtonHover="hover:bg-[#eeeeee]"
+              className="flex-1 justify-center sm:flex-none"
             />
           </div>
 
-          <p className="mt-2text-sm md:text-xl font-medium leading-relaxed text-[#123532]">
+          <p className="hidden md:block mt-2 text-sm md:text-xl font-medium leading-relaxed text-[#123532]">
             A Flarize Partner Program · Powered by Golden Ray Energy · Flarize
             Technologies Pvt Ltd · Founder-led by Harikrishnan K.R
           </p>
@@ -84,6 +86,11 @@ from consultation to after-sales support—so you can refer with confidence.
               className="w-full h-auto object-cover"
             />
           </div>
+
+          <p className="block md:hidden mt-2 text-sm md:text-xl font-medium leading-relaxed text-[#123532]">
+            A Flarize Partner Program · Powered by Golden Ray Energy · Flarize
+            Technologies Pvt Ltd · Founder-led by Harikrishnan K.R
+          </p>
         </div>
       </section>
 

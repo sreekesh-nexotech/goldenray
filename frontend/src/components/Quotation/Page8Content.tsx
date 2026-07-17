@@ -29,7 +29,7 @@ export default function Page8Content() {
               external damage.
             </li>
             <li className="text-[10.5px] text-gray-700 leading-relaxed">
-              Golden Ray will provide service and maintenance training.
+              Flarize will provide service and maintenance training.
             </li>
             <li className="text-[10.5px] text-gray-700 leading-relaxed">
               Standby inverter provided during inverter failure/ repair to
@@ -48,7 +48,7 @@ export default function Page8Content() {
           </h3>
           <ul className="space-y-1 list-disc list-outside pl-4">
             <li className="text-[10.5px] text-gray-700 leading-relaxed">
-              Payments to Golden Ray should be as follows:
+              Payments to Flarize should be as follows:
               <ul className="list-disc list-outside pl-4 mt-1 space-y-0.5">
                 <li>65% at the time of order confirmation.</li>
                 <li>20% after material delivery.</li>
@@ -116,7 +116,7 @@ export default function Page8Content() {
               Completion of the project may prolong up to 20 days from the date
               of receipt of the work order, due to authority delays. Any other
               charges (if required) will be discussed & agreed upon mutually, in
-              writing, between Golden Ray & the customer.
+              writing, between Flarize & the customer.
             </li>
           </ul>
         </div>
