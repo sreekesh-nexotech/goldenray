@@ -21,6 +21,7 @@ from .views.customer_installation_views import CustomerInstallationAPIView, Inst
 from .views.affiliate_application_views import AffiliateApplicationAPIView
 from .views.emicalculator import EMICalculatorAPIView
 from .views.warranty_service_request_views import WarrantyServiceRequestAPIView
+from .views.job_application_views import JobApplicationAPIView
 
 urlpatterns = [
     # Batteries
@@ -86,5 +87,11 @@ urlpatterns = [
         "warranty-service-requests/",
         WarrantyServiceRequestAPIView.as_view(),
         name="warranty-service-request-create",
+    ),
+    # Career / Job Applications
+    path(
+        "job-applications/",
+        JobApplicationAPIView.as_view(),
+        name="job-application-create",
     ),
 ]

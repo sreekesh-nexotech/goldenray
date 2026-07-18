@@ -18,6 +18,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -25,3 +27,8 @@ urlpatterns = [
     path("bom/", include("bom.urls", namespace="bom")),
     path("", RedirectView.as_view(url="/bom/", permanent=False)),
 ]
+
+# Serve uploaded media locally during development. In production these are
+# served by the web server / object storage in front of Django.
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

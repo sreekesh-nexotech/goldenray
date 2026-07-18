@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Battery, SolarInstallationNew, CustomerInstallation, SolarPanel
 from .models.affiliate_application import AffiliateApplication
 from .models.warranty_service_request import WarrantyServiceRequest
+from .models.job_application import JobApplication
 
 # Register your models here.
 admin.site.register(Battery)
@@ -32,6 +33,16 @@ class WarrantyServiceRequestAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'phone', 'issue_type', 'created_at')
     list_filter = ('issue_type', 'created_at')
     search_fields = ('full_name', 'phone', 'description')
+    date_hierarchy = 'created_at'
+    ordering = ('-created_at',)
+    readonly_fields = ('created_at',)
+
+
+@admin.register(JobApplication)
+class JobApplicationAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'position', 'email', 'phone', 'location', 'created_at')
+    list_filter = ('position', 'total_experience', 'notice_period', 'heard_about_us', 'created_at')
+    search_fields = ('full_name', 'email', 'phone', 'current_company', 'current_role')
     date_hierarchy = 'created_at'
     ordering = ('-created_at',)
     readonly_fields = ('created_at',)
