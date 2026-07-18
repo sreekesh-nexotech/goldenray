@@ -105,6 +105,10 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
+# Media files (user uploads — e.g. career resumes / portfolios)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -115,6 +119,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         "affiliate_application": "5/min",
         "warranty_service_request": "5/min",
+        "job_application": "5/min",
     },
 }
 
