@@ -7,6 +7,13 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --include=optional
 COPY . .
+
+# NEXT_PUBLIC_* vars are inlined into the client bundle at build time, so the
+# backend API URL must be supplied here as a build arg (defaults to the local
+# backend published on the host). It must be reachable from the browser.
+ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
 RUN npm run build
 
 # Stage 2: Production image

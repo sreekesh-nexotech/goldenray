@@ -1,0 +1,63 @@
+# Runs the whole stack: PostgreSQL + Django backend + Next.js frontend.
+#
+#   docker compose up -d          # start everything
+#   docker compose down           # stop everything
+#   docker compose up -d --build  # rebuild after code/dependency changes
+#
+# The root .env file is auto-loaded and supplies the DB credentials + API URL.
+# Django's own secrets (SECRET_KEY, Twilio, etc.) come from goldenray-backend/.env
+# via `env_file`, which is passed to the container literally (never interpolated).
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./goldenray-backend/backend
+    # The .env is mounted (not passed via env_file) so Django's own load_dotenv()
+    # reads it verbatim — this avoids Compose interpolating the "$" in SECRET_KEY.
+    # The values set under `environment` below are already in the process env, so
+    # load_dotenv() (override=False) leaves them as-is — that's how we point Django
+    # at the containerised DB while everything else comes from the mounted file.
+    volumes:
+      - ./goldenray-backend/.env:/app/.env:ro
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,backend
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             gunicorn backend.wsgi:application --bind 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Browser-reachable backend URL, baked into the client bundle at build.
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
