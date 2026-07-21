@@ -14,6 +14,11 @@ import { PageHeader, TipBanner, StatusPill, SelectField, thStyle, tdStyle } from
 import { memberStatusPill, studioColors } from "../shared/format";
 import { InviteModal } from "./InviteModal";
 
+// The design uses tighter row paddings than the shared tdStyle (12px): member
+// rows are 11px, permission-matrix rows are 13px.
+const memberTd = { ...tdStyle, padding: "11px 16px" } as const;
+const matrixTd = { ...tdStyle, padding: "13px 16px" } as const;
+
 /* -------------------------------------------------------------------------- */
 /*  Preview-as segmented control                                               */
 /* -------------------------------------------------------------------------- */
@@ -76,7 +81,7 @@ function MemberRow({
 
   return (
     <tr>
-      <td style={tdStyle}>
+      <td style={memberTd}>
         <div className="flex items-center gap-2.5">
           <div
             className="grid place-items-center"
@@ -116,14 +121,14 @@ function MemberRow({
           </div>
         </div>
       </td>
-      <td style={tdStyle}>
+      <td style={memberTd}>
         {editable ? (
           <div style={{ maxWidth: 150 }}>
             <SelectField
               value={roleValue}
               ariaLabel={`Role for ${member.name}`}
               onChange={(v) => onRoleChange(v as Role)}
-              style={{ fontSize: 13 }}
+              style={{ fontSize: 13, padding: "8px 30px 8px 11px", borderRadius: 10 }}
             >
               {roleOptions.map((o) => (
                 <option key={o} value={o}>
@@ -136,10 +141,10 @@ function MemberRow({
           <span style={{ fontSize: 13, color: studioColors.bodyGray, fontWeight: 500 }}>{roleValue}</span>
         )}
       </td>
-      <td style={tdStyle}>
+      <td style={memberTd}>
         <StatusPill pill={pill} />
       </td>
-      <td style={tdStyle}>
+      <td style={memberTd}>
         <div className="flex justify-end" style={{ gap: 6 }}>
           {canResend && (
             <button
@@ -197,7 +202,7 @@ function MemberRow({
 
 function PermCell({ yes }: { yes: boolean }) {
   return (
-    <td style={tdStyle}>
+    <td style={matrixTd}>
       {yes ? (
         <span
           className="inline-grid place-items-center"
@@ -229,13 +234,13 @@ export default function RolesScreen() {
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
-      <PageHeader
+      <PageHeader mb={16}
         title="Roles & access"
         subtitle="Who can do what inside the CMS. The delivery API stays public read-only regardless."
       />
 
       {tips && (
-        <TipBanner>
+        <TipBanner mb={14}>
           Use <b style={{ color: studioColors.tealDeep }}>Preview as</b> to feel the gating — publish buttons, bulk actions and the template builder react across the whole prototype.
         </TipBanner>
       )}
@@ -355,7 +360,7 @@ export default function RolesScreen() {
             <tbody>
               {rolePermissions.map((r) => (
                 <tr key={r.role}>
-                  <td style={tdStyle}>
+                  <td style={matrixTd}>
                     <div style={{ fontWeight: 600, color: studioColors.tealDeep, fontSize: 13.5 }}>{r.name}</div>
                     <div style={{ fontSize: 11.5, color: studioColors.faintGray, marginTop: 1 }}>{r.sub}</div>
                   </td>

@@ -118,13 +118,13 @@ export default function TaxonomyScreen() {
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
-      <PageHeader
+      <PageHeader mb={16}
         title="Authors & taxonomy"
         subtitle="The reusable lookups entries reference — authors, categories, tags and badges."
       />
 
       {tips && (
-        <TipBanner>
+        <TipBanner mb={14}>
           Managed once, attached from the editor’s <b style={{ color: studioColors.tealDeep }}>Organize</b> panel — one
           “Subsidy” category, not five spellings. Counts update live.
         </TipBanner>

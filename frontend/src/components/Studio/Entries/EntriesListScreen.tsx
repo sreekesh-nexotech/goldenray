@@ -63,7 +63,9 @@ function CheckBox({
   onToggle: (e: React.MouseEvent | React.KeyboardEvent) => void;
   ariaLabel: string;
 }) {
-  const on = checked || mixed;
+  // The design fills + ticks the box only when fully checked; a partial page
+  // selection stays visually empty (but is announced as "mixed").
+  const on = checked;
   return (
     <span
       role="checkbox"
@@ -95,10 +97,6 @@ function CheckBox({
       {checked ? (
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
           <path d="m5 12.5 4.5 4.5L19 7.5" />
-        </svg>
-      ) : mixed ? (
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3.2" strokeLinecap="round">
-          <path d="M6 12h12" />
         </svg>
       ) : null}
     </span>
@@ -277,7 +275,7 @@ export default function EntriesListScreen() {
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
-      <PageHeader
+      <PageHeader mb={14}
         title={collection.name}
         titleSuffix={
           <span style={{ fontWeight: 500, fontSize: 15, color: studioColors.faintGray }}>
@@ -344,7 +342,7 @@ export default function EntriesListScreen() {
       </div>
 
       {tips && (
-        <TipBanner>
+        <TipBanner mb={14}>
           Click a row to open the editor. Tick rows for <b style={{ color: studioColors.tealDeep }}>bulk actions</b>; the{" "}
           <b style={{ color: studioColors.tealDeep }}>⋯</b> menu has duplicate, publish and delete.
         </TipBanner>

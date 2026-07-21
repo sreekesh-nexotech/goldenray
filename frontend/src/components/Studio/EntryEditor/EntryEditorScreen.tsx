@@ -236,7 +236,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                 <TextInput value={title} onChange={setTitle} placeholder="Give this entry a title" />
               </div>
               <div style={{ marginBottom: 15 }}>
-                <FieldLabel suffix={<KeyTag>→ slug</KeyTag>}>
+                <FieldLabel suffix={<KeyTag fontSize={10.5}>→ slug</KeyTag>}>
                   URL slug <span style={{ color: studioColors.danger }}>*</span>
                 </FieldLabel>
                 <div className="flex gap-2">
@@ -250,8 +250,10 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                   <button
                     onClick={() => setSlug(slugify(title))}
                     title="Regenerate from title"
-                    className="grid flex-none place-items-center hover:shadow-[inset_0_0_0_1px_#074A4D]"
+                    className="grid flex-none place-items-center"
                     style={{ width: 40, height: 40, border: "none", borderRadius: 12, background: "#ffffff", boxShadow: `inset 0 0 0 1px ${studioColors.inputRing}`, color: studioColors.bodyGray, cursor: "pointer" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "inset 0 0 0 1px #074A4D"; e.currentTarget.style.color = "#074A4D"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${studioColors.inputRing}`; e.currentTarget.style.color = studioColors.bodyGray; }}
                   >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 12a8 8 0 1 1-2.34-5.66" />
@@ -274,7 +276,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                 )}
               </div>
               <div style={{ marginBottom: 2 }}>
-                <FieldLabel suffix={<KeyTag>{excerpt.length} / 160</KeyTag>}>Excerpt</FieldLabel>
+                <FieldLabel suffix={<KeyTag fontSize={10.5}>{excerpt.length} / 160</KeyTag>}>Excerpt</FieldLabel>
                 <TextArea value={excerpt} onChange={setExcerpt} placeholder="Short summary shown on blog cards and in search results…" />
               </div>
             </div>

@@ -19,14 +19,17 @@ export function PageHeader({
   subtitle,
   actions,
   titleSuffix,
+  mb = 20,
 }: {
   title: ReactNode;
   subtitle?: ReactNode;
   actions?: ReactNode;
   titleSuffix?: ReactNode;
+  /** Bottom margin — varies per screen in the design (14 / 16 / 20). */
+  mb?: number;
 }) {
   return (
-    <div className="mb-5 flex flex-wrap items-start gap-4">
+    <div className="flex flex-wrap items-start gap-4" style={{ marginBottom: mb }}>
       <div className="min-w-0">
         <h2
           className="font-switzer"
@@ -120,11 +123,12 @@ export function StatusPill({ pill, size = "md" }: { pill: StatusPillStyle; size?
 /*  Amber tip banner (shown when tips are enabled)                             */
 /* -------------------------------------------------------------------------- */
 
-export function TipBanner({ children }: { children: ReactNode }) {
+export function TipBanner({ children, mb = 16 }: { children: ReactNode; mb?: number }) {
   return (
     <div
-      className="mb-4 flex items-start gap-2.5"
+      className="flex items-start gap-2.5"
       style={{
+        marginBottom: mb,
         padding: "12px 15px",
         background: "rgba(253,246,210,.75)",
         borderRadius: 12,
@@ -230,13 +234,13 @@ export function FieldLabel({ children, suffix }: { children: ReactNode; suffix?:
 }
 
 /** Small mono key tag shown on field labels (e.g. `metaTitle · 12 / 60`). */
-export function KeyTag({ children }: { children: ReactNode }) {
+export function KeyTag({ children, fontSize = 10 }: { children: ReactNode; fontSize?: number }) {
   return (
     <span
       style={{
         marginLeft: "auto",
         fontFamily: studioFonts.mono,
-        fontSize: 10,
+        fontSize,
         color: studioColors.mutedGray,
         background: "rgba(248,242,225,.9)",
         padding: "2px 7px",

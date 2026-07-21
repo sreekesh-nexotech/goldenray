@@ -49,14 +49,14 @@ export default function MediaScreen() {
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
-      <PageHeader
+      <PageHeader mb={16}
         title="Media library"
         subtitle="Every uploaded image — reused across entries and served by the delivery API."
         actions={<GoldButton onClick={upload}>Upload images</GoldButton>}
       />
 
       {tips && (
-        <TipBanner>
+        <TipBanner mb={14}>
           Shared asset store — authors pick from here when filling an image slot, or upload on the spot.
           Each asset keeps <b style={{ color: studioColors.tealDeep }}>alt text</b>, served by the API as{" "}
           <b style={{ color: studioColors.tealDeep }}>alternativeText</b>. Real drag &amp; drop works here.

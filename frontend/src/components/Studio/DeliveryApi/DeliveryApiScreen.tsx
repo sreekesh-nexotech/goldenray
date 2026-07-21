@@ -93,13 +93,13 @@ export default function DeliveryApiScreen() {
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
-      <PageHeader
+      <PageHeader mb={16}
         title="Delivery API"
         subtitle="How flarize.com reads published content. Read-only, public — drafts never appear."
       />
 
       {tips && (
-        <TipBanner>
+        <TipBanner mb={14}>
           The <b style={{ color: studioColors.tealDeep }}>output</b> of the whole system. The response below is live — it
           reflects the newest published article. This is why labels are renamable but{" "}
           <b style={{ color: studioColors.tealDeep }}>keys are fixed</b>: the keys are the contract.

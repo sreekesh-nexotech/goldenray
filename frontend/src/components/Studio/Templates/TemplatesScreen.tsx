@@ -80,7 +80,7 @@ export default function TemplatesScreen() {
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
-      <PageHeader
+      <PageHeader mb={16}
         title="Templates"
         subtitle="Set structure once — every entry using the template inherits its image groups and attributes."
         actions={
@@ -122,7 +122,7 @@ export default function TemplatesScreen() {
 
       {/* Tips banner */}
       {tips && (
-        <TipBanner>
+        <TipBanner mb={14}>
           A <b style={{ color: studioColors.tealDeep }}>single</b> group holds one image; a{" "}
           <b style={{ color: studioColors.tealDeep }}>repeatable</b> group holds many — that&#8217;s how a template supports N images. Rename{" "}
           <b style={{ color: studioColors.tealDeep }}>labels</b> freely; <b style={{ color: studioColors.tealDeep }}>keys</b> are the API contract and never change.
