@@ -6,8 +6,9 @@ import type {
   ContentSection,
   UnderstandingTable,
 } from "@/data/blog-content";
+import { BLOG_API_BASE_URL } from "@/config";
 
-const API_BASE = "https://blog.flarize.com/api";
+const API_BASE = BLOG_API_BASE_URL;
 
 // ── Fallback images per category (used when coverImage is null) ───────────────
 const FALLBACK_IMAGES: Record<string, string> = {
