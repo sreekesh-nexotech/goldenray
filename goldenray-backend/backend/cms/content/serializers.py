@@ -70,6 +70,42 @@ class EntryReadSerializer(serializers.ModelSerializer):
         )
 
 
+class EntryListSerializer(serializers.ModelSerializer):
+    """Slim row shape for the Entries list screen (no nested bodies/images/SEO —
+    fetch the detail endpoint when opening the editor)."""
+
+    collection_uid = serializers.CharField(source="collection.api_uid", read_only=True)
+    collection_name = serializers.CharField(source="collection.plural_name", read_only=True)
+    template_slug = serializers.CharField(source="template.slug", read_only=True, default=None)
+    author_name = serializers.CharField(source="author.name", read_only=True, default=None)
+    cover_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Entry
+        fields = (
+            "id", "document_id", "collection", "collection_uid", "collection_name",
+            "template", "template_slug", "title", "slug", "excerpt", "status",
+            "author_name", "cover_url", "is_featured", "sort_order",
+            "published_on", "published_at", "created_at", "updated_at",
+        )
+
+    def get_cover_url(self, obj):
+        # Thumbnail for list cards: legacy cover FK wins, else the first
+        # resolvable template-group image (rows are prefetched + ordered).
+        if obj.cover_image_id and obj.cover_image:
+            if obj.cover_image.cdn_url:
+                return obj.cover_image.cdn_url
+            try:
+                return obj.cover_image.file.url
+            except ValueError:
+                pass
+        for img in obj.images.all():
+            url = img.resolved_url()
+            if url:
+                return url
+        return None
+
+
 class EntryWriteSerializer(serializers.ModelSerializer):
     """Create/update an entry plus its nested children in one call."""
 

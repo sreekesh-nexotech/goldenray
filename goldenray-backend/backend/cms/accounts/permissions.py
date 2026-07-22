@@ -10,6 +10,14 @@ class IsSchemaEditor(BasePermission):
         return bool(request.user and request.user.is_authenticated and request.user.can_edit_schema)
 
 
+class IsUserAdmin(BasePermission):
+    """Only admins (or superusers) may manage internal accounts (Roles & access)."""
+
+    def has_permission(self, request, view):
+        u = request.user
+        return bool(u and u.is_authenticated and (u.is_superuser or u.role == u.Role.ADMIN))
+
+
 class CanAuthorEntries(BasePermission):
     """Any authenticated internal user may read/author entries.
 

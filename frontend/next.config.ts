@@ -18,6 +18,17 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: 'blog.flarize.com',
             },
+            // Local Blog CMS (dev) — uploaded media served from Django on :8009
+            {
+                protocol: 'http',
+                hostname: 'localhost',
+                port: '8009',
+            },
+            {
+                protocol: 'http',
+                hostname: '127.0.0.1',
+                port: '8009',
+            },
         ],
     },
     reactStrictMode: true,

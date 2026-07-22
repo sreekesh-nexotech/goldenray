@@ -10,6 +10,11 @@ import { BLOG_API_BASE_URL } from "@/config";
 
 const API_BASE = BLOG_API_BASE_URL;
 
+// Data-cache window for blog fetches: long in prod (the CMS webhook busts it on
+// publish), short in dev so local edits show up within a minute even on a dev
+// server the webhook can't reach.
+const REVALIDATE_SECONDS = process.env.NODE_ENV === "production" ? 3600 : 60;
+
 // ── Fallback images per category (used when coverImage is null) ───────────────
 const FALLBACK_IMAGES: Record<string, string> = {
   "Subsidy & Government":
@@ -397,7 +402,7 @@ export async function fetchAllArticles(): Promise<{
 }> {
   try {
     const res = await fetch(`${API_BASE}/articles?populate=*&pagination[pageSize]=100`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     const json: StrapiResponse = await res.json();
@@ -424,7 +429,7 @@ export async function fetchArticleBySlug(slug: string): Promise<{
   try {
     const res = await fetch(
       `${API_BASE}/articles?populate=*&filters[slug][$eq]=${encodeURIComponent(slug)}`,
-      { next: { revalidate: 3600 } }
+      { next: { revalidate: REVALIDATE_SECONDS } }
     );
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     const json: StrapiResponse = await res.json();
@@ -446,7 +451,7 @@ export async function fetchArticleBySlug(slug: string): Promise<{
 export async function fetchAllSlugs(): Promise<string[]> {
   try {
     const res = await fetch(`${API_BASE}/articles?fields[0]=slug`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     const json: StrapiResponse = await res.json();

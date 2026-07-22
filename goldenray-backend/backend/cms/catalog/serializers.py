@@ -26,15 +26,36 @@ class CollectionSerializer(serializers.ModelSerializer):
 
 
 class TemplateImageGroupSerializer(serializers.ModelSerializer):
+    # Writable so the admin UI can create/reorder groups via
+    # /admin-api/template-image-groups/. When nested read-only inside
+    # TemplateSerializer it simply echoes the parent id.
+    template = serializers.PrimaryKeyRelatedField(queryset=Template.objects.all())
+
     class Meta:
         model = TemplateImageGroup
-        fields = ("id", "key", "label", "repeatable", "max_items", "required", "order")
+        fields = ("id", "template", "key", "label", "repeatable", "max_items", "required", "order")
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=TemplateImageGroup.objects.all(),
+                fields=("template", "key"),
+                message="This template already has an image group with this key.",
+            )
+        ]
 
 
 class TemplateAttributeSlotSerializer(serializers.ModelSerializer):
+    template = serializers.PrimaryKeyRelatedField(queryset=Template.objects.all())
+
     class Meta:
         model = TemplateAttributeSlot
-        fields = ("id", "key", "label", "type", "options", "required", "order")
+        fields = ("id", "template", "key", "label", "type", "options", "required", "order")
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=TemplateAttributeSlot.objects.all(),
+                fields=("template", "key"),
+                message="This template already has an attribute slot with this key.",
+            )
+        ]
 
 
 class TemplateSerializer(serializers.ModelSerializer):
