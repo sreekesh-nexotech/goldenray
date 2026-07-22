@@ -2,143 +2,297 @@
 
 import Image from "next/image";
 
-interface Page2ContentProps {
+interface Page10ContentProps {
   monthlyBill: number | "";
+  graphData: {
+    labels: string[];
+    datasets: {
+      data: number[];
+    }[];
+  };
 }
 
-export default function Page2Content({ monthlyBill }: Page2ContentProps) {
+export default function Page10Content({
+  monthlyBill,
+  graphData,
+}: Page10ContentProps) {
   const billAmount = typeof monthlyBill === "number" ? monthlyBill : 6000;
 
-  // Calculate dynamic values based on monthly bill
+  // 25-year totals for comparison cards
   const yearlyBill = billAmount * 12;
   const totalPaidIn25Years = Math.round((yearlyBill * 25) / 100000); // in lakhs
-  const totalSavings = Math.round(totalPaidIn25Years * 0.65 * 100000); // Approximate 65% savings
-  const formattedSavings = totalSavings.toLocaleString("en-IN");
 
-  // Get current month name
-  const currentMonth = new Date().toLocaleString("default", { month: "long" });
+  // === Graph calculations from backend data ===
+  const withoutSolarData = graphData.datasets[0].data; // KSEB Costs
+  const withSolarData = graphData.datasets[1].data; // Solar + Bills
+  const xLabels = graphData.labels.map((l) => l.replace("Year ", ""));
+
+  // Dynamic savings from graph data
+  const totalSavings25yr =
+    withoutSolarData[withoutSolarData.length - 1] -
+    withSolarData[withSolarData.length - 1];
+  const yearlySavingsFromGraph = Math.round(totalSavings25yr / 25);
+  const monthlySavingsFromGraph = Math.round(yearlySavingsFromGraph / 12);
+
+  // Calculate max value and round up to a nice number for Y-axis
+  const rawMax = Math.max(...withoutSolarData, ...withSolarData);
+  const magnitude = Math.pow(10, Math.floor(Math.log10(rawMax)));
+  const niceMax = Math.ceil(rawMax / magnitude) * magnitude;
+
+  // Y-axis tick count and values
+  const yTickCount = 5;
+  const yStep = niceMax / yTickCount;
+  const yTicks = Array.from({ length: yTickCount + 1 }, (_, i) =>
+    Math.round(i * yStep),
+  );
+
+  // Format value in lakhs for Y-axis
+  const formatLakh = (val: number) => {
+    if (val === 0) return "0";
+    const inLakhs = val / 100000;
+    return inLakhs >= 1 ? `${Math.round(inLakhs)}` : inLakhs.toFixed(1);
+  };
+
+  // SVG chart dimensions
+  const chartPadding = { top: 15, right: 15, bottom: 25, left: 40 };
+  const chartW = 520;
+  const chartH = 240;
+  const plotW = chartW - chartPadding.left - chartPadding.right;
+  const plotH = chartH - chartPadding.top - chartPadding.bottom;
+
+  // Convert data points to SVG coordinates
+  const toSvgPoint = (index: number, value: number) => ({
+    x: chartPadding.left + (index / (withoutSolarData.length - 1)) * plotW,
+    y: chartPadding.top + plotH - (value / niceMax) * plotH,
+  });
+
+  // Generate smooth cubic bezier path
+  const generateSmoothPath = (dataPoints: number[]) => {
+    if (!dataPoints || dataPoints.length < 2) return "";
+    const pts = dataPoints.map((v, i) => toSvgPoint(i, v));
+    let d = `M ${pts[0].x},${pts[0].y}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[Math.max(0, i - 1)];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[Math.min(pts.length - 1, i + 2)];
+      const tension = 0.35;
+      const cp1x = p1.x + (p2.x - p0.x) * tension;
+      const cp1y = p1.y + (p2.y - p0.y) * tension;
+      const cp2x = p2.x - (p3.x - p1.x) * tension;
+      const cp2y = p2.y - (p3.y - p1.y) * tension;
+      d += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
+    }
+    return d;
+  };
+
+  const ksebPath = generateSmoothPath(withoutSolarData);
+  const solarPath = generateSmoothPath(withSolarData);
 
   return (
-    <>
-      {/* Progress Bar */}
-      <div className="px-13 mt-5">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-[#123532]">
-            Your Journey to Energy Freedom
-          </span>
-          <span className="text-sm font-medium text-[#16a34a]">
-            40% Complete
-          </span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-8">
-          <div
-            className="h-2.5 rounded-full"
-            style={{
-              width: "40%",
-              background: "linear-gradient(to right, #10b981, #16a34a)",
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Main Headline */}
-      <div className="text-center mb-6 px-4">
-        <h1 className="text-4xl font-bold leading-tight mb-4 mt-4">
-          <span className="text-[#1a1a1a]">Stop Paying </span>
-          <span className="text-[#FF9500]">
-            ₹{billAmount.toLocaleString("en-IN")}
-          </span>
-          <br />
-          <span className="text-[#1a1a1a]">Every Month to KSEB</span>
+    <div className="flex flex-col h-full">
+      <div className="text-center mt-2 mb-2">
+        <h1 className="text-[28px] font-bold text-[#1a1a1a] mb-1">
+          Your Savings Over Time
         </h1>
-        <p className="text-base text-gray-600 max-w-3xl mx-auto leading-relaxed">
-          Your personalised solar proposal. One payment. 25+ years of free
-          electricity. We handle everything — paperwork, approvals,
-          installation.
-        </p>
-      </div>
 
-      {/* Three Badges */}
-      <div className="flex justify-center gap-13 mb-5 mt-5">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 flex items-center justify-center">
-            <Image
-              src="/Vector.png"
-              alt="Subsidy"
-              width={25}
-              height={25}
-              className="object-contain"
-            />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-[#FF9500]">
-              ₹78,000 Subsidy
-            </p>
-            <p className="text-[10px] text-gray-500">
-              PM Surya Ghar – guaranteed
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 flex items-center justify-center">
-            <Image
-              src="/Vector.png"
-              alt="Homes"
-              width={25}
-              height={25}
-              className="object-contain"
-            />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-[#123532]">300+ Homes</p>
-            <p className="text-[10px] text-gray-500">Installed in Kerala</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 flex items-center justify-center">
-            <Image
-              src="/Vector.png"
-              alt="MNRE"
-              width={25}
-              height={25}
-              className="object-contain"
-            />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-[#123532]">
-              MNRE Empanelled
-            </p>
-            <p className="text-[10px] text-gray-500">Government certified</p>
-          </div>
-        </div>
-      </div>
+        <div className="grid grid-cols-2 gap-3">
+          {/* Graph - matching the shared image style */}
+          <div className="bg-[#fafafa] rounded-lg p-2 pt-2 pb-1">
+            <h3 className="text-[11px] font-semibold text-[#333] text-center mb-1">
+              Cumulative Electricity Costs Over 25 Years
+            </h3>
+            <svg
+              viewBox={`0 0 ${chartW} ${chartH}`}
+              className="w-full"
+              style={{ overflow: "visible" }}
+            >
+              {/* Legend box - top left inside chart */}
+              <rect
+                x={chartPadding.left + 8}
+                y={chartPadding.top + 2}
+                width="115"
+                height="36"
+                rx="3"
+                fill="white"
+                stroke="#e0e0e0"
+                strokeWidth="0.8"
+              />
+              <line
+                x1={chartPadding.left + 15}
+                y1={chartPadding.top + 14}
+                x2={chartPadding.left + 35}
+                y2={chartPadding.top + 14}
+                stroke="#d32f2f"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <text
+                x={chartPadding.left + 40}
+                y={chartPadding.top + 17}
+                fontSize="9"
+                fill="#444"
+                fontWeight="500"
+              >
+                KSEB Costs
+              </text>
+              <line
+                x1={chartPadding.left + 15}
+                y1={chartPadding.top + 28}
+                x2={chartPadding.left + 35}
+                y2={chartPadding.top + 28}
+                stroke="#2e7d32"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <text
+                x={chartPadding.left + 40}
+                y={chartPadding.top + 31}
+                fontSize="9"
+                fill="#444"
+                fontWeight="500"
+              >
+                Solar + Bills
+              </text>
 
-      {/* Horizontal Divider */}
-      <div className="w-full border-t border-gray-300 my-4 px-4"></div>
+              {/* Horizontal grid lines */}
+              {yTicks.map((tick, i) => {
+                const y = chartPadding.top + plotH - (tick / niceMax) * plotH;
+                return (
+                  <g key={`grid-${i}`}>
+                    <line
+                      x1={chartPadding.left}
+                      y1={y}
+                      x2={chartPadding.left + plotW}
+                      y2={y}
+                      stroke="#e0e0e0"
+                      strokeWidth="0.7"
+                    />
+                    {/* Y-axis label */}
+                    <text
+                      x={chartPadding.left - 6}
+                      y={y + 3}
+                      textAnchor="end"
+                      fontSize="9"
+                      fill="#888"
+                    >
+                      {formatLakh(tick)}
+                    </text>
+                  </g>
+                );
+              })}
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-3 gap-3 mb-2 bg-[#FFF8E9] px-4">
-        <div className=" rounded-lg p-3">
-          <p className="text-3xl font-bold text-[#FF9500] mb-1">8+</p>
-          <p className="text-xs text-[#1a1a1a] leading-tight">
-            Years Operating in Kerala
-          </p>
-        </div>
-        <div className=" rounded-lg p-3">
-          <p className="text-3xl font-bold text-[#FF9500] mb-1">300+</p>
-          <p className="text-xs text-[#1a1a1a] leading-tight">
-            Trusted Customers
-            <br />
-            since 2018
-          </p>
-        </div>
-        <div className=" rounded-lg p-3">
-          <p className="text-3xl font-bold text-[#FF9500] mb-1">₹5,000+</p>
-          <p className="text-xs text-[#1a1a1a] leading-tight">
-            saved every month by our
-            <br />
-            customers
-          </p>
+              {/* Y-axis line */}
+              <line
+                x1={chartPadding.left}
+                y1={chartPadding.top}
+                x2={chartPadding.left}
+                y2={chartPadding.top + plotH}
+                stroke="#bbb"
+                strokeWidth="1"
+              />
+              {/* X-axis line */}
+              <line
+                x1={chartPadding.left}
+                y1={chartPadding.top + plotH}
+                x2={chartPadding.left + plotW}
+                y2={chartPadding.top + plotH}
+                stroke="#bbb"
+                strokeWidth="1"
+              />
+
+              {/* X-axis labels */}
+              {xLabels.map((label, i) => {
+                const x =
+                  chartPadding.left + (i / (xLabels.length - 1)) * plotW;
+                return (
+                  <text
+                    key={`x-${i}`}
+                    x={x}
+                    y={chartPadding.top + plotH + 16}
+                    textAnchor="middle"
+                    fontSize="9"
+                    fill="#888"
+                  >
+                    {label}
+                  </text>
+                );
+              })}
+
+              {/* KSEB Costs line (red) */}
+              <path
+                d={ksebPath}
+                stroke="#d32f2f"
+                strokeWidth="2.5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Solar + Bills line (green) */}
+              <path
+                d={solarPath}
+                stroke="#2e7d32"
+                strokeWidth="2.5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+
+          {/* Savings Info */}
+          <div className="space-y-2">
+            {/* Monthly Bill Reduction */}
+            <div className="bg-white border border-gray-200 rounded-lg p-2">
+              <h3 className="text-[11px] font-semibold text-[#1a1a1a] mb-1">
+                Monthly Bill Reduction
+              </h3>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[9px] text-gray-600">Current KSEB Bill</p>
+                  <p className="text-base font-bold text-[#1a1a1a]">
+                    ₹{billAmount.toLocaleString("en-IN")}
+                  </p>
+                </div>
+                <div className="text-xl">→</div>
+                <div>
+                  <p className="text-[9px] text-gray-600">With Solar</p>
+                  <p className="text-base font-bold text-green-600">
+                    ₹300-800/month
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Savings Boxes - dynamic from graph data */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="bg-[#F88A22] rounded-lg p-2 text-white">
+                <p className="text-[10px] mb-0.5">Monthly Savings</p>
+                <p className="text-lg font-bold">
+                  ~₹{monthlySavingsFromGraph.toLocaleString("en-IN")}
+                </p>
+              </div>
+              <div className="bg-[#123532] rounded-lg p-2 text-white">
+                <p className="text-[10px] mb-0.5">25-Year Net Savings</p>
+                <p className="text-lg font-bold">
+                  ₹{totalSavings25yr.toLocaleString("en-IN")}
+                </p>
+              </div>
+            </div>
+
+            {/* Key Takeaway */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-2">
+              <p className="text-[9px] font-semibold text-green-800 mb-0.5">
+                Key Takeaway
+              </p>
+              <p className="text-[10px] text-green-700 leading-snug">
+                Your solar system pays for itself within the first few years.
+                After that, the next 20+ years are pure savings of ₹
+                {totalSavings25yr.toLocaleString("en-IN")}+.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -293,103 +447,102 @@ export default function Page2Content({ monthlyBill }: Page2ContentProps) {
         </div>
       </div>
 
-      {/* Savings Potential Section */}
-      <div className="bg-[#123532] rounded-lg p-4 mt-5 mb-7 grid grid-cols-2 gap-4">
-        <div>
-          <p className="text-xs text-green-300 mb-1">
-            Your Lifetime Savings Potential
-          </p>
-          <p className="text-3xl font-bold text-white mb-1">
-            ₹{formattedSavings}
-          </p>
-          <p className="text-xs text-gray-400">Total savings over 25 years</p>
-        </div>
-        <div className="text-right">
-          <p className="text-xs text-gray-400 mb-1">
-            System pays for itself in
-          </p>
-          <p className="text-3xl font-bold text-[#FF9500]">~3 Years</p>
-          <p className="text-xs text-yellow-400">
-            Every month you wait, KSEB takes another ₹
-            {billAmount.toLocaleString("en-IN")} from you.
-          </p>
-        </div>
-      </div>
+      
+      {/* Book Now Section */}
+      <div className="mt-2">
+        <h2 className="text-lg font-bold text-[#1a1a1a] text-center mb-2">
+          Book now
+        </h2>
 
-      {/* Bottom Guarantees Row */}
-      <div className="mx-20 mb-4 rounded-xl py-5 px-4">
-        <div className="flex items-center justify-between">
-          {/* 100% Refundable */}
-          <div className="flex items-center gap-1">
-            <Image
-              src="https://golden-ray.b-cdn.net/icons/Vector%20(8).png"
-              alt="Refundable"
-              width={20}
-              height={20}
-              className="object-contain"
-            />
-            <div>
-              <p className="text-xs font-bold text-[#123532]">
-                100% Refundable
+        {/* Top row: UPI + Bank Transfer */}
+        <div className="grid grid-cols-10 gap-3 mb-2">
+          {/* UPI - left */}
+          <div className="col-span-2 bg-gray-50 rounded-xl border border-gray-200 p-3 flex flex-col items-center justify-center">
+            <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center mb-2">
+              <span className="text-[9px] text-gray-400">QR Code</span>
+            </div>
+            <p className="text-[11px] font-medium text-[#1a1a1a]">
+              UPI ID:{" "}
+              <span className="font-semibold text-[#F88A22]">flarize@upi</span>
+            </p>
+          </div>
+
+          {/* Bank Transfer - right */}
+          <div className="col-span-8 bg-gray-50 rounded-xl border border-gray-200 p-3">
+            <h3 className="text-[11px] font-semibold text-[#1a1a1a] mb-1.5">
+              Bank Transfer
+            </h3>
+            <div className="space-y-0.5 text-[11px]">
+              <p className="text-gray-700">
+                Bank:{" "}
+                <span className="font-bold text-[#F88A22]">
+                  Union Bank of India
+                </span>
               </p>
-              <p className="text-[8px] text-gray-500">₹5,000 booking fee</p>
-            </div>
-          </div>
-
-          {/* No Obligation */}
-          <div className="flex items-center gap-2">
-            <Image
-              src="https://golden-ray.b-cdn.net/icons/Vector%20(9).png"
-              alt="No Obligation"
-              width={30}
-              height={30}
-              className="object-contain"
-            />
-            <div>
-              <p className="text-xs font-bold text-[#123532]">No Obligation</p>
-              <p className="text-[8px] text-gray-500">If roof unsuitable</p>
-            </div>
-          </div>
-
-          {/* Price Locked */}
-          <div className="flex items-center gap-2">
-            <Image
-              src="https://golden-ray.b-cdn.net/icons/Vector%20(10).png"
-              alt="Price Locked"
-              width={20}
-              height={20}
-              className="object-contain"
-            />
-            <div>
-              <p className="text-xs font-bold text-[#123532]">Price Locked</p>
-              <p className="text-[8px] text-gray-500">For 90 days only</p>
-            </div>
-          </div>
-
-          {/* Installation */}
-          <div className="flex items-center gap-2">
-            <Image
-              src="https://golden-ray.b-cdn.net/icons/Vector%20(11).png"
-              alt="Installation"
-              width={20}
-              height={20}
-              className="object-contain"
-            />
-            <div>
-              <p className="text-xs font-bold text-[#123532]">Installation</p>
-              <p className="text-[8px] text-gray-500">in 15–20 day</p>
+              <p className="text-gray-700">
+                A/c Name:{" "}
+                <span className="font-bold text-[#F88A22]">
+                  Flarize Renewable Energy LLP
+                </span>
+              </p>
+              <p className="text-gray-700">
+                A/c No:{" "}
+                <span className="font-bold text-[#F88A22]">XXXXXXXXXXXX</span>
+              </p>
+              <p className="text-gray-700">
+                IFSC:{" "}
+                <span className="font-bold text-[#F88A22]">UBIN0XXXXX</span>
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                UPI Ref / NEFT Ref will be your project ID
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Installation Note */}
-      <div className="text-center">
-        <p className="text-xs text-gray-500">
-          📅 Our team installs 15-20 systems/month. Book now for{" "}
-          <span className="font-medium">{currentMonth}</span> installation.
-        </p>
+      {/* Required Documents */}
+      <div className="mt-4 bg-[#FAF7EB] rounded-sm px-6 py-4">
+        <h2 className="inline-block text-[16px] font-bold text-[#1a1a1a] border-b-[3px] border-[#123532] pb-0.5 mb-3">
+          Required Documents:
+        </h2>
+
+        <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
+          <ol className="space-y-1.5">
+            {[
+              "Bank Account",
+              "Proof of Address",
+              "Land tax, Building tax",
+              "KSEB Feasibility Report",
+            ].map((item, idx) => (
+              <li key={idx} className="text-[12px] text-[#1a1a1a] pl-2">
+                {idx + 1}. {item}
+              </li>
+            ))}
+          </ol>
+          <ol className="space-y-1.5">
+            {[
+              "Proof of Identity(Aadhar & PAN Card)",
+              "Salary Slips/Bank Statements (above 2L)",
+              "Latest KSEB Bill (2 months)",
+              "ITR ( above 2L)",
+            ].map((item, idx) => (
+              <li key={idx} className="text-[12px] text-[#1a1a1a] pl-2">
+                {idx + 5}. {item}
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
-    </>
+
+      {/* Additional Structure Cost */}
+      <div className="mt-3 border-l-[3px] border-[#F88A22] pl-3 py-0.5">
+        <p className="text-[12px] text-gray-700">
+          Additional Structure cost{" "}
+          <span className="text-gray-500">( if needed )</span>
+        </p>
+        <p className="text-[13px] font-bold text-[#1a1a1a] mt-0.5">₹4500/kw</p>
+      </div>
+    </div>
   );
 }

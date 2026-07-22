@@ -114,61 +114,57 @@ export default function QuotationPage() {
 
       {/* Page 2 */}
       <QuotationPageWrapper logo={logo}>
-        <Page2Content monthlyBill={quotationData.monthlyBill} />
-      </QuotationPageWrapper>
-
-      {/* Page 3 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page3Content
-          pincode={quotationData.pincode}
-          monthlyBill={quotationData.monthlyBill}
-        />
-      </QuotationPageWrapper>
-
-      {/* Page 4 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page4Content
-          monthlyBill={quotationData.monthlyBill}
-          systemPrice={quotationData.systemPrice}
-          emiPerMonth={quotationData.emiPerMonth}
-          graphData={quotationData.graphData}
-        />
-      </QuotationPageWrapper>
-
-      {/* Page 5 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page10Content
+        <Page2Content
           monthlyBill={quotationData.monthlyBill}
           systemSize={quotationData.systemSize}
         />
       </QuotationPageWrapper>
 
-      {/* Page 6 */}
+      {/* Page 3 */}
+      <QuotationPageWrapper logo={logo}>
+        <Page3Content />
+      </QuotationPageWrapper>
+
+      {/* Page 4 */}
+      <QuotationPageWrapper logo={logo}>
+        <Page4Content />
+      </QuotationPageWrapper>
+
+
+      {/* Page 5 */}
       <QuotationPageWrapper logo={logo}>
         <Page5Content bom={quotationData.bom} />
       </QuotationPageWrapper>
 
-      {/* Page 7 */}
+      {/* Page 6 */}
       <QuotationPageWrapper logo={logo}>
         <Page6Content />
       </QuotationPageWrapper>
 
-      {/* Page 8 */}
+      {/* Page 7 */}
       <QuotationPageWrapper logo={logo}>
         <Page7Content />
       </QuotationPageWrapper>
 
-      {/* Page 9 */}
+      {/* Page 8 */}
       <QuotationPageWrapper logo={logo}>
         <Page8Content />
       </QuotationPageWrapper>
 
-      {/* Page 10 */}
+      {/* Page 9 */}
       <QuotationPageWrapper logo={logo}>
         <Page9Content
           monthlyBill={quotationData.monthlyBill}
           systemPrice={quotationData.systemPrice}
           emiPerMonth={quotationData.emiPerMonth}
+        />
+      </QuotationPageWrapper>
+
+      
+      <QuotationPageWrapper logo={logo}>
+        <Page10Content
+          monthlyBill={quotationData.monthlyBill}
+          graphData={quotationData.graphData}
         />
       </QuotationPageWrapper>
 

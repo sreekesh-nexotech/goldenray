@@ -203,27 +203,18 @@ export default function QuotationPdfGenerator({
       </PageShell>
 
       <PageShell>
-        <Page2Content monthlyBill={data.monthlyBill} />
-      </PageShell>
-
-      <PageShell>
-        <Page3Content pincode={data.pincode} monthlyBill={data.monthlyBill} />
-      </PageShell>
-
-      <PageShell>
-        <Page4Content
-          monthlyBill={data.monthlyBill}
-          systemPrice={data.systemPrice}
-          emiPerMonth={data.emiPerMonth}
-          graphData={data.graphData}
-        />
-      </PageShell>
-
-      <PageShell>
-        <Page10Content
+        <Page2Content
           monthlyBill={data.monthlyBill}
           systemSize={data.systemSize}
         />
+      </PageShell>
+
+      <PageShell>
+        <Page3Content />
+      </PageShell>
+
+      <PageShell>
+        <Page4Content />
       </PageShell>
 
       <PageShell>
@@ -247,6 +238,13 @@ export default function QuotationPdfGenerator({
           monthlyBill={data.monthlyBill}
           systemPrice={data.systemPrice}
           emiPerMonth={data.emiPerMonth}
+        />
+      </PageShell>
+
+      <PageShell>
+        <Page10Content
+          monthlyBill={data.monthlyBill}
+          graphData={data.graphData}
         />
       </PageShell>
     </div>

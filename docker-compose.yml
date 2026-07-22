@@ -54,8 +54,9 @@ services:
       args:
         # Browser-reachable backend URL, baked into the client bundle at build.
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    # Host port 3003 — 3000/3001 are used by other projects on this shared VM.
     ports:
-      - "3000:3000"
+      - "3003:3000"
     depends_on:
       - backend
 
