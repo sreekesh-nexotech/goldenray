@@ -1,11 +1,11 @@
 "use client";
 
-interface Page10ContentProps {
+interface Page2ContentProps {
   monthlyBill: number | "";
   systemSize: string;
 }
 
-export default function Page10Content({ systemSize }: Page10ContentProps) {
+export default function Page2Content({ systemSize }: Page2ContentProps) {
   // Parse system size (e.g. "5 kW" -> 5)
   const sizeKW = parseFloat(systemSize) || 5;
 

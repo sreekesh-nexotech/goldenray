@@ -5,15 +5,15 @@ import QuotationHeader from "./QuotationHeader";
 import QuotationFooter from "./QuotationFooter";
 import Page1Content from "./Page1Content";
 import Page2Content from "./Page2Content";
-import Page3Content from "./Page3Content";
-import Page4Content from "./Page4Content";
-import Page5Content from "./Page5Content";
-import Page6Content from "./Page6Content";
-import Page7Content from "./Page7Content";
-import Page8Content from "./Page8Content";
-import Page8_1Content from "./Page8_1Content";
 import Page9Content from "./Page9Content";
+import Page4Content from "./Page4Content";
+import Page7Content from "./Page7Content";
+import Page3Content from "./Page3Content";
+import Page6Content from "./Page6Content";
 import Page10Content from "./Page10Content";
+import Page10_1Content from "./Page10_1Content";
+import Page11Content from "./Page11Content";
+import Page8Content from "./Page8Content";
 import type { QuotationBom } from "@/services/bomService";
 
 export interface QuotationPdfData {
@@ -219,40 +219,40 @@ export default function QuotationPdfGenerator({
       </PageShell>
 
       <PageShell>
-        <Page5Content
+        <Page6Content />
+      </PageShell>
+
+      <PageShell>
+        <Page7Content
           systemPrice={data.systemPrice}
           systemSize={data.systemSize}
         />
       </PageShell>
 
       <PageShell>
-        <Page6Content />
-      </PageShell>
-
-      <PageShell>
-        <Page7Content />
-      </PageShell>
-
-      <PageShell>
-        <Page8Content />
-      </PageShell>
-
-      <PageShell>
-        <Page8_1Content />
-      </PageShell>
-
-      <PageShell>
-        <Page9Content
+        <Page8Content
           monthlyBill={data.monthlyBill}
-          systemPrice={data.systemPrice}
-          emiPerMonth={data.emiPerMonth}
+          graphData={data.graphData}
         />
       </PageShell>
 
       <PageShell>
-        <Page10Content
+        <Page9Content />
+      </PageShell>
+
+      <PageShell>
+        <Page10Content />
+      </PageShell>
+
+      <PageShell>
+        <Page10_1Content />
+      </PageShell>
+
+      <PageShell>
+        <Page11Content
           monthlyBill={data.monthlyBill}
-          graphData={data.graphData}
+          systemPrice={data.systemPrice}
+          emiPerMonth={data.emiPerMonth}
         />
       </PageShell>
     </div>

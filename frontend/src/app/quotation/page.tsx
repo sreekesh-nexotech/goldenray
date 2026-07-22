@@ -6,15 +6,15 @@ import {
   QuotationPageWrapper,
   Page1Content,
   Page2Content,
-  Page3Content,
-  Page4Content,
-  Page5Content,
-  Page6Content,
-  Page7Content,
-  Page8Content,
-  Page8_1Content,
   Page9Content,
+  Page4Content,
+  Page7Content,
+  Page3Content,
+  Page6Content,
   Page10Content,
+  Page10_1Content,
+  Page11Content,
+  Page8Content,
 } from "@/components/Quotation";
 import type { QuotationBom } from "@/services/bomService";
 
@@ -131,15 +131,6 @@ export default function QuotationPage() {
         <Page4Content />
       </QuotationPageWrapper>
 
-
-      {/* Page 5 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page5Content
-          systemPrice={quotationData.systemPrice}
-          systemSize={quotationData.systemSize}
-        />
-      </QuotationPageWrapper>
-
       {/* Page 6 */}
       <QuotationPageWrapper logo={logo}>
         <Page6Content />
@@ -147,33 +138,41 @@ export default function QuotationPage() {
 
       {/* Page 7 */}
       <QuotationPageWrapper logo={logo}>
-        <Page7Content />
+        <Page7Content
+          systemPrice={quotationData.systemPrice}
+          systemSize={quotationData.systemSize}
+        />
       </QuotationPageWrapper>
 
       {/* Page 8 */}
       <QuotationPageWrapper logo={logo}>
-        <Page8Content />
-      </QuotationPageWrapper>
-
-      {/* Page 8.1 - Terms and Conditions (continued) */}
-      <QuotationPageWrapper logo={logo}>
-        <Page8_1Content />
+        <Page8Content
+          monthlyBill={quotationData.monthlyBill}
+          graphData={quotationData.graphData}
+        />
       </QuotationPageWrapper>
 
       {/* Page 9 */}
       <QuotationPageWrapper logo={logo}>
-        <Page9Content
+        <Page9Content />
+      </QuotationPageWrapper>
+
+      {/* Page 10 */}
+      <QuotationPageWrapper logo={logo}>
+        <Page10Content />
+      </QuotationPageWrapper>
+
+      {/* Page 10.1 - Terms and Conditions (continued) */}
+      <QuotationPageWrapper logo={logo}>
+        <Page10_1Content />
+      </QuotationPageWrapper>
+
+      {/* Page 11 */}
+      <QuotationPageWrapper logo={logo}>
+        <Page11Content
           monthlyBill={quotationData.monthlyBill}
           systemPrice={quotationData.systemPrice}
           emiPerMonth={quotationData.emiPerMonth}
-        />
-      </QuotationPageWrapper>
-
-      
-      <QuotationPageWrapper logo={logo}>
-        <Page10Content
-          monthlyBill={quotationData.monthlyBill}
-          graphData={quotationData.graphData}
         />
       </QuotationPageWrapper>
 

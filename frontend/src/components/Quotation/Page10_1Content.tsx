@@ -1,6 +1,6 @@
 "use client";
 
-export default function Page8_1Content() {
+export default function Page10_1Content() {
   const terms = [
     {
       title: "10. Project Completion Timeline :",

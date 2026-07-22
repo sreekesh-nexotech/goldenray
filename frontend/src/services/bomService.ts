@@ -14,7 +14,7 @@ import { API_BASE_URL } from "@/config";
 const BOM_BASE_URL = API_BASE_URL.replace(/api\/?$/, "bom/");
 const BOM_CALCULATE_ENDPOINT = "api/calculate/";
 
-// ── Shape consumed by Page5Content ──────────────────────────────────────────
+// ── Shape consumed by Page7Content ──────────────────────────────────────────
 export interface QuotationBomLine {
   name: string;
   qty: number;
