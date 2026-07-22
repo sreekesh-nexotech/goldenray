@@ -171,9 +171,29 @@ else:
     CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
+# Public site the admin UI links out to ("Preview site", slug previews).
+FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000").rstrip("/")
+
+# ── Frontend site (used by admin-api /config/ + slug previews) ────────────────
+FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000").rstrip("/")
+
 # ── Instant freshness webhook (Next.js on-demand revalidation) ────────────────
 FRONTEND_REVALIDATE_URL = os.getenv("FRONTEND_REVALIDATE_URL", "").strip()
 FRONTEND_REVALIDATE_SECRET = os.getenv("FRONTEND_REVALIDATE_SECRET", "").strip()
+
+# ── BunnyCDN media pipeline ───────────────────────────────────────────────────
+# When BUNNY_STORAGE_PASSWORD is set, uploaded images are compressed and pushed
+# to Bunny storage (under cms/<collection>/) and delivered from the CDN URL.
+BUNNY_STORAGE_ZONE = os.getenv("BUNNY_STORAGE_ZONE", "").strip()
+BUNNY_STORAGE_ENDPOINT = os.getenv("BUNNY_STORAGE_ENDPOINT", "storage.bunnycdn.com").strip()
+BUNNY_STORAGE_PASSWORD = os.getenv("BUNNY_STORAGE_PASSWORD", "").strip()
+BUNNY_PULL_ZONE_ID = os.getenv("BUNNY_PULL_ZONE_ID", "").strip()
+BUNNY_CDN_BASE_URL = os.getenv("BUNNY_CDN_BASE_URL", "").strip().rstrip("/")
+BUNNY_API_KEY = os.getenv("BUNNY_API_KEY", "").strip()
+BUNNY_PURGE_ON_OVERWRITE = os.getenv("BUNNY_PURGE_ON_OVERWRITE", "true").lower() in ("1", "true", "yes")
+BUNNY_IMAGE_MAX_DIM = int(os.getenv("BUNNY_IMAGE_MAX_DIM", "1920"))
+BUNNY_IMAGE_QUALITY = int(os.getenv("BUNNY_IMAGE_QUALITY", "80"))
+BUNNY_ENABLED = bool(BUNNY_STORAGE_ZONE and BUNNY_STORAGE_PASSWORD and BUNNY_CDN_BASE_URL)
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 LOGGING = {

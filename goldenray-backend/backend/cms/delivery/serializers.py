@@ -14,10 +14,13 @@ def _iso(dt):
 def _media_payload(asset):
     if asset is None:
         return None
-    try:
-        url = absolute_media_url(asset.file.url)
-    except ValueError:
-        url = None
+    if asset.cdn_url:
+        url = asset.cdn_url
+    else:
+        try:
+            url = absolute_media_url(asset.file.url)
+        except ValueError:
+            url = None
     if not url:
         return None
     return {
@@ -60,8 +63,41 @@ def _img_urls(entry):
     return out
 
 
+def _cover_payload(entry):
+    """Resolve ``coverImage``: the legacy FK wins; otherwise fall back to the
+    template image group with the well-known ``coverImg`` key (how the custom
+    admin UI stores covers)."""
+    cover = _media_payload(entry.cover_image)
+    if cover is not None:
+        return cover
+    for img in entry.images.all():  # prefetched, ordered by (group_key, position)
+        if img.group_key != "coverImg":
+            continue
+        if img.media_asset_id and img.media_asset:
+            return _media_payload(img.media_asset)
+        if img.external_url:
+            return {
+                "url": absolute_media_url(img.external_url),
+                "width": None,
+                "height": None,
+                "alternativeText": None,
+            }
+    return None
+
+
 def build_entry_payload(entry) -> dict:
     """Full flat payload for one entry (populate=* case)."""
+    # Template attribute values under well-known keys back-fill the fixed
+    # delivery fields; legacy entry columns win for rows authored before the
+    # template system (Django admin era).
+    attrs = {av.slot_key: av.value for av in entry.attribute_values.all()}
+
+    def _scalar(legacy_value, slot_key):
+        if legacy_value not in (None, ""):
+            return legacy_value
+        v = attrs.get(slot_key)
+        return v if v not in (None, "") else None
+
     author = None
     if entry.author_id and entry.author:
         author = {
@@ -89,7 +125,7 @@ def build_entry_payload(entry) -> dict:
         "excerpt": entry.excerpt or "",
         "summary": entry.summary or [],
         "introduction": entry.introduction or [],
-        "readTime": entry.read_time,
+        "readTime": _scalar(entry.read_time, "readTime"),
         "isFeatured": entry.is_featured,
         "sortOrder": entry.sort_order,
         "publishedOn": _iso(entry.published_on),
@@ -105,11 +141,14 @@ def build_entry_payload(entry) -> dict:
             {"__component": cb.component, "id": cb.id, "body": cb.body or []}
             for cb in entry.content_blocks.all()
         ],
-        "coverImage": _media_payload(entry.cover_image),
-        "warning": entry.warning,
-        "insights": entry.insights,
+        "coverImage": _cover_payload(entry),
+        "warning": _scalar(entry.warning, "warning"),
+        "insights": _scalar(entry.insights, "insights"),
         "seo": seo,
         "imgUrls": _img_urls(entry),
+        # All template attribute values keyed by slot key (additive — lets the
+        # frontend read custom slots like `difficulty` without a contract change).
+        "attributes": attrs or None,
     }
 
 

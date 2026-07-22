@@ -104,11 +104,14 @@ class EntryImage(models.Model):
     def resolved_url(self):
         if self.external_url:
             return self.external_url
-        if self.media_asset_id and self.media_asset and self.media_asset.file:
-            try:
-                return self.media_asset.file.url
-            except ValueError:
-                return None
+        if self.media_asset_id and self.media_asset:
+            if self.media_asset.cdn_url:
+                return self.media_asset.cdn_url
+            if self.media_asset.file:
+                try:
+                    return self.media_asset.file.url
+                except ValueError:
+                    return None
         return None
 
     def __str__(self):

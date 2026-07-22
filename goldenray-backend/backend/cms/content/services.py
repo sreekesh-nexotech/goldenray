@@ -12,7 +12,15 @@ from .revalidation import trigger_revalidate
 
 
 class PublishError(Exception):
-    """Raised when an entry fails validation on publish."""
+    """Raised when an entry fails validation on publish.
+
+    ``errors`` is the machine-readable list of individual failures so the admin
+    UI can render them one per line (``str(exc)`` stays the joined summary).
+    """
+
+    def __init__(self, message: str, errors: list[str] | None = None):
+        super().__init__(message)
+        self.errors = errors if errors is not None else [message]
 
 
 # ── Template-aware validation ─────────────────────────────────────────────────
@@ -46,7 +54,7 @@ def validate_for_publish(entry: Entry) -> None:
             errors.append(f"Image group '{group.label}' ({key}) exceeds max_items={group.max_items}.")
 
     if errors:
-        raise PublishError(" ".join(errors))
+        raise PublishError(" ".join(errors), errors=errors)
 
 
 # ── State transitions ─────────────────────────────────────────────────────────

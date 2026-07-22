@@ -1,10 +1,7 @@
 # Stage 1: Builder with all dependencies
 FROM node:18-alpine as builder
 
-RUN apk add --no-cache build-base vips-dev
-
-WORKDIR /app
-COPY package*.json ./
+RUN apk add --no-cache build-base vips
 RUN npm install --include=optional
 COPY . .
 
