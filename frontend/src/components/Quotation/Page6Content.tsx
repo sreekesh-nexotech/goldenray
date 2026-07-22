@@ -1,180 +1,256 @@
 "use client";
 
+import Image from "next/image";
+
 export default function Page6Content() {
-  const steps = [
+  const stats = [
     {
-      day: "Day 1",
-      title: "Pay ₹5,000 – Slot Locked",
-      description:
-        "Lock your installation slot with a small booking fee and we'll begin the technical assessment right away.",
-      tagIcon: "🛡️",
-      tagText: "100% Refundable if unsuitable",
-      tagColor: "#16a34a",
-      tagBg: "#16A34A1A",
+      icon: (
+        <svg
+          className="w-4 h-4 text-[#F88A22]"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      ),
+      main: "300+",
+      sub: "Successful Installations",
     },
     {
-      day: "Day 4–8",
-      title: "Site Inspection & Documentation",
-      description:
-        "Our team visits your site to evaluate roof, wiring, and shading. All measurements and documentation are managed by us.",
-      tagIcon: "🔧",
-      tagText: "We handle this",
-      tagColor: "#16a34a",
-      tagBg: "#16A34A1A",
+      icon: (
+        <svg
+          className="w-4 h-4 text-[#F88A22]"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      ),
+      main: "8+ Years",
+      sub: "Industry Experience",
     },
     {
-      day: "Day 15–25",
-      title: "KSEB Meter Installation",
-      description:
-        "Net metering is applied with KSEB, and the bi-directional meter is installed to connect your system to the grid.",
-      tagIcon: "📋",
-      tagText: "We coordinate everything",
-      tagColor: "#16a34a",
-      tagBg: "#16A34A1A",
+      icon: (
+        <svg
+          className="w-4 h-4 text-[#F88A22]"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4z"
+          />
+        </svg>
+      ),
+      main: "CERTIFIED",
+      sub: "INSTALLATION TEAM",
     },
     {
-      day: "Day 30–35",
-      title: "Solar Installation Complete",
-      description:
-        "We handle the full installation and system integration. Once commissioned, your solar system begins producing clean energy.",
-      tagIcon: "✅",
-      tagText: "5-year warranty included",
-      tagColor: "#16a34a",
-      tagBg: "#16A34A1A",
+      icon: (
+        <svg
+          className="w-4 h-4 text-[#F88A22]"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+      ),
+      main: "KERALA",
+      sub: "Wide Service",
     },
     {
-      day: "Day 45–60",
-      title: "Government Approvals & Subsidy",
-      description:
-        "All final approvals and subsidy paperwork are managed by us. You'll receive the subsidy directly in your bank account as per official timelines.",
-      tagIcon: "🏛️",
-      tagText: "We handle all paperwork",
-      tagColor: "#16a34a",
-      tagBg: "#16A34A1A",
+      icon: (
+        <svg
+          className="w-4 h-4 text-[#F88A22]"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+          />
+        </svg>
+      ),
+      main: "MNRE",
+      sub: "Government Certified",
     },
   ];
 
-  const weHandle = [
-    "Design the panels according to site-specific requirements",
-    "Analyze the site for shading and optimize panel placement",
-    "Procure Solar Panels, Inverter, Structure and BOQ according to project requirements",
-    "Install all required components, fittings, and equipment",
-    "Test and commission the solar power plant, Invite authorities for final approval before commissioning",
-    "Installation scope is limited to the DC side; solar meter installation is included",
-    "Train client's personnel on system operation, safety, and maintenance",
+  const solarImages = [
+    "https://golden-ray.b-cdn.net/quotation-document/0fa2940cc26cbd37d892e79c7a1230134665335c.jpg",
+    "https://golden-ray.b-cdn.net/quotation-document/16e4761db567b5c1a1d3dc13b51be605823825a4%20(1).jpg",
+    "https://golden-ray.b-cdn.net/quotation-document/16e4761db567b5c1a1d3dc13b51be605823825a4.jpg",
+    "https://golden-ray.b-cdn.net/quotation-document/1bdf2d751001a1caaa19f18e93f36fd74f196110.jpg",
+    "https://golden-ray.b-cdn.net/quotation-document/3fbe4a9660430870305dc8b961d296205b591098.jpg",
+    "https://golden-ray.b-cdn.net/quotation-document/4e88f9f7a610e4c5234ba6b391d39dfc29eceed0.jpg",
+    "https://golden-ray.b-cdn.net/quotation-document/95b00dab742281953b57e0ce1f42066920afd12f.jpg",
+    "https://golden-ray.b-cdn.net/quotation-document/dbb05df00ee3d6d3bebb84aae866fd165de2bfc4.jpg",
   ];
 
-  const youNeedToDo = [
-    "Provide a shade-free roof area and a safe, weather-protected space for the inverter.",
-    "Arrange basic installation support, including water, electricity, storage space, and any required civil work.",
-    "Provide necessary technical provisions (internet connection, termination point, CT/AC components, and upgrades if applicable for HT or generator setups).",
-    "Complete any required KSEB-related adjustments if sharing excess power.",
-    "Pay applicable statutory fees (80% reimbursable).",
-    "Additional charges may apply if extra structural work is required.",
+  const handPicked = [
+    {
+      icon: "https://golden-ray.b-cdn.net/quotation-document/Frame%202147225137.png",
+      title: "Tier 1 Brand",
+      sub: "Bloomberg-listed manufacture",
+    },
+    {
+      icon: "https://golden-ray.b-cdn.net/quotation-document/Frame%202147225137%20(2).png",
+      title: "PVEL Top Performer",
+      sub: "Independently lab tested",
+    },
+    {
+      icon: "https://golden-ray.b-cdn.net/quotation-document/Frame%202147225137%20(1).png",
+      title: "ALMM2 Listed",
+      sub: "Domestic cell manufacturing",
+    },
+    {
+      icon: "https://golden-ray.b-cdn.net/quotation-document/Frame%202147225139.png",
+      title: "Easy Warranty Claims",
+      sub: "Direct manufacturer support",
+    },
+    {
+      icon: "https://golden-ray.b-cdn.net/quotation-document/Frame%202147225140.png",
+      title: "Local stock available",
+      sub: "Fast replacement parts",
+    },
   ];
 
   return (
     <div className="flex flex-col h-full">
-      {/* Title */}
-      <div className="text-center mt-4 mb-12">
-        <h1 className="text-[28px] font-semibold">
-          <span className="text-[#F88A22]">From Booking to Savings — </span>
-          <span className="text-[#123532]">Step by Step</span>
+      {/* Why Choose Flarize */}
+      <div className="px-2 mt-2">
+        <h1 className="text-[22px] font-bold mb-2">
+          <span className="text-[#1a1a1a]">Why Choose </span>
+          <span className="text-[#F88A22]">Flarize?</span>
         </h1>
+        <p className="text-[11px] text-[#1a1a1a] leading-relaxed mb-3">
+          A solar system is one of the smartest investments you&apos;ll make
+          for your home—but its long-term performance depends on choosing the
+          right installer. At Flarize, we combine quality workmanship, premium
+          components, transparent pricing, and dependable after-sales support
+          to help you enjoy worry-free solar for years to come.
+        </p>
+
+        {/* Our Promise */}
+        <p className="text-[11px] text-[#1a1a1a] leading-relaxed mb-4 pl-3">
+          &ldquo;<span className="font-bold">Our Promise:</span> Your solar
+          journey doesn&apos;t end on installation day. We&apos;re committed to
+          helping you enjoy reliable performance, lower electricity bills, and
+          dependable support for years to come.&rdquo;
+        </p>
       </div>
 
-      {/* Timeline */}
-      <div className="relative mx-6 mb-4">
-        {steps.map((step, idx) => (
-          <div key={idx} className="relative flex items-start mb-1">
-            {/* Vertical line */}
-            {idx < steps.length - 1 && (
-              <div
-                className="absolute left-[15px] top-[32px] w-[2px] bg-gray-200"
-                style={{ height: "calc(100% - 27px)" }}
-              />
-            )}
-
-            {/* Numbered circle */}
-            <div
-              className="relative z-10 flex-shrink-0 w-[32px] h-[32px] rounded-full bg-[#123532] flex items-center justify-center mt-[2px]"
-              style={{ opacity: idx === 0 ? 1 : 0.3 }}
-            >
-              <span className="text-white text-[13px] font-bold">
-                {idx + 1}
-              </span>
-            </div>
-
-            {/* Content */}
-            <div className="ml-4 pb-4 flex-1 mb-1">
-              <p className="text-[10px] text-[#F88A22] font-semibold mb-0.5">
-                {step.day}
-              </p>
-              <h3 className="text-[13px] font-semibold text-[#1a1a1a] mb-3">
-                {step.title}
-              </h3>
-              <p className="text-[10.5px] text-gray-600 leading-relaxed ">
-                {step.description}
-              </p>
-              <span
-                className="inline-flex items-center gap-1 text-[9.5px] font-semibold px-2 py-0.5 rounded-md"
-                style={{ color: step.tagColor, backgroundColor: step.tagBg }}
-              >
-                {step.tagIcon} {step.tagText}
-              </span>
-            </div>
+      {/* Stat Cards */}
+      <div className="grid grid-cols-5 gap-2 px-2 mb-5">
+        {stats.map((stat, idx) => (
+          <div
+            key={idx}
+            className="border border-[#F8B878] rounded-lg py-2.5 px-1 flex flex-col items-center text-center bg-white"
+          >
+            <span className="mb-1.5">{stat.icon}</span>
+            <p className="text-[11px] font-bold text-[#F88A22] leading-tight">
+              {stat.main}
+            </p>
+            <p className="text-[8px] text-[#1a1a1a] leading-tight mt-0.5">
+              {stat.sub}
+            </p>
           </div>
         ))}
       </div>
 
-      {/* Bottom Two Columns */}
-      <div className="mx-4 grid grid-cols-2 gap-3 mt-auto mb-2">
-        {/* What We Handle */}
-        <div className="border border-gray-200 rounded-lg p-3 bg-[#FEF3E8]">
-          <h4 className="text-[11px] font-bold text-[#1a1a1a] tracking-wide mb-2.5 uppercase">
-            What We Handle
-          </h4>
-          <ul className="space-y-2">
-            {weHandle.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-2">
-                <span className="flex-shrink-0 w-[11px] h-[11px] rounded-full bg-[#F88A22] flex items-center justify-center mt-[2px]">
-                  <svg
-                    className="w-[7px] h-[7px] text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </span>
-                <span className="text-[9.5px] text-gray-700 leading-relaxed">
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ul>
+      {/* Homes We've Powered - dark band (full bleed) */}
+      <div
+        className="bg-[#F3F4F6]"
+        style={{ margin: "0 -10mm", padding: "14px 10mm 16px" }}
+      >
+        <div className="flex items-end justify-between mb-3">
+          <h2 className="text-[19px] font-bold text-black leading-tight">
+            Homes We&apos;ve Powered Across Kerala
+          </h2>
+          <p className="text-[10px] text-black">
+            300+ Projects Across Kerala
+          </p>
         </div>
 
-        {/* What You Need To Do */}
-        <div className="border border-gray-200 rounded-lg p-3 bg-[#16A34A1A]">
-          <h4 className="text-[11px] font-bold  tracking-wide mb-2.5 uppercase">
-            What You Need To Do
-          </h4>
-          <ul className="space-y-2">
-            {youNeedToDo.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-2">
-                <span className="flex-shrink-0 w-[11px] h-[11px] rounded-full border-[3.5px] border-[#F88A22] mt-[2px]" />
-                <span className="text-[9.5px] text-gray-700 leading-relaxed">
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ul>
+        {/* Image grid */}
+        <div className="grid grid-cols-4 gap-2">
+          {solarImages.map((src, idx) => (
+            <div
+              key={idx}
+              className="relative w-full h-[150px] rounded-sm overflow-hidden"
+            >
+              <Image
+                src={src}
+                alt={`Solar installation ${idx + 1}`}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* We Hand Picked For Your Home */}
+      <div className="mt-5 px-2">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex-1 border-t border-gray-300" />
+          <h3 className="text-[12px] font-semibold text-[#1a1a1a] tracking-[0.15em] uppercase whitespace-nowrap">
+            We Hand Picked For Your Home
+          </h3>
+          <div className="flex-1 border-t border-gray-300" />
+        </div>
+
+        <div className="grid grid-cols-5 gap-2">
+          {handPicked.map((item, idx) => (
+            <div key={idx} className="flex flex-col items-center text-center">
+              <div className="relative w-[42px] h-[42px] mb-1.5">
+                <Image
+                  src={item.icon}
+                  alt={item.title}
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
+              <p className="text-[10px] font-bold text-[#1a1a1a] leading-tight">
+                {item.title}
+              </p>
+              <p className="text-[8.5px] text-gray-600 leading-tight mt-0.5">
+                {item.sub}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
