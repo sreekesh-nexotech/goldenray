@@ -11,6 +11,7 @@ import Page5Content from "./Page5Content";
 import Page6Content from "./Page6Content";
 import Page7Content from "./Page7Content";
 import Page8Content from "./Page8Content";
+import Page8_1Content from "./Page8_1Content";
 import Page9Content from "./Page9Content";
 import Page10Content from "./Page10Content";
 import type { QuotationBom } from "@/services/bomService";
@@ -218,7 +219,10 @@ export default function QuotationPdfGenerator({
       </PageShell>
 
       <PageShell>
-        <Page5Content bom={data.bom} />
+        <Page5Content
+          systemPrice={data.systemPrice}
+          systemSize={data.systemSize}
+        />
       </PageShell>
 
       <PageShell>
@@ -231,6 +235,10 @@ export default function QuotationPdfGenerator({
 
       <PageShell>
         <Page8Content />
+      </PageShell>
+
+      <PageShell>
+        <Page8_1Content />
       </PageShell>
 
       <PageShell>

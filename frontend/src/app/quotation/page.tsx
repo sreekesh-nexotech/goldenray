@@ -12,6 +12,7 @@ import {
   Page6Content,
   Page7Content,
   Page8Content,
+  Page8_1Content,
   Page9Content,
   Page10Content,
 } from "@/components/Quotation";
@@ -133,7 +134,10 @@ export default function QuotationPage() {
 
       {/* Page 5 */}
       <QuotationPageWrapper logo={logo}>
-        <Page5Content bom={quotationData.bom} />
+        <Page5Content
+          systemPrice={quotationData.systemPrice}
+          systemSize={quotationData.systemSize}
+        />
       </QuotationPageWrapper>
 
       {/* Page 6 */}
@@ -149,6 +153,11 @@ export default function QuotationPage() {
       {/* Page 8 */}
       <QuotationPageWrapper logo={logo}>
         <Page8Content />
+      </QuotationPageWrapper>
+
+      {/* Page 8.1 - Terms and Conditions (continued) */}
+      <QuotationPageWrapper logo={logo}>
+        <Page8_1Content />
       </QuotationPageWrapper>
 
       {/* Page 9 */}
