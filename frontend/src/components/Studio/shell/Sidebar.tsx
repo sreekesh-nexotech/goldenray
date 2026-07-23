@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import Wordmark from "./Wordmark";
 import { useStudio } from "../shared/StudioContext";
+import { ConfirmDialog } from "../shared/overlays";
 import { initialsOf } from "../shared/format";
 import { logout as apiLogout } from "@/services/studioService";
 
@@ -240,6 +241,7 @@ export default function Sidebar() {
   const router = useRouter();
   const { role, toast, me, config, dashboard } = useStudio();
   const [open, setOpen] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   // Sidebar badge counts + "Edit entry" target from the dashboard payload.
   const counts = dashboard?.counts;
@@ -275,6 +277,7 @@ export default function Sidebar() {
     item.match ? item.match(pathname) : pathname === item.href || pathname.startsWith(item.href + "/");
 
   const logout = () => {
+    setConfirmLogout(false);
     apiLogout(); // no server endpoint — just discard the tokens
     toast("Signed out");
     router.push("/studio/login");
@@ -338,7 +341,7 @@ export default function Sidebar() {
           <div style={{ fontSize: 11, color: "rgba(255,255,255,.55)" }}>{role}</div>
         </div>
         <button
-          onClick={logout}
+          onClick={() => setConfirmLogout(true)}
           title="Sign out"
           aria-label="Sign out"
           className="grid flex-none place-items-center transition-colors hover:bg-[rgba(255,255,255,0.12)]"
@@ -429,6 +432,18 @@ export default function Sidebar() {
           </aside>
         </div>
       )}
+
+      {/* Sign-out confirmation */}
+      <ConfirmDialog
+        open={confirmLogout}
+        title="Sign out?"
+        confirmLabel="Sign out"
+        danger={false}
+        onCancel={() => setConfirmLogout(false)}
+        onConfirm={logout}
+      >
+        You&#8217;ll be returned to the sign-in screen and need your credentials to get back in.
+      </ConfirmDialog>
     </>
   );
 }

@@ -114,10 +114,13 @@ export interface StudioCollection {
 
 export class StudioApiError extends Error {
   status: number;
-  constructor(status: number, message: string) {
+  /** Per-field/validation messages when the API sent them (e.g. publish 400s). */
+  errors?: string[];
+  constructor(status: number, message: string, errors?: string[]) {
     super(message);
     this.name = "StudioApiError";
     this.status = status;
+    this.errors = errors;
   }
 }
 
@@ -191,10 +194,16 @@ async function request<T>(
 
   if (!res.ok) {
     let detail = `Request failed (${res.status})`;
+    let errors: string[] | undefined;
     try {
       const data = await res.json();
-      // DRF errors: {"detail": "..."} or field maps like {"username": ["..."]}
+      // DRF errors: {"detail": "..."} or field maps like {"username": ["..."]};
+      // publish failures add {"errors": ["..."]}.
+      if (Array.isArray(data?.errors) && data.errors.every((e: unknown) => typeof e === "string")) {
+        errors = data.errors as string[];
+      }
       if (typeof data?.detail === "string") detail = data.detail;
+      else if (errors?.length) detail = errors[0];
       else if (data && typeof data === "object") {
         const first = Object.values(data)[0];
         if (Array.isArray(first) && typeof first[0] === "string") detail = first[0];
@@ -202,7 +211,7 @@ async function request<T>(
     } catch {
       /* non-JSON body — keep the generic message */
     }
-    throw new StudioApiError(res.status, detail);
+    throw new StudioApiError(res.status, detail, errors);
   }
 
   // DELETEs answer 204 No Content — there is no body to parse.
@@ -382,6 +391,145 @@ export function patchAttributeSlot(
 
 export function deleteAttributeSlot(id: number): Promise<void> {
   return authRequest<void>(`template-attribute-slots/${id}/`, { method: "DELETE" });
+}
+
+/* ── Entries list + workflow actions ─────────────────────────────────────── */
+
+/** GET entries/ — lightweight rows; open the entry for body content. */
+export function getEntries(params?: {
+  collection?: number | string;
+  status?: "draft" | "published";
+  category?: number;
+  tag?: number;
+  template?: number;
+  author?: number;
+  search?: string;
+  /** Whitelisted: title, slug, status, sort_order, created_at, updated_at,
+   *  published_on, published_at — prefix with "-" for descending. */
+  ordering?: string;
+  page?: number;
+}): Promise<Paginated<StudioEntryListItem>> {
+  const qs = new URLSearchParams();
+  for (const [k, v] of Object.entries(params ?? {})) {
+    if (v !== undefined && v !== "") qs.set(k, String(v));
+  }
+  const query = qs.toString();
+  return authRequest<Paginated<StudioEntryListItem>>(`entries/${query ? `?${query}` : ""}`);
+}
+
+/** POST entries/{id}/publish/ — validates against the template; a 400 carries
+ *  the human-readable list in StudioApiError.errors. */
+export function publishEntry(id: number): Promise<{ id: number; status: string }> {
+  return authRequest<{ id: number; status: string }>(`entries/${id}/publish/`, { method: "POST" });
+}
+
+export function unpublishEntry(id: number): Promise<{ id: number; status: string }> {
+  return authRequest<{ id: number; status: string }>(`entries/${id}/unpublish/`, { method: "POST" });
+}
+
+/** POST entries/{id}/duplicate/ → 201 with the new draft. */
+export function duplicateEntry(id: number): Promise<{ id: number; title: string }> {
+  return authRequest<{ id: number; title: string }>(`entries/${id}/duplicate/`, { method: "POST" });
+}
+
+export function deleteEntry(id: number): Promise<void> {
+  return authRequest<void>(`entries/${id}/`, { method: "DELETE" });
+}
+
+/* ── Single entry (full read + write) ────────────────────────────────────── */
+
+export interface EntryContentBlock {
+  id?: number;
+  component: string;
+  body: unknown[];
+  order: number;
+}
+
+export interface EntryImageRow {
+  id?: number;
+  group_key: string;
+  position: number;
+  media_asset: number | null;
+  external_url?: string;
+}
+
+export interface EntryAttributeValueRow {
+  id?: number;
+  slot_key: string;
+  value: unknown;
+}
+
+export interface EntrySeo {
+  meta_title: string | null;
+  meta_description: string | null;
+  canonical_url: string | null;
+  keywords: string | null;
+}
+
+/** GET entries/{id}/ — the full authoring shape (nested objects on read). */
+export interface StudioEntryDetail {
+  id: number;
+  document_id: string;
+  collection: number;
+  collection_uid: string;
+  template: number | null;
+  template_slug: string | null;
+  title: string;
+  slug: string;
+  excerpt: string;
+  status: "draft" | "published";
+  published_on: string | null;
+  published_at: string | null;
+  author: StudioAuthor | null;
+  categories: StudioCategory[];
+  tags: StudioTag[];
+  badges: StudioBadge[];
+  content_blocks: EntryContentBlock[];
+  images: EntryImageRow[];
+  attribute_values: EntryAttributeValueRow[];
+  seo: EntrySeo | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Write payload — ids for relations; children are replace-all on PATCH. */
+export interface EntryWritePayload {
+  collection: number;
+  template?: number | null;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  author?: number | null;
+  categories?: number[];
+  tags?: number[];
+  badges?: number[];
+  content_blocks?: EntryContentBlock[];
+  images?: EntryImageRow[];
+  attribute_values?: EntryAttributeValueRow[];
+  seo?: Partial<EntrySeo> | null;
+}
+
+export function getEntry(id: number | string): Promise<StudioEntryDetail> {
+  return authRequest<StudioEntryDetail>(`entries/${id}/`);
+}
+
+export function createEntry(body: EntryWritePayload): Promise<StudioEntryDetail> {
+  return authRequest<StudioEntryDetail>("entries/", { method: "POST", body });
+}
+
+/** PATCH entries/{id}/ — omit a children key to leave it untouched; include it
+ *  to replace the whole set. */
+export function updateEntry(id: number, body: Partial<EntryWritePayload>): Promise<StudioEntryDetail> {
+  return authRequest<StudioEntryDetail>(`entries/${id}/`, { method: "PATCH", body });
+}
+
+/** GET entries/check-slug/?collection=&slug= → availability + a suggestion. */
+export function checkSlug(
+  collection: number,
+  slug: string
+): Promise<{ available: boolean; suggestion: string }> {
+  const qs = new URLSearchParams({ collection: String(collection), slug });
+  return authRequest<{ available: boolean; suggestion: string }>(`entries/check-slug/?${qs.toString()}`);
 }
 
 /* ── Media library ───────────────────────────────────────────────────────── */

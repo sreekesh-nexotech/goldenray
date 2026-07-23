@@ -246,6 +246,28 @@ export function DropdownMenu({
   items: MenuItem[];
 }) {
   if (!open || typeof document === "undefined") return null;
+
+  // Clamp to the viewport so a right-rail anchor or a long list never runs off
+  // screen. Width stays inside the right edge; height is capped to the room
+  // below the anchor — and when that room is too small (anchor near the bottom)
+  // the menu shifts UP so its bottom stays on screen.
+  const WIDTH = 216;
+  const GAP = 8;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const clampedLeft = Math.max(GAP, Math.min(left, vw - WIDTH - GAP));
+
+  const contentHeight = items.length * 37 + 10; // ~37px/item + padding
+  const cap = Math.min(contentHeight, Math.floor(vh * 0.7)); // never taller than 70vh
+  const roomBelow = vh - top - GAP;
+  let menuTop = top;
+  let maxHeight = cap;
+  if (cap > roomBelow) {
+    // Not enough space below — pin the bottom to the viewport, growing upward.
+    maxHeight = Math.min(cap, vh - GAP * 2);
+    menuTop = Math.max(GAP, vh - GAP - maxHeight);
+  }
+
   return createPortal(
     <>
       <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 80 }} />
@@ -254,15 +276,17 @@ export function DropdownMenu({
         aria-label="Actions"
         style={{
           position: "fixed",
-          width: 216,
+          width: WIDTH,
+          maxHeight,
+          overflowY: "auto",
           background: "#ffffff",
           borderRadius: 12,
           boxShadow: "0 12px 16px -4px rgba(10,13,18,.14),0 4px 6px -2px rgba(10,13,18,.06),inset 0 0 0 1px #E5E7EB",
           padding: 5,
           zIndex: 81,
           animation: "flzPop .12s ease",
-          top,
-          left,
+          top: menuTop,
+          left: clampedLeft,
         }}
       >
         {items.map((mi, i) => (
@@ -286,9 +310,9 @@ export function DropdownMenu({
               color: mi.color || studioColors.labelGray,
             }}
           >
-            {mi.label}
+            <span className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap">{mi.label}</span>
             {mi.note && (
-              <span style={{ marginLeft: "auto", fontSize: 11, color: studioColors.faintGray, fontFamily: studioFonts.num }}>{mi.note}</span>
+              <span style={{ flex: "none", fontSize: 11, color: studioColors.faintGray, fontFamily: studioFonts.num }}>{mi.note}</span>
             )}
           </button>
         ))}

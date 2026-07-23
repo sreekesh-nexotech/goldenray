@@ -3,26 +3,45 @@
 // src/components/Studio/EntryEditor/ImagePickerModal.tsx
 //
 // Media picker used when filling an image slot in the editor. Choose from the
-// shared library or trigger an upload (presentation stub).
+// shared library, or upload a new image (POST media-assets/) and pick it.
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { assets } from "@/data/studio";
 import { studioColors, studioFonts } from "../shared/format";
+
+/** Slim asset shape the picker renders (mapped from StudioMediaAsset). */
+export interface PickerAsset {
+  id: number;
+  url: string | null;
+  name: string;
+  width: number | null;
+  height: number | null;
+  kb: number;
+}
 
 export default function ImagePickerModal({
   open,
   onClose,
   onPick,
-  onUpload,
+  onUploadFiles,
   groupLabel,
+  assets,
+  loading = false,
+  uploading = false,
 }: {
   open: boolean;
   onClose: () => void;
-  onPick: (assetId: string) => void;
-  onUpload: () => void;
+  onPick: (assetId: number) => void;
+  /** Upload the picked file(s) to media-assets/; the caller auto-selects the
+   *  first new asset on success. */
+  onUploadFiles: (files: FileList | File[]) => void;
   groupLabel?: string;
+  assets: PickerAsset[];
+  loading?: boolean;
+  uploading?: boolean;
 }) {
+  const fileInput = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -52,29 +71,55 @@ export default function ImagePickerModal({
           </button>
         </div>
         <div className="flex-1 overflow-auto" style={{ padding: "2px 22px 20px" }}>
-          <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))" }}>
-            {assets.map((a) => (
-              <button
-                key={a.id}
-                onClick={() => onPick(a.id)}
-                className="text-left hover:shadow-[inset_0_0_0_2px_#F7BA41]"
-                style={{ padding: 0, border: "none", cursor: "pointer", background: "#ffffff", borderRadius: 14, overflow: "hidden", boxShadow: `inset 0 0 0 1px ${studioColors.ring}`, fontFamily: "var(--font-switzer)" }}
-              >
-                <div style={{ height: 92, background: `#F8F2E1 url('${a.src}') center/cover no-repeat` }} />
-                <div style={{ padding: "8px 11px 10px" }}>
-                  <div className="overflow-hidden text-ellipsis whitespace-nowrap" style={{ fontSize: 12, fontWeight: 600, color: studioColors.tealDeep }}>{a.name}</div>
-                  <div style={{ fontSize: 10.5, color: studioColors.faintGray, fontFamily: studioFonts.mono, marginTop: 1 }}>{a.w}×{a.h} · {a.kb} KB</div>
-                </div>
-              </button>
-            ))}
-          </div>
+          {loading ? (
+            <div style={{ padding: "24px 4px", fontSize: 13, color: studioColors.mutedGray }}>Loading…</div>
+          ) : assets.length === 0 ? (
+            <div style={{ padding: "24px 4px", fontSize: 13, color: studioColors.mutedGray }}>
+              No images in the library yet — upload one to get started.
+            </div>
+          ) : (
+            <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))" }}>
+              {assets.map((a) => (
+                <button
+                  key={a.id}
+                  onClick={() => onPick(a.id)}
+                  className="text-left hover:shadow-[inset_0_0_0_2px_#F7BA41]"
+                  style={{ padding: 0, border: "none", cursor: "pointer", background: "#ffffff", borderRadius: 14, overflow: "hidden", boxShadow: `inset 0 0 0 1px ${studioColors.ring}`, fontFamily: "var(--font-switzer)" }}
+                >
+                  <div style={{ height: 92, background: `#F8F2E1 ${a.url ? `url('${a.url}')` : ""} center/cover no-repeat` }} />
+                  <div style={{ padding: "8px 11px 10px" }}>
+                    <div className="overflow-hidden text-ellipsis whitespace-nowrap" style={{ fontSize: 12, fontWeight: 600, color: studioColors.tealDeep }}>{a.name}</div>
+                    <div style={{ fontSize: 10.5, color: studioColors.faintGray, fontFamily: studioFonts.mono, marginTop: 1 }}>
+                      {a.width && a.height ? `${a.width}×${a.height} · ` : ""}{a.kb} KB
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2.5" style={{ padding: "13px 22px", boxShadow: `inset 0 1px 0 ${studioColors.ring}` }}>
-          <button onClick={onUpload} className="inline-flex items-center gap-1.5 hover:bg-[rgba(7,74,77,0.05)]" style={{ height: 34, padding: "0 13px", borderRadius: 12, border: "none", background: "#ffffff", boxShadow: `inset 0 0 0 1px ${studioColors.teal}`, color: studioColors.teal, fontFamily: "var(--font-switzer)", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/*"
+            multiple
+            style={{ display: "none" }}
+            onChange={(e) => {
+              if (e.target.files?.length) onUploadFiles(e.target.files);
+              e.target.value = "";
+            }}
+          />
+          <button
+            onClick={() => !uploading && fileInput.current?.click()}
+            disabled={uploading}
+            className="inline-flex items-center gap-1.5 hover:bg-[rgba(7,74,77,0.05)]"
+            style={{ height: 34, padding: "0 13px", borderRadius: 12, border: "none", background: "#ffffff", boxShadow: `inset 0 0 0 1px ${studioColors.teal}`, color: studioColors.teal, fontFamily: "var(--font-switzer)", fontSize: 12.5, fontWeight: 600, cursor: uploading ? "default" : "pointer", opacity: uploading ? 0.7 : 1 }}
+          >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5" /><path d="M4 16.5V20h16v-3.5" /></svg>
-            Upload new
+            {uploading ? "Uploading…" : "Upload new"}
           </button>
-          <span style={{ marginLeft: "auto", fontSize: 11.5, color: studioColors.faintGray }}>Uploads are assigned here and land in the media library</span>
+          <span style={{ marginLeft: "auto", fontSize: 11.5, color: studioColors.faintGray }}>Compressed to WebP and added to the media library</span>
         </div>
       </div>
     </>,

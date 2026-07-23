@@ -6,7 +6,7 @@
 // region. Formatting uses document.execCommand (as in the prototype) — kept for
 // presentation fidelity; a production editor would swap in a real RTE.
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { studioColors } from "../shared/format";
 
 type Cmd = { key: string; title: string; run: () => void; render: React.ReactNode; style?: React.CSSProperties };
@@ -16,13 +16,27 @@ export default function RichTextBlock({
   html,
   canRemove,
   onRemove,
+  onChange,
 }: {
   label: string;
   html: string;
   canRemove: boolean;
   onRemove: () => void;
+  /** Fired with the block's current HTML after edits (input + blur). */
+  onChange?: (html: string) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+
+  // Seed the contentEditable ONCE on mount. Binding innerHTML to the live
+  // `html` prop would rewrite the DOM on every keystroke and reset the caret
+  // to the start — so this stays uncontrolled. A different entry loads with a
+  // fresh block `key`, which remounts this component and re-seeds correctly.
+  useEffect(() => {
+    if (ref.current) ref.current.innerHTML = html;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const emit = () => onChange?.(ref.current?.innerHTML ?? "");
 
   const exec = (command: string, value?: string) => {
     ref.current?.focus();
@@ -31,6 +45,7 @@ export default function RichTextBlock({
     } catch {
       /* no-op in unsupported environments */
     }
+    emit();
   };
 
   const cmds: Cmd[] = [
@@ -106,9 +121,12 @@ export default function RichTextBlock({
         aria-label={label}
         className="flz-rt flz-ph"
         data-ph="Write here…"
-        dangerouslySetInnerHTML={{ __html: html }}
+        onInput={emit}
         onFocus={(e) => (e.currentTarget.style.boxShadow = "inset 0 0 0 1.5px #074A4D,0 1px 2px rgba(10,13,18,.05)")}
-        onBlur={(e) => (e.currentTarget.style.boxShadow = "inset 0 0 0 1px #D5D7DA,0 1px 2px rgba(10,13,18,.05)")}
+        onBlur={(e) => {
+          e.currentTarget.style.boxShadow = "inset 0 0 0 1px #D5D7DA,0 1px 2px rgba(10,13,18,.05)";
+          emit();
+        }}
         style={{ boxShadow: "inset 0 0 0 1px #D5D7DA,0 1px 2px rgba(10,13,18,.05)", borderRadius: "0 0 12px 12px", background: "#ffffff", minHeight: 104, padding: "12px 14px", cursor: "text" }}
       />
     </div>

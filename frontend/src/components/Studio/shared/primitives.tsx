@@ -304,6 +304,7 @@ export function TextInput({
   style,
   ariaLabel,
   onKeyDown,
+  onBlur,
 }: {
   value: string;
   onChange?: (v: string) => void;
@@ -313,6 +314,7 @@ export function TextInput({
   style?: CSSProperties;
   ariaLabel?: string;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onBlur?: () => void;
 }) {
   return (
     <input
@@ -323,7 +325,10 @@ export function TextInput({
       onChange={(e) => onChange?.(e.target.value)}
       onKeyDown={onKeyDown}
       onFocus={(e) => (e.currentTarget.style.boxShadow = fieldRingFocus)}
-      onBlur={(e) => (e.currentTarget.style.boxShadow = fieldRing)}
+      onBlur={(e) => {
+        e.currentTarget.style.boxShadow = fieldRing;
+        onBlur?.();
+      }}
       style={{ ...baseInputStyle, ...(mono ? { fontFamily: studioFonts.mono, fontSize: 13 } : {}), ...style }}
     />
   );

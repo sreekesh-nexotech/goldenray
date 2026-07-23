@@ -2,48 +2,55 @@
 
 // src/components/Studio/Entries/EntriesListScreen.tsx
 //
-// Entries list — the working surface for a single collection. Collection tabs
-// switch the list; search + status filter it; header sort orders it; rows are
-// selectable for bulk actions and each has a ⋯ actions menu. Presentation only:
-// bulk/menu actions raise a toast, "+ New entry" and row clicks navigate.
+// Entries list — the working surface for a single collection, driven by
+// GET entries/ on the admin API. Collection tabs, search, status filter, sort
+// and pagination are all server-side query params; rows are selectable for
+// bulk publish/unpublish/delete and each ⋯ menu offers duplicate, publish and
+// delete (real workflow endpoints).
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
-import { entries, collections, authors } from "@/data/studio";
-import type { Entry } from "@/types/studio";
 import { useStudio, useCapabilities } from "../shared/StudioContext";
 import { PageHeader, TipBanner, StatusPill } from "../shared/primitives";
-import { DropdownMenu, type MenuItem } from "../shared/overlays";
+import { DropdownMenu, ConfirmDialog, type MenuItem } from "../shared/overlays";
 import { statusPill, studioColors, studioFonts } from "../shared/format";
+import {
+  getEntries,
+  getCollections,
+  publishEntry,
+  unpublishEntry,
+  duplicateEntry,
+  deleteEntry,
+  StudioApiError,
+  type StudioCollection,
+  type StudioEntryListItem,
+} from "@/services/studioService";
 
 /* -------------------------------------------------------------------------- */
-/*  Sort + status option tables                                                */
+/*  Sort + status option tables (mapped to server query params)                */
 /* -------------------------------------------------------------------------- */
 
 type SortKey = "recent" | "title" | "published";
-type StatusKey = "any" | "published" | "draft" | "modified";
+type StatusKey = "any" | "published" | "draft";
 
-const SORTS: { key: SortKey; label: string; long: string }[] = [
-  { key: "recent", label: "Recently edited", long: "recently edited" },
-  { key: "title", label: "Title A–Z", long: "title A–Z" },
-  { key: "published", label: "Recently published", long: "recently published" },
+const SORTS: { key: SortKey; label: string; long: string; ordering: string }[] = [
+  { key: "recent", label: "Recently edited", long: "recently edited", ordering: "-updated_at" },
+  { key: "title", label: "Title A–Z", long: "title A–Z", ordering: "title" },
+  { key: "published", label: "Recently published", long: "recently published", ordering: "-published_at" },
 ];
 
 const STATUSES: { key: StatusKey; label: string }[] = [
   { key: "any", label: "Any status" },
   { key: "published", label: "Published" },
   { key: "draft", label: "Draft" },
-  { key: "modified", label: "Modified" },
 ];
 
-const PAGE_SIZE = 5;
+/** DRF page size (settings.REST_FRAMEWORK.PAGE_SIZE). */
+const PAGE_SIZE = 25;
 
-const authorName = (id: string) => authors.find((a) => a.id === id)?.name ?? id;
-
-function pubTs(e: Entry): number {
-  if (!e.pubDate) return -Infinity;
-  const t = Date.parse(e.pubDate);
-  return Number.isNaN(t) ? -Infinity : t;
+/** "Published" cell: the editorial date wins, else the publish timestamp. */
+function publishedLabel(e: StudioEntryListItem): string {
+  return e.published_on ?? e.published_at?.slice(0, 10) ?? "—";
 }
 
 /* -------------------------------------------------------------------------- */
@@ -110,8 +117,10 @@ function CheckBox({
 type MenuState =
   | { kind: "sort"; top: number; left: number }
   | { kind: "status"; top: number; left: number }
-  | { kind: "row"; id: string; top: number; left: number }
+  | { kind: "row"; id: number; top: number; left: number }
   | null;
+
+type ConfirmState = { ids: number[]; titles: string[] } | null;
 
 const chevron = (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -124,41 +133,91 @@ export default function EntriesListScreen() {
   const { tips, toast } = useStudio();
   const { canPublish, canDelete } = useCapabilities();
 
-  const [activeColl, setActiveColl] = useState<string>("articles");
+  const [colls, setColls] = useState<StudioCollection[] | null>(null);
+  const [activeColl, setActiveColl] = useState<number | null>(null);
+  const [rows, setRows] = useState<StudioEntryListItem[] | null>(null);
+  const [total, setTotal] = useState(0);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [working, setWorking] = useState(false);
+
   const [q, setQ] = useState("");
+  const [search, setSearch] = useState(""); // debounced copy of q
   const [statusKey, setStatusKey] = useState<StatusKey>("any");
   const [sortKey, setSortKey] = useState<SortKey>("recent");
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Set<number>>(new Set());
   const [page, setPage] = useState(1);
   const [menu, setMenu] = useState<MenuState>(null);
+  const [confirmDelete, setConfirmDelete] = useState<ConfirmState>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const sortBtn = useRef<HTMLButtonElement>(null);
   const statusBtn = useRef<HTMLButtonElement>(null);
 
-  const collection = collections.find((c) => c.id === activeColl) ?? collections[0];
-  const collTotal = useMemo(() => entries.filter((e) => e.coll === activeColl).length, [activeColl]);
+  // Collection tabs.
+  useEffect(() => {
+    let cancelled = false;
+    getCollections()
+      .then((p) => {
+        if (cancelled) return;
+        setColls(p.results);
+        setActiveColl((cur) => cur ?? p.results[0]?.id ?? null);
+      })
+      .catch((err) => !cancelled && setLoadError(err instanceof Error ? err.message : "Failed to load collections"));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Debounce the search box into the server-side `search` param.
+  useEffect(() => {
+    const t = setTimeout(() => setSearch(q.trim()), 400);
+    return () => clearTimeout(t);
+  }, [q]);
 
   const sortDef = SORTS.find((s) => s.key === sortKey)!;
   const statusDef = STATUSES.find((s) => s.key === statusKey)!;
-  const hasFilters = q.trim() !== "" || statusKey !== "any";
+  const hasFilters = search !== "" || statusKey !== "any";
 
-  // Filter → sort pipeline (collection scope, search, status, order).
-  const filtered = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-    const rows = entries.filter((e) => {
-      if (e.coll !== activeColl) return false;
-      if (statusKey !== "any" && e.status !== statusKey) return false;
-      if (needle && !e.title.toLowerCase().includes(needle) && !e.slug.toLowerCase().includes(needle)) return false;
-      return true;
-    });
-    const sorted = [...rows];
-    if (sortKey === "recent") sorted.sort((a, b) => b._ts - a._ts);
-    else if (sortKey === "title") sorted.sort((a, b) => a.title.localeCompare(b.title));
-    else sorted.sort((a, b) => pubTs(b) - pubTs(a));
-    return sorted;
-  }, [activeColl, q, statusKey, sortKey]);
+  const queryParams = useMemo(
+    () => ({
+      collection: activeColl ?? undefined,
+      status: statusKey === "any" ? undefined : statusKey,
+      search: search || undefined,
+      ordering: sortDef.ordering,
+      page,
+    }),
+    [activeColl, statusKey, search, sortDef.ordering, page]
+  );
 
-  const total = filtered.length;
+  const load = async () => {
+    if (activeColl === null) return;
+    try {
+      const p = await getEntries(queryParams);
+      setRows(p.results);
+      setTotal(p.count);
+      setLoadError(null);
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : "Failed to load entries");
+    }
+  };
+
+  // Fetch whenever a query param changes.
+  useEffect(() => {
+    if (activeColl === null) return;
+    let cancelled = false;
+    getEntries(queryParams)
+      .then((p) => {
+        if (cancelled) return;
+        setRows(p.results);
+        setTotal(p.count);
+        setLoadError(null);
+      })
+      .catch((err) => !cancelled && setLoadError(err instanceof Error ? err.message : "Failed to load entries"));
+    return () => {
+      cancelled = true;
+    };
+  }, [queryParams, activeColl]);
+
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   // Keep the page in range when the underlying list shrinks.
@@ -166,24 +225,24 @@ export default function EntriesListScreen() {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
-  // Reset to page 1 + drop selection when the tab or filters change.
+  // Reset to page 1 when the tab or filters change; drop selection on tab change.
   useEffect(() => {
     setPage(1);
-  }, [activeColl, q, statusKey]);
+  }, [activeColl, search, statusKey]);
 
   useEffect(() => {
     setSelected(new Set());
   }, [activeColl]);
 
-  const pageRows = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
+  const collection = colls?.find((c) => c.id === activeColl) ?? null;
+  const pageRows = rows ?? [];
   const pageIds = pageRows.map((r) => r.id);
   const selCount = selected.size;
   const hasSel = selCount > 0;
   const allChecked = pageIds.length > 0 && pageIds.every((id) => selected.has(id));
   const someChecked = pageIds.some((id) => selected.has(id));
 
-  const toggleRow = (id: string) => {
+  const toggleRow = (id: number) => {
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
@@ -203,14 +262,51 @@ export default function EntriesListScreen() {
 
   const clearSel = () => setSelected(new Set());
 
-  const bulk = (verb: string) => {
-    toast(`${verb} ${selCount} ${selCount === 1 ? "entry" : "entries"}`);
-    clearSel();
-  };
-
   const clearFilters = () => {
     setQ("");
     setStatusKey("any");
+  };
+
+  /* --- workflow actions ---------------------------------------------------- */
+
+  /** Run an action over many ids, toast a summary, refresh the list. */
+  const runBulk = async (ids: number[], run: (id: number) => Promise<unknown>, verb: string) => {
+    setWorking(true);
+    const results = await Promise.allSettled(ids.map((id) => run(id)));
+    const failed = results.filter((r) => r.status === "rejected") as PromiseRejectedResult[];
+    const ok = ids.length - failed.length;
+    if (ok > 0) toast(`${verb} ${ok} ${ok === 1 ? "entry" : "entries"}`);
+    for (const f of failed.slice(0, 3)) {
+      const r = f.reason;
+      toast(r instanceof StudioApiError ? (r.errors?.[0] ?? r.message) : `${verb} failed`, "error");
+    }
+    clearSel();
+    await load();
+    setWorking(false);
+  };
+
+  const doPublish = (ids: number[]) => runBulk(ids, publishEntry, "Published");
+  const doUnpublish = (ids: number[]) => runBulk(ids, unpublishEntry, "Unpublished");
+
+  const doDuplicate = async (entry: StudioEntryListItem) => {
+    setWorking(true);
+    try {
+      await duplicateEntry(entry.id);
+      toast(`Duplicated “${entry.title}” as a draft`);
+      await load();
+    } catch (err) {
+      toast(err instanceof StudioApiError ? `Duplicate failed: ${err.message}` : "Duplicate failed", "error");
+    } finally {
+      setWorking(false);
+    }
+  };
+
+  const doDelete = async () => {
+    if (!confirmDelete) return;
+    setDeleting(true);
+    await runBulk(confirmDelete.ids, deleteEntry, "Deleted");
+    setDeleting(false);
+    setConfirmDelete(null);
   };
 
   // Range label for the footer.
@@ -228,7 +324,7 @@ export default function EntriesListScreen() {
     setMenu({ kind, top: r.bottom + 6, left });
   };
 
-  const openRowMenu = (e: React.MouseEvent, id: string) => {
+  const openRowMenu = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
     const left = Math.min(e.clientX, window.innerWidth - 216 - 8);
     const top = Math.min(e.clientY, window.innerHeight - 160);
@@ -252,36 +348,44 @@ export default function EntriesListScreen() {
       }));
     }
     // row actions
-    const entry = entries.find((e) => e.id === menu.id);
+    const entry = pageRows.find((e) => e.id === menu.id);
     if (!entry) return [];
-    const items: MenuItem[] = [{ label: "Duplicate", onClick: () => toast(`Duplicated “${entry.title}”`) }];
+    const items: MenuItem[] = [{ label: "Duplicate", onClick: () => void doDuplicate(entry) }];
     if (canPublish) {
       const isLive = entry.status === "published";
       items.push({
         label: isLive ? "Unpublish" : "Publish",
-        onClick: () => toast(`${isLive ? "Unpublished" : "Published"} “${entry.title}”`),
+        onClick: () => void (isLive ? doUnpublish([entry.id]) : doPublish([entry.id])),
       });
     }
     if (canDelete) {
-      items.push({ label: "Delete", color: studioColors.danger, onClick: () => toast(`Deleted “${entry.title}”`) });
+      items.push({
+        label: "Delete",
+        color: studioColors.danger,
+        onClick: () => setConfirmDelete({ ids: [entry.id], titles: [entry.title] }),
+      });
     }
     return items;
-  }, [menu, sortKey, statusKey, canPublish, canDelete, toast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [menu, sortKey, statusKey, canPublish, canDelete, pageRows]);
 
   /* --- render ------------------------------------------------------------- */
 
-  const emptyFiltered = total === 0 && hasFilters;
-  const emptyCollection = total === 0 && !hasFilters;
+  const loading = rows === null || colls === null;
+  const emptyFiltered = !loading && total === 0 && hasFilters;
+  const emptyCollection = !loading && total === 0 && !hasFilters;
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
       <PageHeader mb={14}
-        title={collection.name}
+        title={collection?.plural_name ?? "Entries"}
         titleSuffix={
-          <span style={{ fontWeight: 500, fontSize: 15, color: studioColors.faintGray }}>
-            {" "}
-            · {collTotal} {collTotal === 1 ? "entry" : "entries"}
-          </span>
+          !loading ? (
+            <span style={{ fontWeight: 500, fontSize: 15, color: studioColors.faintGray }}>
+              {" "}
+              · {total} {total === 1 ? "entry" : "entries"}
+            </span>
+          ) : undefined
         }
         subtitle="Search, filter and bulk-act on every entry in this collection."
         actions={
@@ -313,7 +417,7 @@ export default function EntriesListScreen() {
 
       {/* Collection tabs */}
       <div className="mb-3.5 flex flex-wrap gap-1.5">
-        {collections.map((c) => {
+        {(colls ?? []).map((c) => {
           const active = c.id === activeColl;
           return (
             <button
@@ -335,7 +439,7 @@ export default function EntriesListScreen() {
                 color: active ? "#ffffff" : "#414651",
               }}
             >
-              {c.name}
+              {c.plural_name}
             </button>
           );
         })}
@@ -348,7 +452,20 @@ export default function EntriesListScreen() {
         </TipBanner>
       )}
 
-      <div style={{ background: "#ffffff", borderRadius: 16, boxShadow: "inset 0 0 0 1px #E5E7EB" }}>
+      {loadError ? (
+        <div
+          role="alert"
+          style={{ background: "#ffffff", borderRadius: 16, boxShadow: "inset 0 0 0 1px #E5E7EB", padding: "18px 20px", fontSize: 13.5, color: studioColors.danger }}
+        >
+          Couldn’t load entries: {loadError}
+        </div>
+      ) : loading ? (
+        <div style={{ fontSize: 13, color: studioColors.mutedGray, padding: "8px 2px" }}>Loading…</div>
+      ) : (
+      <div
+        aria-busy={working}
+        style={{ background: "#ffffff", borderRadius: 16, boxShadow: "inset 0 0 0 1px #E5E7EB", opacity: working ? 0.6 : 1, pointerEvents: working ? "none" : "auto", transition: "opacity .15s" }}
+      >
         {/* Bulk bar OR toolbar */}
         {hasSel ? (
           <div className="flex items-center gap-2" style={{ padding: "10px 14px", background: "#123532", borderRadius: "16px 16px 0 0" }}>
@@ -357,12 +474,20 @@ export default function EntriesListScreen() {
             </span>
             {canPublish && (
               <>
-                <BulkButton onClick={() => bulk("Published")}>Publish</BulkButton>
-                <BulkButton onClick={() => bulk("Unpublished")}>Unpublish</BulkButton>
+                <BulkButton onClick={() => void doPublish([...selected])}>Publish</BulkButton>
+                <BulkButton onClick={() => void doUnpublish([...selected])}>Unpublish</BulkButton>
               </>
             )}
             {canDelete && (
-              <BulkButton onClick={() => bulk("Deleted")} danger>
+              <BulkButton
+                onClick={() =>
+                  setConfirmDelete({
+                    ids: [...selected],
+                    titles: pageRows.filter((r) => selected.has(r.id)).map((r) => r.title),
+                  })
+                }
+                danger
+              >
                 Delete
               </BulkButton>
             )}
@@ -452,7 +577,7 @@ export default function EntriesListScreen() {
                     ariaLabel="Select all rows on this page"
                   />
                 </th>
-                {["Title", "Category", "Author", "Status", "Published"].map((h) => (
+                {["Title", "Template", "Author", "Status", "Published"].map((h) => (
                   <th key={h} style={headStyle}>
                     {h}
                   </th>
@@ -477,12 +602,20 @@ export default function EntriesListScreen() {
                       <div style={{ fontWeight: 600, color: "#123532", fontSize: 13.5 }}>{e.title}</div>
                       <div style={{ fontFamily: studioFonts.mono, fontSize: 11, color: "#898989", marginTop: 2 }}>{e.slug}</div>
                     </td>
-                    <td style={{ ...cellStyle, fontSize: 13, color: "#5B5B5B" }}>{e.cats.length ? e.cats.join(", ") : "—"}</td>
-                    <td style={{ ...cellStyle, fontSize: 13, color: "#5B5B5B" }}>{authorName(e.author)}</td>
+                    <td style={{ ...cellStyle, fontSize: 12.5, color: "#5B5B5B" }}>
+                      {e.template_slug ? (
+                        <span style={{ fontFamily: studioFonts.mono, fontSize: 11.5, background: "rgba(248,242,225,.9)", padding: "2px 8px", borderRadius: 6 }}>
+                          {e.template_slug}
+                        </span>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                    <td style={{ ...cellStyle, fontSize: 13, color: "#5B5B5B" }}>{e.author_name ?? "—"}</td>
                     <td style={cellStyle}>
                       <StatusPill pill={pill} />
                     </td>
-                    <td style={{ ...cellStyle, fontSize: 12.5, color: "#898989" }}>{e.pubDate ?? "—"}</td>
+                    <td style={{ ...cellStyle, fontSize: 12.5, color: "#898989" }}>{publishedLabel(e)}</td>
                     <td style={{ padding: "12px 10px", borderBottom: "1px solid rgba(229,231,235,.7)" }}>
                       <button
                         type="button"
@@ -514,7 +647,7 @@ export default function EntriesListScreen() {
               <path d="m21 21-4.3-4.3" />
             </svg>
             <div style={{ fontSize: 14, fontWeight: 600, color: "#123532", marginTop: 8 }}>
-              {emptyFiltered ? "No entries match" : `No entries in ${collection.name} yet`}
+              {emptyFiltered ? "No entries match" : `No entries in ${collection?.plural_name ?? "this collection"} yet`}
             </div>
             <div style={{ fontSize: 12.5, color: "#5B5B5B", marginTop: 3 }}>
               {emptyFiltered ? "Try a different search or filter." : "Create the first one."}
@@ -603,8 +736,35 @@ export default function EntriesListScreen() {
           </div>
         </div>
       </div>
+      )}
 
       <DropdownMenu open={menu !== null} onClose={() => setMenu(null)} top={menu?.top ?? 0} left={menu?.left ?? 0} items={menuItems} />
+
+      <ConfirmDialog
+        open={confirmDelete !== null}
+        title={confirmDelete && confirmDelete.ids.length > 1 ? `Delete ${confirmDelete.ids.length} entries?` : "Delete entry?"}
+        busy={deleting}
+        busyLabel="Deleting…"
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={doDelete}
+      >
+        {confirmDelete && (
+          <>
+            {confirmDelete.ids.length === 1 ? (
+              <>
+                <b style={{ color: studioColors.tealDeep }}>{confirmDelete.titles[0]}</b> will be deleted
+                permanently — a published entry disappears from the live site immediately.
+              </>
+            ) : (
+              <>
+                <b style={{ color: studioColors.tealDeep }}>{confirmDelete.ids.length} entries</b> will be deleted
+                permanently — published ones disappear from the live site immediately.
+              </>
+            )}{" "}
+            This can&#8217;t be undone.
+          </>
+        )}
+      </ConfirmDialog>
     </section>
   );
 }
