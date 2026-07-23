@@ -11,7 +11,8 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import Wordmark from "./Wordmark";
 import { useStudio } from "../shared/StudioContext";
-import { collections, entries, assets, currentUser } from "@/data/studio";
+import { initialsOf } from "../shared/format";
+import { logout as apiLogout } from "@/services/studioService";
 
 interface NavDef {
   key: string;
@@ -56,7 +57,6 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
         key: "coll",
         label: "Collections",
         href: "/studio/collections",
-        count: collections.length,
         icon: (
           <svg {...iconProps}>
             <path d="M12 3.5 21 8l-9 4.5L3 8l9-4.5Z" />
@@ -69,7 +69,6 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
         key: "list",
         label: "Entries",
         href: "/studio/entries",
-        count: entries.length,
         match: (p) => p === "/studio/entries",
         icon: (
           <svg {...iconProps}>
@@ -81,7 +80,8 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
       {
         key: "ed",
         label: "Edit entry",
-        href: `/studio/entries/${entries[0].id}`,
+        // Placeholder — resolved at render to the most recently edited entry.
+        href: "/studio/entries/new",
         match: (p) => /^\/studio\/entries\/[^/]+$/.test(p),
         icon: (
           <svg {...iconProps}>
@@ -110,7 +110,6 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
         key: "med",
         label: "Media library",
         href: "/studio/media",
-        count: assets.length,
         icon: (
           <svg {...iconProps}>
             <rect x="3.5" y="3.5" width="17" height="17" rx="2" />
@@ -227,11 +226,35 @@ function SectionLabel({ children }: { children: ReactNode }) {
   );
 }
 
+/** Hostname for the environment badge ("https://flarize.com" → "flarize.com"). */
+function hostOf(url: string): string {
+  try {
+    return new URL(url).host;
+  } catch {
+    return url;
+  }
+}
+
 export default function Sidebar() {
   const pathname = usePathname() || "";
   const router = useRouter();
-  const { role, toast } = useStudio();
+  const { role, toast, me, config, dashboard } = useStudio();
   const [open, setOpen] = useState(false);
+
+  // Sidebar badge counts + "Edit entry" target from the dashboard payload.
+  const counts = dashboard?.counts;
+  const badgeByKey: Record<string, number | undefined> = {
+    coll: counts?.collections,
+    list: counts?.entries,
+    med: counts?.media_assets,
+  };
+  const editHref = dashboard?.recent_entries?.[0]
+    ? `/studio/entries/${dashboard.recent_entries[0].id}`
+    : "/studio/entries/new";
+
+  const displayName = me
+    ? [me.first_name, me.last_name].filter(Boolean).join(" ") || me.username
+    : "…";
 
   // Close the mobile drawer whenever the route changes (a nav link was used).
   useEffect(() => {
@@ -250,6 +273,7 @@ export default function Sidebar() {
     item.match ? item.match(pathname) : pathname === item.href || pathname.startsWith(item.href + "/");
 
   const logout = () => {
+    apiLogout(); // no server endpoint — just discard the tokens
     toast("Signed out");
     router.push("/studio/login");
   };
@@ -279,16 +303,23 @@ export default function Sidebar() {
       <div className="flex items-center gap-[7px]" style={{ padding: "0 10px 10px" }}>
         <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#34D27A", flex: "none" }} />
         <span style={{ fontSize: 11, color: "rgba(255,255,255,.6)", fontFamily: "ui-monospace,'SF Mono',Menlo,monospace" }}>
-          flarize.com · Production
+          {config ? `${hostOf(config.site_url)} · ${config.environment}` : "connecting…"}
         </span>
       </div>
 
       {SECTIONS.map((section) => (
         <div key={section.title} className="contents">
           <SectionLabel>{section.title}</SectionLabel>
-          {section.items.map((item) => (
-            <NavItem key={item.key} item={item} active={isActive(item)} />
-          ))}
+          {section.items.map((item) => {
+            // Resolve live data into the static defs: badge counts from the
+            // dashboard payload, "Edit entry" → most recently edited entry.
+            const resolved: NavDef = {
+              ...item,
+              count: badgeByKey[item.key],
+              href: item.key === "ed" ? editHref : item.href,
+            };
+            return <NavItem key={item.key} item={resolved} active={isActive(item)} />;
+          })}
         </div>
       ))}
 
@@ -298,10 +329,10 @@ export default function Sidebar() {
           className="grid flex-none place-items-center"
           style={{ width: 28, height: 28, borderRadius: "50%", background: "#F7BA41", color: "#272218", fontSize: 11, fontWeight: 700 }}
         >
-          {currentUser.initials}
+          {me ? initialsOf(displayName) : "·"}
         </div>
         <div className="min-w-0 leading-tight">
-          <div style={{ fontSize: 12.5, fontWeight: 600, color: "#ffffff" }}>{currentUser.name}</div>
+          <div className="truncate" style={{ fontSize: 12.5, fontWeight: 600, color: "#ffffff" }}>{displayName}</div>
           <div style={{ fontSize: 11, color: "rgba(255,255,255,.55)" }}>{role}</div>
         </div>
         <button

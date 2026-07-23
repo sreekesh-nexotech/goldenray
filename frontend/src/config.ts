@@ -13,6 +13,15 @@ const defaultBlogApiBaseUrl = isDevelopment
 	: "https://blog.flarize.com/api";
 export const BLOG_API_BASE_URL: string =
 	process.env.NEXT_PUBLIC_BLOG_API_BASE_URL || defaultBlogApiBaseUrl;
+
+// Content Studio admin API (JWT auth + authoring) — the same Django CMS that
+// serves the blog delivery API. Called directly from the browser, like the
+// main backend API above (repoint via NEXT_PUBLIC_ADMIN_API_BASE_URL).
+const defaultAdminApiBaseUrl = isDevelopment
+	? "http://127.0.0.1:8009/admin-api/"
+	: "https://blog.flarize.com/admin-api/";
+export const ADMIN_API_BASE_URL: string =
+	process.env.NEXT_PUBLIC_ADMIN_API_BASE_URL || defaultAdminApiBaseUrl;
 export const GTM_ID: string = "GTM-5H47L3GM";
 export const GA_MEASUREMENT_ID: string = "G-GSXM0NLQ8W";
 

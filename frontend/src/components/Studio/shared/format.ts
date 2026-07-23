@@ -19,10 +19,13 @@ export function memberStatusPill(status: "active" | "invited"): StatusPillStyle 
     : { label: "Invited", bg: "#FBF1BD", ink: "#8A6117" };
 }
 
-/** Relative "x ago" label for a timestamp, measured against the studio clock. */
-export function humanTime(ts: number | null): string {
+/**
+ * Relative "x ago" label for a timestamp. Mock screens measure against the
+ * frozen studio clock (default); API-fed screens pass `now = Date.now()`.
+ */
+export function humanTime(ts: number | null, now: number = STUDIO_NOW): string {
   if (!ts) return "—";
-  const m = (STUDIO_NOW - ts) / 60000;
+  const m = (now - ts) / 60000;
   if (m < 1) return "just now";
   if (m < 60) return `${Math.floor(m)}m ago`;
   const h = m / 60;

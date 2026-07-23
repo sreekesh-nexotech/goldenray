@@ -49,12 +49,20 @@ services:
       db:
         condition: service_healthy
 
+  # NOTE: the blog CMS (Content Studio backend) is NOT part of this stack —
+  # run it on the host: goldenray-backend/backend/cms$ ../../venv/bin/python
+  # manage.py runserver 8009. The browser calls it directly on :8009, same as
+  # it calls the main backend on :8010.
   frontend:
     build:
       context: ./frontend
       args:
         # Browser-reachable backend URL, baked into the client bundle at build.
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+        # Content Studio admin API (blog CMS on host port 8009), also called
+        # directly from the browser. Point at the deployed CMS in production
+        # (e.g. https://blog.flarize.com/admin-api/).
+        NEXT_PUBLIC_ADMIN_API_BASE_URL: ${NEXT_PUBLIC_ADMIN_API_BASE_URL:-http://localhost:8009/admin-api/}
     # Host port 3003 — 3000/3001 are used by other projects on this shared VM.
     ports:
       - "3003:3000"
