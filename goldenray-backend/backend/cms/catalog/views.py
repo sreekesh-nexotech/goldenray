@@ -1,4 +1,7 @@
-from rest_framework import viewsets
+from django.db.models import Count
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from accounts.permissions import CanAuthorEntries, IsSchemaEditor
 
@@ -32,9 +35,41 @@ class CollectionViewSet(viewsets.ModelViewSet):
 
 
 class TemplateViewSet(viewsets.ModelViewSet):
-    queryset = Template.objects.prefetch_related("image_groups", "attribute_slots")
+    queryset = (
+        Template.objects.prefetch_related("image_groups", "attribute_slots")
+        .annotate(entries_count=Count("entries"))
+    )
     serializer_class = TemplateSerializer
     permission_classes = [IsSchemaEditor]
+
+    @action(detail=True, methods=["post"])
+    def duplicate(self, request, pk=None):
+        """Deep-copy the template + all groups/slots → 201 with a `-copy` slug.
+        Existing entries stay on the original."""
+        src = self.get_object()
+        base = f"{src.slug}-copy"
+        slug, n = base, 2
+        while Template.objects.filter(slug=slug).exists():
+            slug, n = f"{base}-{n}", n + 1
+        copy = Template.objects.create(
+            name=f"{src.name} (copy)",
+            slug=slug,
+            description=src.description,
+            is_active=src.is_active,
+            sort_order=src.sort_order,
+        )
+        for g in src.image_groups.all():
+            TemplateImageGroup.objects.create(
+                template=copy, key=g.key, label=g.label, repeatable=g.repeatable,
+                max_items=g.max_items, required=g.required, order=g.order,
+            )
+        for s in src.attribute_slots.all():
+            TemplateAttributeSlot.objects.create(
+                template=copy, key=s.key, label=s.label, type=s.type,
+                options=s.options, required=s.required, order=s.order,
+            )
+        copy = self.get_queryset().get(pk=copy.pk)  # re-fetch with annotation
+        return Response(self.get_serializer(copy).data, status=status.HTTP_201_CREATED)
 
 
 class TemplateImageGroupViewSet(viewsets.ModelViewSet):

@@ -61,6 +61,8 @@ class TemplateAttributeSlotSerializer(serializers.ModelSerializer):
 class TemplateSerializer(serializers.ModelSerializer):
     image_groups = TemplateImageGroupSerializer(many=True, read_only=True)
     attribute_slots = TemplateAttributeSlotSerializer(many=True, read_only=True)
+    # "used by N entries" badge — annotated on the viewset queryset.
+    entries_count = serializers.IntegerField(read_only=True, default=0)
 
     class Meta:
         model = Template
@@ -71,6 +73,7 @@ class TemplateSerializer(serializers.ModelSerializer):
             "description",
             "is_active",
             "sort_order",
+            "entries_count",
             "image_groups",
             "attribute_slots",
         )

@@ -202,6 +202,8 @@ async function request<T>(
     throw new StudioApiError(res.status, detail);
   }
 
+  // DELETEs answer 204 No Content — there is no body to parse.
+  if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
 }
 
@@ -270,6 +272,54 @@ export function getDashboard(): Promise<StudioDashboard> {
   return authRequest<StudioDashboard>("dashboard/");
 }
 
+/** Slot type on a template attribute (mirrors the backend TextChoices). */
+export type StudioSlotType =
+  | "text"
+  | "richtext_blocks"
+  | "number"
+  | "boolean"
+  | "date"
+  | "enum"
+  | "url";
+
+/** Image group on a template — `key` is the delivery contract, never rename it. */
+export interface StudioTemplateImageGroup {
+  id: number;
+  template: number;
+  key: string;
+  label: string;
+  repeatable: boolean;
+  max_items: number | null;
+  required: boolean;
+  order: number;
+}
+
+/** Typed attribute slot on a template — rename `label`, never `key`. */
+export interface StudioTemplateAttributeSlot {
+  id: number;
+  template: number;
+  key: string;
+  label: string;
+  type: StudioSlotType;
+  options: Record<string, unknown>;
+  required: boolean;
+  order: number;
+}
+
+/** GET templates/ — the entry editor's structure definition. */
+export interface StudioTemplate {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  is_active: boolean;
+  sort_order: number;
+  /** "used by N entries" badge — absent until the backend ships it. */
+  entries_count?: number;
+  image_groups: StudioTemplateImageGroup[];
+  attribute_slots: StudioTemplateAttributeSlot[];
+}
+
 /** GET collections/ — readable by any signed-in user. */
 export function getCollections(): Promise<Paginated<StudioCollection>> {
   return authRequest<Paginated<StudioCollection>>("collections/");
@@ -283,4 +333,50 @@ export function createCollection(body: {
   description?: string;
 }): Promise<StudioCollection> {
   return authRequest<StudioCollection>("collections/", { method: "POST", body });
+}
+
+/* ── Templates (schema editing — writes are admin only) ──────────────────── */
+
+/** GET templates/ — readable by any signed-in user. */
+export function getTemplates(): Promise<Paginated<StudioTemplate>> {
+  return authRequest<Paginated<StudioTemplate>>("templates/");
+}
+
+/** POST templates/{id}/duplicate/ — deep copy (template + groups + slots). */
+export function duplicateTemplate(id: number): Promise<StudioTemplate> {
+  return authRequest<StudioTemplate>(`templates/${id}/duplicate/`, { method: "POST" });
+}
+
+export function createImageGroup(
+  body: Omit<StudioTemplateImageGroup, "id">
+): Promise<StudioTemplateImageGroup> {
+  return authRequest<StudioTemplateImageGroup>("template-image-groups/", { method: "POST", body });
+}
+
+export function patchImageGroup(
+  id: number,
+  body: Partial<Pick<StudioTemplateImageGroup, "label" | "required" | "repeatable" | "max_items" | "order">>
+): Promise<StudioTemplateImageGroup> {
+  return authRequest<StudioTemplateImageGroup>(`template-image-groups/${id}/`, { method: "PATCH", body });
+}
+
+export function deleteImageGroup(id: number): Promise<void> {
+  return authRequest<void>(`template-image-groups/${id}/`, { method: "DELETE" });
+}
+
+export function createAttributeSlot(
+  body: Omit<StudioTemplateAttributeSlot, "id">
+): Promise<StudioTemplateAttributeSlot> {
+  return authRequest<StudioTemplateAttributeSlot>("template-attribute-slots/", { method: "POST", body });
+}
+
+export function patchAttributeSlot(
+  id: number,
+  body: Partial<Pick<StudioTemplateAttributeSlot, "label" | "required" | "type" | "options" | "order">>
+): Promise<StudioTemplateAttributeSlot> {
+  return authRequest<StudioTemplateAttributeSlot>(`template-attribute-slots/${id}/`, { method: "PATCH", body });
+}
+
+export function deleteAttributeSlot(id: number): Promise<void> {
+  return authRequest<void>(`template-attribute-slots/${id}/`, { method: "DELETE" });
 }

@@ -157,6 +157,7 @@ type BtnProps = {
   className?: string;
   style?: CSSProperties;
   title?: string;
+  disabled?: boolean;
   type?: "button" | "submit";
   "aria-label"?: string;
   "aria-haspopup"?: boolean | "menu";
@@ -206,6 +207,33 @@ export function GhostButton({ children, onClick, style, className = "", ...rest 
         color: studioColors.teal,
         fontFamily: "var(--font-switzer)",
         fontSize: 13,
+        fontWeight: 600,
+        cursor: "pointer",
+        ...style,
+      }}
+      {...rest}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** Red destructive action (delete confirmations etc.). */
+export function DangerButton({ children, onClick, style, className = "", ...rest }: BtnProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex items-center justify-center transition-[filter] hover:brightness-[.94] ${className}`}
+      style={{
+        height: 42,
+        padding: "0 16px",
+        borderRadius: 12,
+        border: "none",
+        background: studioColors.danger,
+        color: "#ffffff",
+        fontFamily: "var(--font-switzer)",
+        fontSize: 13.5,
         fontWeight: 600,
         cursor: "pointer",
         ...style,
