@@ -246,7 +246,9 @@ export default function Sidebar() {
   const badgeByKey: Record<string, number | undefined> = {
     coll: counts?.collections,
     list: counts?.entries,
+    tpl: counts?.templates,
     med: counts?.media_assets,
+    tax: counts?.authors,
   };
   const editHref = dashboard?.recent_entries?.[0]
     ? `/studio/entries/${dashboard.recent_entries[0].id}`
