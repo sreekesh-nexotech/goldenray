@@ -441,3 +441,61 @@ export function patchMediaAsset(
 export function deleteMediaAsset(id: number): Promise<void> {
   return authRequest<void>(`media-assets/${id}/`, { method: "DELETE" });
 }
+
+/* ── Taxonomy lookups (standard CRUD, any signed-in role) ────────────────── */
+
+export interface StudioAuthor {
+  id: number;
+  name: string;
+  bio: string | null;
+  role: string | null;
+}
+
+export interface StudioCategory {
+  id: number;
+  name: string;
+  slug: string | null;
+}
+
+export interface StudioTag {
+  id: number;
+  name: string;
+}
+
+export interface StudioBadge {
+  id: number;
+  label: string;
+  color: string;
+}
+
+export function getAuthors(): Promise<Paginated<StudioAuthor>> {
+  return authRequest<Paginated<StudioAuthor>>("authors/");
+}
+
+export function createAuthor(body: { name: string; bio?: string; role?: string }): Promise<StudioAuthor> {
+  return authRequest<StudioAuthor>("authors/", { method: "POST", body });
+}
+
+export function getCategories(): Promise<Paginated<StudioCategory>> {
+  return authRequest<Paginated<StudioCategory>>("categories/");
+}
+
+export function createCategory(body: { name: string; slug?: string }): Promise<StudioCategory> {
+  return authRequest<StudioCategory>("categories/", { method: "POST", body });
+}
+
+export function getTags(): Promise<Paginated<StudioTag>> {
+  return authRequest<Paginated<StudioTag>>("tags/");
+}
+
+export function createTag(body: { name: string }): Promise<StudioTag> {
+  return authRequest<StudioTag>("tags/", { method: "POST", body });
+}
+
+export function getBadges(): Promise<Paginated<StudioBadge>> {
+  return authRequest<Paginated<StudioBadge>>("badges/");
+}
+
+export function createBadge(body: { label: string; color?: string }): Promise<StudioBadge> {
+  return authRequest<StudioBadge>("badges/", { method: "POST", body });
+}
