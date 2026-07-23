@@ -376,27 +376,27 @@ export default function Page4_1Content() {
       </div>
 
       {/* ===================== RESERVE SLOT ===================== */}
-      <div className="rounded-2xl bg-[#F3F4F6] px-6 py-5 flex gap-6">
+      <div className="rounded-2xl bg-[#F3F4F6] px-5 py-3.5 flex gap-5">
         {/* Left */}
         <div className="flex-1">
-          <h2 className="text-[26px] font-extrabold text-[#1a1a1a] leading-tight">
+          <h2 className="text-[20px] font-extrabold text-[#1a1a1a] leading-tight">
             Reserve Your Slot Today
           </h2>
-          <p className="text-[12px] text-gray-500 mt-1 mb-4">
+          <p className="text-[11px] text-gray-500 mt-0.5 mb-2.5">
             Talk to our experts and secure your Onam Solar Prosperity benefits.
           </p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             {reserveBenefits.map((b) => (
               <div
                 key={b.title}
-                className="flex items-start gap-2.5 rounded-lg bg-white px-3 py-2.5"
+                className="flex items-start gap-2 rounded-lg bg-white px-2.5 py-2"
               >
                 <ReserveIcon type={b.icon} />
                 <div>
-                  <p className="text-[12px] font-bold text-[#1a1a1a] leading-tight">
+                  <p className="text-[11px] font-bold text-[#1a1a1a] leading-tight">
                     {b.title}
                   </p>
-                  <p className="text-[10px] text-gray-500 leading-tight">
+                  <p className="text-[9px] text-gray-500 leading-tight">
                     {b.sub}
                   </p>
                 </div>
@@ -406,14 +406,14 @@ export default function Page4_1Content() {
         </div>
 
         {/* Right */}
-        <div className="w-[260px] shrink-0 flex flex-col justify-center gap-4">
-          <button className="w-full rounded-xl bg-[#F88A22] py-3 text-[15px] font-bold text-white shadow-sm">
+        <div className="w-[240px] shrink-0 flex flex-col justify-center gap-2.5">
+          <button className="w-full rounded-xl bg-[#F88A22] py-2 text-[13px] font-bold text-white shadow-sm">
             Book Now
           </button>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {/* QR placeholder */}
-            <div className="w-[92px] h-[92px] shrink-0 rounded-lg bg-white flex items-center justify-center">
-              <svg width="60" height="60" viewBox="0 0 60 60" fill="#0f1e1c">
+            <div className="w-[70px] h-[70px] shrink-0 rounded-lg bg-white flex items-center justify-center">
+              <svg width="48" height="48" viewBox="0 0 60 60" fill="#0f1e1c">
                 <path d="M0 0h20v20H0V0zm4 4v12h12V4H4zm4 4h4v4H8V8z" />
                 <path d="M40 0h20v20H40V0zm4 4v12h12V4H44zm4 4h4v4h-4V8z" />
                 <path d="M0 40h20v20H0V40zm4 4v12h12V44H4zm4 4h4v4H8v-4z" />
@@ -421,10 +421,10 @@ export default function Page4_1Content() {
               </svg>
             </div>
             <div>
-              <p className="text-[19px] font-extrabold text-[#1a1a1a] leading-tight">
+              <p className="text-[15px] font-extrabold text-[#1a1a1a] leading-tight">
                 Scan QR Code
               </p>
-              <p className="text-[14px] text-gray-500 leading-tight">
+              <p className="text-[11px] text-gray-500 leading-tight">
                 Check Live Availability
               </p>
             </div>
