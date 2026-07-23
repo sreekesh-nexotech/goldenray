@@ -89,6 +89,25 @@ export interface StudioDashboard {
   recent_entries: StudioEntryListItem[];
 }
 
+/** DRF page envelope (PAGE_SIZE 25) wrapping every list endpoint. */
+export interface Paginated<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
+/** GET collections/ — `api_uid` is the public URL slug (/api/<api_uid>);
+ *  treat it as fixed once live. */
+export interface StudioCollection {
+  id: number;
+  api_uid: string;
+  singular_name: string;
+  plural_name: string;
+  description: string;
+  is_active: boolean;
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Errors                                                                     */
 /* -------------------------------------------------------------------------- */
@@ -249,4 +268,19 @@ export function getConfig(): Promise<StudioConfig> {
 /** GET dashboard/ — dashboard counts + recent entries (and sidebar badges). */
 export function getDashboard(): Promise<StudioDashboard> {
   return authRequest<StudioDashboard>("dashboard/");
+}
+
+/** GET collections/ — readable by any signed-in user. */
+export function getCollections(): Promise<Paginated<StudioCollection>> {
+  return authRequest<Paginated<StudioCollection>>("collections/");
+}
+
+/** POST collections/ — admin (schema editor) only; 403 otherwise. */
+export function createCollection(body: {
+  api_uid: string;
+  singular_name: string;
+  plural_name: string;
+  description?: string;
+}): Promise<StudioCollection> {
+  return authRequest<StudioCollection>("collections/", { method: "POST", body });
 }

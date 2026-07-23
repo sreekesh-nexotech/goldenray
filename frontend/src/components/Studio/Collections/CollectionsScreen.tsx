@@ -3,38 +3,39 @@
 // src/components/Studio/Collections/CollectionsScreen.tsx
 //
 // Collections — each collection is a kind of page on the website (same shape
-// inside, its own public API route). Cards are shortcuts into the Entries list.
-// A "New collection" modal previews the create flow (presentation stub only).
+// inside, its own public API route). Loaded from GET collections/ on the
+// admin API; the "New collection" modal POSTs a real create (admin only).
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { collections, entries } from "@/data/studio";
-import type { Collection } from "@/types/studio";
-import { useStudio } from "../shared/StudioContext";
+import { useStudio, useCapabilities } from "../shared/StudioContext";
 import { PageHeader, GhostButton, TipBanner, FieldLabel, TextInput } from "../shared/primitives";
 import { Modal, ModalTitle } from "../shared/overlays";
 import { studioColors, studioFonts, slugify } from "../shared/format";
+import {
+  getCollections,
+  createCollection,
+  StudioApiError,
+  type StudioCollection,
+} from "@/services/studioService";
 
-/** Per-collection derived counts + template list. */
-interface CollectionCard {
-  coll: Collection;
-  count: number;
-  pubCount: number;
-  tplList: string;
-}
+/** Avatar colour pairs cycled per card (design tokens from the studio palette). */
+const AVATAR_COLORS: { bg: string; ink: string }[] = [
+  { bg: "#FDF6D2", ink: "#8A6117" },
+  { bg: "#ADD6D8", ink: "#074A4D" },
+  { bg: "#FBE8DA", ink: "#9C4B21" },
+];
 
-const cards: CollectionCard[] = collections.map((coll) => {
-  const owned = entries.filter((e) => e.coll === coll.id);
-  return {
-    coll,
-    count: owned.length,
-    pubCount: owned.filter((e) => e.status === "published").length,
-    tplList: coll.tpls.join(", "),
-  };
-});
-
-function CollectionCardButton({ card, onOpen }: { card: CollectionCard; onOpen: () => void }) {
-  const { coll, count, pubCount, tplList } = card;
+function CollectionCardButton({
+  coll,
+  index,
+  onOpen,
+}: {
+  coll: StudioCollection;
+  index: number;
+  onOpen: () => void;
+}) {
+  const { bg, ink } = AVATAR_COLORS[index % AVATAR_COLORS.length];
   return (
     <button
       onClick={onOpen}
@@ -68,56 +69,114 @@ function CollectionCardButton({ card, onOpen }: { card: CollectionCard; onOpen: 
             fontWeight: 700,
             fontSize: 16,
             flex: "none",
-            background: coll.bg,
-            color: coll.ink,
+            background: bg,
+            color: ink,
           }}
         >
-          {coll.letter}
+          {(coll.plural_name[0] || "?").toUpperCase()}
         </div>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontWeight: 600, fontSize: 15, color: studioColors.tealDeep }}>{coll.name}</div>
-          <div style={{ fontFamily: studioFonts.mono, fontSize: 11, color: studioColors.faintGray, marginTop: 1 }}>{coll.route}</div>
+          <div style={{ fontWeight: 600, fontSize: 15, color: studioColors.tealDeep }}>{coll.plural_name}</div>
+          <div style={{ fontFamily: studioFonts.mono, fontSize: 11, color: studioColors.faintGray, marginTop: 1 }}>
+            /api/{coll.api_uid}
+          </div>
         </div>
       </div>
-      <div className="flex" style={{ gap: 16, marginTop: 14, fontSize: 12.5, color: studioColors.bodyGray }}>
+      <div className="flex items-center" style={{ gap: 10, marginTop: 14, fontSize: 12.5, color: studioColors.bodyGray }}>
         <span>
-          <b style={{ color: studioColors.tealDeep, fontFamily: "'Inter',var(--font-switzer)" }}>{count}</b> entries
+          singular: <b style={{ color: studioColors.tealDeep }}>{coll.singular_name}</b>
         </span>
-        <span>
-          <b style={{ color: studioColors.tealDeep, fontFamily: "'Inter',var(--font-switzer)" }}>{pubCount}</b> published
+        <span
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            padding: "2px 9px",
+            borderRadius: 999,
+            background: coll.is_active ? "#C3E0BD" : "#E5E7EB",
+            color: coll.is_active ? "#0A6B31" : "#5B5B5B",
+          }}
+        >
+          {coll.is_active ? "Active" : "Inactive"}
         </span>
       </div>
-      <div style={{ marginTop: 10, fontSize: 11.5, color: studioColors.faintGray }}>
-        templates: <span style={{ fontFamily: studioFonts.mono }}>{tplList}</span>
-      </div>
+      {coll.description && (
+        <div
+          className="overflow-hidden text-ellipsis whitespace-nowrap"
+          style={{ marginTop: 10, fontSize: 11.5, color: studioColors.faintGray }}
+        >
+          {coll.description}
+        </div>
+      )}
     </button>
   );
 }
 
 export default function CollectionsScreen() {
   const { tips, toast } = useStudio();
+  const { canManageStructure } = useCapabilities();
   const router = useRouter();
+
+  const [colls, setColls] = useState<StudioCollection[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   const [modalOpen, setModalOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [plural, setPlural] = useState("");
+  const [singular, setSingular] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    getCollections()
+      .then((page) => !cancelled && setColls(page.results))
+      .catch((err) => !cancelled && setLoadError(err instanceof Error ? err.message : "Failed to load collections"));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const closeModal = () => {
     setModalOpen(false);
-    setName("");
+    setPlural("");
+    setSingular("");
+    setFormError("");
   };
 
-  const createColl = () => {
-    toast("Collection created");
-    closeModal();
-  };
+  const apiUid = slugify(plural) || "…";
 
-  const route = `/api/${slugify(name) || "…"}`;
+  const createColl = async () => {
+    if (!plural.trim() || !singular.trim()) {
+      setFormError("Enter both names");
+      return;
+    }
+    setFormError("");
+    setSaving(true);
+    try {
+      const created = await createCollection({
+        api_uid: slugify(plural),
+        singular_name: singular.trim(),
+        plural_name: plural.trim(),
+      });
+      setColls((c) => [...(c ?? []), created]);
+      toast("Collection created");
+      closeModal();
+    } catch (err) {
+      setFormError(err instanceof StudioApiError ? err.message : "Couldn’t create the collection");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
       <PageHeader
         title="Collections"
         subtitle="Each collection is a kind of page on the website — same shape inside, its own public API route."
-        actions={<GhostButton onClick={() => setModalOpen(true)}>+ New collection</GhostButton>}
+        actions={
+          canManageStructure ? (
+            <GhostButton onClick={() => setModalOpen(true)}>+ New collection</GhostButton>
+          ) : undefined
+        }
       />
 
       {tips && (
@@ -128,11 +187,28 @@ export default function CollectionsScreen() {
         </TipBanner>
       )}
 
-      <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(min(280px,100%),1fr))", gap: 14 }}>
-        {cards.map((card) => (
-          <CollectionCardButton key={card.coll.id} card={card} onOpen={() => router.push("/studio/entries")} />
-        ))}
-      </div>
+      {loadError ? (
+        <div
+          role="alert"
+          style={{ background: "#ffffff", borderRadius: 16, boxShadow: `inset 0 0 0 1px ${studioColors.ring}`, padding: "18px 20px", fontSize: 13.5, color: studioColors.danger }}
+        >
+          Couldn’t load collections: {loadError}
+        </div>
+      ) : colls === null ? (
+        <div style={{ fontSize: 13, color: studioColors.mutedGray, padding: "8px 2px" }}>Loading…</div>
+      ) : colls.length === 0 ? (
+        <div
+          style={{ background: "#ffffff", borderRadius: 16, boxShadow: `inset 0 0 0 1px ${studioColors.ring}`, padding: "18px 20px", fontSize: 13.5, color: studioColors.bodyGray }}
+        >
+          No collections yet{canManageStructure ? " — create the first one with “+ New collection”." : "."}
+        </div>
+      ) : (
+        <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(min(280px,100%),1fr))", gap: 14 }}>
+          {colls.map((coll, i) => (
+            <CollectionCardButton key={coll.id} coll={coll} index={i} onOpen={() => router.push("/studio/entries")} />
+          ))}
+        </div>
+      )}
 
       <Modal open={modalOpen} onClose={closeModal} ariaLabel="New collection">
         <ModalTitle>New collection</ModalTitle>
@@ -140,12 +216,23 @@ export default function CollectionsScreen() {
           A bucket of same-shaped pages with its own delivery route.
         </p>
         <div style={{ marginBottom: 14 }}>
-          <FieldLabel>Name</FieldLabel>
-          <TextInput value={name} onChange={setName} placeholder="e.g. Guides" ariaLabel="Name" />
+          <FieldLabel>Plural name</FieldLabel>
+          <TextInput value={plural} onChange={setPlural} placeholder="e.g. Guides" ariaLabel="Plural name" />
           <div style={{ fontSize: 11.5, color: studioColors.mutedGray, marginTop: 6 }}>
-            Delivery route: <code style={{ fontFamily: studioFonts.mono, color: studioColors.teal }}>{route}</code>
+            Delivery route:{" "}
+            <code style={{ fontFamily: studioFonts.mono, color: studioColors.teal }}>/api/{apiUid}</code>{" "}
+            — fixed once live.
           </div>
         </div>
+        <div style={{ marginBottom: 14 }}>
+          <FieldLabel>Singular name</FieldLabel>
+          <TextInput value={singular} onChange={setSingular} placeholder="e.g. Guide" ariaLabel="Singular name" />
+        </div>
+        {formError && (
+          <div role="alert" style={{ fontSize: 12, fontWeight: 500, color: studioColors.danger, marginBottom: 10 }}>
+            {formError}
+          </div>
+        )}
         <div className="flex justify-end" style={{ gap: 8 }}>
           <button
             onClick={closeModal}
@@ -176,6 +263,7 @@ export default function CollectionsScreen() {
           </button>
           <button
             onClick={createColl}
+            disabled={saving}
             className="inline-flex items-center transition-[filter] hover:brightness-[.96]"
             style={{
               height: 36,
@@ -187,10 +275,11 @@ export default function CollectionsScreen() {
               fontFamily: "var(--font-switzer)",
               fontSize: 13,
               fontWeight: 600,
-              cursor: "pointer",
+              cursor: saving ? "default" : "pointer",
+              opacity: saving ? 0.7 : 1,
             }}
           >
-            Create collection
+            {saving ? "Creating…" : "Create collection"}
           </button>
         </div>
       </Modal>
