@@ -8,6 +8,7 @@ import {
   Page2Content,
   Page9Content,
   Page4Content,
+  Page4_1Content,
   Page7Content,
   Page3Content,
   Page6Content,
@@ -131,9 +132,14 @@ export default function QuotationPage() {
         <Page4Content />
       </QuotationPageWrapper>
 
+      {/* Page 5 - Onam Solar Prosperity Campaign */}
+      <QuotationPageWrapper logo={logo}>
+        <Page4_1Content />
+      </QuotationPageWrapper>
+
       {/* Page 6 */}
       <QuotationPageWrapper logo={logo}>
-        <Page6Content />
+        <Page6Content pincode={quotationData.pincode} />
       </QuotationPageWrapper>
 
       {/* Page 7 */}
@@ -162,12 +168,12 @@ export default function QuotationPage() {
         <Page10Content />
       </QuotationPageWrapper>
 
-      {/* Page 10.1 - Terms and Conditions (continued) */}
+      {/* Page 11 - Terms and Conditions (continued) */}
       <QuotationPageWrapper logo={logo}>
         <Page10_1Content />
       </QuotationPageWrapper>
 
-      {/* Page 11 */}
+      {/* Page 12 */}
       <QuotationPageWrapper logo={logo}>
         <Page11Content
           monthlyBill={quotationData.monthlyBill}

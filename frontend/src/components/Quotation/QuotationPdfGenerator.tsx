@@ -7,6 +7,7 @@ import Page1Content from "./Page1Content";
 import Page2Content from "./Page2Content";
 import Page9Content from "./Page9Content";
 import Page4Content from "./Page4Content";
+import Page4_1Content from "./Page4_1Content";
 import Page7Content from "./Page7Content";
 import Page3Content from "./Page3Content";
 import Page6Content from "./Page6Content";
@@ -219,7 +220,11 @@ export default function QuotationPdfGenerator({
       </PageShell>
 
       <PageShell>
-        <Page6Content />
+        <Page4_1Content />
+      </PageShell>
+
+      <PageShell>
+        <Page6Content pincode={data.pincode} />
       </PageShell>
 
       <PageShell>
