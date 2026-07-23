@@ -177,13 +177,16 @@ async function request<T>(
   endpoint: string,
   init: { method?: string; body?: object; token?: string | null } = {}
 ): Promise<T> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  // FormData bodies (file uploads) set their own multipart boundary — never
+  // force a Content-Type on them.
+  const isForm = init.body instanceof FormData;
+  const headers: Record<string, string> = isForm ? {} : { "Content-Type": "application/json" };
   if (init.token) headers.Authorization = `Bearer ${init.token}`;
 
   const res = await fetch(`${ADMIN_API_BASE_URL}${endpoint}`, {
     method: init.method ?? "GET",
     headers,
-    body: init.body ? JSON.stringify(init.body) : undefined,
+    body: isForm ? (init.body as FormData) : init.body ? JSON.stringify(init.body) : undefined,
   });
 
   if (!res.ok) {
@@ -379,4 +382,62 @@ export function patchAttributeSlot(
 
 export function deleteAttributeSlot(id: number): Promise<void> {
   return authRequest<void>(`template-attribute-slots/${id}/`, { method: "DELETE" });
+}
+
+/* ── Media library ───────────────────────────────────────────────────────── */
+
+/** GET media-assets/ row. Always render `url` — CDN copy wins, local file is
+ *  the fallback (resolved server-side). */
+export interface StudioMediaAsset {
+  id: number;
+  file: string;
+  collection: number | null;
+  url: string | null;
+  cdn_url: string | null;
+  mime: string;
+  size: number;
+  width: number | null;
+  height: number | null;
+  alternative_text: string;
+  caption: string;
+  created_at: string;
+}
+
+/** GET media-assets/ — optional `collection` (id or api_uid) and `search`. */
+export function getMediaAssets(params?: {
+  collection?: number | string;
+  search?: string;
+}): Promise<Paginated<StudioMediaAsset>> {
+  const qs = new URLSearchParams();
+  if (params?.collection !== undefined && params.collection !== "") qs.set("collection", String(params.collection));
+  if (params?.search) qs.set("search", params.search);
+  const query = qs.toString();
+  return authRequest<Paginated<StudioMediaAsset>>(`media-assets/${query ? `?${query}` : ""}`);
+}
+
+/** POST media-assets/ (multipart) — backend compresses to WebP + uploads to CDN. */
+export function uploadMediaAsset(
+  file: File,
+  extra?: { collection?: number; alternative_text?: string; caption?: string }
+): Promise<StudioMediaAsset> {
+  const form = new FormData();
+  form.append("file", file);
+  if (extra?.collection !== undefined) form.append("collection", String(extra.collection));
+  if (extra?.alternative_text) form.append("alternative_text", extra.alternative_text);
+  if (extra?.caption) form.append("caption", extra.caption);
+  return authRequest<StudioMediaAsset>("media-assets/", { method: "POST", body: form });
+}
+
+/** PATCH media-assets/{id}/ — metadata only; the file itself is immutable. */
+export function patchMediaAsset(
+  id: number,
+  body: Partial<Pick<StudioMediaAsset, "alternative_text" | "caption" | "collection">>
+): Promise<StudioMediaAsset> {
+  return authRequest<StudioMediaAsset>(`media-assets/${id}/`, { method: "PATCH", body });
+}
+
+/** DELETE media-assets/{id}/ — also deletes from the CDN; entries using the
+ *  image simply lose it, so always confirm first. */
+export function deleteMediaAsset(id: number): Promise<void> {
+  return authRequest<void>(`media-assets/${id}/`, { method: "DELETE" });
 }

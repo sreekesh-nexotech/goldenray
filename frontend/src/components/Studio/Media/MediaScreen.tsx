@@ -2,68 +2,153 @@
 
 // src/components/Studio/Media/MediaScreen.tsx
 //
-// Media library — the shared asset store. A search box + folder chips filter a
-// responsive grid of asset tiles; each tile opens a right-side detail drawer.
-// Presentation only: uploads and drag/drop are toast stubs, filters are local
-// state, and the alt-text field in the drawer is local UI state.
+// Media library — the shared asset store, driven by GET media-assets/ on the
+// admin API. The search box and collection chips are server-side filters
+// (`search`, `collection`); uploads POST multipart (file picker or drag &
+// drop) and the backend compresses to WebP + pushes to the CDN. Tiles open a
+// detail drawer for metadata edits and deletion.
 
-import { useMemo, useState } from "react";
-import { assets, mediaFolders, entries } from "@/data/studio";
-import type { Asset } from "@/types/studio";
+import { useEffect, useRef, useState } from "react";
 import { studioColors, studioFonts } from "../shared/format";
 import { PageHeader, TipBanner, GoldButton } from "../shared/primitives";
 import { useStudio } from "../shared/StudioContext";
 import AssetDetailDrawer from "./AssetDetailDrawer";
+import {
+  getMediaAssets,
+  getCollections,
+  uploadMediaAsset,
+  StudioApiError,
+  type StudioMediaAsset,
+  type StudioCollection,
+} from "@/services/studioService";
 
-/** Count entries that reference an asset id across any image slot. */
-function usedInCount(assetId: string): number {
-  let n = 0;
-  for (const e of entries) {
-    const hit = Object.values(e.images).some((v) =>
-      Array.isArray(v) ? v.includes(assetId) : v === assetId
-    );
-    if (hit) n += 1;
-  }
-  return n;
+/** Display name for an asset: the file's basename. */
+export function assetName(a: StudioMediaAsset): string {
+  return a.file?.split("/").pop() || `asset-${a.id}`;
+}
+
+/** Human file size in KB. */
+export function assetKb(a: StudioMediaAsset): number {
+  return Math.max(1, Math.round((a.size || 0) / 1024));
 }
 
 export default function MediaScreen() {
   const { tips, toast } = useStudio();
   const [q, setQ] = useState("");
-  const [folder, setFolder] = useState<string>("All media");
-  const [selected, setSelected] = useState<Asset | null>(null);
+  const [search, setSearch] = useState(""); // debounced copy of q
+  const [collFilter, setCollFilter] = useState<number | "">(""); // "" = All media
+  const [colls, setColls] = useState<StudioCollection[]>([]);
+  const [items, setItems] = useState<StudioMediaAsset[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
 
-  const filtered = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-    return assets.filter((a) => {
-      const inFolder = folder === "All media" || a.folder === folder;
-      const matches =
-        needle === "" ||
-        a.name.toLowerCase().includes(needle) ||
-        a.alt.toLowerCase().includes(needle);
-      return inFolder && matches;
-    });
-  }, [q, folder]);
+  // Collection chips (best-effort — the grid works without them).
+  useEffect(() => {
+    let cancelled = false;
+    getCollections()
+      .then((page) => !cancelled && setColls(page.results))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  const upload = () => toast("Uploads open your file picker");
+  // Debounce the search box into the server-side `search` filter.
+  useEffect(() => {
+    const t = setTimeout(() => setSearch(q.trim()), 400);
+    return () => clearTimeout(t);
+  }, [q]);
+
+  // Load the grid whenever a filter changes.
+  const load = async () => {
+    try {
+      const page = await getMediaAssets({ collection: collFilter, search });
+      setItems(page.results);
+      setLoadError(null);
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : "Failed to load media");
+    }
+  };
+  useEffect(() => {
+    let cancelled = false;
+    getMediaAssets({ collection: collFilter, search })
+      .then((page) => {
+        if (cancelled) return;
+        setItems(page.results);
+        setLoadError(null);
+      })
+      .catch((err) => !cancelled && setLoadError(err instanceof Error ? err.message : "Failed to load media"));
+    return () => {
+      cancelled = true;
+    };
+  }, [collFilter, search]);
+
+  /** Upload picked/dropped files, then refresh the grid. */
+  const uploadFiles = async (files: FileList | File[]) => {
+    const list = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    if (list.length === 0) {
+      toast("Only image files can be uploaded", "error");
+      return;
+    }
+    setUploading(true);
+    let ok = 0;
+    for (const file of list) {
+      try {
+        await uploadMediaAsset(file, collFilter !== "" ? { collection: collFilter } : undefined);
+        ok += 1;
+      } catch (err) {
+        toast(
+          err instanceof StudioApiError
+            ? `${file.name}: ${err.message}`
+            : `${file.name}: upload failed`,
+          "error"
+        );
+      }
+    }
+    if (ok > 0) toast(ok === 1 ? "Image uploaded" : `${ok} images uploaded`);
+    await load();
+    setUploading(false);
+  };
+
+  const selected = items?.find((a) => a.id === selectedId) ?? null;
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
       <PageHeader mb={16}
         title="Media library"
         subtitle="Every uploaded image — reused across entries and served by the delivery API."
-        actions={<GoldButton onClick={upload}>Upload images</GoldButton>}
+        actions={
+          <GoldButton onClick={() => fileInput.current?.click()} disabled={uploading}>
+            {uploading ? "Uploading…" : "Upload images"}
+          </GoldButton>
+        }
+      />
+
+      {/* Hidden file picker backing both the button and the dropzone */}
+      <input
+        ref={fileInput}
+        type="file"
+        accept="image/*"
+        multiple
+        style={{ display: "none" }}
+        onChange={(e) => {
+          if (e.target.files?.length) uploadFiles(e.target.files);
+          e.target.value = ""; // allow re-picking the same file
+        }}
       />
 
       {tips && (
         <TipBanner mb={14}>
           Shared asset store — authors pick from here when filling an image slot, or upload on the spot.
           Each asset keeps <b style={{ color: studioColors.tealDeep }}>alt text</b>, served by the API as{" "}
-          <b style={{ color: studioColors.tealDeep }}>alternativeText</b>. Real drag &amp; drop works here.
+          <b style={{ color: studioColors.tealDeep }}>alternativeText</b>. Uploads are compressed to WebP and
+          pushed to the CDN automatically.
         </TipBanner>
       )}
 
-      {/* Toolbar: search + folder chips */}
+      {/* Toolbar: search + collection chips */}
       <div className="flex flex-wrap items-center gap-2" style={{ marginBottom: 16 }}>
         <div
           className="flex w-[260px] max-w-full items-center gap-2 max-md:w-full"
@@ -98,13 +183,13 @@ export default function MediaScreen() {
           />
         </div>
 
-        {mediaFolders.map((f) => {
-          const active = folder === f;
+        {[{ id: "" as const, label: "All media" }, ...colls.map((c) => ({ id: c.id, label: c.plural_name }))].map((f) => {
+          const active = collFilter === f.id;
           return (
             <button
-              key={f}
+              key={f.id === "" ? "all" : f.id}
               type="button"
-              onClick={() => setFolder(f)}
+              onClick={() => setCollFilter(f.id)}
               className="inline-flex items-center"
               style={{
                 padding: "6px 13px",
@@ -120,88 +205,109 @@ export default function MediaScreen() {
                 transition: "background .12s,color .12s",
               }}
             >
-              {f}
+              {f.label}
             </button>
           );
         })}
       </div>
 
-      {/* Asset grid + dropzone tile */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(168px,1fr))", gap: 14 }}>
-        {filtered.map((a) => (
-          <button
-            key={a.id}
-            type="button"
-            onClick={() => setSelected(a)}
-            className="hover:shadow-[inset_0_0_0_1px_#074A4D]"
-            style={{
-              textAlign: "left",
-              padding: 0,
-              border: "none",
-              cursor: "pointer",
-              background: "#ffffff",
-              borderRadius: 16,
-              overflow: "hidden",
-              boxShadow: `inset 0 0 0 1px ${studioColors.ring}`,
-              fontFamily: "var(--font-switzer)",
-              transition: "box-shadow .12s",
-            }}
-          >
-            <div style={{ height: 110, background: `#F8F2E1 url('${a.src}') center/cover no-repeat` }} />
-            <div style={{ padding: "9px 12px 11px" }}>
-              <div style={{ fontSize: 12.5, fontWeight: 600, color: studioColors.tealDeep, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                {a.name}
-              </div>
-              <div style={{ fontSize: 10.5, color: studioColors.faintGray, fontFamily: studioFonts.mono, marginTop: 2 }}>
-                {a.w}×{a.h} · {a.kb} KB
-              </div>
-            </div>
-          </button>
-        ))}
-
+      {loadError ? (
         <div
-          onClick={upload}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            toast("Drop to upload");
-          }}
-          className="grid place-items-center hover:border-[#074A4D] hover:text-[#074A4D]"
-          style={{
-            minHeight: 158,
-            borderRadius: 16,
-            border: "1.5px dashed #B8B8B8",
-            color: studioColors.mutedGray,
-            cursor: "pointer",
-            background: "rgba(255,255,255,.45)",
-            transition: "border-color .12s,color .12s",
-          }}
+          role="alert"
+          style={{ background: "#ffffff", borderRadius: 16, boxShadow: `inset 0 0 0 1px ${studioColors.ring}`, padding: "18px 20px", fontSize: 13.5, color: studioColors.danger }}
         >
-          <div style={{ textAlign: "center" }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5" />
-              <path d="M4 16.5V20h16v-3.5" />
-            </svg>
-            <div style={{ fontSize: 12, fontWeight: 600, marginTop: 6 }}>
-              Drop images
-              <br />
-              or click to upload
+          Couldn’t load the media library: {loadError}
+        </div>
+      ) : items === null ? (
+        <div style={{ fontSize: 13, color: studioColors.mutedGray, padding: "8px 2px" }}>Loading…</div>
+      ) : (
+        <>
+          {/* Asset grid + dropzone tile */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(168px,1fr))", gap: 14 }}>
+            {items.map((a) => (
+              <button
+                key={a.id}
+                type="button"
+                onClick={() => setSelectedId(a.id)}
+                className="hover:shadow-[inset_0_0_0_1px_#074A4D]"
+                style={{
+                  textAlign: "left",
+                  padding: 0,
+                  border: "none",
+                  cursor: "pointer",
+                  background: "#ffffff",
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  boxShadow: `inset 0 0 0 1px ${studioColors.ring}`,
+                  fontFamily: "var(--font-switzer)",
+                  transition: "box-shadow .12s",
+                }}
+              >
+                <div style={{ height: 110, background: `#F8F2E1 ${a.url ? `url('${a.url}')` : ""} center/cover no-repeat` }} />
+                <div style={{ padding: "9px 12px 11px" }}>
+                  <div style={{ fontSize: 12.5, fontWeight: 600, color: studioColors.tealDeep, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {assetName(a)}
+                  </div>
+                  <div style={{ fontSize: 10.5, color: studioColors.faintGray, fontFamily: studioFonts.mono, marginTop: 2 }}>
+                    {a.width && a.height ? `${a.width}×${a.height} · ` : ""}{assetKb(a)} KB
+                  </div>
+                </div>
+              </button>
+            ))}
+
+            <div
+              onClick={() => !uploading && fileInput.current?.click()}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                if (!uploading && e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
+              }}
+              className="grid place-items-center hover:border-[#074A4D] hover:text-[#074A4D]"
+              style={{
+                minHeight: 158,
+                borderRadius: 16,
+                border: "1.5px dashed #B8B8B8",
+                color: studioColors.mutedGray,
+                cursor: uploading ? "progress" : "pointer",
+                background: "rgba(255,255,255,.45)",
+                transition: "border-color .12s,color .12s",
+              }}
+            >
+              <div style={{ textAlign: "center" }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5" />
+                  <path d="M4 16.5V20h16v-3.5" />
+                </svg>
+                <div style={{ fontSize: 12, fontWeight: 600, marginTop: 6 }}>
+                  {uploading ? "Uploading…" : (
+                    <>
+                      Drop images
+                      <br />
+                      or click to upload
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {filtered.length === 0 && (
-        <div style={{ padding: "30px 20px 10px", textAlign: "center", color: studioColors.mutedGray, fontSize: 13 }}>
-          No assets match this search.
-        </div>
+          {items.length === 0 && (
+            <div style={{ padding: "30px 20px 10px", textAlign: "center", color: studioColors.mutedGray, fontSize: 13 }}>
+              {search || collFilter !== "" ? "No assets match this filter." : "No assets yet — upload the first image."}
+            </div>
+          )}
+        </>
       )}
 
       {selected && (
         <AssetDetailDrawer
           asset={selected}
-          usedIn={usedInCount(selected.id)}
-          onClose={() => setSelected(null)}
+          onClose={() => setSelectedId(null)}
+          onUpdated={(updated) => setItems((prev) => prev?.map((a) => (a.id === updated.id ? updated : a)) ?? prev)}
+          onDeleted={(id) => {
+            setSelectedId(null);
+            setItems((prev) => prev?.filter((a) => a.id !== id) ?? prev);
+          }}
         />
       )}
     </section>

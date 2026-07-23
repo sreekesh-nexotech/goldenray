@@ -33,9 +33,12 @@ import {
   type StudioMe,
 } from "@/services/studioService";
 
+export type ToastKind = "success" | "error";
+
 interface Toast {
   id: number;
   msg: string;
+  kind: ToastKind;
 }
 
 interface StudioContextValue {
@@ -44,7 +47,8 @@ interface StudioContextValue {
   tips: boolean;
   setTips: (v: boolean) => void;
   toasts: Toast[];
-  toast: (msg: string) => void;
+  /** Bottom-right notification; pass "error" for failures (red, ⚠ icon). */
+  toast: (msg: string, kind?: ToastKind) => void;
   /** Signed-in user (null while loading). */
   me: StudioMe | null;
   /** Shell metadata from GET config/ (null while loading). */
@@ -112,10 +116,11 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
     };
   }, [router]);
 
-  const toast = useCallback((msg: string) => {
+  const toast = useCallback((msg: string, kind: ToastKind = "success") => {
     const id = ++toastSeq;
-    setToasts((t) => [...t, { id, msg }]);
-    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 2800);
+    setToasts((t) => [...t, { id, msg, kind }]);
+    // Errors linger a little longer so they can actually be read.
+    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), kind === "error" ? 4600 : 2800);
   }, []);
 
   const value = useMemo(

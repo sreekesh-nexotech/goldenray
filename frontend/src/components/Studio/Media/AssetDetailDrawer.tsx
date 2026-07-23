@@ -3,34 +3,49 @@
 // src/components/Studio/Media/AssetDetailDrawer.tsx
 //
 // Right-side asset detail drawer for the Media library. Rendered via a portal
-// with a teal scrim; closes on Escape or scrim click. Presentation only — the
-// alt-text field is local state and the footer actions are toast stubs.
+// with a teal scrim; closes on Escape or scrim click. Alt text and caption
+// save via PATCH media-assets/{id}/ (metadata only — the file itself is
+// immutable); Delete confirms first, since entries using the image lose it.
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import type { Asset } from "@/types/studio";
 import { studioColors, studioFonts } from "../shared/format";
-import { TextArea } from "../shared/primitives";
+import { TextArea, GoldButton } from "../shared/primitives";
+import { ConfirmDialog } from "../shared/overlays";
 import { useStudio } from "../shared/StudioContext";
+import {
+  patchMediaAsset,
+  deleteMediaAsset,
+  StudioApiError,
+  type StudioMediaAsset,
+} from "@/services/studioService";
+import { assetName, assetKb } from "./MediaScreen";
 
 const detailRow = { display: "flex", justifyContent: "space-between" } as const;
 const valueInk = { color: studioColors.tealDeep, fontFamily: "'Inter',var(--font-switzer)" } as const;
 
 export default function AssetDetailDrawer({
   asset,
-  usedIn,
   onClose,
+  onUpdated,
+  onDeleted,
 }: {
-  asset: Asset;
-  usedIn: number;
+  asset: StudioMediaAsset;
   onClose: () => void;
+  onUpdated: (asset: StudioMediaAsset) => void;
+  onDeleted: (id: number) => void;
 }) {
   const { toast } = useStudio();
-  const [alt, setAlt] = useState(asset.alt);
+  const [alt, setAlt] = useState(asset.alternative_text);
+  const [caption, setCaption] = useState(asset.caption);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  // Re-seed the alt field whenever a different asset is opened.
+  // Re-seed the fields whenever a different asset is opened.
   useEffect(() => {
-    setAlt(asset.alt);
+    setAlt(asset.alternative_text);
+    setCaption(asset.caption);
   }, [asset]);
 
   useEffect(() => {
@@ -41,7 +56,48 @@ export default function AssetDetailDrawer({
 
   if (typeof document === "undefined") return null;
 
-  const usedLabel = usedIn > 0 ? `${usedIn} ${usedIn === 1 ? "entry" : "entries"}` : "—";
+  const dirty = alt !== asset.alternative_text || caption !== asset.caption;
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      const updated = await patchMediaAsset(asset.id, { alternative_text: alt, caption });
+      onUpdated(updated);
+      toast("Asset updated");
+    } catch (err) {
+      toast(err instanceof StudioApiError ? `Save failed: ${err.message}` : "Save failed", "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const copyUrl = async () => {
+    if (!asset.url) {
+      toast("No URL available for this asset", "error");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(asset.url);
+      toast("URL copied");
+    } catch {
+      toast("Couldn’t access the clipboard", "error");
+    }
+  };
+
+  const doDelete = async () => {
+    setDeleting(true);
+    try {
+      await deleteMediaAsset(asset.id);
+      toast("Asset deleted");
+      setConfirmOpen(false);
+      onDeleted(asset.id);
+    } catch (err) {
+      toast(err instanceof StudioApiError ? `Delete failed: ${err.message}` : "Delete failed", "error");
+      setDeleting(false);
+    }
+  };
+
+  const uploadedOn = new Date(asset.created_at).toLocaleDateString();
 
   return createPortal(
     <>
@@ -75,7 +131,7 @@ export default function AssetDetailDrawer({
             height: 190,
             flex: "none",
             position: "relative",
-            background: `#F8F2E1 url('${asset.src}') center/cover no-repeat`,
+            background: `#F8F2E1 ${asset.url ? `url('${asset.url}')` : ""} center/cover no-repeat`,
           }}
         >
           <button
@@ -104,25 +160,29 @@ export default function AssetDetailDrawer({
 
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "16px 18px" }}>
           <div style={{ fontSize: 14.5, fontWeight: 600, color: studioColors.tealDeep, wordBreak: "break-all" }}>
-            {asset.name}
+            {assetName(asset)}
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 7, fontSize: 12.5, color: studioColors.bodyGray, margin: "12px 0 16px" }}>
-            <div style={detailRow}>
-              <span>Dimensions</span>
-              <span style={valueInk}>{asset.w}×{asset.h}</span>
-            </div>
+            {asset.width && asset.height && (
+              <div style={detailRow}>
+                <span>Dimensions</span>
+                <span style={valueInk}>{asset.width}×{asset.height}</span>
+              </div>
+            )}
             <div style={detailRow}>
               <span>File size</span>
-              <span style={valueInk}>{asset.kb} KB</span>
+              <span style={valueInk}>{assetKb(asset)} KB</span>
             </div>
+            {asset.mime && (
+              <div style={detailRow}>
+                <span>Type</span>
+                <span style={{ color: studioColors.tealDeep, fontFamily: studioFonts.mono, fontSize: 11.5 }}>{asset.mime}</span>
+              </div>
+            )}
             <div style={detailRow}>
-              <span>Folder</span>
-              <span style={{ color: studioColors.tealDeep }}>{asset.folder}</span>
-            </div>
-            <div style={detailRow}>
-              <span>Used in</span>
-              <span style={{ color: studioColors.tealDeep }}>{usedLabel}</span>
+              <span>Uploaded</span>
+              <span style={{ color: studioColors.tealDeep }}>{uploadedOn}</span>
             </div>
           </div>
 
@@ -153,15 +213,32 @@ export default function AssetDetailDrawer({
             minHeight={64}
             style={{ fontSize: 13 }}
           />
-          <div style={{ fontSize: 11.5, color: studioColors.mutedGray, marginTop: 6 }}>
-            Served with the image on every page that uses it.
+
+          <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: studioColors.labelGray, margin: "12px 0 6px" }}>
+            Caption
+          </label>
+          <TextArea
+            value={caption}
+            onChange={setCaption}
+            placeholder="Optional caption shown under the image…"
+            minHeight={48}
+            style={{ fontSize: 13 }}
+          />
+
+          <div style={{ marginTop: 12 }}>
+            <GoldButton onClick={save} disabled={saving || !dirty} style={{ width: "100%", height: 38 }}>
+              {saving ? "Saving…" : "Save metadata"}
+            </GoldButton>
+          </div>
+          <div style={{ fontSize: 11.5, color: studioColors.mutedGray, marginTop: 8 }}>
+            Metadata only — to replace the image itself, upload a new asset.
           </div>
         </div>
 
         <div style={{ display: "flex", gap: 8, padding: "14px 18px", boxShadow: "inset 0 1px 0 #E5E7EB", flex: "none" }}>
           <button
             type="button"
-            onClick={() => toast("URL copied")}
+            onClick={copyUrl}
             className="inline-flex items-center justify-center hover:bg-[rgba(7,74,77,0.05)]"
             style={{
               flex: 1,
@@ -182,7 +259,7 @@ export default function AssetDetailDrawer({
           </button>
           <button
             type="button"
-            onClick={() => toast("Delete removes the asset (stub)")}
+            onClick={() => setConfirmOpen(true)}
             className="inline-flex items-center hover:bg-[rgba(220,38,38,0.08)]"
             style={{
               height: 34,
@@ -201,6 +278,19 @@ export default function AssetDetailDrawer({
           </button>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Delete asset?"
+        busy={deleting}
+        busyLabel="Deleting…"
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={doDelete}
+      >
+        <b style={{ color: studioColors.tealDeep }}>{assetName(asset)}</b> will be deleted from the library{" "}
+        <b>and the CDN</b>. Any entry using this image simply loses it — pages on the live site may show an
+        empty slot. This can&#8217;t be undone.
+      </ConfirmDialog>
     </>,
     document.body
   );
