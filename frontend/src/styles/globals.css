@@ -91,3 +91,36 @@ body {
   opacity: 0;
   animation: fadeIn 0.5s ease-out forwards;
 }
+
+/* ------------------------------------------------------------------ */
+/* Content Studio (blog CMS) — scoped animations & rich-text styles    */
+/* ------------------------------------------------------------------ */
+@keyframes flzFade {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes flzToast {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes flzPop {
+  from { opacity: 0; transform: scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Rich-text rendering inside the entry editor content blocks */
+.flz-rt { font-size: 13.5px; line-height: 1.6; color: #444; }
+.flz-rt h4 { font-weight: 600; font-size: 15px; line-height: 1.35; color: #123532; margin: 0 0 6px; }
+.flz-rt p { margin: 0 0 10px; }
+.flz-rt p:last-child { margin-bottom: 0; }
+.flz-rt ul, .flz-rt ol { margin: 0 0 10px; padding-left: 20px; }
+.flz-rt li { margin-bottom: 3px; }
+.flz-rt blockquote { margin: 0 0 10px; padding: 8px 14px; border-left: 3px solid #F7BA41; background: rgba(248,242,225,.6); border-radius: 0 8px 8px 0; }
+.flz-rt a { color: #074A4D; text-decoration: underline; }
+.flz-ph:empty::before { content: attr(data-ph); color: #8f959f; }
+
+/* Studio inputs/placeholders + focus ring for keyboard users */
+.flz-scope input::placeholder,
+.flz-scope textarea::placeholder { color: #8f959f; opacity: 1; }
+.flz-scope button:focus-visible,
+.flz-scope a:focus-visible { outline: 2px solid #F7BA41; outline-offset: 2px; }

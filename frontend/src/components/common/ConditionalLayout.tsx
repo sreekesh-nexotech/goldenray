@@ -18,19 +18,22 @@ export default function ConditionalLayout({
 }: ConditionalLayoutProps) {
   const pathname = usePathname();
   const isQuotationPage = pathname === "/quotation";
+  // The Content Studio (blog CMS) renders its own full-screen chrome.
+  const isStudioPage = pathname?.startsWith("/studio") ?? false;
+  const isStandalone = isQuotationPage || isStudioPage;
 
   useEffect(() => {
     // Adjust body padding based on page
     const body = document.body;
-    if (isQuotationPage) {
+    if (isStandalone) {
       body.style.paddingTop = "0";
     } else {
       body.style.paddingTop = "";
     }
-  }, [isQuotationPage]);
+  }, [isStandalone]);
 
-  if (isQuotationPage) {
-    // For quotation page, render only the children without header/footer
+  if (isStandalone) {
+    // Standalone surfaces render only the children — no marketing header/footer.
     return <>{children}</>;
   }
 
