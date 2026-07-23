@@ -385,7 +385,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
               </CardHeader>
               <div style={{ padding: 16 }}>
                 {shortAttrs.length > 0 && (
-                  <div className="grid grid-cols-2 gap-x-3.5">
+                  <div className="grid grid-cols-1 gap-x-3.5 sm:grid-cols-2">
                     {shortAttrs.map((a) => (
                       <div key={a.key} style={{ marginBottom: 15 }}>
                         <FieldLabel suffix={<KeyTag>{a.key} · {a.type}</KeyTag>}>{a.label}</FieldLabel>
@@ -434,7 +434,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                 <FieldLabel suffix={<KeyTag>metaDescription · {seo.md.length} / 160</KeyTag>}>Meta description</FieldLabel>
                 <TextArea value={seo.md} onChange={(v) => setSeo((s) => ({ ...s, md: v }))} placeholder="One or two sentences for search results…" minHeight={52} />
               </div>
-              <div className="grid grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                 <div>
                   <FieldLabel suffix={<KeyTag>canonicalUrl</KeyTag>}>Canonical URL</FieldLabel>
                   <TextInput value={seo.cu} onChange={(v) => setSeo((s) => ({ ...s, cu: v }))} placeholder="https://…" mono style={{ fontSize: 12.5 }} />

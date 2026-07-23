@@ -2,12 +2,13 @@
 
 // src/components/Studio/shell/Sidebar.tsx
 //
-// The teal primary navigation. Vertical rail on desktop; a horizontal
-// scrolling bar on narrow viewports. Active state follows the route.
+// The teal primary navigation. Vertical rail on desktop; on narrow viewports
+// a compact top bar with a hamburger button that opens a slide-in drawer.
+// Active state follows the route.
 
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Wordmark from "./Wordmark";
 import { useStudio } from "../shared/StudioContext";
 import { collections, entries, assets, currentUser } from "@/data/studio";
@@ -163,9 +164,8 @@ function NavItem({ item, active }: { item: NavDef; active: boolean }) {
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
-      className="group flex flex-none items-center gap-2.5 whitespace-nowrap transition-colors"
+      className="group flex w-full flex-none items-center gap-2.5 whitespace-nowrap transition-colors"
       style={{
-        width: "100%",
         padding: "9px 11px",
         borderRadius: 12,
         color: active ? "#ffffff" : "rgba(255,255,255,.75)",
@@ -189,10 +189,9 @@ function NavItem({ item, active }: { item: NavDef; active: boolean }) {
       }}
     >
       {item.icon}
-      <span className="max-md:hidden">{item.label}</span>
+      <span>{item.label}</span>
       {typeof item.count === "number" && (
         <span
-          className="max-md:hidden"
           style={{
             marginLeft: "auto",
             fontFamily: "var(--font-inter),var(--font-switzer)",
@@ -214,7 +213,6 @@ function NavItem({ item, active }: { item: NavDef; active: boolean }) {
 function SectionLabel({ children }: { children: ReactNode }) {
   return (
     <div
-      className="max-md:hidden"
       style={{
         fontSize: 10.5,
         fontWeight: 600,
@@ -233,6 +231,20 @@ export default function Sidebar() {
   const pathname = usePathname() || "";
   const router = useRouter();
   const { role, toast } = useStudio();
+  const [open, setOpen] = useState(false);
+
+  // Close the mobile drawer whenever the route changes (a nav link was used).
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Escape closes the drawer.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   const isActive = (item: NavDef) =>
     item.match ? item.match(pathname) : pathname === item.href || pathname.startsWith(item.href + "/");
@@ -242,37 +254,29 @@ export default function Sidebar() {
     router.push("/studio/login");
   };
 
-  return (
-    <aside
-      className="relative flex flex-col gap-0.5 overflow-y-auto overflow-x-hidden max-md:flex-row max-md:items-center max-md:gap-1 max-md:overflow-x-auto max-md:overflow-y-hidden"
-      style={{ padding: "16px 12px 14px" }}
-      role="navigation"
-      aria-label="Primary"
-    >
-      {/* Decorative texture (desktop only) */}
+  // Full vertical nav — rendered in the desktop rail and the mobile drawer.
+  const navContent = (
+    <>
+      {/* Decorative texture */}
       <img
         src="/studio/footer-texture.svg"
         alt=""
-        className="max-md:hidden"
         style={{ position: "absolute", left: -60, bottom: -80, width: 360, opacity: 0.45, pointerEvents: "none" }}
       />
 
       {/* Brand card */}
       <div
-        className="relative flex flex-col max-md:mr-1 max-md:flex-none"
-        style={{ isolation: "isolate", background: "#ffffff", borderRadius: 14, padding: "11px 14px 9px", margin: "0 2px 10px", gap: 1 }}
+        className="relative m-[0_2px_10px] flex flex-col"
+        style={{ isolation: "isolate", background: "#ffffff", borderRadius: 14, padding: "11px 14px 9px", gap: 1 }}
       >
         <Wordmark />
-        <div
-          className="max-md:hidden"
-          style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: ".14em", color: "#757575", textTransform: "uppercase" }}
-        >
+        <div style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: ".14em", color: "#757575", textTransform: "uppercase" }}>
           Content studio
         </div>
       </div>
 
       {/* Environment badge */}
-      <div className="flex items-center gap-[7px] max-md:hidden" style={{ padding: "0 10px 10px" }}>
+      <div className="flex items-center gap-[7px]" style={{ padding: "0 10px 10px" }}>
         <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#34D27A", flex: "none" }} />
         <span style={{ fontSize: 11, color: "rgba(255,255,255,.6)", fontFamily: "ui-monospace,'SF Mono',Menlo,monospace" }}>
           flarize.com · Production
@@ -289,17 +293,14 @@ export default function Sidebar() {
       ))}
 
       {/* Footer: user + logout */}
-      <div
-        className="relative mt-auto flex items-center gap-[9px] max-md:mt-0 max-md:ml-1 max-md:border-t-0 max-md:pt-0"
-        style={{ borderTop: "1px solid rgba(255,255,255,.14)", padding: "12px 10px 2px" }}
-      >
+      <div className="relative mt-auto flex items-center gap-[9px] border-t border-[rgba(255,255,255,.14)] p-[12px_10px_2px]">
         <div
           className="grid flex-none place-items-center"
           style={{ width: 28, height: 28, borderRadius: "50%", background: "#F7BA41", color: "#272218", fontSize: 11, fontWeight: 700 }}
         >
           {currentUser.initials}
         </div>
-        <div className="min-w-0 leading-tight max-md:hidden">
+        <div className="min-w-0 leading-tight">
           <div style={{ fontSize: 12.5, fontWeight: 600, color: "#ffffff" }}>{currentUser.name}</div>
           <div style={{ fontSize: 11, color: "rgba(255,255,255,.55)" }}>{role}</div>
         </div>
@@ -317,6 +318,84 @@ export default function Sidebar() {
           </svg>
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop rail */}
+      <aside
+        className="relative flex flex-col gap-0.5 overflow-y-auto overflow-x-hidden p-[16px_12px_14px] max-md:hidden"
+        role="navigation"
+        aria-label="Primary"
+      >
+        {navContent}
+      </aside>
+
+      {/* Mobile top bar: brand + hamburger */}
+      <div className="flex items-center gap-2 p-[10px_12px] md:hidden">
+        <div
+          className="relative flex flex-col"
+          style={{ isolation: "isolate", background: "#ffffff", borderRadius: 12, padding: "8px 12px 7px" }}
+        >
+          <Wordmark />
+        </div>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Open navigation menu"
+          aria-expanded={open}
+          aria-controls="flzMobileNav"
+          className="ml-auto grid place-items-center transition-colors hover:bg-[rgba(255,255,255,0.12)]"
+          style={{ width: 40, height: 40, border: "none", borderRadius: 12, background: "rgba(255,255,255,.1)", color: "#ffffff", cursor: "pointer" }}
+        >
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M4 6.5h16M4 12h16M4 17.5h16" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Mobile drawer */}
+      {open && (
+        <div className="md:hidden" role="dialog" aria-modal="true" aria-label="Navigation menu">
+          {/* Scrim */}
+          <div
+            onClick={() => setOpen(false)}
+            style={{ position: "fixed", inset: 0, zIndex: 140, background: "rgba(4,28,29,.55)", animation: "flzScrim .18s ease" }}
+          />
+          <aside
+            id="flzMobileNav"
+            role="navigation"
+            aria-label="Primary"
+            className="flex flex-col gap-0.5 overflow-y-auto overflow-x-hidden p-[16px_12px_14px]"
+            style={{
+              position: "fixed",
+              top: 0,
+              bottom: 0,
+              left: 0,
+              zIndex: 150,
+              width: "min(272px, 84vw)",
+              background: "#074A4D",
+              boxShadow: "8px 0 28px rgba(0,0,0,.3)",
+              animation: "flzDrawer .2s ease",
+            }}
+          >
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close navigation menu"
+              className="grid place-items-center transition-colors hover:bg-[rgba(255,255,255,0.12)]"
+              style={{ position: "absolute", top: 10, right: 10, zIndex: 1, width: 32, height: 32, border: "none", borderRadius: 10, background: "transparent", color: "rgba(255,255,255,.75)", cursor: "pointer" }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="m6 6 12 12M18 6 6 18" />
+              </svg>
+            </button>
+            {navContent}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }

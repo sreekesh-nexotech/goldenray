@@ -50,8 +50,8 @@ export default function Topbar() {
 
   return (
     <div
-      className="flex flex-none items-center gap-3"
-      style={{ padding: "0 20px", height: 60, background: "#ffffff", boxShadow: "inset 0 -1px 0 #E5E7EB", zIndex: 5 }}
+      className="flex flex-none items-center gap-3 px-5 max-md:px-3.5"
+      style={{ height: 60, background: "#ffffff", boxShadow: "inset 0 -1px 0 #E5E7EB", zIndex: 5 }}
     >
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-0.5 overflow-hidden">

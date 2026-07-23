@@ -130,7 +130,7 @@ export default function TaxonomyScreen() {
         </TipBanner>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(320px,100%),1fr))", gap: 14 }}>
         {/* Authors */}
         <TaxonomyCard
           title="Authors"

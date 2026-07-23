@@ -63,8 +63,7 @@ export default function StudioShell({ children }: { children: React.ReactNode })
             role="main"
             aria-label="Content area"
             tabIndex={-1}
-            className="flex-1 overflow-auto"
-            style={{ padding: "24px 26px 70px" }}
+            className="flex-1 overflow-auto p-[24px_26px_70px] max-md:p-[16px_14px_56px]"
           >
             {children}
           </main>

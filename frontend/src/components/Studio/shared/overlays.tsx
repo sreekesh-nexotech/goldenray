@@ -6,7 +6,7 @@
 // Content Studio. All use a fixed teal scrim and the flzPop/flzToast keyframes
 // defined in globals.css.
 
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useStudio } from "./StudioContext";
 import { studioColors, studioFonts } from "./format";
@@ -83,7 +83,11 @@ export function ModalActions({ children }: { children: ReactNode }) {
 
 export function ToastHost() {
   const { toasts } = useStudio();
-  if (typeof document === "undefined") return null;
+  // Render nothing on the server AND on the first client render so the
+  // hydrated HTML matches; the portal mounts right after hydration.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
   return createPortal(
     <div
       role="status"

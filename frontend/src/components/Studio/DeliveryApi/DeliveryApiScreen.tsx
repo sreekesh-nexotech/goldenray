@@ -184,7 +184,7 @@ export default function DeliveryApiScreen() {
       </div>
 
       {/* Endpoint reference cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(280px,1fr))", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(280px,100%),1fr))", gap: 14 }}>
         {refCards.map((c) => (
           <div
             key={c.label}

@@ -66,9 +66,8 @@ export default function MediaScreen() {
       {/* Toolbar: search + folder chips */}
       <div className="flex flex-wrap items-center gap-2" style={{ marginBottom: 16 }}>
         <div
-          className="flex items-center gap-2"
+          className="flex w-[260px] max-w-full items-center gap-2 max-md:w-full"
           style={{
-            width: 260,
             background: "rgba(255,255,255,.8)",
             borderRadius: 12,
             boxShadow: `inset 0 0 0 1px ${studioColors.ring}`,

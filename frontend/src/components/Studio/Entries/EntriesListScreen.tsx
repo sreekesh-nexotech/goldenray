@@ -567,12 +567,12 @@ export default function EntriesListScreen() {
         )}
 
         {/* Footer / pagination */}
-        <div className="flex flex-wrap items-center justify-between gap-2.5" style={{ padding: "10px 16px", color: "#898989", fontSize: 12 }}>
+        <div className="flex flex-wrap items-center justify-between gap-x-2.5 gap-y-2" style={{ padding: "10px 16px", color: "#898989", fontSize: 12 }}>
           <span>{showing}</span>
-          <div className="flex items-center gap-2.5">
-            <span style={{ fontFamily: studioFonts.mono, fontSize: 11 }}>sorted by {sortDef.long}</span>
+          <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-2 max-md:w-full max-md:justify-between">
+            <span className="min-w-0 truncate" style={{ fontFamily: studioFonts.mono, fontSize: 11 }}>sorted by {sortDef.long}</span>
             {totalPages > 1 && (
-              <div className="flex items-center gap-1.5">
+              <div className="flex flex-none items-center gap-1.5">
                 <button
                   type="button"
                   disabled={page <= 1}
@@ -584,7 +584,7 @@ export default function EntriesListScreen() {
                 >
                   ‹ Prev
                 </button>
-                <span style={{ fontFamily: studioFonts.num, fontSize: 11.5, color: "#5B5B5B" }}>
+                <span className="whitespace-nowrap" style={{ fontFamily: studioFonts.num, fontSize: 11.5, color: "#5B5B5B" }}>
                   Page {page} of {totalPages}
                 </span>
                 <button
