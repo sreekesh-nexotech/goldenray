@@ -499,3 +499,46 @@ export function getBadges(): Promise<Paginated<StudioBadge>> {
 export function createBadge(body: { label: string; color?: string }): Promise<StudioBadge> {
   return authRequest<StudioBadge>("badges/", { method: "POST", body });
 }
+
+/* ── Users (Roles & access) — admin only, everyone else gets 403 ─────────── */
+
+/** Rows from GET auth/users/ share the auth/me/ shape. */
+export type StudioUser = StudioMe;
+
+export function getUsers(): Promise<Paginated<StudioUser>> {
+  return authRequest<Paginated<StudioUser>>("auth/users/");
+}
+
+/** POST auth/users/ — password is required on create. */
+export function createUser(body: {
+  username: string;
+  password: string;
+  role: StudioApiRole;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+}): Promise<StudioUser> {
+  return authRequest<StudioUser>("auth/users/", { method: "POST", body });
+}
+
+/** PATCH auth/users/{id}/ — any fields; include `password` to reset it. */
+export function patchUser(
+  id: number,
+  body: Partial<{
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    role: StudioApiRole;
+    is_active: boolean;
+    password: string;
+  }>
+): Promise<StudioUser> {
+  return authRequest<StudioUser>(`auth/users/${id}/`, { method: "PATCH", body });
+}
+
+/** DELETE auth/users/{id}/ — deactivates (authorship history stays); the
+ *  backend refuses self-deletion. */
+export function deleteUser(id: number): Promise<void> {
+  return authRequest<void>(`auth/users/${id}/`, { method: "DELETE" });
+}

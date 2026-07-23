@@ -414,20 +414,32 @@ export function SelectField({
 }
 
 /** Pill toggle switch (used for required fields in the template builder). */
-export function Switch({ checked, onChange, ariaLabel }: { checked: boolean; onChange?: () => void; ariaLabel?: string }) {
+export function Switch({
+  checked,
+  onChange,
+  ariaLabel,
+  disabled = false,
+}: {
+  checked: boolean;
+  onChange?: () => void;
+  ariaLabel?: string;
+  disabled?: boolean;
+}) {
   return (
     <button
       type="button"
       role="switch"
       aria-checked={checked}
       aria-label={ariaLabel}
-      onClick={onChange}
+      disabled={disabled}
+      onClick={disabled ? undefined : onChange}
       style={{
         width: 36,
         height: 20,
         borderRadius: 999,
         border: "none",
-        cursor: "pointer",
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.55 : 1,
         position: "relative",
         padding: 0,
         transition: "background .15s",

@@ -134,7 +134,7 @@ export function FieldRow({
         </span>
       </span>
 
-      <Switch checked={required} onChange={onToggle} ariaLabel="Required field" />
+      <Switch checked={required} onChange={onToggle} ariaLabel="Required field" disabled={readOnly} />
 
       {canEdit && (
         <button

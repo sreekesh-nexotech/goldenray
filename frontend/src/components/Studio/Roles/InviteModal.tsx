@@ -2,41 +2,55 @@
 
 // src/components/Studio/Roles/InviteModal.tsx
 //
-// Invite-a-user modal for the Roles & access screen. Presentation-only: local
-// form state, no network. "Send invitation" fires the parent's toast + close.
+// Add-a-user modal for the Roles & access screen. POSTs auth/users/ via the
+// parent's onCreate handler (admin only): username + password are required,
+// email is optional, role picks the access level.
 
 import { useState } from "react";
-import type { Role } from "@/types/studio";
 import { Modal, ModalTitle, ModalActions } from "../shared/overlays";
-import { FieldLabel, TextInput } from "../shared/primitives";
+import { FieldLabel, TextInput, GhostButton, GoldButton } from "../shared/primitives";
 import { studioColors, studioFonts } from "../shared/format";
+import type { StudioApiRole } from "@/services/studioService";
 
-const roleChoices: { value: Role; label: string }[] = [
-  { value: "Admin", label: "Admin — full access" },
-  { value: "Editor", label: "Editor — content & publishing" },
-  { value: "Author", label: "Author — writes drafts" },
+const roleChoices: { value: StudioApiRole; label: string }[] = [
+  { value: "admin", label: "Admin — full access" },
+  { value: "editor", label: "Editor — content & publishing" },
+  { value: "author", label: "Author — writes drafts" },
 ];
 
 const fieldRing = `inset 0 0 0 1px ${studioColors.inputRing},0 1px 2px rgba(10,13,18,.05)`;
 const fieldRingFocus = "inset 0 0 0 1.5px #074A4D,0 1px 2px rgba(10,13,18,.05)";
 
+export interface NewUserPayload {
+  username: string;
+  password: string;
+  role: StudioApiRole;
+  email?: string;
+}
+
 export function InviteModal({
   open,
   onClose,
-  onSend,
+  onCreate,
 }: {
   open: boolean;
   onClose: () => void;
-  onSend: () => void;
+  /** POST the user; resolve on success (parent closes), throw with a message to show. */
+  onCreate: (payload: NewUserPayload) => Promise<void>;
 }) {
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<Role>("Author");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<StudioApiRole>("author");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
   const reset = () => {
-    setName("");
+    setUsername("");
     setEmail("");
-    setRole("Author");
+    setPassword("");
+    setRole("author");
+    setError("");
   };
 
   const cancel = () => {
@@ -44,17 +58,43 @@ export function InviteModal({
     onClose();
   };
 
-  const send = () => {
-    onSend();
-    reset();
+  const submit = async () => {
+    if (!username.trim()) {
+      setError("Enter a username");
+      return;
+    }
+    if (!password) {
+      setError("Enter a password");
+      return;
+    }
+    setError("");
+    setBusy(true);
+    try {
+      await onCreate({
+        username: username.trim(),
+        password,
+        role,
+        email: email.trim() || undefined,
+      });
+      reset();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn’t create the user");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
-    <Modal open={open} onClose={cancel} ariaLabel="Invite user" width={460}>
-      <ModalTitle>Invite a user</ModalTitle>
+    <Modal open={open} onClose={cancel} ariaLabel="Add user" width={460}>
+      <ModalTitle>Add a user</ModalTitle>
       <p style={{ fontSize: 12.5, color: studioColors.bodyGray, margin: "4px 0 16px", lineHeight: 1.5 }}>
-        They&#8217;ll get an email invite to join the Flarize content studio.
+        Creates an internal account for the Flarize content studio — share the credentials with them directly.
       </p>
+
+      <div style={{ marginBottom: 14 }}>
+        <FieldLabel>Username</FieldLabel>
+        <TextInput value={username} onChange={setUsername} placeholder="ravi.kumar" style={{ borderRadius: 12 }} />
+      </div>
 
       <div style={{ marginBottom: 14 }}>
         <FieldLabel
@@ -64,14 +104,14 @@ export function InviteModal({
             </span>
           }
         >
-          Full name
+          Work email
         </FieldLabel>
-        <TextInput value={name} onChange={setName} placeholder="Ravi Kumar" style={{ borderRadius: 12 }} />
+        <TextInput value={email} onChange={setEmail} type="email" placeholder="name@flarize.com" style={{ borderRadius: 12 }} />
       </div>
 
       <div style={{ marginBottom: 14 }}>
-        <FieldLabel>Work email</FieldLabel>
-        <TextInput value={email} onChange={setEmail} type="email" placeholder="name@flarize.com" style={{ borderRadius: 12 }} />
+        <FieldLabel>Password</FieldLabel>
+        <TextInput value={password} onChange={setPassword} type="password" placeholder="••••••••" style={{ borderRadius: 12 }} />
       </div>
 
       <div style={{ marginBottom: 20 }}>
@@ -80,7 +120,7 @@ export function InviteModal({
           <select
             value={role}
             aria-label="Role"
-            onChange={(e) => setRole(e.target.value as Role)}
+            onChange={(e) => setRole(e.target.value as StudioApiRole)}
             onFocus={(e) => (e.currentTarget.style.boxShadow = fieldRingFocus)}
             onBlur={(e) => (e.currentTarget.style.boxShadow = fieldRing)}
             style={{
@@ -113,54 +153,19 @@ export function InviteModal({
         </div>
       </div>
 
+      {error && (
+        <div role="alert" style={{ fontSize: 12, fontWeight: 500, color: studioColors.danger, marginBottom: 12 }}>
+          {error}
+        </div>
+      )}
+
       <ModalActions>
-        <button
-          type="button"
-          onClick={cancel}
-          className="inline-flex items-center"
-          style={{
-            height: 36,
-            padding: "0 14px",
-            borderRadius: 12,
-            border: "none",
-            background: "#ffffff",
-            boxShadow: `inset 0 0 0 1px ${studioColors.inputRing}`,
-            color: studioColors.labelGray,
-            fontFamily: "var(--font-switzer)",
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = "inset 0 0 0 1px #074A4D";
-            e.currentTarget.style.color = "#074A4D";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${studioColors.inputRing}`;
-            e.currentTarget.style.color = studioColors.labelGray;
-          }}
-        >
+        <GhostButton onClick={cancel} style={{ height: 36, padding: "0 14px", fontSize: 13 }}>
           Cancel
-        </button>
-        <button
-          type="button"
-          onClick={send}
-          className="inline-flex items-center transition-[filter] hover:brightness-[.96]"
-          style={{
-            height: 36,
-            padding: "0 15px",
-            borderRadius: 12,
-            border: "none",
-            background: studioColors.gold,
-            color: studioColors.goldInk,
-            fontFamily: "var(--font-switzer)",
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          Send invitation
-        </button>
+        </GhostButton>
+        <GoldButton onClick={submit} disabled={busy} style={{ height: 36, padding: "0 15px", fontSize: 13 }}>
+          {busy ? "Creating…" : "Create user"}
+        </GoldButton>
       </ModalActions>
     </Modal>
   );

@@ -2,22 +2,67 @@
 
 // src/components/Studio/Roles/RolesScreen.tsx
 //
-// Roles & access — the team member list (with inline role editing for admins),
-// a "Preview as" segmented control that drives capability gating across the
-// whole studio, and the read-only role permission matrix.
+// Roles & access — the internal user list backed by auth/users/ (admin only:
+// everyone else gets a 403 and sees the lock banner), a "Preview as" segmented
+// control that drives capability gating across the whole studio, and the
+// read-only role permission matrix (presentational copy of the server rules).
 
-import { useState } from "react";
-import { members, rolePermissions, rolePreviewNotes, roleOptions } from "@/data/studio";
-import type { Member, Role } from "@/types/studio";
+import { useEffect, useState } from "react";
+import type { Role } from "@/types/studio";
 import { useStudio, useCapabilities } from "../shared/StudioContext";
-import { PageHeader, TipBanner, StatusPill, SelectField, thStyle, tdStyle } from "../shared/primitives";
-import { memberStatusPill, studioColors } from "../shared/format";
-import { InviteModal } from "./InviteModal";
+import { PageHeader, TipBanner, StatusPill, SelectField, GhostButton, thStyle, tdStyle } from "../shared/primitives";
+import { ConfirmDialog } from "../shared/overlays";
+import { initialsOf, studioColors } from "../shared/format";
+import { InviteModal, type NewUserPayload } from "./InviteModal";
+import {
+  getUsers,
+  createUser,
+  patchUser,
+  deleteUser,
+  isAuthError,
+  StudioApiError,
+  type StudioUser,
+  type StudioApiRole,
+} from "@/services/studioService";
 
 // The design uses tighter row paddings than the shared tdStyle (12px): member
 // rows are 11px, permission-matrix rows are 13px.
 const memberTd = { ...tdStyle, padding: "11px 16px" } as const;
 const matrixTd = { ...tdStyle, padding: "13px 16px" } as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Static presentational copy (mirrors the server's role rules)               */
+/* -------------------------------------------------------------------------- */
+
+const roleOptions: Role[] = ["Admin", "Editor", "Author"];
+
+const apiRoleOptions: { value: StudioApiRole; label: string }[] = [
+  { value: "admin", label: "Admin" },
+  { value: "editor", label: "Editor" },
+  { value: "author", label: "Author" },
+];
+
+const apiRoleLabel: Record<StudioApiRole, string> = { admin: "Admin", editor: "Editor", author: "Author" };
+
+const rolePreviewNotes: Record<Role, string> = {
+  Admin: "Admins manage structure, publish and delete.",
+  Editor: "Editors write, publish and delete — but not structure.",
+  Author: "Authors write drafts; an editor publishes them.",
+};
+
+const rolePermissions: { role: Role; sub: string; cells: boolean[] }[] = [
+  { role: "Admin", sub: "Full control — structure, content, people", cells: [true, true, true, true] },
+  { role: "Editor", sub: "Content & publishing, no structure", cells: [false, true, true, true] },
+  { role: "Author", sub: "Writes drafts; an editor publishes", cells: [false, true, false, false] },
+];
+
+/** Display name for a user row. */
+function displayName(u: StudioUser): string {
+  return [u.first_name, u.last_name].filter(Boolean).join(" ") || u.username;
+}
+
+const activePill = { label: "Active", bg: "#C3E0BD", ink: "#0A6B31" };
+const inactivePill = { label: "Deactivated", bg: "#E5E7EB", ink: "#5B5B5B" };
 
 /* -------------------------------------------------------------------------- */
 /*  Preview-as segmented control                                               */
@@ -62,25 +107,25 @@ function PreviewSegment() {
 /* -------------------------------------------------------------------------- */
 
 function MemberRow({
-  member,
-  roleValue,
+  user,
+  self,
   editable,
+  busy,
   onRoleChange,
+  onDeactivate,
+  onReactivate,
 }: {
-  member: Member;
-  roleValue: Role;
+  user: StudioUser;
+  self: boolean;
   editable: boolean;
-  onRoleChange: (v: Role) => void;
+  busy: boolean;
+  onRoleChange: (v: StudioApiRole) => void;
+  onDeactivate: () => void;
+  onReactivate: () => void;
 }) {
-  const { toast } = useStudio();
-  const { isAdmin } = useCapabilities();
-  const pill = memberStatusPill(member.status);
-  const canResend = member.status === "invited";
-  const canRemove = isAdmin && !member.self;
-  const removeLabel = member.status === "invited" ? "Revoke" : "Remove";
-
+  const name = displayName(user);
   return (
-    <tr>
+    <tr style={{ opacity: user.is_active ? 1 : 0.65 }}>
       <td style={memberTd}>
         <div className="flex items-center gap-2.5">
           <div
@@ -97,12 +142,12 @@ function MemberRow({
               flex: "none",
             }}
           >
-            {member.initials}
+            {initialsOf(name)}
           </div>
           <div className="min-w-0">
             <div className="flex items-center" style={{ gap: 7 }}>
-              <span style={{ fontWeight: 600, color: studioColors.tealDeep, fontSize: 13.5 }}>{member.name}</span>
-              {member.self && (
+              <span style={{ fontWeight: 600, color: studioColors.tealDeep, fontSize: 13.5 }}>{name}</span>
+              {self && (
                 <span
                   style={{
                     fontSize: 10,
@@ -117,7 +162,7 @@ function MemberRow({
                 </span>
               )}
             </div>
-            <div style={{ fontSize: 11.5, color: studioColors.faintGray }}>{member.email}</div>
+            <div style={{ fontSize: 11.5, color: studioColors.faintGray }}>{user.email || user.username}</div>
           </div>
         </div>
       </td>
@@ -125,54 +170,38 @@ function MemberRow({
         {editable ? (
           <div style={{ maxWidth: 150 }}>
             <SelectField
-              value={roleValue}
-              ariaLabel={`Role for ${member.name}`}
-              onChange={(v) => onRoleChange(v as Role)}
+              value={user.role}
+              ariaLabel={`Role for ${name}`}
+              onChange={(v) => onRoleChange(v as StudioApiRole)}
               style={{ fontSize: 13, padding: "8px 30px 8px 11px", borderRadius: 10 }}
             >
-              {roleOptions.map((o) => (
-                <option key={o} value={o}>
-                  {o}
+              {apiRoleOptions.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
                 </option>
               ))}
             </SelectField>
           </div>
         ) : (
-          <span style={{ fontSize: 13, color: studioColors.bodyGray, fontWeight: 500 }}>{roleValue}</span>
+          <span style={{ fontSize: 13, color: studioColors.bodyGray, fontWeight: 500 }}>{apiRoleLabel[user.role]}</span>
         )}
       </td>
       <td style={memberTd}>
-        <StatusPill pill={pill} />
+        <StatusPill pill={user.is_active ? activePill : inactivePill} />
       </td>
       <td style={memberTd}>
         <div className="flex justify-end" style={{ gap: 6 }}>
-          {canResend && (
-            <button
-              type="button"
-              onClick={() => toast("Invitation resent")}
-              className="inline-flex items-center transition-colors hover:bg-[rgba(7,74,77,0.05)]"
-              style={{
-                height: 30,
-                padding: "0 11px",
-                borderRadius: 9,
-                border: "none",
-                background: "#ffffff",
-                boxShadow: "inset 0 0 0 1px #074A4D",
-                color: "#074A4D",
-                fontFamily: "var(--font-switzer)",
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              Resend
-            </button>
+          {editable && !user.is_active && (
+            <GhostButton onClick={onReactivate} disabled={busy} style={{ height: 30, padding: "0 11px", fontSize: 12, borderRadius: 9 }}>
+              Reactivate
+            </GhostButton>
           )}
-          {canRemove && (
+          {editable && user.is_active && (
             <button
               type="button"
-              onClick={() => toast(`${removeLabel === "Revoke" ? "Invitation revoked" : "Member removed"}`)}
-              aria-label={`${removeLabel} ${member.name}`}
+              onClick={onDeactivate}
+              disabled={busy}
+              aria-label={`Deactivate ${name}`}
               className="inline-flex items-center transition-colors hover:bg-[rgba(220,38,38,0.08)]"
               style={{
                 height: 30,
@@ -184,10 +213,10 @@ function MemberRow({
                 fontFamily: "var(--font-switzer)",
                 fontSize: 12,
                 fontWeight: 600,
-                cursor: "pointer",
+                cursor: busy ? "default" : "pointer",
               }}
             >
-              {removeLabel}
+              Remove
             </button>
           )}
         </div>
@@ -224,13 +253,87 @@ function PermCell({ yes }: { yes: boolean }) {
 /* -------------------------------------------------------------------------- */
 
 export default function RolesScreen() {
-  const { role, tips, toast } = useStudio();
+  const { role, tips, toast, me } = useStudio();
   const { isAdmin } = useCapabilities();
 
+  const [users, setUsers] = useState<StudioUser[] | null>(null);
+  const [forbidden, setForbidden] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
-  const [roleState, setRoleState] = useState<Record<string, Role>>(() =>
-    Object.fromEntries(members.map((m) => [m.id, m.role]))
-  );
+  const [busyId, setBusyId] = useState<number | null>(null);
+  const [confirmUser, setConfirmUser] = useState<StudioUser | null>(null);
+  const [deactivating, setDeactivating] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    getUsers()
+      .then((page) => !cancelled && setUsers(page.results))
+      .catch((err) => {
+        if (cancelled) return;
+        if (isAuthError(err)) setForbidden(true);
+        else setLoadError(err instanceof Error ? err.message : "Failed to load users");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const replaceUser = (u: StudioUser) => setUsers((prev) => prev?.map((x) => (x.id === u.id ? u : x)) ?? prev);
+
+  const changeRole = async (u: StudioUser, next: StudioApiRole) => {
+    setBusyId(u.id);
+    try {
+      const updated = await patchUser(u.id, { role: next });
+      replaceUser(updated);
+      toast(`Role updated to ${apiRoleLabel[next]}`);
+    } catch (err) {
+      toast(err instanceof StudioApiError ? `Update failed: ${err.message}` : "Update failed", "error");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const deactivate = async () => {
+    if (!confirmUser) return;
+    setDeactivating(true);
+    try {
+      await deleteUser(confirmUser.id);
+      replaceUser({ ...confirmUser, is_active: false });
+      toast(`${displayName(confirmUser)} deactivated`);
+      setConfirmUser(null);
+    } catch (err) {
+      toast(err instanceof StudioApiError ? `Remove failed: ${err.message}` : "Remove failed", "error");
+    } finally {
+      setDeactivating(false);
+    }
+  };
+
+  const reactivate = async (u: StudioUser) => {
+    setBusyId(u.id);
+    try {
+      const updated = await patchUser(u.id, { is_active: true });
+      replaceUser(updated);
+      toast(`${displayName(u)} reactivated`);
+    } catch (err) {
+      toast(err instanceof StudioApiError ? `Reactivate failed: ${err.message}` : "Reactivate failed", "error");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleCreate = async (payload: NewUserPayload) => {
+    try {
+      const created = await createUser(payload);
+      setUsers((prev) => [...(prev ?? []), created]);
+      toast(`${created.username} added`);
+      setInviteOpen(false);
+    } catch (err) {
+      // Re-throw with the API's message so the modal shows it inline.
+      throw new Error(err instanceof StudioApiError ? err.message : "Couldn’t create the user");
+    }
+  };
+
+  const memberCount = users?.length ?? 0;
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
@@ -241,7 +344,7 @@ export default function RolesScreen() {
 
       {tips && (
         <TipBanner mb={14}>
-          Use <b style={{ color: studioColors.tealDeep }}>Preview as</b> to feel the gating — publish buttons, bulk actions and the template builder react across the whole prototype.
+          Use <b style={{ color: studioColors.tealDeep }}>Preview as</b> to feel the gating — publish buttons, bulk actions and the template builder react across the whole studio.
         </TipBanner>
       )}
 
@@ -250,9 +353,9 @@ export default function RolesScreen() {
         <div className="flex flex-wrap items-center" style={{ gap: 12, padding: "13px 16px", boxShadow: `inset 0 -1px 0 ${studioColors.ring}` }}>
           <div style={{ minWidth: 0 }}>
             <span style={{ fontSize: 14, fontWeight: 600, color: studioColors.tealDeep }}>Team members</span>
-            <span style={{ fontSize: 12, color: studioColors.faintGray }}> &#183; {members.length}</span>
+            {users !== null && <span style={{ fontSize: 12, color: studioColors.faintGray }}> &#183; {memberCount}</span>}
           </div>
-          {isAdmin && (
+          {isAdmin && !forbidden && (
             <button
               type="button"
               onClick={() => setInviteOpen(true)}
@@ -277,12 +380,14 @@ export default function RolesScreen() {
                 <circle cx="9" cy="7" r="4" />
                 <path d="M19 8v6M22 11h-6" />
               </svg>
-              Invite user
+              Add user
             </button>
           )}
         </div>
 
-        {!isAdmin && (
+        {/* Preview-as lock: real admin previewing a lesser role sees the
+            view-only state the lesser role would get. */}
+        {!forbidden && !isAdmin && (
           <div
             className="flex items-center"
             style={{
@@ -299,39 +404,65 @@ export default function RolesScreen() {
               <rect x="4.5" y="10.5" width="15" height="10" rx="2" />
               <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
             </svg>
-            Only Admins can invite teammates or change roles — this list is view-only for you.
+            Only Admins can add teammates or change roles — this list is view-only for {role}s.
           </div>
         )}
 
-        <div className="overflow-x-auto">
-          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 600 }}>
-            <thead>
-              <tr>
-                <th style={thStyle}>Member</th>
-                <th style={thStyle}>Role</th>
-                <th style={thStyle}>Status</th>
-                <th style={{ ...thStyle, width: 150 }} />
-              </tr>
-            </thead>
-            <tbody>
-              {members.map((m) => {
-                const editable = isAdmin && !m.self;
-                return (
-                  <MemberRow
-                    key={m.id}
-                    member={m}
-                    roleValue={roleState[m.id]}
-                    editable={editable}
-                    onRoleChange={(v) => {
-                      setRoleState((s) => ({ ...s, [m.id]: v }));
-                      toast(`Role updated to ${v}`);
-                    }}
-                  />
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        {forbidden ? (
+          <div
+            className="flex items-center"
+            style={{
+              gap: 9,
+              padding: "14px 16px",
+              background: "rgba(251,232,218,.6)",
+              color: "#9C4B21",
+              fontSize: 12,
+              lineHeight: 1.45,
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={{ flex: "none" }}>
+              <rect x="4.5" y="10.5" width="15" height="10" rx="2" />
+              <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
+            </svg>
+            Only Admins can view and manage the team — ask an Admin if you need access changed.
+          </div>
+        ) : loadError ? (
+          <div role="alert" style={{ padding: "16px", fontSize: 13, color: studioColors.danger }}>
+            Couldn’t load the team: {loadError}
+          </div>
+        ) : users === null ? (
+          <div style={{ padding: "16px", fontSize: 13, color: studioColors.mutedGray }}>Loading…</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 600 }}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>Member</th>
+                  <th style={thStyle}>Role</th>
+                  <th style={thStyle}>Status</th>
+                  <th style={{ ...thStyle, width: 150 }} />
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u) => {
+                  const self = me?.id === u.id;
+                  return (
+                    <MemberRow
+                      key={u.id}
+                      user={u}
+                      self={self}
+                      editable={isAdmin && !self}
+                      busy={busyId === u.id}
+                      onRoleChange={(v) => changeRole(u, v)}
+                      onDeactivate={() => setConfirmUser(u)}
+                      onReactivate={() => reactivate(u)}
+                    />
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Preview-as bar */}
@@ -361,7 +492,7 @@ export default function RolesScreen() {
               {rolePermissions.map((r) => (
                 <tr key={r.role}>
                   <td style={matrixTd}>
-                    <div style={{ fontWeight: 600, color: studioColors.tealDeep, fontSize: 13.5 }}>{r.name}</div>
+                    <div style={{ fontWeight: 600, color: studioColors.tealDeep, fontSize: 13.5 }}>{r.role}</div>
                     <div style={{ fontSize: 11.5, color: studioColors.faintGray, marginTop: 1 }}>{r.sub}</div>
                   </td>
                   {r.cells.map((c, i) => (
@@ -374,18 +505,25 @@ export default function RolesScreen() {
         </div>
       </div>
 
-      <div style={{ fontSize: 11.5, color: studioColors.faintGray, marginTop: 10, padding: "0 4px" }}>
-        Role changes here are a prototype preview — in production this screen manages invitations and role assignment.
-      </div>
+      <ConfirmDialog
+        open={confirmUser !== null}
+        title="Deactivate user?"
+        confirmLabel="Deactivate"
+        busy={deactivating}
+        busyLabel="Deactivating…"
+        onCancel={() => setConfirmUser(null)}
+        onConfirm={deactivate}
+      >
+        {confirmUser && (
+          <>
+            <b style={{ color: studioColors.tealDeep }}>{displayName(confirmUser)}</b> will lose access to the
+            studio immediately. Their authorship history stays intact, and an Admin can reactivate the account
+            later.
+          </>
+        )}
+      </ConfirmDialog>
 
-      <InviteModal
-        open={inviteOpen}
-        onClose={() => setInviteOpen(false)}
-        onSend={() => {
-          toast("Invitation sent");
-          setInviteOpen(false);
-        }}
-      />
+      <InviteModal open={inviteOpen} onClose={() => setInviteOpen(false)} onCreate={handleCreate} />
     </section>
   );
 }
