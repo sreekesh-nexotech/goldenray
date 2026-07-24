@@ -345,6 +345,15 @@ export function getTemplates(): Promise<Paginated<StudioTemplate>> {
   return authRequest<Paginated<StudioTemplate>>("templates/");
 }
 
+/** POST templates/ — create a new (empty) template; admin (schema editor) only. */
+export function createTemplate(body: {
+  name: string;
+  slug: string;
+  description?: string;
+}): Promise<StudioTemplate> {
+  return authRequest<StudioTemplate>("templates/", { method: "POST", body });
+}
+
 /** POST templates/{id}/duplicate/ — deep copy (template + groups + slots). */
 export function duplicateTemplate(id: number): Promise<StudioTemplate> {
   return authRequest<StudioTemplate>(`templates/${id}/duplicate/`, { method: "POST" });
