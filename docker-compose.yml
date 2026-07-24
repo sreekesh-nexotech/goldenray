@@ -1,4 +1,4 @@
-# Runs the whole stack: PostgreSQL + Django backend + Next.js frontend.
+# Runs the whole stack: PostgreSQL + Django backend + Blog CMS + Next.js frontend.
 #
 #   docker compose up -d          # start everything
 #   docker compose down           # stop everything
@@ -15,8 +15,13 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      # Read by initdb/01-create-cms-db.sh to name the CMS database.
+      CMS_DB_NAME: ${CMS_DB_NAME:-blog_cms}
     volumes:
       - pgdata:/var/lib/postgresql/data
+      # Runs once on a fresh data volume: creates the blog_cms database so the
+      # cms service can migrate into it. Ordered by filename (01-…).
+      - ./initdb:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
@@ -49,10 +54,44 @@ services:
       db:
         condition: service_healthy
 
-  # NOTE: the blog CMS (Content Studio backend) is NOT part of this stack —
-  # run it on the host: goldenray-backend/backend/cms$ ../../venv/bin/python
-  # manage.py runserver 8009. The browser calls it directly on :8009, same as
-  # it calls the main backend on :8010.
+  # Blog CMS (Content Studio backend). Standalone Django service — its own
+  # project (config.wsgi), Postgres DB, and image. The browser calls it directly
+  # on host port 8009 (delivery API + Django admin authoring UI), same as it
+  # calls the main backend on :8010.
+  cms:
+    build: ./goldenray-backend/backend/cms
+    # Like `backend`, the .env is mounted (not env_file) so the CMS's own
+    # load_dotenv() reads it verbatim — avoids Compose interpolating any "$" in
+    # secrets. Values under `environment` are already in the process env, so
+    # load_dotenv(override=False) leaves them as-is: that's how we point the CMS
+    # at the containerised DB while everything else comes from the mounted file.
+    volumes:
+      - ./goldenray-backend/backend/cms/.env:/app/.env:ro
+      # Local media fallback (BunnyCDN handles images when configured, but keep
+      # uploads durable across restarts either way).
+      - cms_uploads:/app/uploads
+    environment:
+      DJANGO_ENV: production
+      DB_ENGINE: django.db.backends.postgresql
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: ${CMS_DB_NAME:-blog_cms}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DJANGO_ALLOWED_HOSTS: ${CMS_ALLOWED_HOSTS:-localhost,127.0.0.1,cms}
+    # The blog_cms database is created by the db container's init script
+    # (see ./initdb/), so here we just migrate and serve. Static (admin UI) is
+    # already collected into the image.
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    # Host port 8009 — the frontend's NEXT_PUBLIC_ADMIN_API_BASE_URL points here.
+    ports:
+      - "8009:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
   frontend:
     build:
       context: ./frontend
@@ -68,6 +107,8 @@ services:
       - "3003:3000"
     depends_on:
       - backend
+      - cms
 
 volumes:
   pgdata:
+  cms_uploads:

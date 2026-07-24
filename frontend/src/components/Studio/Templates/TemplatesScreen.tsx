@@ -27,6 +27,7 @@ import { studioColors, studioFonts } from "../shared/format";
 import { FieldRow, FieldTableHeader, type ChipStyle } from "./FieldRow";
 import {
   getTemplates,
+  createTemplate,
   duplicateTemplate,
   createImageGroup,
   patchImageGroup,
@@ -38,6 +39,15 @@ import {
   type StudioTemplate,
   type StudioSlotType,
 } from "@/services/studioService";
+
+/** name → url-safe slug (mirrors the backend SlugField). */
+function slugifyName(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
 /* -------------------------------------------------------------------------- */
 /*  Working-copy state shapes                                                  */
@@ -123,6 +133,14 @@ export default function TemplatesScreen() {
 
   const [addModal, setAddModal] = useState<AddModal>(null);
   const [confirmDelete, setConfirmDelete] = useState<ConfirmDelete>(null);
+
+  // New-template modal state
+  const [newTplOpen, setNewTplOpen] = useState(false);
+  const [ntName, setNtName] = useState("");
+  const [ntSlug, setNtSlug] = useState("");
+  const [ntSlugTouched, setNtSlugTouched] = useState(false);
+  const [ntDesc, setNtDesc] = useState("");
+  const [ntError, setNtError] = useState("");
   const [fKey, setFKey] = useState("");
   const [fLabel, setFLabel] = useState("");
   const [fType, setFType] = useState<StudioSlotType>("text");
@@ -281,6 +299,36 @@ export default function TemplatesScreen() {
       .catch(failAndResync("Remove failed"));
   };
 
+  const closeNewTpl = () => {
+    setNewTplOpen(false);
+    setNtName("");
+    setNtSlug("");
+    setNtSlugTouched(false);
+    setNtDesc("");
+    setNtError("");
+  };
+
+  const submitNewTpl = async () => {
+    const name = ntName.trim();
+    const slug = (ntSlugTouched ? ntSlug : slugifyName(ntName)).trim();
+    if (!name || !slug) {
+      setNtError("Enter a template name");
+      return;
+    }
+    setNtError("");
+    setBusy(true);
+    try {
+      const created = await createTemplate({ name, slug, description: ntDesc.trim() });
+      await refresh(created.id);
+      toast(`Template “${created.name}” created`);
+      closeNewTpl();
+    } catch (err) {
+      setNtError(err instanceof StudioApiError ? err.message : "Couldn’t create the template");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const duplicate = async () => {
     if (!active) return;
     setBusy(true);
@@ -351,10 +399,17 @@ export default function TemplatesScreen() {
         title="Templates"
         subtitle="Set structure once — every entry using the template inherits its image groups and attributes."
         actions={
-          canManageStructure && active ? (
-            <GhostButton style={{ height: 38, padding: "0 15px" }} onClick={duplicate} disabled={busy}>
-              {busy ? "Working…" : "Duplicate"}
-            </GhostButton>
+          canManageStructure ? (
+            <div className="flex items-center" style={{ gap: 8 }}>
+              {active && (
+                <GhostButton style={{ height: 38, padding: "0 15px" }} onClick={duplicate} disabled={busy}>
+                  {busy ? "Working…" : "Duplicate"}
+                </GhostButton>
+              )}
+              <GoldButton style={{ height: 38, padding: "0 15px" }} onClick={() => setNewTplOpen(true)} disabled={busy}>
+                + New template
+              </GoldButton>
+            </div>
           ) : undefined
         }
       />
@@ -402,9 +457,24 @@ export default function TemplatesScreen() {
         <div style={{ fontSize: 13, color: studioColors.mutedGray, padding: "8px 2px" }}>Loading…</div>
       ) : tpls.length === 0 ? (
         <div
-          style={{ background: "#ffffff", borderRadius: 16, boxShadow: `inset 0 0 0 1px ${studioColors.ring}`, padding: "18px 20px", fontSize: 13.5, color: studioColors.bodyGray }}
+          style={{ background: "#ffffff", borderRadius: 16, boxShadow: `inset 0 0 0 1px ${studioColors.ring}`, padding: "26px 22px", textAlign: "center" }}
         >
-          No templates yet.
+          <div style={{ fontSize: 14, fontWeight: 600, color: studioColors.tealDeep, marginBottom: 6 }}>
+            No templates yet
+          </div>
+          <div style={{ fontSize: 13, color: studioColors.bodyGray, marginBottom: 16, lineHeight: 1.5 }}>
+            A template defines the image groups and attribute fields an entry can hold. Create one to start
+            structuring your blog entries.
+          </div>
+          {canManageStructure ? (
+            <GoldButton style={{ height: 38, padding: "0 16px" }} onClick={() => setNewTplOpen(true)}>
+              + Create your first template
+            </GoldButton>
+          ) : (
+            <div style={{ fontSize: 12.5, color: studioColors.mutedGray }}>
+              Only Admins can create templates.
+            </div>
+          )}
         </div>
       ) : (
         <>
@@ -549,6 +619,55 @@ export default function TemplatesScreen() {
             );
           })()}
       </ConfirmDialog>
+
+      {/* New template modal */}
+      <Modal open={newTplOpen} onClose={closeNewTpl} ariaLabel="New template">
+        <ModalTitle>New template</ModalTitle>
+        <p style={{ fontSize: 12.5, color: studioColors.bodyGray, margin: "4px 0 16px", lineHeight: 1.5 }}>
+          Name it, then add image groups and attribute fields. The <b>slug</b> is the machine name entries
+          reference — it can&#8217;t be changed later.
+        </p>
+        <div style={{ marginBottom: 14 }}>
+          <FieldLabel>Name</FieldLabel>
+          <TextInput
+            value={ntName}
+            onChange={(v) => {
+              setNtName(v);
+              if (!ntSlugTouched) setNtSlug(slugifyName(v));
+            }}
+            placeholder="e.g. Case Study"
+            ariaLabel="Template name"
+          />
+        </div>
+        <div style={{ marginBottom: 14 }}>
+          <FieldLabel>Slug (fixed)</FieldLabel>
+          <TextInput
+            value={ntSlug}
+            onChange={(v) => {
+              setNtSlugTouched(true);
+              setNtSlug(slugifyName(v));
+            }}
+            placeholder="e.g. case-study"
+            ariaLabel="Template slug"
+            mono
+          />
+        </div>
+        <div style={{ marginBottom: 14 }}>
+          <FieldLabel>Description (optional)</FieldLabel>
+          <TextInput value={ntDesc} onChange={setNtDesc} placeholder="What this layout is for" ariaLabel="Description" />
+        </div>
+        {ntError && (
+          <div role="alert" style={{ fontSize: 12, fontWeight: 500, color: studioColors.danger, marginBottom: 10 }}>
+            {ntError}
+          </div>
+        )}
+        <div className="flex justify-end" style={{ gap: 8 }}>
+          <GhostButton onClick={closeNewTpl}>Cancel</GhostButton>
+          <GoldButton onClick={submitNewTpl} disabled={busy}>
+            {busy ? "Creating…" : "Create template"}
+          </GoldButton>
+        </div>
+      </Modal>
 
       {/* Add group/attribute modal */}
       <Modal open={addModal !== null} onClose={closeAddModal} ariaLabel={addModal?.kind === "group" ? "Add image group" : "Add attribute"}>
