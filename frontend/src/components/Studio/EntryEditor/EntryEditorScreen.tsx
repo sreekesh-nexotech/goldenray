@@ -43,6 +43,8 @@ import {
   getAuthors,
   getCategories,
   getTags,
+  getBadges,
+  createBadge,
   getMediaAssets,
   uploadMediaAsset,
   StudioApiError,
@@ -52,9 +54,11 @@ import {
   type StudioAuthor,
   type StudioCategory,
   type StudioTag,
+  type StudioBadge,
   type StudioMediaAsset,
   type EntryWritePayload,
 } from "@/services/studioService";
+import type { BlockNode } from "./entryBlocks";
 
 /* -------------------------------------------------------------------------- */
 /*  Editor working state                                                       */
@@ -87,6 +91,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const [authors, setAuthors] = useState<StudioAuthor[]>([]);
   const [allCategories, setAllCategories] = useState<StudioCategory[]>([]);
   const [allTags, setAllTags] = useState<StudioTag[]>([]);
+  const [allBadges, setAllBadges] = useState<StudioBadge[]>([]);
   const [media, setMedia] = useState<StudioMediaAsset[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -110,6 +115,14 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   // group_key → ordered media_asset ids.
   const [images, setImages] = useState<Record<string, number[]>>({});
   const [blocks, setBlocks] = useState<EditorBlock[]>([]);
+  // Dedicated Entry fields the delivery API exposes as their own keys.
+  const [intro, setIntro] = useState("");
+  const [summaryHtml, setSummaryHtml] = useState("");
+  const [warning, setWarning] = useState("");
+  const [insights, setInsights] = useState("");
+  const [readTime, setReadTime] = useState("");
+  const [publishedOn, setPublishedOn] = useState("");
+  const [badgeIds, setBadgeIds] = useState<number[]>([]);
 
   const [publishing, setPublishing] = useState(false);
   const [autoState, setAutoState] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -121,18 +134,22 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const [addTagAnchor, setAddTagAnchor] = useState<{ top: number; left: number } | null>(null);
   const [addingTag, setAddingTag] = useState(false);
   const [tagInput, setTagInput] = useState("");
+  const [addBadgeAnchor, setAddBadgeAnchor] = useState<{ top: number; left: number } | null>(null);
+  const [addingBadge, setAddingBadge] = useState(false);
+  const [badgeInput, setBadgeInput] = useState("");
 
   /* ---- initial load: reference data + (existing) entry ------------------- */
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const [collsP, tplsP, authorsP, catsP, tagsP, mediaP] = await Promise.all([
+        const [collsP, tplsP, authorsP, catsP, tagsP, badgesP, mediaP] = await Promise.all([
           getCollections(),
           getTemplates(),
           getAuthors(),
           getCategories(),
           getTags(),
+          getBadges(),
           getMediaAssets(),
         ]);
         if (cancelled) return;
@@ -141,6 +158,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
         setAuthors(authorsP.results);
         setAllCategories(catsP.results);
         setAllTags(tagsP.results);
+        setAllBadges(badgesP.results);
         setMedia(mediaP.results);
 
         if (isNew) {
@@ -174,9 +192,16 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     setTitle(e.title);
     setSlug(e.slug);
     setExcerpt(e.excerpt ?? "");
+    setIntro(blocksToHtml((e.introduction as BlockNode[]) ?? []));
+    setSummaryHtml(blocksToHtml((e.summary as BlockNode[]) ?? []));
+    setWarning(e.warning ?? "");
+    setInsights(e.insights ?? "");
+    setReadTime(e.read_time != null ? String(e.read_time) : "");
+    setPublishedOn(e.published_on ? e.published_on.slice(0, 10) : "");
     setAuthorId(e.author?.id ?? null);
     setCatIds(e.categories.map((c) => c.id));
     setTagIds(e.tags.map((t) => t.id));
+    setBadgeIds(e.badges.map((b) => b.id));
     setAttrs(Object.fromEntries(e.attribute_values.map((av) => [av.slot_key, av.value == null ? "" : String(av.value)])));
     setSeo({
       mt: e.seo?.meta_title ?? "",
@@ -291,8 +316,10 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   /* ---- taxonomy helpers ---- */
   const remainingCats = allCategories.filter((c) => !catIds.includes(c.id));
   const remainingTags = allTags.filter((t) => !tagIds.includes(t.id));
+  const remainingBadges = allBadges.filter((b) => !badgeIds.includes(b.id));
   const catName = (cid: number) => allCategories.find((c) => c.id === cid)?.name ?? String(cid);
   const tagName = (tid: number) => allTags.find((t) => t.id === tid)?.name ?? String(tid);
+  const badgeLabel = (bid: number) => allBadges.find((b) => b.id === bid)?.label ?? String(bid);
 
   const addTag = async () => {
     const name = tagInput.trim();
@@ -312,6 +339,26 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       setTagIds((x) => [...x, created.id]);
     } catch (err) {
       toast(err instanceof StudioApiError ? err.message : "Couldn’t add the tag", "error");
+    }
+  };
+
+  const addBadge = async () => {
+    const label = badgeInput.trim();
+    setAddingBadge(false);
+    setBadgeInput("");
+    if (!label) return;
+    const existing = allBadges.find((b) => b.label.toLowerCase() === label.toLowerCase());
+    if (existing) {
+      if (!badgeIds.includes(existing.id)) setBadgeIds((x) => [...x, existing.id]);
+      return;
+    }
+    // Create the badge on the fly, then attach it.
+    try {
+      const created = await createBadge({ label });
+      setAllBadges((prev) => [...prev, created]);
+      setBadgeIds((x) => [...x, created.id]);
+    } catch (err) {
+      toast(err instanceof StudioApiError ? err.message : "Couldn’t add the badge", "error");
     }
   };
 
@@ -367,9 +414,18 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       title: title.trim(),
       slug: slug.trim(),
       excerpt: excerpt.trim(),
+      summary: htmlToBlocks(summaryHtml),
+      introduction: htmlToBlocks(intro),
+      read_time: readTime.trim() ? Number(readTime) : null,
+      warning: warning.trim() || null,
+      insights: insights.trim() || null,
+      // `published_on` is a DateTimeField — send a full ISO datetime (midnight
+      // UTC) so DRF accepts it; the date-only input gives us YYYY-MM-DD.
+      published_on: publishedOn ? `${publishedOn}T00:00:00Z` : null,
       author: authorId ?? null,
       categories: catIds,
       tags: tagIds,
+      badges: badgeIds,
       content_blocks: contentRows,
       images: imageRows,
       attribute_values: attrRows,
@@ -424,10 +480,11 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const snapshot = useMemo(
     () =>
       JSON.stringify({
-        collId, tplId, title, slug, excerpt, authorId, catIds, tagIds, attrs, seo, images,
+        collId, tplId, title, slug, excerpt, authorId, catIds, tagIds, badgeIds, attrs, seo, images,
+        intro, summaryHtml, warning, insights, readTime, publishedOn,
         blocks: blocks.map((b) => b.html),
       }),
-    [collId, tplId, title, slug, excerpt, authorId, catIds, tagIds, attrs, seo, images, blocks]
+    [collId, tplId, title, slug, excerpt, authorId, catIds, tagIds, badgeIds, attrs, seo, images, intro, summaryHtml, warning, insights, readTime, publishedOn, blocks]
   );
   const savedSnapshot = useRef<string | null>(null);
 
@@ -483,6 +540,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       // Re-pull publish metadata only (not the whole form — avoids remount).
       const fresh = await getEntry(saved.id);
       setDocumentMeta({ status: fresh.status, published_on: fresh.published_on, published_at: fresh.published_at });
+      setPublishedOn(fresh.published_on ? fresh.published_on.slice(0, 10) : "");
     } catch (err) {
       if (err instanceof StudioApiError && err.errors?.length) {
         err.errors.slice(0, 3).forEach((m) => toast(m, "error"));
@@ -681,10 +739,30 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                   </div>
                 )}
               </div>
-              <div style={{ marginBottom: 2 }}>
+              <div style={{ marginBottom: 15 }}>
                 <FieldLabel suffix={<KeyTag fontSize={10.5}>{excerpt.length} / 160</KeyTag>}>Excerpt</FieldLabel>
                 <TextArea value={excerpt} onChange={setExcerpt} placeholder="Short summary shown on blog cards and in search results…" />
               </div>
+              <div style={{ marginBottom: 2, maxWidth: 160 }}>
+                <FieldLabel suffix={<KeyTag fontSize={10.5}>readTime</KeyTag>}>Read time (min)</FieldLabel>
+                <TextInput value={readTime} onChange={setReadTime} type="number" placeholder="6" style={{ fontFamily: studioFonts.num }} />
+              </div>
+            </div>
+          </Card>
+
+          {/* Article intro — dedicated Entry fields the delivery API exposes as
+              their own keys (introduction, summary), styled separately from the body. */}
+          <Card className={cardCls}>
+            <CardHeader>
+              <SectionIcon>
+                <path d="M4 6h16M4 12h10M4 18h13" />
+              </SectionIcon>
+              <CardTitle>Article intro</CardTitle>
+              <CardMeta>styled intro + quick-summary bullets</CardMeta>
+            </CardHeader>
+            <div style={{ padding: 16 }}>
+              <RichTextBlock label="Introduction" html={intro} canRemove={false} onRemove={() => {}} onChange={setIntro} />
+              <RichTextBlock label="Quick summary — use the bullet-list button" html={summaryHtml} canRemove={false} onRemove={() => {}} onChange={setSummaryHtml} />
             </div>
           </Card>
 
@@ -760,13 +838,13 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                 <path d="M4 6h16M4 12h16M4 18h10" />
               </SectionIcon>
               <CardTitle>Content</CardTitle>
-              <CardMeta>rich text · {blocks.length} blocks</CardMeta>
+              <CardMeta>body · {blocks.length} blocks</CardMeta>
             </CardHeader>
             <div style={{ padding: 16 }}>
               {blocks.map((b, i) => (
                 <RichTextBlock
                   key={b.key}
-                  label={i === 0 ? "Introduction" : `Block ${i + 1}`}
+                  label={i === 0 ? "Body" : `Block ${i + 1}`}
                   html={b.html}
                   canRemove={blocks.length > 1}
                   onRemove={() => removeBlock(b.key)}
@@ -776,6 +854,29 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
               <button onClick={addBlock} className="inline-flex items-center gap-1.5 hover:border-[#074A4D] hover:text-[#074A4D]" style={{ height: 34, padding: "0 13px", borderRadius: 12, border: "1.5px dashed #B8B8B8", background: "transparent", color: studioColors.bodyGray, fontFamily: "var(--font-switzer)", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
                 + Add content block
               </button>
+            </div>
+          </Card>
+
+          {/* Callouts — optional warning + key-insight, rendered as styled
+              callouts on the article page. Each is a single plain-text field. */}
+          <Card className={cardCls}>
+            <CardHeader>
+              <SectionIcon>
+                <path d="M12 4 2.8 19.5h18.4Z" strokeLinejoin="round" />
+                <path d="M12 10v4.2M12 16.8h.01" />
+              </SectionIcon>
+              <CardTitle>Callouts</CardTitle>
+              <CardMeta>optional warning &amp; key insight</CardMeta>
+            </CardHeader>
+            <div style={{ padding: 16 }}>
+              <div style={{ marginBottom: 15 }}>
+                <FieldLabel suffix={<KeyTag>warning</KeyTag>}>Warning</FieldLabel>
+                <TextArea value={warning} onChange={setWarning} placeholder="Shown as an amber “Important” callout…" minHeight={56} />
+              </div>
+              <div>
+                <FieldLabel suffix={<KeyTag>insights</KeyTag>}>Key insight</FieldLabel>
+                <TextArea value={insights} onChange={setInsights} placeholder="Shown as a “Key Insight” callout…" minHeight={56} />
+              </div>
             </div>
           </Card>
 
@@ -884,6 +985,13 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                 <span style={{ color: studioColors.tealDeep, fontWeight: 500 }}>
                   {documentMeta.published_on ?? documentMeta.published_at?.slice(0, 10) ?? "—"}
                 </span>
+              </div>
+            </div>
+            <div style={{ marginTop: 12 }}>
+              <FieldLabel suffix={<KeyTag>publishedOn</KeyTag>}>Publish date</FieldLabel>
+              <TextInput value={publishedOn} onChange={setPublishedOn} type="date" />
+              <div style={{ fontSize: 11, color: studioColors.mutedGray, marginTop: 5, lineHeight: 1.45 }}>
+                The date shown on the article. Leave blank to stamp it automatically on publish.
               </div>
             </div>
             {showPublish && (
@@ -1017,6 +1125,54 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                 )}
               </div>
             </div>
+            <div style={{ marginTop: 13 }}>
+              <label style={{ display: "block", fontSize: 11.5, fontWeight: 500, color: studioColors.labelGray, marginBottom: 6 }}>Badge</label>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {badgeIds.map((bid) => (
+                  <span key={bid} className="inline-flex items-center gap-1.5" style={{ padding: "4px 6px 4px 11px", borderRadius: 999, background: "rgba(195,223,189,.5)", color: "#0A6B31", fontSize: 12, fontWeight: 600 }}>
+                    {badgeLabel(bid)}
+                    <button onClick={() => setBadgeIds((x) => x.filter((y) => y !== bid))} className="grid place-items-center opacity-65 hover:opacity-100" style={{ border: "none", background: "none", cursor: "pointer", color: "inherit", padding: 2 }}>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                    </button>
+                  </span>
+                ))}
+                {/* Pick an existing badge */}
+                {remainingBadges.length > 0 && !addingBadge && (
+                  <button
+                    onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setAddBadgeAnchor({ top: r.bottom + 4, left: r.left }); }}
+                    aria-haspopup="menu"
+                    aria-label="Add an existing badge"
+                    className="inline-flex items-center hover:border-[#074A4D] hover:text-[#074A4D]"
+                    style={{ padding: "4px 11px", borderRadius: 999, border: "1px dashed #B8B8B8", background: "transparent", color: studioColors.mutedGray, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-switzer)" }}
+                  >
+                    +
+                  </button>
+                )}
+                {/* Type a brand-new badge */}
+                {addingBadge ? (
+                  <input
+                    autoFocus
+                    value={badgeInput}
+                    onChange={(e) => setBadgeInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") void addBadge(); else if (e.key === "Escape") { setAddingBadge(false); setBadgeInput(""); } }}
+                    onBlur={() => void addBadge()}
+                    placeholder="new badge⏎"
+                    style={{ width: 150, boxSizing: "border-box", padding: "5px 10px", border: "none", borderRadius: 999, background: "#ffffff", boxShadow: "inset 0 0 0 1.5px #074A4D", fontFamily: "var(--font-switzer)", fontSize: 12, color: studioColors.tealDeep }}
+                  />
+                ) : (
+                  <button
+                    onClick={() => setAddingBadge(true)}
+                    className="inline-flex items-center gap-1 hover:border-[#074A4D] hover:text-[#074A4D]"
+                    style={{ padding: "4px 11px", borderRadius: 999, border: "1px dashed #B8B8B8", background: "transparent", color: studioColors.mutedGray, fontSize: 11.5, fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-switzer)" }}
+                  >
+                    + New
+                  </button>
+                )}
+              </div>
+              <div style={{ fontSize: 11, color: studioColors.mutedGray, marginTop: 6, lineHeight: 1.45 }}>
+                Shown as a pill on the article (e.g. “Reviewed by Solar Engineer”).
+              </div>
+            </div>
           </Card>
         </div>
       </div>
@@ -1037,6 +1193,15 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
         top={addTagAnchor?.top || 0}
         left={addTagAnchor?.left || 0}
         items={remainingTags.map((t) => ({ label: t.name, onClick: () => setTagIds((x) => [...x, t.id]) }))}
+      />
+
+      {/* Add existing-badge menu */}
+      <DropdownMenu
+        open={!!addBadgeAnchor}
+        onClose={() => setAddBadgeAnchor(null)}
+        top={addBadgeAnchor?.top || 0}
+        left={addBadgeAnchor?.left || 0}
+        items={remainingBadges.map((b) => ({ label: b.label, onClick: () => setBadgeIds((x) => [...x, b.id]) }))}
       />
 
       {/* Image picker */}

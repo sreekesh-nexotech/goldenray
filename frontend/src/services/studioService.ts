@@ -486,6 +486,11 @@ export interface StudioEntryDetail {
   title: string;
   slug: string;
   excerpt: string;
+  summary: unknown[];
+  introduction: unknown[];
+  read_time: number | null;
+  warning: string | null;
+  insights: string | null;
   status: "draft" | "published";
   published_on: string | null;
   published_at: string | null;
@@ -508,6 +513,12 @@ export interface EntryWritePayload {
   title: string;
   slug: string;
   excerpt?: string;
+  summary?: unknown[];
+  introduction?: unknown[];
+  read_time?: number | null;
+  warning?: string | null;
+  insights?: string | null;
+  published_on?: string | null;
   author?: number | null;
   categories?: number[];
   tags?: number[];
