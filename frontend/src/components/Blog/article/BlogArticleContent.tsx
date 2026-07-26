@@ -1,6 +1,8 @@
+import Image from "next/image";
 import type { BlogArticle } from "@/data/blog-data";
 import type { ArticleContent, ContentSection } from "@/data/blog-content";
-import BlogArticleUnderstanding from "./BlogArticleUnderstanding";
+import ArticleBlock from "./BlogArticleBlocks";
+import { KeyInsightBox, ImportantBox } from "./BlogArticleCallouts";
 
 interface BlogArticleContentProps {
   article: BlogArticle;
@@ -39,24 +41,39 @@ function QuickSummary({ items }: { items: string[] }) {
   );
 }
 
-// ── Renders a single titled content section from the API ──────────────────────
+// ── Renders a single content section from the API ──────────────────────────────
+// The heading is optional: CMS articles are often plain paragraphs with no
+// heading at all, and those still need to render. Blocks (paragraphs, tables,
+// lists) render in the order they were authored.
 function ArticleSection({ section }: { section: ContentSection }) {
   return (
     <section id={section.id} className="mb-10 scroll-mt-24">
-      <h2 className="text-xl md:text-2xl font-semibold leading-snug text-[#1F2937] mb-4 sm:mb-5">
-        {section.title}
-      </h2>
-      <div className="flex flex-col gap-3 sm:gap-4">
-        {section.paragraphs.map((para, i) => (
-          <p
-            key={i}
-            className="text-sm md:text-xl font-normal leading-relaxed text-[#374151]"
-          >
-            {para}
-          </p>
+      {section.title && (
+        <h2 className="text-xl md:text-2xl font-semibold leading-snug text-[#1F2937] mb-4 sm:mb-5">
+          {section.title}
+        </h2>
+      )}
+      <div className="flex flex-col gap-4 sm:gap-5">
+        {section.blocks.map((block, i) => (
+          <ArticleBlock key={i} block={block} />
         ))}
       </div>
     </section>
+  );
+}
+
+// ── A full-width article image ────────────────────────────────────────────────
+function ArticleImage({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className="relative w-full h-56 sm:h-72 md:h-80 lg:h-96 xl:h-[420px] 2xl:h-[460px] rounded-2xl overflow-hidden shadow-sm mb-7">
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 60vw"
+      />
+    </div>
   );
 }
 
@@ -69,6 +86,8 @@ export default function BlogArticleContent({
   const intro = content?.intro ?? [article.description];
   const quickSummary = content?.quickSummary ?? [];
   const sections = content?.sections ?? [];
+  const bodyImages = content?.bodyImages ?? [];
+  const coverImage = content?.coverImage;
 
   return (
     <article className="prose-none">
@@ -124,11 +143,27 @@ export default function BlogArticleContent({
       {/* Quick Summary Box */}
       {quickSummary.length > 0 && <QuickSummary items={quickSummary} />}
 
+      {/* Cover image — only when no `understanding` block renders one */}
+      {coverImage && <ArticleImage src={coverImage} alt={article.title} />}
+
       {/* Article body sections from API contentBlocks */}
       {sections.length > 0 && (
         <div className="mb-10">
-          {sections.map((section) => (
-            <ArticleSection key={section.id} section={section} />
+          {sections.map((section, i) => (
+            <ArticleSection key={section.id || `section-${i}`} section={section} />
+          ))}
+        </div>
+      )}
+
+      {/* Repeatable bodyImages group from the CMS */}
+      {bodyImages.length > 0 && (
+        <div className="mb-10">
+          {bodyImages.map((src, i) => (
+            <ArticleImage
+              key={src}
+              src={src}
+              alt={`${article.title} — image ${i + 1}`}
+            />
           ))}
         </div>
       )}
@@ -151,13 +186,12 @@ export default function BlogArticleContent({
         </a>
       </div>
 
-      {/* Understanding section */}
-      {content?.understanding && (
-        <BlogArticleUnderstanding
-          article={article}
-          understanding={content.understanding}
-          eligible={content?.eligible}
-        />
+      {/* CMS `insights` / `warning` callouts */}
+      {(content?.keyInsight || content?.important) && (
+        <div className="flex flex-col gap-5">
+          {content?.keyInsight && <KeyInsightBox text={content.keyInsight} />}
+          {content?.important && <ImportantBox text={content.important} />}
+        </div>
       )}
     </article>
   );

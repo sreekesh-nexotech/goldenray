@@ -38,8 +38,8 @@ export async function generateMetadata({
   const { id } = await params;
   const result = await fetchArticleBySlug(id);
   if (!result) return {};
-  const { article, seo } = result;
-  const canonical = `${SITE_ORIGIN}/blog/${id}`;
+  const { article, seo, socialImage } = result;
+  const canonical = seo?.canonicalUrl ?? `${SITE_ORIGIN}/blog/${id}`;
 
   return {
     title: seo?.metaTitle ?? `${article.title}`,
@@ -50,7 +50,8 @@ export async function generateMetadata({
       title: seo?.metaTitle ?? article.title,
       description: seo?.metaDescription ?? article.description,
       url: canonical,
-      images: [{ url: article.mainImage ?? article.image }],
+      // The CMS socialSharing image exists for this slot; cover image is the fallback
+      images: [{ url: socialImage ?? article.mainImage ?? article.image }],
     },
   };
 }

@@ -1,10 +1,8 @@
 import type { BlogArticle } from "@/data/blog-data";
 import type {
   ArticleContent,
-  ArticleUnderstanding,
-  ArticleEligible,
   ContentSection,
-  UnderstandingTable,
+  SectionTable,
 } from "@/data/blog-content";
 import { BLOG_API_BASE_URL } from "@/config";
 
@@ -93,6 +91,8 @@ interface ApiImgUrls {
   mainImg?: string | null;
   socialSharing?: string | null;
   secondaryImg?: string | null;
+  /** Repeatable image group — the CMS sends an array of CDN URLs. */
+  bodyImages?: string[] | null;
 }
 
 export interface ApiSeo {
@@ -190,22 +190,31 @@ function slugify(text: string): string {
     .replace(/^-|-$/g, "");
 }
 
-/** Parses a [TABLE] pipe-delimited string into a structured UnderstandingTable */
-function parseTableText(raw: string): UnderstandingTable {
-  const lines = raw
-    .split("\n")
-    .map((l) => l.trim())
-    .filter((l) => l.startsWith("|"));
+/**
+ * Splits one pipe-delimited row into cells. Only the empty strings produced by
+ * the leading and trailing pipes are dropped — interior blanks are real cells
+ * (e.g. `|Total|||23.5 units|` is a 4-column row), so stripping them would
+ * shift every following cell into the wrong column.
+ */
+function splitRow(line: string): string[] {
+  const cells = line.split("|").map((cell) => cell.trim());
+  if (cells.length > 0 && cells[0] === "") cells.shift();
+  if (cells.length > 0 && cells[cells.length - 1] === "") cells.pop();
+  return cells;
+}
 
-  const rows = lines.map((line) =>
-    line
-      .split("|")
-      .map((cell) => cell.trim())
-      .filter((cell) => cell !== "")
-  );
-
+/** Builds a SectionTable from collected pipe-delimited rows. */
+function buildTable(pipeRows: string[]): SectionTable {
+  const rows = pipeRows.map(splitRow);
   const headers = rows[0] ?? [];
-  const dataRows = rows.slice(1).map((cells) => ({ cells }));
+
+  // Pad short rows so cells stay under their intended header
+  const dataRows = rows.slice(1).map((cells) => ({
+    cells:
+      cells.length < headers.length
+        ? [...cells, ...Array(headers.length - cells.length).fill("")]
+        : cells,
+  }));
 
   return {
     headers,
@@ -216,137 +225,128 @@ function parseTableText(raw: string): UnderstandingTable {
 }
 
 // ── ContentBlocks Parser ──────────────────────────────────────────────────────
-interface RawSection {
-  id: string;
-  title: string;
-  paragraphs: string[];           // paragraphs before any [TABLE]
-  tableText?: string;             // raw [TABLE]...pipe string
-  afterTableParagraphs: string[]; // paragraphs after [TABLE]
-  listItems?: string[];
-}
+//
+// Walks the rich-text nodes once and emits sections in document order, each
+// holding its paragraphs, tables and lists as ordered blocks. An article may
+// therefore contain any number of tables and lists, each rendering exactly
+// where the author put it.
+//
+// Tables are authored as a `[TABLE]` marker followed by pipe-delimited rows.
+// The rows may arrive as one multi-line paragraph or as one paragraph per row,
+// so both are accepted; a run of pipe rows with no marker is also treated as a
+// table, since that is unambiguous.
 
-function parseContentBlocks(
-  blocks: ApiContentBlock[],
-  insights: string | null,
-  warning: string | null
-): {
-  sections: ContentSection[];
-  understanding?: ArticleUnderstanding;
-  eligible?: ArticleEligible;
-} {
+function parseContentBlocks(blocks: ApiContentBlock[]): ContentSection[] {
   const allNodes: RichTextNode[] = blocks.flatMap((b) => b.body ?? []);
-  const rawSections: RawSection[] = [];
-  let current: RawSection | null = null;
+  const sections: ContentSection[] = [];
+
+  let current: ContentSection | null = null;
+  let pendingRows: string[] | null = null;
+
+  /** Flushes any open table into the current section. */
+  const closeTable = () => {
+    if (pendingRows && pendingRows.length > 0 && current) {
+      current.blocks.push({ kind: "table", table: buildTable(pendingRows) });
+    }
+    pendingRows = null;
+  };
+
+  const openSection = (title: string) => {
+    closeTable();
+    if (current) sections.push(current);
+    current = { id: title ? slugify(title) : "intro", title, blocks: [] };
+  };
+
+  /** Ensures there is a section to write into (leading, heading-less content). */
+  const ensureSection = () => {
+    if (!current) current = { id: "intro", title: "", blocks: [] };
+  };
+
+  const addParagraph = (text: string) => {
+    ensureSection();
+    current!.blocks.push({ kind: "paragraph", text });
+  };
 
   for (const node of allNodes) {
     if (node.type === "heading") {
-      if (current) rawSections.push(current);
-      const title = nodeText(node as { children: RichTextChild[] });
-      current = {
-        id: slugify(title),
-        title,
-        paragraphs: [],
-        afterTableParagraphs: [],
-      };
-    } else if (node.type === "paragraph") {
-      const text = nodeText(node as { children: RichTextChild[] }).trim();
-      if (!text) continue;
-      if (!current) {
-        current = { id: "intro", title: "", paragraphs: [], afterTableParagraphs: [] };
-      }
-      if (text.startsWith("[TABLE]")) {
-        // Old format: [TABLE] marker + all pipe rows in one paragraph
-        current.tableText = text;
-      } else if (text.includes("[TABLE]")) {
-        // New format: [TABLE] appears mid/end of paragraph; pipe rows follow separately
-        const tableIndex = text.indexOf("[TABLE]");
-        const before = text.substring(0, tableIndex).trim();
-        if (before) current.paragraphs.push(before);
-        current.tableText = "[TABLE]"; // rows will be appended from subsequent paragraphs
-      } else if (current.tableText !== undefined && text.startsWith("|")) {
-        // Split-paragraph table rows — each pipe row is its own paragraph
-        const lines = text.split("\n");
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (trimmed.startsWith("|")) {
-            current.tableText += "\n" + trimmed;
-          } else if (trimmed) {
-            current.afterTableParagraphs.push(trimmed);
-          }
-        }
-      } else if (current.tableText !== undefined) {
-        current.afterTableParagraphs.push(text);
-      } else {
-        current.paragraphs.push(text);
-      }
-    } else if (node.type === "list") {
-      if (!current) continue;
-      const newItems = (node as { children: RichTextListItem[] }).children.map(
-        (item) => nodeText(item)
+      openSection(nodeText(node as { children: RichTextChild[] }).trim());
+      continue;
+    }
+
+    if (node.type === "list") {
+      closeTable();
+      ensureSection();
+      const items = (node as { children: RichTextListItem[] }).children.map(
+        (item) => nodeText(item).trim()
       );
-      // Accumulate — each list item may be its own separate list node in Strapi
-      current.listItems = [...(current.listItems ?? []), ...newItems];
+      const last = current!.blocks[current!.blocks.length - 1];
+      // Strapi may split one authored list into consecutive single-item list
+      // nodes — merge them back so they render as one list.
+      if (last?.kind === "list") last.items.push(...items);
+      else current!.blocks.push({ kind: "list", items });
+      continue;
+    }
+
+    if (node.type !== "paragraph") continue;
+
+    const text = nodeText(node as { children: RichTextChild[] }).trim();
+    if (!text) continue;
+    ensureSection();
+
+    // A paragraph may carry the marker, rows, and trailing prose at once.
+    const markerIndex = text.indexOf("[TABLE]");
+    let rest = text;
+    if (markerIndex >= 0) {
+      const before = text.slice(0, markerIndex).trim();
+      if (before) addParagraph(before);
+      closeTable();
+      pendingRows = [];
+      rest = text.slice(markerIndex + "[TABLE]".length);
+    }
+
+    for (const rawLine of rest.split("\n")) {
+      const line = rawLine.trim();
+      if (!line) continue;
+      if (line.startsWith("|")) {
+        // Pipe rows imply a table even without a preceding marker
+        if (!pendingRows) pendingRows = [];
+        pendingRows.push(line);
+      } else {
+        closeTable();
+        addParagraph(line);
+      }
     }
   }
-  if (current) rawSections.push(current);
 
-  // Identify the "understanding" section — the one containing a [TABLE]
-  const understandingIdx = rawSections.findIndex((s) => s.tableText);
+  closeTable();
+  if (current) sections.push(current);
 
-  // Identify the "eligible" section — first section with listItems that isn't the understanding one
-  const eligibleIdx = rawSections.findIndex(
-    (s, i) => i !== understandingIdx && s.listItems && s.listItems.length > 0
-  );
-
-  // Build understanding
-  const understanding: ArticleUnderstanding | undefined =
-    understandingIdx >= 0
-      ? {
-          title: rawSections[understandingIdx].title,
-          paragraphs: rawSections[understandingIdx].paragraphs,
-          table: parseTableText(rawSections[understandingIdx].tableText!),
-          afterTableParagraphs: rawSections[understandingIdx].afterTableParagraphs,
-          keyInsight: insights ?? undefined,
-        }
-      : undefined;
-
-  // Build eligible
-  const eligibleSection = eligibleIdx >= 0 ? rawSections[eligibleIdx] : null;
-  const eligible: ArticleEligible | undefined =
-    eligibleSection || warning
-      ? {
-          title: eligibleSection?.title ?? "Eligibility",
-          intro: eligibleSection?.paragraphs[0] ?? "",
-          items: eligibleSection?.listItems ?? [],
-          important: warning ?? undefined,
-        }
-      : undefined;
-
-  // All remaining sections
-  const sections: ContentSection[] = rawSections
-    .filter((s, i) => i !== understandingIdx && i !== eligibleIdx && !!s.title)
-    .map((s) => ({
-      id: s.id,
-      title: s.title,
-      paragraphs: [...s.paragraphs, ...s.afterTableParagraphs],
-    }));
-
-  return { sections, understanding, eligible };
+  // Drop sections that ended up with nothing to show
+  return sections.filter((s) => !!s.title || s.blocks.length > 0);
 }
 
 // ── Transformers ──────────────────────────────────────────────────────────────
+
+/**
+ * Resolves the editor-supplied cover image: imgUrls.coverImg → coverImage media.
+ * Returns undefined when the CMS has no cover — callers decide whether a
+ * placeholder is appropriate (listing cards: yes; article body: no).
+ */
+function resolveCoverImage(raw: ApiArticle): string | undefined {
+  if (raw.imgUrls?.coverImg) return raw.imgUrls.coverImg;
+  if (raw.coverImage?.url) {
+    const u = raw.coverImage.url;
+    return u.startsWith("http") ? u : `https://blog.flarize.com${u}`;
+  }
+  return undefined;
+}
+
 function transformToBlogArticle(raw: ApiArticle): BlogArticle {
   const category = raw.categories?.[0]?.name ?? "Solar Guide";
   const categoryFallback = FALLBACK_IMAGES[category] ?? DEFAULT_FALLBACK;
 
-  // Priority: imgUrls.coverImg → coverImage (Strapi media) → category fallback
-  let image = categoryFallback;
-  if (raw.imgUrls?.coverImg) {
-    image = raw.imgUrls.coverImg;
-  } else if (raw.coverImage?.url) {
-    const u = raw.coverImage.url;
-    image = u.startsWith("http") ? u : `https://blog.flarize.com${u}`;
-  }
+  // Listing cards always need an image, so fall back to the category placeholder
+  const image = resolveCoverImage(raw) ?? categoryFallback;
 
   // Priority: imgUrls.mainImg → same as card image
   const mainImage = raw.imgUrls?.mainImg ?? image;
@@ -373,13 +373,12 @@ function transformToArticleContent(raw: ApiArticle): ArticleContent {
 
   const tags = raw.tags?.map((t) => t.name) ?? [];
   const intro = richTextToStrings(raw.introduction ?? []);
-  const quickSummary = richTextToListItems(raw.summary ?? []);
 
-  const { sections, understanding, eligible } = parseContentBlocks(
-    raw.contentBlocks ?? [],
-    raw.insights ?? null,
-    raw.warning ?? null
-  );
+  // The summary field is meant to hold a bullet list, but editors routinely type
+  // plain paragraphs there — fall back to those so Quick Summary still renders.
+  const summaryItems = richTextToListItems(raw.summary ?? []);
+  const quickSummary =
+    summaryItems.length > 0 ? summaryItems : richTextToStrings(raw.summary ?? []);
 
   return {
     author,
@@ -387,9 +386,11 @@ function transformToArticleContent(raw: ApiArticle): ArticleContent {
     tags,
     quickSummary,
     intro,
-    sections,
-    understanding,
-    eligible,
+    sections: parseContentBlocks(raw.contentBlocks ?? []),
+    keyInsight: raw.insights ?? undefined,
+    important: raw.warning ?? undefined,
+    coverImage: resolveCoverImage(raw),
+    bodyImages: raw.imgUrls?.bodyImages ?? undefined,
   };
 }
 
@@ -425,6 +426,8 @@ export async function fetchArticleBySlug(slug: string): Promise<{
   article: BlogArticle;
   content: ArticleContent;
   seo: ApiSeo | null;
+  /** `imgUrls.socialSharing` — the CMS image meant for og:image. */
+  socialImage: string | undefined;
 } | null> {
   try {
     const res = await fetch(
@@ -440,6 +443,7 @@ export async function fetchArticleBySlug(slug: string): Promise<{
       article: transformToBlogArticle(raw),
       content: transformToArticleContent(raw),
       seo: raw.seo ?? null,
+      socialImage: raw.imgUrls?.socialSharing ?? undefined,
     };
   } catch (err) {
     console.error(`[blogApiService] fetchArticleBySlug(${slug}) failed:`, err);

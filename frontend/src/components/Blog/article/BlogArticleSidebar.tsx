@@ -19,8 +19,11 @@ interface BlogArticleSidebarProps {
 export default function BlogArticleSidebar({
   content,
 }: BlogArticleSidebarProps) {
-  const sections = content?.sections ?? [];
-  const tags = content?.tags ?? POPULAR_TAGS;
+  // Only titled sections can be linked from "On This Page"
+  const sections = (content?.sections ?? []).filter((s) => !!s.title);
+  // `tags` arrives as an empty array when the article has none — `??` would not
+  // catch that and the box rendered empty.
+  const tags = content?.tags?.length ? content.tags : POPULAR_TAGS;
 
   return (
     <aside className="flex flex-col gap-6">
