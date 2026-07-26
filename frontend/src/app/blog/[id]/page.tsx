@@ -16,8 +16,9 @@ import { getArticleSchema, getBlogBreadcrumbSchema } from "@/data/jsonld";
 
 const SITE_ORIGIN = "https://www.flarize.com";
 
-// Revalidate pre-built pages every hour (ISR)
-export const revalidate = 3600;
+// Revalidate pre-built pages every 2 minutes (ISR). The CMS publish webhook
+// clears this instantly; this window is the fallback for when that ping fails.
+export const revalidate = 120;
 
 // Allow slugs NOT in generateStaticParams to be rendered on-demand
 // (handles new articles added to Strapi after the last build)

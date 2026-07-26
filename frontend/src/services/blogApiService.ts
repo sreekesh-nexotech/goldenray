@@ -8,10 +8,15 @@ import { BLOG_API_BASE_URL } from "@/config";
 
 const API_BASE = BLOG_API_BASE_URL;
 
-// Data-cache window for blog fetches: long in prod (the CMS webhook busts it on
-// publish), short in dev so local edits show up within a minute even on a dev
-// server the webhook can't reach.
-const REVALIDATE_SECONDS = process.env.NODE_ENV === "production" ? 3600 : 60;
+// Data-cache window for blog fetches. Keep this EQUAL to the `revalidate = 120`
+// on the blog pages: Next collapses a segment's revalidate to the minimum of the
+// route export and every fetch window inside it, so a smaller value here would
+// silently shorten the pages' ISR window too (and a larger one would let a
+// re-render serve stale data).
+//
+// The CMS publish webhook clears this instantly (see app/api/revalidate/route.ts);
+// this window is only the fallback for when that ping fails.
+const REVALIDATE_SECONDS = 120;
 
 // ── Fallback images per category (used when coverImage is null) ───────────────
 const FALLBACK_IMAGES: Record<string, string> = {
