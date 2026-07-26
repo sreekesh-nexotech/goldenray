@@ -102,10 +102,6 @@ services:
         # directly from the browser. Point at the deployed CMS in production
         # (e.g. https://blog.flarize.com/admin-api/).
         NEXT_PUBLIC_ADMIN_API_BASE_URL: ${NEXT_PUBLIC_ADMIN_API_BASE_URL:-http://localhost:8009/admin-api/}
-        # Blog delivery API (same CMS service, read-only). MUST be the same host
-        # as the admin API above, with /api instead of /admin-api. Without this
-        # the blog page falls back to localhost:8009/api and shows 0 articles.
-        NEXT_PUBLIC_BLOG_API_BASE_URL: ${NEXT_PUBLIC_BLOG_API_BASE_URL:-http://localhost:8009/api}
     # Host port 3003 — 3000/3001 are used by other projects on this shared VM.
     ports:
       - "3003:3000"
