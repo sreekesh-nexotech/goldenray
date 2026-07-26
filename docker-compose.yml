@@ -102,6 +102,16 @@ services:
         # directly from the browser. Point at the deployed CMS in production
         # (e.g. https://blog.flarize.com/admin-api/).
         NEXT_PUBLIC_ADMIN_API_BASE_URL: ${NEXT_PUBLIC_ADMIN_API_BASE_URL:-http://localhost:8009/admin-api/}
+        # Public delivery API the /blog pages read. Must be passed here or the
+        # Dockerfile's localhost default gets baked in and the blog shows nothing.
+        NEXT_PUBLIC_BLOG_API_BASE_URL: ${NEXT_PUBLIC_BLOG_API_BASE_URL:-http://localhost:8009/api}
+    environment:
+      # Server-side only (no NEXT_PUBLIC_ prefix), so it is read at runtime and
+      # must be in the container env — .dockerignore excludes .env* from the
+      # image. Authenticates the CMS's on-demand revalidation ping; must match
+      # the CMS's FRONTEND_REVALIDATE_SECRET or the webhook 401s and the blog
+      # only refreshes on the hourly ISR window.
+      BLOG_REVALIDATE_SECRET: ${BLOG_REVALIDATE_SECRET}
     # Host port 3003 — 3000/3001 are used by other projects on this shared VM.
     ports:
       - "3003:3000"
