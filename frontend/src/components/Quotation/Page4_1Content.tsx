@@ -1,80 +1,18 @@
 "use client";
 
+import { useQuotationStrings } from "./i18n/QuotationLanguageContext";
+
 export default function Page4_1Content() {
+  const { page41: t } = useQuotationStrings();
+
   // Grand Feast slot feature list (2x2 grid)
-  const grandFeastFeatures = [
-    {
-      title: "11-Year Inverter Protection",
-      sub: "Extended manufacturer warranty.",
-    },
-    {
-      title: "FREE 2-Year Solar Care+",
-      sub: "Quarterly professional cleaning.",
-    },
-    {
-      title: "Hybrid Upgrade Promise",
-      sub: "Lock-in battery upgrade prices.",
-    },
-    {
-      title: "Festive Onam Sadhya Kit",
-      sub: "Premium kit for the family.",
-    },
-  ];
+  const grandFeastFeatures = t.grandFeastFeatures;
 
   // Tier cards
-  const tiers = [
-    {
-      name: "EARLY BIRD",
-      items: [
-        { text: "Solar Care+ (1yr)", type: "check" },
-        { text: "No Munnar Tour", type: "lock" },
-        { text: "Sadhya Kit", type: "check" },
-      ],
-      bookings: "Bookings 11 - 30",
-    },
-    {
-      name: "FESTIVE RUSH",
-      items: [
-        { text: "Standard Warranty", type: "check" },
-        { text: "No Hybrid Upgrade", type: "lock" },
-        { text: "No Care+", type: "check" },
-      ],
-      bookings: "Bookings 31 - 70",
-    },
-    {
-      name: "LAST CHANCE",
-      items: [
-        { text: "Base Setup", type: "check" },
-        { text: "Standard Pricing", type: "lock" },
-        { text: "No Add-ons", type: "check" },
-      ],
-      bookings: "Bookings 71 - 100",
-    },
-  ];
+  const tiers = t.tiers;
 
   // Reserve section benefits (2x2 grid)
-  const reserveBenefits = [
-    {
-      title: "Limited Campaign",
-      sub: "Only for the Onam season window.",
-      icon: "calendar",
-    },
-    {
-      title: "Reserve Installation",
-      sub: "Priority scheduling before peak rush.",
-      icon: "install",
-    },
-    {
-      title: "Lock Pricing",
-      sub: "Avoid upcoming material price hikes.",
-      icon: "lock",
-    },
-    {
-      title: "Exclusive Rewards",
-      sub: "Tier-specific benefits for winners.",
-      icon: "star",
-    },
-  ];
+  const reserveBenefits = t.reserveBenefits;
 
   // Small seal / badge-check icon (orange) used inside the Grand Feast slot
   const SealIcon = () => (
@@ -119,7 +57,11 @@ export default function Page4_1Content() {
       strokeWidth="2"
     >
       <circle cx="12" cy="12" r="9" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8.5 12l2.5 2.5 4.5-5" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8.5 12l2.5 2.5 4.5-5"
+      />
     </svg>
   );
 
@@ -142,7 +84,13 @@ export default function Page4_1Content() {
     const cls = "w-[18px] h-[18px] text-[#F88A22]";
     if (type === "calendar") {
       return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <svg
+          className={cls}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        >
           <rect x="3" y="5" width="18" height="16" rx="2" />
           <path d="M3 9h18M8 3v4M16 3v4" strokeLinecap="round" />
         </svg>
@@ -150,7 +98,13 @@ export default function Page4_1Content() {
     }
     if (type === "install") {
       return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <svg
+          className={cls}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        >
           <circle cx="9" cy="8" r="3" />
           <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" strokeLinecap="round" />
           <circle cx="18" cy="7" r="2.2" />
@@ -160,7 +114,13 @@ export default function Page4_1Content() {
     }
     if (type === "lock") {
       return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <svg
+          className={cls}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        >
           <rect x="4" y="10" width="16" height="11" rx="2" />
           <path d="M8 10V7a4 4 0 0 1 8 0v3" />
         </svg>
@@ -168,7 +128,13 @@ export default function Page4_1Content() {
     }
     // star
     return (
-      <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <svg
+        className={cls}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      >
         <circle cx="12" cy="12" r="9" />
         <path
           strokeLinecap="round"
@@ -197,37 +163,44 @@ export default function Page4_1Content() {
           className="absolute top-4 left-1/2 -translate-x-1/2 text-[26px] font-bold tracking-[0.08em] whitespace-nowrap"
           style={{ color: "#E9CE8B", textShadow: "0 1px 1px rgba(0,0,0,0.25)" }}
         >
-          ONAM <span className="font-normal opacity-80">SOLAR CAMPAIGN</span>
+          ONAM{" "}
+          <span className="font-normal opacity-80">
+            {t.campaignTitleSuffix}
+          </span>
         </p>
 
         {/* Limited pill (top right) */}
         <div className="absolute top-[52px] right-5 rounded-lg px-4 py-2 text-center bg-white/15 border border-white/25 backdrop-blur-sm">
           <p className="text-[8px] font-semibold tracking-[0.12em] text-white/90">
-            LIMITED TO FIRST
+            {t.limitedToFirst}
           </p>
           <p className="text-[17px] font-extrabold text-[#F88A22] leading-tight">
-            100 HOMES
+            {t.limitedHomes}
           </p>
         </div>
 
         {/* Left content */}
         <div className="absolute left-6 top-[70px] max-w-[62%]">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-black/30 border border-white/20 px-3 py-1 mb-3">
-            <svg className="w-3 h-3 text-[#F88A22]" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+              className="w-3 h-3 text-[#F88A22]"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
               <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm8.4 4a6.5 6.5 0 0 0-.08-1l2.02-1.58-2-3.46-2.38.96a6.5 6.5 0 0 0-1.73-1l-.36-2.52h-4l-.36 2.52a6.5 6.5 0 0 0-1.73 1l-2.38-.96-2 3.46L4.94 11a6.5 6.5 0 0 0 0 2l-2.02 1.58 2 3.46 2.38-.96c.53.42 1.11.76 1.73 1l.36 2.52h4l.36-2.52c.62-.24 1.2-.58 1.73-1l2.38.96 2-3.46L20.32 13c.05-.33.08-.66.08-1z" />
             </svg>
             <span className="text-[9px] font-semibold tracking-[0.06em] text-white">
-              ONAM SOLAR PROSPERITY CAMPAIGN
+              {t.campaignBadge}
             </span>
           </div>
 
           <h1 className="text-[34px] leading-[1.05] font-extrabold text-white">
-            Book Early. <span className="text-[#F5B841]">Unlock Bigger Rewards.</span>
+            {t.heroTitlePart1}{" "}
+            <span className="text-[#F5B841]">{t.heroTitlePart2}</span>
           </h1>
 
           <p className="mt-3 text-[12px] leading-snug text-white/85 max-w-[340px]">
-            Exclusive festive rewards available only for the first 100 confirmed
-            residential bookings.
+            {t.heroSubtitle}
           </p>
         </div>
       </div>
@@ -236,11 +209,9 @@ export default function Page4_1Content() {
       <div className="rounded-xl border border-gray-200 px-5 py-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-[15px] font-bold text-[#1a1a1a]">
-            6 / 10 Slots Claimed
+            {t.slotsClaimed}
           </span>
-          <span className="text-[11px] text-gray-500">
-            Only 4 Premium Slots Remaining
-          </span>
+          <span className="text-[11px] text-gray-500">{t.slotsRemaining}</span>
         </div>
         <div className="h-[9px] w-full rounded-full bg-gray-200 overflow-hidden">
           <div
@@ -249,10 +220,20 @@ export default function Page4_1Content() {
           />
         </div>
         <p className="mt-2.5 flex items-center gap-1.5 text-[11px] text-[#E23B2E]">
-          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a1.5 1.5 0 0 0 1.29 2.25h17.78A1.5 1.5 0 0 0 22.18 18L13.71 3.86a1.5 1.5 0 0 0-2.42 0z" strokeLinecap="round" strokeLinejoin="round" />
+          <svg
+            className="w-3 h-3"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a1.5 1.5 0 0 0 1.29 2.25h17.78A1.5 1.5 0 0 0 22.18 18L13.71 3.86a1.5 1.5 0 0 0-2.42 0z"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
-          Book today before the Grand Feast Tier closes permanently.
+          {t.urgencyNote}
         </p>
       </div>
 
@@ -264,16 +245,20 @@ export default function Page4_1Content() {
         {/* Left */}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <svg className="w-[18px] h-[18px] text-[#F88A22]" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+              className="w-[18px] h-[18px] text-[#F88A22]"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
               <path d="M7 3h10v2h3v3a4 4 0 0 1-4 4h-.35A5 5 0 0 1 13 15.9V18h3v2H8v-2h3v-2.1A5 5 0 0 1 8.35 12H8a4 4 0 0 1-4-4V5h3V3zm10 4v3a2 2 0 0 0 2-2V7h-2zM5 7v1a2 2 0 0 0 2 2V7H5z" />
             </svg>
             <span className="text-[11px] font-bold tracking-[0.14em] text-white/90">
-              GRAND FEAST SLOT
+              {t.grandFeastSlotLabel}
             </span>
           </div>
 
           <h2 className="text-[30px] font-bold text-white leading-none mb-4">
-            FIRST 10 BOOKINGS ONLY
+            {t.firstTenBookings}
           </h2>
 
           <div className="grid grid-cols-2 gap-x-6 gap-y-3">
@@ -301,22 +286,31 @@ export default function Page4_1Content() {
               className="absolute rotate-45 bg-[#F88A22] text-white text-[7px] font-bold tracking-[0.08em] text-center py-[3px]"
               style={{ width: "180px", top: "26px", right: "-52px" }}
             >
-              MOST VALUABLE REWARD
+              {t.rewardRibbon}
             </div>
           </div>
 
-          <svg className="w-8 h-8 text-[#123532] mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-            <path d="M9 5 3 7v12l6-2 6 2 6-2V5l-6 2-6-2z" strokeLinejoin="round" />
+          <svg
+            className="w-8 h-8 text-[#123532] mb-3"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+          >
+            <path
+              d="M9 5 3 7v12l6-2 6 2 6-2V5l-6 2-6-2z"
+              strokeLinejoin="round"
+            />
             <path d="M9 5v12M15 7v12" />
           </svg>
           <p className="text-[15px] font-extrabold text-[#123532] tracking-wide">
-            WIN A FAMILY TOUR
+            {t.rewardTitle}
           </p>
           <p className="text-[10px] text-gray-500 tracking-[0.1em] mt-0.5 mb-3">
-            PACKAGE TO MUNNAR
+            {t.rewardSubtitle}
           </p>
           <span className="inline-flex items-center gap-1 rounded-full bg-[#F5C518] px-3 py-1 text-[9px] font-bold text-[#4a3b00]">
-            🎉 EXCLUSIVE TIER 1
+            {t.rewardTierBadge}
           </span>
         </div>
       </div>
@@ -331,24 +325,24 @@ export default function Page4_1Content() {
               background: "linear-gradient(100.8deg, #FFE088 0%, #CCA730 100%)",
             }}
           >
-            CURRENT LIVE TIER
+            {t.currentLiveTier}
           </div>
           <h3 className="text-[14px] font-extrabold text-[#F88A22] mb-2.5">
-            GRAND FEAST
+            {t.grandFeastTierName}
           </h3>
           <div className="space-y-2 mb-3">
-            {["All Primary Rewards", "Munnar Tour Entry", "Hybrid Upgrade"].map(
-              (t) => (
-                <div key={t} className="flex items-center gap-2">
-                  <CheckFilled />
-                  <span className="text-[11px] font-semibold text-[#1a1a1a]">
-                    {t}
-                  </span>
-                </div>
-              ),
-            )}
+            {t.grandFeastTierItems.map((item) => (
+              <div key={item} className="flex items-center gap-2">
+                <CheckFilled />
+                <span className="text-[11px] font-semibold text-[#1a1a1a]">
+                  {item}
+                </span>
+              </div>
+            ))}
           </div>
-          <p className="text-[10px] text-gray-500 mb-1.5">Bookings 1 - 10</p>
+          <p className="text-[10px] text-gray-500 mb-1.5">
+            {t.grandFeastBookings}
+          </p>
           <div className="h-[3px] w-full rounded-full bg-[#F88A22]" />
         </div>
 
@@ -365,7 +359,9 @@ export default function Page4_1Content() {
               {tier.items.map((item) => (
                 <div key={item.text} className="flex items-center gap-2">
                   {item.type === "check" ? <CheckOutline /> : <LockMini />}
-                  <span className="text-[11px] text-[#1a1a1a]">{item.text}</span>
+                  <span className="text-[11px] text-[#1a1a1a]">
+                    {item.text}
+                  </span>
                 </div>
               ))}
             </div>
@@ -380,10 +376,10 @@ export default function Page4_1Content() {
         {/* Left */}
         <div className="flex-1">
           <h2 className="text-[20px] font-extrabold text-[#1a1a1a] leading-tight">
-            Reserve Your Slot Today
+            {t.reserveTitle}
           </h2>
           <p className="text-[11px] text-gray-500 mt-0.5 mb-2.5">
-            Talk to our experts and secure your Onam Solar Prosperity benefits.
+            {t.reserveSubtitle}
           </p>
           <div className="grid grid-cols-2 gap-2">
             {reserveBenefits.map((b) => (
@@ -408,7 +404,7 @@ export default function Page4_1Content() {
         {/* Right */}
         <div className="w-[240px] shrink-0 flex flex-col justify-center gap-2.5">
           <button className="w-full rounded-xl bg-[#F88A22] py-2 text-[13px] font-bold text-white shadow-sm">
-            Book Now
+            {t.bookNow}
           </button>
           <div className="flex items-center gap-3">
             {/* QR placeholder */}
@@ -422,10 +418,10 @@ export default function Page4_1Content() {
             </div>
             <div>
               <p className="text-[15px] font-extrabold text-[#1a1a1a] leading-tight">
-                Scan QR Code
+                {t.scanQrTitle}
               </p>
               <p className="text-[11px] text-gray-500 leading-tight">
-                Check Live Availability
+                {t.scanQrSubtitle}
               </p>
             </div>
           </div>

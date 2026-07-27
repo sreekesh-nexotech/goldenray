@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { useQuotationStrings } from "./i18n/QuotationLanguageContext";
+import { fill } from "./i18n/quotationStrings";
 
 interface Page8ContentProps {
   monthlyBill: number | "";
@@ -16,6 +18,7 @@ export default function Page8Content({
   monthlyBill,
   graphData,
 }: Page8ContentProps) {
+  const { page8: t } = useQuotationStrings();
   const billAmount = typeof monthlyBill === "number" ? monthlyBill : 6000;
 
   // 25-year totals for comparison cards
@@ -92,15 +95,13 @@ export default function Page8Content({
   return (
     <div className="flex flex-col h-full">
       <div className="text-center mt-2 mb-2">
-        <h1 className="text-[28px] font-bold text-[#1a1a1a] mb-1">
-          Your Savings Over Time
-        </h1>
+        <h1 className="text-[28px] font-bold text-[#1a1a1a] mb-1">{t.title}</h1>
 
         <div className="grid grid-cols-2 gap-3">
           {/* Graph - matching the shared image style */}
           <div className="bg-[#fafafa] rounded-lg p-2 pt-2 pb-1">
             <h3 className="text-[11px] font-semibold text-[#333] text-center mb-1">
-              Cumulative Electricity Costs Over 25 Years
+              {t.chartTitle}
             </h3>
             <svg
               viewBox={`0 0 ${chartW} ${chartH}`}
@@ -134,7 +135,7 @@ export default function Page8Content({
                 fill="#444"
                 fontWeight="500"
               >
-                KSEB Costs
+                {t.legendKseb}
               </text>
               <line
                 x1={chartPadding.left + 15}
@@ -152,7 +153,7 @@ export default function Page8Content({
                 fill="#444"
                 fontWeight="500"
               >
-                Solar + Bills
+                {t.legendSolar}
               </text>
 
               {/* Horizontal grid lines */}
@@ -246,20 +247,22 @@ export default function Page8Content({
             {/* Monthly Bill Reduction */}
             <div className="bg-white border border-gray-200 rounded-lg p-2">
               <h3 className="text-[11px] font-semibold text-[#1a1a1a] mb-1">
-                Monthly Bill Reduction
+                {t.monthlyBillReduction}
               </h3>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] text-gray-600">Current KSEB Bill</p>
+                  <p className="text-[9px] text-gray-600">
+                    {t.currentKsebBill}
+                  </p>
                   <p className="text-base font-bold text-[#1a1a1a]">
                     ₹{billAmount.toLocaleString("en-IN")}
                   </p>
                 </div>
                 <div className="text-xl">→</div>
                 <div>
-                  <p className="text-[9px] text-gray-600">With Solar</p>
+                  <p className="text-[9px] text-gray-600">{t.withSolar}</p>
                   <p className="text-base font-bold text-green-600">
-                    ₹300-800/month
+                    {t.withSolarValue}
                   </p>
                 </div>
               </div>
@@ -268,13 +271,13 @@ export default function Page8Content({
             {/* Savings Boxes - dynamic from graph data */}
             <div className="grid grid-cols-2 gap-2">
               <div className="bg-[#F88A22] rounded-lg p-2 text-white">
-                <p className="text-[10px] mb-0.5">Monthly Savings</p>
+                <p className="text-[10px] mb-0.5">{t.monthlySavings}</p>
                 <p className="text-lg font-bold">
                   ~₹{monthlySavingsFromGraph.toLocaleString("en-IN")}
                 </p>
               </div>
               <div className="bg-[#123532] rounded-lg p-2 text-white">
-                <p className="text-[10px] mb-0.5">25-Year Net Savings</p>
+                <p className="text-[10px] mb-0.5">{t.netSavings25}</p>
                 <p className="text-lg font-bold">
                   ₹{totalSavings25yr.toLocaleString("en-IN")}
                 </p>
@@ -283,13 +286,15 @@ export default function Page8Content({
 
             {/* Key Takeaway */}
             <div className="bg-green-50 border border-green-200 rounded-lg p-2">
-              <p className="text-[9px] font-semibold text-green-800 mb-0.5">
-                Key Takeaway
-              </p>
+              {t.keyTakeaway && (
+                <p className="text-[9px] font-semibold text-green-800 mb-0.5">
+                  {t.keyTakeaway}
+                </p>
+              )}
               <p className="text-[10px] text-green-700 leading-snug">
-                Your solar system pays for itself within the first few years.
-                After that, the next 20+ years are pure savings of ₹
-                {totalSavings25yr.toLocaleString("en-IN")}+.
+                {fill(t.keyTakeawayBody, {
+                  amount: totalSavings25yr.toLocaleString("en-IN"),
+                })}
               </p>
             </div>
           </div>
@@ -305,7 +310,7 @@ export default function Page8Content({
               <span className="text-white text-xs font-bold">✕</span>
             </div>
             <span className="text-sm font-semibold text-red-600">
-              Without Solar
+              {t.withoutSolar}
             </span>
           </div>
 
@@ -317,7 +322,7 @@ export default function Page8Content({
               </span>
             </div>
             <span className="text-xs text-red-500 ml-7">
-              forever increasing
+              {t.foreverIncreasing}
             </span>
           </div>
 
@@ -332,9 +337,9 @@ export default function Page8Content({
               />
               <span className="text-gray-700">
                 <span className="text-red-600 font-medium">
-                  ₹{totalPaidIn25Years}+ lakh
-                </span>{" "}
-                paid to KSEB in 25 years
+                  {fill(t.paidToKsebAmount, { amount: totalPaidIn25Years })}
+                </span>
+                {t.paidToKsebText}
               </span>
             </div>
             <div className="flex items-start gap-1">
@@ -346,8 +351,10 @@ export default function Page8Content({
                 className="object-contain mt-0.5 flex-shrink-0"
               />
               <span className="text-gray-700">
-                Bill increases{" "}
-                <span className="text-red-600 font-medium">8-12% yearly</span>
+                {t.billIncreasesText}
+                <span className="text-red-600 font-medium">
+                  {t.billIncreasesValue}
+                </span>
               </span>
             </div>
             <div className="flex items-start gap-1">
@@ -358,7 +365,7 @@ export default function Page8Content({
                 height={10}
                 className="object-contain mt-0.5 flex-shrink-0"
               />
-              <span className="text-gray-700">No ownership, no control</span>
+              <span className="text-gray-700">{t.noOwnership}</span>
             </div>
           </div>
         </div>
@@ -385,7 +392,7 @@ export default function Page8Content({
               <span className="text-white text-xs font-bold">✓</span>
             </div>
             <span className="text-sm font-semibold text-green-700">
-              With Solar
+              {t.withSolarLabel}
             </span>
           </div>
 
@@ -393,10 +400,12 @@ export default function Page8Content({
             <div className="flex items-center gap-2">
               <span className="text-green-600 text-lg">⚡</span>
               <span className="text-2xl font-bold text-green-700">
-                ₹300-800/month
+                {t.withSolarValue}
               </span>
             </div>
-            <span className="text-xs text-green-600 ml-7">fixed low bill</span>
+            <span className="text-xs text-green-600 ml-7">
+              {t.fixedLowBill}
+            </span>
           </div>
 
           <div className="space-y-1.5 text-xs">
@@ -410,9 +419,11 @@ export default function Page8Content({
               />
               <span className="text-gray-700">
                 <span className="text-green-700 font-medium">
-                  ₹{Math.round(totalPaidIn25Years * 0.65)} lakh
-                </span>{" "}
-                saved over 25 years
+                  {fill(t.savedAmount, {
+                    amount: Math.round(totalPaidIn25Years * 0.65),
+                  })}
+                </span>
+                {t.savedText}
               </span>
             </div>
             <div className="flex items-start gap-1">
@@ -424,8 +435,10 @@ export default function Page8Content({
                 className="object-contain mt-0.5 flex-shrink-0"
               />
               <span className="text-gray-700">
-                Protected from{" "}
-                <span className="text-green-700 font-medium">tariff hikes</span>
+                {t.protectedFromText}
+                <span className="text-green-700 font-medium">
+                  {t.protectedFromValue}
+                </span>
               </span>
             </div>
             <div className="flex items-start gap-1">
@@ -437,9 +450,9 @@ export default function Page8Content({
                 className="object-contain mt-0.5 flex-shrink-0"
               />
               <span className="text-gray-700">
-                Own your power,{" "}
+                {t.ownYourPowerText}
                 <span className="text-green-700 font-medium">
-                  25+ year warranty
+                  {t.ownYourPowerValue}
                 </span>
               </span>
             </div>
@@ -447,11 +460,10 @@ export default function Page8Content({
         </div>
       </div>
 
-      
       {/* Book Now Section */}
       <div className="mt-2">
         <h2 className="text-lg font-bold text-[#1a1a1a] text-center mb-2">
-          Book now
+          {t.bookNow}
         </h2>
 
         {/* Top row: UPI + Bank Transfer */}
@@ -459,10 +471,10 @@ export default function Page8Content({
           {/* UPI - left */}
           <div className="col-span-2 bg-gray-50 rounded-xl border border-gray-200 p-3 flex flex-col items-center justify-center">
             <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center mb-2">
-              <span className="text-[9px] text-gray-400">QR Code</span>
+              <span className="text-[9px] text-gray-400">{t.qrCode}</span>
             </div>
             <p className="text-[11px] font-medium text-[#1a1a1a]">
-              UPI ID:{" "}
+              {t.upiIdLabel}
               <span className="font-semibold text-[#F88A22]">flarize@upi</span>
             </p>
           </div>
@@ -470,32 +482,30 @@ export default function Page8Content({
           {/* Bank Transfer - right */}
           <div className="col-span-8 bg-gray-50 rounded-xl border border-gray-200 p-3">
             <h3 className="text-[11px] font-semibold text-[#1a1a1a] mb-1.5">
-              Bank Transfer
+              {t.bankTransfer}
             </h3>
             <div className="space-y-0.5 text-[11px]">
               <p className="text-gray-700">
-                Bank:{" "}
+                {t.bankLabel}
                 <span className="font-bold text-[#F88A22]">
                   Union Bank of India
                 </span>
               </p>
               <p className="text-gray-700">
-                A/c Name:{" "}
+                {t.accountNameLabel}
                 <span className="font-bold text-[#F88A22]">
                   Flarize Renewable Energy LLP
                 </span>
               </p>
               <p className="text-gray-700">
-                A/c No:{" "}
+                {t.accountNoLabel}
                 <span className="font-bold text-[#F88A22]">XXXXXXXXXXXX</span>
               </p>
               <p className="text-gray-700">
-                IFSC:{" "}
+                {t.ifscLabel}
                 <span className="font-bold text-[#F88A22]">UBIN0XXXXX</span>
               </p>
-              <p className="text-xs text-gray-500 mt-1">
-                UPI Ref / NEFT Ref will be your project ID
-              </p>
+              <p className="text-xs text-gray-500 mt-1">{t.refNote}</p>
             </div>
           </div>
         </div>
@@ -504,29 +514,19 @@ export default function Page8Content({
       {/* Required Documents */}
       <div className="mt-4 bg-[#FAF7EB] rounded-sm px-6 py-4">
         <h2 className="inline-block text-[16px] font-bold text-[#1a1a1a] border-b-[3px] border-[#123532] pb-0.5 mb-3">
-          Required Documents:
+          {t.requiredDocuments}
         </h2>
 
         <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
           <ol className="space-y-1.5">
-            {[
-              "Bank Account",
-              "Proof of Address",
-              "Land tax, Building tax",
-              "KSEB Feasibility Report",
-            ].map((item, idx) => (
+            {t.documentsLeft.map((item, idx) => (
               <li key={idx} className="text-[12px] text-[#1a1a1a] pl-2">
                 {idx + 1}. {item}
               </li>
             ))}
           </ol>
           <ol className="space-y-1.5">
-            {[
-              "Proof of Identity(Aadhar & PAN Card)",
-              "Salary Slips/Bank Statements (above 2L)",
-              "Latest KSEB Bill (2 months)",
-              "ITR ( above 2L)",
-            ].map((item, idx) => (
+            {t.documentsRight.map((item, idx) => (
               <li key={idx} className="text-[12px] text-[#1a1a1a] pl-2">
                 {idx + 5}. {item}
               </li>
@@ -538,10 +538,12 @@ export default function Page8Content({
       {/* Additional Structure Cost */}
       <div className="mt-3 border-l-[3px] border-[#F88A22] pl-3 py-0.5">
         <p className="text-[12px] text-gray-700">
-          Additional Structure cost{" "}
-          <span className="text-gray-500">( if needed )</span>
+          {t.additionalStructureCost}
+          <span className="text-gray-500">{t.additionalStructureNote}</span>
         </p>
-        <p className="text-[13px] font-bold text-[#1a1a1a] mt-0.5">₹4500/kw</p>
+        <p className="text-[13px] font-bold text-[#1a1a1a] mt-0.5">
+          {t.additionalStructureValue}
+        </p>
       </div>
     </div>
   );

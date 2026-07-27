@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { useQuotationStrings } from "./i18n/QuotationLanguageContext";
+import { fill } from "./i18n/quotationStrings";
 
 interface Page11ContentProps {
   monthlyBill: number | "";
@@ -13,6 +15,7 @@ export default function Page11Content({
   systemPrice,
   emiPerMonth,
 }: Page11ContentProps) {
+  const { page11: t } = useQuotationStrings();
   const billAmount = typeof monthlyBill === "number" ? monthlyBill : 6000;
   const subsidy = 78000;
   const beforeSubsidy = systemPrice + subsidy;
@@ -57,20 +60,16 @@ export default function Page11Content({
       {/* Title */}
       <div className="text-center mt-3 mb-2">
         <h1 className="text-[26px] font-bold text-[#123532] leading-tight">
-          Your Investment Summary
+          {t.title}
         </h1>
-        <p className="text-xs text-gray-500 my-2">
-          A controlled, predictable, one-time decision
-        </p>
+        <p className="text-xs text-gray-500 my-2">{t.subtitle}</p>
       </div>
 
       {/* Investment Card */}
       <div className="mx-23 shadow-lg mb-8 pb-4 border border-gray-200 rounded-xl overflow-hidden">
         {/* Orange Header */}
         <div className="bg-[#F88A22] text-white text-center py-5">
-          <p className="text-sm font-bold">
-            5 kW Solar System — Recommended Package
-          </p>
+          <p className="text-sm font-bold">{t.packageHeader}</p>
         </div>
 
         {/* Cost breakdown */}
@@ -78,7 +77,7 @@ export default function Page11Content({
           {/* System Cost */}
           <div className="flex justify-between items-center py-2">
             <span className="text-[13px] text-gray-700">
-              System Cost (Pre-Subsidy)
+              {t.systemCostPreSubsidy}
             </span>
             <span className="text-[13px] font-semibold text-[#123532]">
               ₹{formatINR(beforeSubsidy)}
@@ -88,7 +87,7 @@ export default function Page11Content({
           {/* Subsidy */}
           <div className="flex justify-between items-center py-2">
             <span className="text-[13px] text-gray-700">
-              PM Surya Ghar Subsidy
+              {t.pmSuryaGharSubsidy}
             </span>
             <span className="text-[13px] font-semibold text-[#123532]">
               – ₹{formatINR(subsidy)}
@@ -101,7 +100,7 @@ export default function Page11Content({
           {/* Your Investment */}
           <div className="flex justify-between items-center py-2">
             <span className="text-[14px] font-bold text-[#123532]">
-              Your Investment
+              {t.yourInvestment}
             </span>
             <span className="text-[14px] font-bold text-[#16a34a]">
               ₹{formatINR(systemPrice)}
@@ -113,7 +112,9 @@ export default function Page11Content({
 
           {/* Monthly Savings */}
           <div className="flex justify-between items-center py-2">
-            <span className="text-[13px] text-gray-700">Monthly Savings</span>
+            <span className="text-[13px] text-gray-700">
+              {t.monthlySavings}
+            </span>
             <span className="text-[13px] font-semibold text-[#123532]">
               ₹{formatINR(minSavings)}–{formatINR(maxSavings)}
             </span>
@@ -121,17 +122,15 @@ export default function Page11Content({
 
           {/* Payback Period */}
           <div className="flex justify-between items-center py-2">
-            <span className="text-[13px] text-gray-700">Payback Period</span>
+            <span className="text-[13px] text-gray-700">{t.paybackPeriod}</span>
             <span className="text-[13px] font-semibold text-[#123532]">
-              ~{paybackYears} years
+              {fill(t.paybackValue, { years: paybackYears })}
             </span>
           </div>
 
           {/* 25-Year Net Savings */}
           <div className="flex justify-between items-center py-2">
-            <span className="text-[13px] text-gray-700">
-              25-Year Net Savings
-            </span>
+            <span className="text-[13px] text-gray-700">{t.netSavings25}</span>
             <span className="text-[13px] font-semibold text-[#123532]">
               ₹{formatINR(totalSavings25)}+
             </span>
@@ -140,20 +139,20 @@ export default function Page11Content({
           {/* EMI Section */}
           <div className="bg-[#E8F5E9] rounded-lg px-4 py-3 mt-2 shadow-lg">
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-[12px] text-gray-700">
-                EMI Option (5yr, ~9%)
-              </span>
+              <span className="text-[12px] text-gray-700">{t.emiOption}</span>
               <span className="text-[12px] font-semibold text-[#123532]">
-                ~₹{formatINR(emiPerMonth)}/month
+                {fill(t.emiValue, { amount: formatINR(emiPerMonth) })}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[12px] text-gray-700">
-                Net monthly during EMI
+                {t.netMonthlyDuringEmi}
               </span>
               <span className="text-[12px] font-bold text-[#16a34a]">
-                +₹{formatINR(minNetEMI)}–{formatINR(maxNetEMI)} (positive from
-                Day 1)
+                {fill(t.netMonthlyValue, {
+                  min: formatINR(minNetEMI),
+                  max: formatINR(maxNetEMI),
+                })}
               </span>
             </div>
           </div>
@@ -163,12 +162,9 @@ export default function Page11Content({
       {/* Ready to Start Saving */}
       <div className="text-center mb-5">
         <h2 className="text-[22px] font-bold text-[#123532] italic mb-1">
-          Ready to Start Saving?
+          {t.readyTitle}
         </h2>
-        <p className="text-xs text-gray-500">
-          Lock your installation slot today. ₹5,000 booking. Fully refundable.
-          We do everything else.
-        </p>
+        <p className="text-xs text-gray-500">{t.readySubtitle}</p>
       </div>
 
       {/* Special Offer - Priority Installation */}
@@ -184,13 +180,11 @@ export default function Page11Content({
         </div>
         <div>
           <h3 className="text-[18px] font-bold text-[#123532] mb-0.5">
-            Priority 10-Day Installation
+            {t.priorityTitle}
           </h3>
-          <p className="text-[12px] text-gray-600 mb-1">
-            Fast-tracked scheduling and execution
-          </p>
+          <p className="text-[12px] text-gray-600 mb-1">{t.prioritySubtitle}</p>
           <p className="text-[11px] text-[#DC2626]">
-            Offer valid for bookings confirmed before {offerDate}
+            {fill(t.offerValid, { date: offerDate })}
           </p>
         </div>
       </div>
@@ -207,7 +201,7 @@ export default function Page11Content({
             className="object-contain mb-3"
           />
           <span className="text-[13px] text-[#123532] tracking-[0.15em] uppercase">
-            MNRE Empanelled
+            {t.badgeMnre}
           </span>
         </div>
 
@@ -223,7 +217,7 @@ export default function Page11Content({
             className="object-contain mb-3"
           />
           <span className="text-[13px] text-[#123532] tracking-[0.15em] uppercase">
-            127+ Kerala Homes
+            {t.badgeHomes}
           </span>
         </div>
 
@@ -239,7 +233,7 @@ export default function Page11Content({
             className="object-contain mb-3"
           />
           <span className="text-[13px]  text-[#123532] tracking-[0.15em] uppercase">
-            4.9★ Google Rating
+            {t.badgeRating}
           </span>
         </div>
       </div>
@@ -258,9 +252,11 @@ export default function Page11Content({
             />
             <div>
               <p className="text-xs font-bold text-[#123532]">
-                100% Refundable
+                {t.guaranteeRefundable}
               </p>
-              <p className="text-[8px] text-gray-500">₹5,000 booking fee</p>
+              <p className="text-[8px] text-gray-500">
+                {t.guaranteeRefundableSub}
+              </p>
             </div>
           </div>
 
@@ -275,9 +271,11 @@ export default function Page11Content({
             />
             <div>
               <p className="text-xs font-bold text-[#123532]">
-                No Obligation
+                {t.guaranteeNoObligation}
               </p>
-              <p className="text-[8px] text-gray-500">If roof unsuitable</p>
+              <p className="text-[8px] text-gray-500">
+                {t.guaranteeNoObligationSub}
+              </p>
             </div>
           </div>
 
@@ -292,9 +290,11 @@ export default function Page11Content({
             />
             <div>
               <p className="text-xs font-bold text-[#123532]">
-                Price Locked
+                {t.guaranteePriceLocked}
               </p>
-              <p className="text-[8px] text-gray-500">For 90 days only</p>
+              <p className="text-[8px] text-gray-500">
+                {t.guaranteePriceLockedSub}
+              </p>
             </div>
           </div>
 
@@ -309,21 +309,22 @@ export default function Page11Content({
             />
             <div>
               <p className="text-xs font-bold text-[#123532]">
-                Installation
+                {t.guaranteeInstallation}
               </p>
-              <p className="text-[8px] text-gray-500">in 15–20 day</p>
+              <p className="text-[8px] text-gray-500">
+                {t.guaranteeInstallationSub}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-
       {/* Bottom Quote */}
       <div className="text-center mt-auto mb-2 px-8">
         <p className="text-sm italic text-[#123532] leading-relaxed">
-          Most homeowners tell us the hardest part was deciding —
+          {t.closingQuoteLine1}
           <br />
-          everything after that was surprisingly easy.
+          {t.closingQuoteLine2}
         </p>
       </div>
     </div>

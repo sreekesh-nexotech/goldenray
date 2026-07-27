@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { getQuotationBom, type QuotationBom } from "@/services/bomService";
+import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
 
 const QuotationPdfGenerator = dynamic(
   () => import("@/components/Quotation/QuotationPdfGenerator"),
@@ -28,7 +29,7 @@ export interface QuotationData {
   customerName: string;
   address: string;
   phoneNumber: string;
-  preferredLanguage: string;
+  preferredLanguage: QuotationLanguage;
   subsidyEligibility: string;
   pincode: string;
   monthlyBill: number | "";
@@ -56,7 +57,8 @@ export default function CustomerDetailsPopup({
   const [customerName, setCustomerName] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [preferredLanguage, setPreferredLanguage] = useState("English");
+  const [preferredLanguage, setPreferredLanguage] =
+    useState<QuotationLanguage>("English");
   const [subsidyEligibility, setSubsidyEligibility] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isGenerating, setIsGenerating] = useState(false);
@@ -224,7 +226,9 @@ export default function CustomerDetailsPopup({
             <select
               id="preferredLanguage"
               value={preferredLanguage}
-              onChange={(e) => setPreferredLanguage(e.target.value)}
+              onChange={(e) =>
+                setPreferredLanguage(e.target.value as QuotationLanguage)
+              }
               className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
             >
               <option value="English">English</option>

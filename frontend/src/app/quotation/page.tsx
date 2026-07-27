@@ -17,12 +17,17 @@ import {
   Page11Content,
   Page8Content,
 } from "@/components/Quotation";
+import { QuotationLanguageProvider } from "@/components/Quotation/i18n/QuotationLanguageContext";
+import { quotationFontClass } from "@/components/Quotation/i18n/quotationFonts";
+import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
 import type { QuotationBom } from "@/services/bomService";
 
 interface QuotationData {
   customerName: string;
   address: string;
   phoneNumber: string;
+  /** Language the customer asked the quotation in; defaults to English. */
+  preferredLanguage?: QuotationLanguage;
   pincode: string;
   monthlyBill: number | "";
   systemSize: string;
@@ -97,111 +102,117 @@ export default function QuotationPage() {
 
   const proposalBy = quotationData.bom?.salesPerson || "Golden Ray Team";
   const companyRegistration = quotationData.systemSize;
+  const language: QuotationLanguage =
+    quotationData.preferredLanguage ?? "English";
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-4 gap-4 print:py-0 print:gap-0 print:bg-white">
-      {/* Page 1 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page1Content
-          quotationData={quotationData}
-          quoteNo={quoteNo}
-          currentDate={formatDate(currentDate)}
-          validUntilDate={formatDate(validUntilDate)}
-          proposalBy={proposalBy}
-          gstNo={gstNo}
-          companyRegistration={companyRegistration}
-          heroImage={heroImage}
-        />
-      </QuotationPageWrapper>
+    <QuotationLanguageProvider language={language}>
+      <div
+        className={`min-h-screen bg-gray-100 flex flex-col items-center py-4 gap-4 print:py-0 print:gap-0 print:bg-white ${quotationFontClass(language)}`}
+      >
+        {/* Page 1 */}
+        <QuotationPageWrapper logo={logo}>
+          <Page1Content
+            quotationData={quotationData}
+            quoteNo={quoteNo}
+            currentDate={formatDate(currentDate)}
+            validUntilDate={formatDate(validUntilDate)}
+            proposalBy={proposalBy}
+            gstNo={gstNo}
+            companyRegistration={companyRegistration}
+            heroImage={heroImage}
+          />
+        </QuotationPageWrapper>
 
-      {/* Page 2 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page2Content
-          monthlyBill={quotationData.monthlyBill}
-          systemSize={quotationData.systemSize}
-        />
-      </QuotationPageWrapper>
+        {/* Page 2 */}
+        <QuotationPageWrapper logo={logo}>
+          <Page2Content
+            monthlyBill={quotationData.monthlyBill}
+            systemSize={quotationData.systemSize}
+          />
+        </QuotationPageWrapper>
 
-      {/* Page 3 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page3Content />
-      </QuotationPageWrapper>
+        {/* Page 3 */}
+        <QuotationPageWrapper logo={logo}>
+          <Page3Content />
+        </QuotationPageWrapper>
 
-      {/* Page 4 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page4Content />
-      </QuotationPageWrapper>
+        {/* Page 4 */}
+        <QuotationPageWrapper logo={logo}>
+          <Page4Content />
+        </QuotationPageWrapper>
 
-      {/* Page 5 - Onam Solar Prosperity Campaign */}
-      <QuotationPageWrapper logo={logo}>
-        <Page4_1Content />
-      </QuotationPageWrapper>
+        {/* Page 5 - Onam Solar Prosperity Campaign */}
+        <QuotationPageWrapper logo={logo}>
+          <Page4_1Content />
+        </QuotationPageWrapper>
 
-      {/* Page 6 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page6Content pincode={quotationData.pincode} />
-      </QuotationPageWrapper>
+        {/* Page 6 */}
+        <QuotationPageWrapper logo={logo}>
+          <Page6Content pincode={quotationData.pincode} />
+        </QuotationPageWrapper>
 
-      {/* Page 7 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page7Content
-          systemPrice={quotationData.systemPrice}
-          systemSize={quotationData.systemSize}
-        />
-      </QuotationPageWrapper>
+        {/* Page 7 */}
+        <QuotationPageWrapper logo={logo}>
+          <Page7Content
+            systemPrice={quotationData.systemPrice}
+            systemSize={quotationData.systemSize}
+          />
+        </QuotationPageWrapper>
 
-      {/* Page 8 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page8Content
-          monthlyBill={quotationData.monthlyBill}
-          graphData={quotationData.graphData}
-        />
-      </QuotationPageWrapper>
+        {/* Page 8 */}
+        <QuotationPageWrapper logo={logo}>
+          <Page8Content
+            monthlyBill={quotationData.monthlyBill}
+            graphData={quotationData.graphData}
+          />
+        </QuotationPageWrapper>
 
-      {/* Page 9 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page9Content />
-      </QuotationPageWrapper>
+        {/* Page 9 */}
+        <QuotationPageWrapper logo={logo}>
+          <Page9Content />
+        </QuotationPageWrapper>
 
-      {/* Page 10 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page10Content />
-      </QuotationPageWrapper>
+        {/* Page 10 */}
+        <QuotationPageWrapper logo={logo}>
+          <Page10Content />
+        </QuotationPageWrapper>
 
-      {/* Page 11 - Terms and Conditions (continued) */}
-      <QuotationPageWrapper logo={logo}>
-        <Page10_1Content />
-      </QuotationPageWrapper>
+        {/* Page 11 - Terms and Conditions (continued) */}
+        <QuotationPageWrapper logo={logo}>
+          <Page10_1Content />
+        </QuotationPageWrapper>
 
-      {/* Page 12 */}
-      <QuotationPageWrapper logo={logo}>
-        <Page11Content
-          monthlyBill={quotationData.monthlyBill}
-          systemPrice={quotationData.systemPrice}
-          emiPerMonth={quotationData.emiPerMonth}
-        />
-      </QuotationPageWrapper>
+        {/* Page 12 */}
+        <QuotationPageWrapper logo={logo}>
+          <Page11Content
+            monthlyBill={quotationData.monthlyBill}
+            systemPrice={quotationData.systemPrice}
+            emiPerMonth={quotationData.emiPerMonth}
+          />
+        </QuotationPageWrapper>
 
-      {/* Print styles */}
-      <style jsx global>{`
-        @media print {
-          body {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
+        {/* Print styles */}
+        <style jsx global>{`
+          @media print {
+            body {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+
+            @page {
+              size: A4;
+              margin: 0;
+            }
+
+            header,
+            footer,
+            nav {
+              display: none !important;
+            }
           }
-
-          @page {
-            size: A4;
-            margin: 0;
-          }
-
-          header,
-          footer,
-          nav {
-            display: none !important;
-          }
-        }
-      `}</style>
-    </div>
+        `}</style>
+      </div>
+    </QuotationLanguageProvider>
   );
 }

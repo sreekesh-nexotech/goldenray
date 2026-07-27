@@ -3,14 +3,15 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getInstallationStats } from "@/services/installationStatsService";
+import { useQuotationStrings } from "./i18n/QuotationLanguageContext";
+import { fill } from "./i18n/quotationStrings";
 
+// Customer identity and figures stay as recorded; the wording that goes with
+// each testimonial comes from the string catalog.
 interface Testimonial {
   name: string;
   location: string;
-  systemSize: string;
-  installedDate: string;
   image: string;
-  quote: string;
   oldBill: number;
   newBill: number;
   savings: number;
@@ -70,12 +71,8 @@ const testimonials: Testimonial[] = [
   {
     name: "Jose V P",
     location: "Vadakkal, Alapuzha",
-    systemSize: "5 kW System",
-    installedDate: "Installed on June 2025",
     image:
       "https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project1/belowsection%20ENHANCED%20(3).jpg",
-    quote:
-      '"The solar panel installation process was smooth from the very beginning. The team clearly explained each stage – from understanding our energy needs to system design, installation, and final activation. All timelines were communicated in advance, and the execution stayed on track without unnecessary delays. The overall experience felt well-planned and dependable."',
     oldBill: 3200,
     newBill: 200,
     savings: 2900,
@@ -83,12 +80,8 @@ const testimonials: Testimonial[] = [
   {
     name: "Siraj K P",
     location: "Cherthala, Alappuzha",
-    systemSize: "5 kW System",
-    installedDate: "Installed on March 2025",
     image:
       "https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project2/belowsection%20ENHANCED.jpg",
-    quote:
-      '"Our commercial solar installation brought better predictability to our monthly power expenses. The team maintained transparent communication throughout the project and handled the technical and approval processes professionally. The transition to solar was structured, efficient, and free from operational disruption, which made the decision feel reassuring"',
     oldBill: 3200,
     newBill: 200,
     savings: 2900,
@@ -96,12 +89,8 @@ const testimonials: Testimonial[] = [
   {
     name: "Stephen V C",
     location: "Vattayal, Alappuzha",
-    systemSize: "5 kW System",
-    installedDate: "Installed on May 2024",
     image:
       "https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/Project3/belowsectionimage%20ENHANCED.jpg",
-    quote:
-      '"What stood out most was the honest guidance we received on system capacity and realistic expectations around savings. The team took time to explain what would work best for our usage rather than overselling. From planning to completion, the project felt reliable, transparent, and well managed."',
     oldBill: 3200,
     newBill: 200,
     savings: 2900,
@@ -109,6 +98,7 @@ const testimonials: Testimonial[] = [
 ];
 
 export default function Page3Content({ pincode }: Page3ContentProps) {
+  const { page6: t } = useQuotationStrings();
   // State for API data
   const [homesCount, setHomesCount] = useState<number>(
     getHomesCountForPincode(pincode),
@@ -153,19 +143,25 @@ export default function Page3Content({ pincode }: Page3ContentProps) {
     fetchStats();
   }, [pincode]);
 
+  // Every fragment of the social-proof sentence gets all the values: Malayalam
+  // orders them differently from English.
+  const socialProofValues = {
+    homes: homesCount,
+    district,
+    pincode,
+    count: yearInstallations > 0 ? yearInstallations : districtInstallations,
+    year: yearInstallations > 0 ? new Date().getFullYear() : "2024",
+  };
+
   return (
     <>
       {/* Main Headline */}
       <div className="text-center my-7 mt-2 px-4 ">
         <h1 className="text-2xl font-bold leading-tight mb-1">
-          <span className="text-[#1a1a1a]">
-            Homeowners Around You Have Already{" "}
-          </span>
-          <span className="text-[#FF9500]">Switched to Solar</span>
+          <span className="text-[#1a1a1a]">{t.headlinePart1}</span>
+          <span className="text-[#FF9500]">{t.headlinePart2}</span>
         </h1>
-        <p className="text-sm text-gray-500">
-          While you&apos;re still paying full KSEB bills every month
-        </p>
+        <p className="text-sm text-gray-500">{t.subtitle}</p>
       </div>
 
       {/* Social Proof Banner */}
@@ -181,16 +177,13 @@ export default function Page3Content({ pincode }: Page3ContentProps) {
         </div>
         <p className="text-sm text-[#15803D] leading-relaxed">
           <span className="font-bold text-[#15803D]">
-            {homesCount} homes in {district} ({pincode})
-          </span>{" "}
-          are already running on Flarize solar.{" "}
+            {fill(t.socialProofHomes, socialProofValues)}
+          </span>
+          {fill(t.socialProofMiddle, socialProofValues)}
           <span className="font-bold text-[#15803D]">
-            {yearInstallations > 0
-              ? `${yearInstallations} installations`
-              : `${districtInstallations} installations`}
-          </span>{" "}
-          across {district} district in{" "}
-          {yearInstallations > 0 ? new Date().getFullYear() : "2024"} alone.
+            {fill(t.socialProofInstallations, socialProofValues)}
+          </span>
+          {fill(t.socialProofTail, socialProofValues)}
         </p>
       </div>
 
@@ -215,7 +208,8 @@ export default function Page3Content({ pincode }: Page3ContentProps) {
                   {testimonial.name} – {testimonial.location}
                 </p>
                 <p className="text-[#FF9500] text-xs font-medium">
-                  {testimonial.systemSize} | {testimonial.installedDate}
+                  {t.testimonials[index]?.systemSize} |{" "}
+                  {t.testimonials[index]?.installedDate}
                 </p>
               </div>
             </div>
@@ -223,7 +217,7 @@ export default function Page3Content({ pincode }: Page3ContentProps) {
             {/* Quote */}
             <div className="p-2 flex-grow">
               <p className="text-sm text-gray-600 leading-relaxed ">
-                {testimonial.quote}
+                {t.testimonials[index]?.quote}
               </p>
             </div>
 
@@ -238,7 +232,9 @@ export default function Page3Content({ pincode }: Page3ContentProps) {
                   ₹{testimonial.newBill.toLocaleString("en-IN")}
                 </span>
                 <span className="text-[10px] font-semibold text-green-600 ml-auto">
-                  Saves ₹{testimonial.savings.toLocaleString("en-IN")}/mo
+                  {fill(t.savesLabel, {
+                    amount: testimonial.savings.toLocaleString("en-IN"),
+                  })}
                 </span>
               </div>
             </div>
@@ -310,14 +306,8 @@ export default function Page3Content({ pincode }: Page3ContentProps) {
           </svg>
         </div>
         <div>
-          <p className="text-md font-bold text-[#123532] mb-1">
-            📹 Watch Real Kerala Homeowners Share Their Experience
-          </p>
-          <p className="text-xs text-gray-600 leading-relaxed">
-            Scan the QR code to watch 2-minute video interviews with customers
-            in Alappuzha, Kochi, and Thrissur. See their rooftop installations
-            and hear their savings stories.
-          </p>
+          <p className="text-md font-bold text-[#123532] mb-1">{t.qrTitle}</p>
+          <p className="text-xs text-gray-600 leading-relaxed">{t.qrBody}</p>
           <p className="text-[11px] text-[#FF9500] font-medium mt-1">
             → flarize.in/testimonials
           </p>

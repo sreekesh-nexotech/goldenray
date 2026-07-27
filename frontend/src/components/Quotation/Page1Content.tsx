@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { HandCoins, Home, BadgeCheck } from "lucide-react";
+import { useQuotationStrings } from "./i18n/QuotationLanguageContext";
+import { fill } from "./i18n/quotationStrings";
 
 // Import certification logos
 // import logo1 from "../../../public/image-33.png";
@@ -57,6 +59,8 @@ export default function Page1Content({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   heroImage,
 }: Page1ContentProps) {
+  const { page1: t } = useQuotationStrings();
+
   return (
     <>
       {/* Hero Image */}
@@ -72,25 +76,26 @@ export default function Page1Content({
 
       {/* Main Headline */}
       <div className="text-center mb-3">
-        <h1 className="text-3xl font-bold text-[#123532] mb-1">
-          Stop Worrying About Electricity Bills Forever
-        </h1>
+        <h1 className="text-3xl font-bold text-[#123532] mb-1">{t.headline}</h1>
         <p className="text-base text-[#444444] font-semibold">
-          Empowering Kerala homes with clean energy, smart savings, and the joy
-          of sustainability.
+          {t.subheadline}
         </p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-3 gap-3 mb-3">
         <div className="flex items-center gap-3 p-2">
-          <HandCoins size={30} strokeWidth={2} className="shrink-0 text-[#123532]" />
+          <HandCoins
+            size={30}
+            strokeWidth={2}
+            className="shrink-0 text-[#123532]"
+          />
           <div>
             <p className="text-lg font-bold leading-tight text-[#F88A22]">
-              ₹78,000 Subsidy
+              {t.statSubsidyMain}
             </p>
             <p className="text-sm leading-tight text-[#4B5563]">
-              PM Surya Ghar – guaranteed
+              {t.statSubsidySub}
             </p>
           </div>
         </div>
@@ -98,21 +103,25 @@ export default function Page1Content({
           <Home size={30} strokeWidth={2} className="shrink-0 text-[#123532]" />
           <div>
             <p className="text-lg font-bold leading-tight text-[#F88A22]">
-              300+ Homes
+              {t.statHomesMain}
             </p>
             <p className="text-sm leading-tight text-[#4B5563]">
-              Installed in Kerala
+              {t.statHomesSub}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3 p-2">
-          <BadgeCheck size={30} strokeWidth={2} className="shrink-0 text-[#123532]" />
+          <BadgeCheck
+            size={30}
+            strokeWidth={2}
+            className="shrink-0 text-[#123532]"
+          />
           <div>
             <p className="text-lg font-bold leading-tight text-[#F88A22]">
-              MNRE Empanelled
+              {t.statMnreMain}
             </p>
             <p className="text-sm leading-tight text-[#4B5563]">
-              Government certified
+              {t.statMnreSub}
             </p>
           </div>
         </div>
@@ -123,29 +132,22 @@ export default function Page1Content({
       {/* Personalised letter */}
       <div className="mt-1 mb-4">
         <p className="mb-1.5 text-[15px] font-bold text-[#123532]">
-          Dear{" "}
-          {quotationData.customerName?.split(" ")[0] ||
-            quotationData.customerName}
-          ,
+          {fill(t.greeting, {
+            name:
+              quotationData.customerName?.split(" ")[0] ||
+              quotationData.customerName,
+          })}
         </p>
-        <p className="mb-2 text-[13px] text-[#1F1F1F]">
-          Thank you for considering Flarize for your home.
-        </p>
+        <p className="mb-2 text-[13px] text-[#1F1F1F]">{t.thanks}</p>
         <p className="mb-2 text-[13px] leading-relaxed text-[#1F1F1F]">
-          Choosing solar is one of the smartest decisions you can make for your
-          home. It&apos;s more than reducing your electricity bill—it&apos;s
-          about enjoying a better lifestyle, protecting your family from rising
-          electricity costs, and investing in a home that continues to reward
-          you for years to come.
+          {t.letterBody1}
         </p>
         <p className="mb-3 text-[13px] leading-relaxed text-[#1F1F1F]">
-          We&apos;ve carefully designed this solution specifically for your
-          home&apos;s energy needs, so you can make your decision with complete
-          confidence.
+          {t.letterBody2}
         </p>
-        <p className="text-[13px] text-[#1F1F1F]">Warm Regards,</p>
+        <p className="text-[13px] text-[#1F1F1F]">{t.warmRegards}</p>
         <div className="flex items-center gap-4">
-          <p className="text-[13px] font-bold text-[#123532]">Team Flarize</p>
+          <p className="text-[13px] font-bold text-[#123532]">{t.teamName}</p>
           <Image
             src={SIGN_IMAGE}
             alt="Signature"
@@ -166,30 +168,38 @@ export default function Page1Content({
       {/* Your Proposal Details */}
       <div className="mb-3">
         <h3 className="mb-3 text-[16px] font-bold tracking-wide text-[#123532]">
-          YOUR PROPOSAL DETAILS
+          {t.proposalDetailsTitle}
         </h3>
         <div className="grid grid-cols-2 gap-x-12 gap-y-2">
-          <Detail label="Name" value={quotationData.customerName} />
-          <Detail label="Quo No" value={quoteNo} />
-          <Detail label="Address" value={quotationData.address} />
-          <Detail label="Proposal By" value={proposalBy} />
-          <Detail label="pincode" value={quotationData.pincode} />
-          <Detail label="Date" value={currentDate} />
-          <Detail label="Phone Number" value={quotationData.phoneNumber} />
-          <Detail label="Valid Until" value={validUntilDate} />
+          <Detail label={t.labelName} value={quotationData.customerName} />
+          <Detail label={t.labelQuoteNo} value={quoteNo} />
+          <Detail label={t.labelAddress} value={quotationData.address} />
+          <Detail label={t.labelProposalBy} value={proposalBy} />
+          <Detail label={t.labelPincode} value={quotationData.pincode} />
+          <Detail label={t.labelDate} value={currentDate} />
           <Detail
-            label="Current Bill"
-            value={`₹${quotationData.monthlyBill}/month`}
+            label={t.labelPhoneNumber}
+            value={quotationData.phoneNumber}
           />
-          <Detail label="GST No" value={gstNo} />
-          <Detail label="System Size" value={quotationData.systemSize} />
-          <Detail label="Company Registration" value={companyRegistration} />
+          <Detail label={t.labelValidUntil} value={validUntilDate} />
+          <Detail
+            label={t.labelCurrentBill}
+            value={fill(t.currentBillValue, {
+              amount: quotationData.monthlyBill,
+            })}
+          />
+          <Detail label={t.labelGstNo} value={gstNo} />
+          <Detail label={t.labelSystemSize} value={quotationData.systemSize} />
+          <Detail
+            label={t.labelCompanyRegistration}
+            value={companyRegistration}
+          />
         </div>
       </div>
- 
+
       {/* Certified By Section */}
 
-     {/* <p className="text-center text-[10px] uppercase tracking-wider text-gray-500 ">
+      {/* <p className="text-center text-[10px] uppercase tracking-wider text-gray-500 ">
         Certified by the Best
       </p>
       <div className="flex justify-center items-center gap-15">
@@ -229,7 +239,6 @@ export default function Page1Content({
           className="object-contain"
         />
       </div> */}
-      
     </>
   );
 }

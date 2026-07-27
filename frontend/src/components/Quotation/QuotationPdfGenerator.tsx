@@ -16,11 +16,16 @@ import Page10_1Content from "./Page10_1Content";
 import Page11Content from "./Page11Content";
 import Page8Content from "./Page8Content";
 import type { QuotationBom } from "@/services/bomService";
+import { QuotationLanguageProvider } from "./i18n/QuotationLanguageContext";
+import { quotationFontClass } from "./i18n/quotationFonts";
+import type { QuotationLanguage } from "./i18n/quotationStrings";
 
 export interface QuotationPdfData {
   customerName: string;
   address: string;
   phoneNumber: string;
+  /** Language the customer asked the quotation in; defaults to English. */
+  preferredLanguage?: QuotationLanguage;
   pincode: string;
   monthlyBill: number | "";
   systemSize: string;
@@ -48,6 +53,7 @@ export default function QuotationPdfGenerator({
 }: QuotationPdfGeneratorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isRendered, setIsRendered] = useState(false);
+  const language: QuotationLanguage = data.preferredLanguage ?? "English";
 
   const logo =
     "https://gym-manager-pull.b-cdn.net/golden_ray/home/logo_header.png";
@@ -74,15 +80,24 @@ export default function QuotationPdfGenerator({
   const gstNo = "32AAUFG1464A1ZP";
   const companyRegistration = data.systemSize;
 
-  // Wait for images to load after render
+  // Wait for images and webfonts to load after render. Fonts must be ready
+  // before rasterising, otherwise the capture bakes in fallback glyphs.
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const timer = setTimeout(() => {
-      setIsRendered(true);
-    }, 2000); // Give 2s for images and fonts to load
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
 
-    return () => clearTimeout(timer);
+    const fontsReady = document.fonts?.ready ?? Promise.resolve();
+    fontsReady.then(() => {
+      if (cancelled) return;
+      timer = setTimeout(() => setIsRendered(true), 2000); // images
+    });
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, []);
 
   const generatePdf = useCallback(async () => {
@@ -164,7 +179,7 @@ export default function QuotationPdfGenerator({
   const PageShell = ({ children }: { children: React.ReactNode }) => (
     <div
       data-pdf-page
-      className="bg-white flex flex-col"
+      className={`bg-white flex flex-col ${quotationFontClass(language)}`}
       style={{
         width: "210mm",
         minHeight: "297mm",
@@ -181,85 +196,87 @@ export default function QuotationPdfGenerator({
   );
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        position: "fixed",
-        left: "-9999px",
-        top: 0,
-        zIndex: -1,
-        pointerEvents: "none",
-      }}
-    >
-      <PageShell>
-        <Page1Content
-          quotationData={data}
-          quoteNo={quoteNo}
-          currentDate={formatDate(currentDate)}
-          validUntilDate={formatDate(validUntilDate)}
-          proposalBy={proposalBy}
-          gstNo={gstNo}
-          companyRegistration={companyRegistration}
-          heroImage={heroImage}
-        />
-      </PageShell>
+    <QuotationLanguageProvider language={language}>
+      <div
+        ref={containerRef}
+        style={{
+          position: "fixed",
+          left: "-9999px",
+          top: 0,
+          zIndex: -1,
+          pointerEvents: "none",
+        }}
+      >
+        <PageShell>
+          <Page1Content
+            quotationData={data}
+            quoteNo={quoteNo}
+            currentDate={formatDate(currentDate)}
+            validUntilDate={formatDate(validUntilDate)}
+            proposalBy={proposalBy}
+            gstNo={gstNo}
+            companyRegistration={companyRegistration}
+            heroImage={heroImage}
+          />
+        </PageShell>
 
-      <PageShell>
-        <Page2Content
-          monthlyBill={data.monthlyBill}
-          systemSize={data.systemSize}
-        />
-      </PageShell>
+        <PageShell>
+          <Page2Content
+            monthlyBill={data.monthlyBill}
+            systemSize={data.systemSize}
+          />
+        </PageShell>
 
-      <PageShell>
-        <Page3Content />
-      </PageShell>
+        <PageShell>
+          <Page3Content />
+        </PageShell>
 
-      <PageShell>
-        <Page4Content />
-      </PageShell>
+        <PageShell>
+          <Page4Content />
+        </PageShell>
 
-      <PageShell>
-        <Page4_1Content />
-      </PageShell>
+        <PageShell>
+          <Page4_1Content />
+        </PageShell>
 
-      <PageShell>
-        <Page6Content pincode={data.pincode} />
-      </PageShell>
+        <PageShell>
+          <Page6Content pincode={data.pincode} />
+        </PageShell>
 
-      <PageShell>
-        <Page7Content
-          systemPrice={data.systemPrice}
-          systemSize={data.systemSize}
-        />
-      </PageShell>
+        <PageShell>
+          <Page7Content
+            systemPrice={data.systemPrice}
+            systemSize={data.systemSize}
+          />
+        </PageShell>
 
-      <PageShell>
-        <Page8Content
-          monthlyBill={data.monthlyBill}
-          graphData={data.graphData}
-        />
-      </PageShell>
+        <PageShell>
+          <Page8Content
+            monthlyBill={data.monthlyBill}
+            graphData={data.graphData}
+          />
+        </PageShell>
 
-      <PageShell>
-        <Page9Content />
-      </PageShell>
+        <PageShell>
+          <Page9Content />
+        </PageShell>
 
-      <PageShell>
-        <Page10Content />
-      </PageShell>
+        <PageShell>
+          <Page10Content />
+        </PageShell>
 
-      <PageShell>
-        <Page10_1Content />
-      </PageShell>
+        <PageShell>
+          <Page10_1Content />
+        </PageShell>
 
-      <PageShell>
-        <Page11Content
-          monthlyBill={data.monthlyBill}
-          systemPrice={data.systemPrice}
-          emiPerMonth={data.emiPerMonth}
-        />
-      </PageShell>
-    </div>
+        <PageShell>
+          <Page11Content
+            monthlyBill={data.monthlyBill}
+            systemPrice={data.systemPrice}
+            emiPerMonth={data.emiPerMonth}
+          />
+        </PageShell>
+      </div>
+    </QuotationLanguageProvider>
   );
 }
