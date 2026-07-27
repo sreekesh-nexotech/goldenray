@@ -28,6 +28,8 @@ export interface QuotationData {
   customerName: string;
   address: string;
   phoneNumber: string;
+  preferredLanguage: string;
+  subsidyEligibility: string;
   pincode: string;
   monthlyBill: number | "";
   systemSize: string;
@@ -54,6 +56,8 @@ export default function CustomerDetailsPopup({
   const [customerName, setCustomerName] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [preferredLanguage, setPreferredLanguage] = useState("English");
+  const [subsidyEligibility, setSubsidyEligibility] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [pdfData, setPdfData] = useState<QuotationData | null>(null);
@@ -76,6 +80,14 @@ export default function CustomerDetailsPopup({
         "Please enter a valid 10-digit Indian mobile number.";
     }
 
+    if (!preferredLanguage) {
+      newErrors.preferredLanguage = "Preferred quotation language is required.";
+    }
+
+    if (!subsidyEligibility) {
+      newErrors.subsidyEligibility = "Please select your subsidy eligibility.";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -94,6 +106,8 @@ export default function CustomerDetailsPopup({
       customerName,
       address,
       phoneNumber,
+      preferredLanguage,
+      subsidyEligibility,
       pincode,
       monthlyBill,
       systemSize,
@@ -197,6 +211,55 @@ export default function CustomerDetailsPopup({
             />
             {errors.phoneNumber && (
               <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="preferredLanguage"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Preferred Quotation Language
+            </label>
+            <select
+              id="preferredLanguage"
+              value={preferredLanguage}
+              onChange={(e) => setPreferredLanguage(e.target.value)}
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            >
+              <option value="English">English</option>
+              <option value="Malayalam">മലയാളം</option>
+            </select>
+            {errors.preferredLanguage && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.preferredLanguage}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="subsidyEligibility"
+              className="block text-sm font-medium text-gray-700"
+            >
+              PM Surya Ghar Subsidy
+            </label>
+            <select
+              id="subsidyEligibility"
+              value={subsidyEligibility}
+              onChange={(e) => setSubsidyEligibility(e.target.value)}
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            >
+              <option value="">Select an option</option>
+              <option value="Eligible (DCR)">Eligible (DCR)</option>
+              <option value="Not Eligible (Non-DCR)">
+                Not Eligible (Non-DCR)
+              </option>
+            </select>
+            {errors.subsidyEligibility && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.subsidyEligibility}
+              </p>
             )}
           </div>
 

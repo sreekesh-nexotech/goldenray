@@ -71,7 +71,10 @@ services:
       # uploads durable across restarts either way).
       - cms_uploads:/app/uploads
     environment:
-      DJANGO_ENV: production
+      # Local Docker is plain HTTP on :8009, so default to development —
+      # production mode enables SECURE_SSL_REDIRECT and 301s every API call to
+      # https. Override with CMS_DJANGO_ENV=production behind real TLS.
+      DJANGO_ENV: ${CMS_DJANGO_ENV:-development}
       DB_ENGINE: django.db.backends.postgresql
       DB_HOST: db
       DB_PORT: "5432"
