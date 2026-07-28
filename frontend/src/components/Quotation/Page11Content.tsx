@@ -3,22 +3,33 @@
 import Image from "next/image";
 import { useQuotationStrings } from "./i18n/QuotationLanguageContext";
 import { fill } from "./i18n/quotationStrings";
+import { quotationPricing } from "./subsidy";
 
 interface Page11ContentProps {
   monthlyBill: number | "";
   systemPrice: number;
   emiPerMonth: number;
+  /** PM Surya Ghar subsidy applicable to this customer; 0 for Non-DCR. */
+  subsidy: number;
 }
 
 export default function Page11Content({
   monthlyBill,
   systemPrice,
   emiPerMonth,
+  subsidy,
 }: Page11ContentProps) {
   const { page11: t } = useQuotationStrings();
   const billAmount = typeof monthlyBill === "number" ? monthlyBill : 6000;
-  const subsidy = 78000;
-  const beforeSubsidy = systemPrice + subsidy;
+
+  // Without the subsidy the customer carries the full system cost, so every
+  // figure below — investment, payback, savings, EMI — works off the net cost.
+  const {
+    grossCost,
+    netCost,
+    emiPerMonth: emi,
+  } = quotationPricing(systemPrice, emiPerMonth, subsidy);
+  const hasSubsidy = subsidy > 0;
 
   // Monthly savings range (80%–95% of bill)
   const minSavings = Math.round(billAmount * 0.8);
@@ -26,14 +37,14 @@ export default function Page11Content({
 
   // Payback period
   const avgMonthlySavings = (minSavings + maxSavings) / 2;
-  const paybackYears = Math.round(systemPrice / (avgMonthlySavings * 12));
+  const paybackYears = Math.round(netCost / (avgMonthlySavings * 12));
 
   // 25-year net savings
-  const totalSavings25 = Math.round(avgMonthlySavings * 12 * 25 - systemPrice);
+  const totalSavings25 = Math.round(avgMonthlySavings * 12 * 25 - netCost);
 
   // EMI net monthly
-  const minNetEMI = minSavings - emiPerMonth;
-  const maxNetEMI = maxSavings - emiPerMonth;
+  const minNetEMI = minSavings - emi;
+  const maxNetEMI = maxSavings - emi;
 
   // Offer date — current date
   const now = new Date();
@@ -74,28 +85,33 @@ export default function Page11Content({
 
         {/* Cost breakdown */}
         <div className="px-5 py-3">
-          {/* System Cost */}
-          <div className="flex justify-between items-center py-2">
-            <span className="text-[13px] text-gray-700">
-              {t.systemCostPreSubsidy}
-            </span>
-            <span className="text-[13px] font-semibold text-[#123532]">
-              ₹{formatINR(beforeSubsidy)}
-            </span>
-          </div>
+          {/* Cost breakdown — only meaningful when a subsidy applies */}
+          {hasSubsidy && (
+            <>
+              {/* System Cost */}
+              <div className="flex justify-between items-center py-2">
+                <span className="text-[13px] text-gray-700">
+                  {t.systemCostPreSubsidy}
+                </span>
+                <span className="text-[13px] font-semibold text-[#123532]">
+                  ₹{formatINR(grossCost)}
+                </span>
+              </div>
 
-          {/* Subsidy */}
-          <div className="flex justify-between items-center py-2">
-            <span className="text-[13px] text-gray-700">
-              {t.pmSuryaGharSubsidy}
-            </span>
-            <span className="text-[13px] font-semibold text-[#123532]">
-              – ₹{formatINR(subsidy)}
-            </span>
-          </div>
+              {/* Subsidy */}
+              <div className="flex justify-between items-center py-2">
+                <span className="text-[13px] text-gray-700">
+                  {t.pmSuryaGharSubsidy}
+                </span>
+                <span className="text-[13px] font-semibold text-[#123532]">
+                  – ₹{formatINR(subsidy)}
+                </span>
+              </div>
 
-          {/* Divider */}
-          <div className="border-t border-gray-200 my-1"></div>
+              {/* Divider */}
+              <div className="border-t border-gray-200 my-1"></div>
+            </>
+          )}
 
           {/* Your Investment */}
           <div className="flex justify-between items-center py-2">
@@ -103,7 +119,7 @@ export default function Page11Content({
               {t.yourInvestment}
             </span>
             <span className="text-[14px] font-bold text-[#16a34a]">
-              ₹{formatINR(systemPrice)}
+              ₹{formatINR(netCost)}
             </span>
           </div>
 
@@ -141,7 +157,7 @@ export default function Page11Content({
             <div className="flex justify-between items-center mb-1.5">
               <span className="text-[12px] text-gray-700">{t.emiOption}</span>
               <span className="text-[12px] font-semibold text-[#123532]">
-                {fill(t.emiValue, { amount: formatINR(emiPerMonth) })}
+                {fill(t.emiValue, { amount: formatINR(emi) })}
               </span>
             </div>
             <div className="flex justify-between items-center">
@@ -149,10 +165,15 @@ export default function Page11Content({
                 {t.netMonthlyDuringEmi}
               </span>
               <span className="text-[12px] font-bold text-[#16a34a]">
-                {fill(t.netMonthlyValue, {
-                  min: formatINR(minNetEMI),
-                  max: formatINR(maxNetEMI),
-                })}
+                {/* The "positive from Day 1" claim only holds while the EMI
+                    stays below the monthly saving. */}
+                {fill(
+                  minNetEMI > 0 ? t.netMonthlyValue : t.netMonthlyValuePlain,
+                  {
+                    min: formatINR(minNetEMI),
+                    max: formatINR(maxNetEMI),
+                  },
+                )}
               </span>
             </div>
           </div>

@@ -21,6 +21,7 @@ import { QuotationLanguageProvider } from "@/components/Quotation/i18n/Quotation
 import { quotationFontClass } from "@/components/Quotation/i18n/quotationFonts";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
 import type { QuotationBom } from "@/services/bomService";
+import { subsidyForEligibility } from "@/components/Quotation/subsidy";
 
 interface QuotationData {
   customerName: string;
@@ -28,6 +29,8 @@ interface QuotationData {
   phoneNumber: string;
   /** Language the customer asked the quotation in; defaults to English. */
   preferredLanguage?: QuotationLanguage;
+  /** PM Surya Ghar eligibility picked on the details form (DCR / Non-DCR). */
+  subsidyEligibility?: string;
   pincode: string;
   monthlyBill: number | "";
   systemSize: string;
@@ -104,6 +107,7 @@ export default function QuotationPage() {
   const companyRegistration = quotationData.systemSize;
   const language: QuotationLanguage =
     quotationData.preferredLanguage ?? "English";
+  const subsidy = subsidyForEligibility(quotationData.subsidyEligibility);
 
   return (
     <QuotationLanguageProvider language={language}>
@@ -114,6 +118,7 @@ export default function QuotationPage() {
         <QuotationPageWrapper logo={logo}>
           <Page1Content
             quotationData={quotationData}
+            subsidy={subsidy}
             quoteNo={quoteNo}
             currentDate={formatDate(currentDate)}
             validUntilDate={formatDate(validUntilDate)}
@@ -139,7 +144,7 @@ export default function QuotationPage() {
 
         {/* Page 4 */}
         <QuotationPageWrapper logo={logo}>
-          <Page4Content />
+          <Page4Content subsidy={subsidy} />
         </QuotationPageWrapper>
 
         {/* Page 5 - Onam Solar Prosperity Campaign */}
@@ -157,6 +162,7 @@ export default function QuotationPage() {
           <Page7Content
             systemPrice={quotationData.systemPrice}
             systemSize={quotationData.systemSize}
+            subsidy={subsidy}
           />
         </QuotationPageWrapper>
 
@@ -189,6 +195,7 @@ export default function QuotationPage() {
             monthlyBill={quotationData.monthlyBill}
             systemPrice={quotationData.systemPrice}
             emiPerMonth={quotationData.emiPerMonth}
+            subsidy={subsidy}
           />
         </QuotationPageWrapper>
 

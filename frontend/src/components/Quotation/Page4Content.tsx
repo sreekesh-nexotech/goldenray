@@ -1,12 +1,39 @@
 "use client";
 
 import { useQuotationStrings } from "./i18n/QuotationLanguageContext";
+import { fill } from "./i18n/quotationStrings";
+import { PM_SURYA_GHAR_SUBSIDY, fiveYearEmi } from "./subsidy";
 
-export default function Page4Content() {
+interface Page4ContentProps {
+  /** PM Surya Ghar subsidy applicable to this customer; 0 for Non-DCR. */
+  subsidy: number;
+}
+
+/** Indicative 5 kW tier pricing, after the full subsidy. */
+const TIER_PRICES_AFTER_SUBSIDY = {
+  premium: 260000,
+  smart: 190000,
+  basic: 120000,
+};
+
+export default function Page4Content({ subsidy }: Page4ContentProps) {
   const { page4: t } = useQuotationStrings();
 
   // Feature comparison table rows: value is text, "check" or "dash"
   const comparisonRows = t.comparisonRows;
+
+  // Without the subsidy the indicative prices are the gross ones, and the EMI
+  // has to be recomputed on the larger amount financed.
+  const hasSubsidy = subsidy > 0;
+  const fmt = (n: number) => `₹${n.toLocaleString("en-IN")}`;
+  const price = (tier: keyof typeof TIER_PRICES_AFTER_SUBSIDY) =>
+    hasSubsidy
+      ? TIER_PRICES_AFTER_SUBSIDY[tier]
+      : TIER_PRICES_AFTER_SUBSIDY[tier] + PM_SURYA_GHAR_SUBSIDY;
+  const emiLine = (tier: keyof typeof TIER_PRICES_AFTER_SUBSIDY) =>
+    fill(t.emiNoSubsidy, {
+      amount: fiveYearEmi(price(tier)).toLocaleString("en-IN"),
+    });
 
   // Render a table cell value: green check circle, gray dash circle, or text
   const renderCell = (value: string) => {
@@ -44,7 +71,9 @@ export default function Page4Content() {
       {/* Main Title */}
       <div className="text-center mb-3">
         <h1 className="text-3xl font-bold text-[#1a1a1a] mb-2">{t.title}</h1>
-        <p className="text-sm text-gray-600">{t.subtitle}</p>
+        <p className="text-sm text-gray-600">
+          {hasSubsidy ? t.subtitle : t.subtitleNoSubsidy}
+        </p>
       </div>
 
       {/* Pricing Cards */}
@@ -57,19 +86,25 @@ export default function Page4Content() {
           <p className="text-[11px] text-gray-500 mb-3">{t.systemSizeLabel}</p>
 
           <div className="mb-3">
-            <p className="text-[11px] text-gray-400 line-through">₹3,38,000</p>
+            {hasSubsidy && (
+              <p className="text-[11px] text-gray-400 line-through">
+                ₹3,38,000
+              </p>
+            )}
             <p className="text-[22px] font-bold text-[#1a1a1a] leading-tight">
-              ₹2,60,000
+              {fmt(price("premium"))}
             </p>
-            <p className="text-[10px] text-green-600">{t.afterSubsidy}</p>
+            {hasSubsidy && (
+              <p className="text-[10px] text-green-600">{t.afterSubsidy}</p>
+            )}
           </div>
 
           <div className="border-t border-gray-200 pt-2 text-center">
             <p className="text-[12px] font-semibold text-[#F88A22]">
-              {t.premiumEmi}
+              {hasSubsidy ? t.premiumEmi : emiLine("premium")}
             </p>
             <p className="text-[9px] text-gray-500 mt-0.5">
-              {t.premiumEmiNote}
+              {hasSubsidy ? t.premiumEmiNote : t.emiNoteNoSubsidy}
             </p>
           </div>
         </div>
@@ -86,18 +121,26 @@ export default function Page4Content() {
           <p className="text-[11px] text-gray-500 mb-3">{t.systemSizeLabel}</p>
 
           <div className="mb-3">
-            <p className="text-[11px] text-gray-400 line-through">₹2,68,000</p>
+            {hasSubsidy && (
+              <p className="text-[11px] text-gray-400 line-through">
+                ₹2,68,000
+              </p>
+            )}
             <p className="text-[22px] font-bold text-[#F88A22] leading-tight">
-              ₹1,90,000
+              {fmt(price("smart"))}
             </p>
-            <p className="text-[10px] text-green-600">{t.afterSubsidy}</p>
+            {hasSubsidy && (
+              <p className="text-[10px] text-green-600">{t.afterSubsidy}</p>
+            )}
           </div>
 
           <div className="border-t border-[#F8D9B8] pt-2 text-center">
             <p className="text-[12px] font-semibold text-[#F88A22]">
-              {t.smartEmi}
+              {hasSubsidy ? t.smartEmi : emiLine("smart")}
             </p>
-            <p className="text-[9px] text-gray-500 mt-0.5">{t.smartEmiNote}</p>
+            <p className="text-[9px] text-gray-500 mt-0.5">
+              {hasSubsidy ? t.smartEmiNote : t.emiNoteNoSubsidy}
+            </p>
           </div>
         </div>
 
@@ -109,18 +152,26 @@ export default function Page4Content() {
           <p className="text-[11px] text-gray-500 mb-3">{t.systemSizeLabel}</p>
 
           <div className="mb-3">
-            <p className="text-[11px] text-gray-400 line-through">₹1,98,000</p>
+            {hasSubsidy && (
+              <p className="text-[11px] text-gray-400 line-through">
+                ₹1,98,000
+              </p>
+            )}
             <p className="text-[22px] font-bold text-[#1a1a1a] leading-tight">
-              ₹1,20,000
+              {fmt(price("basic"))}
             </p>
-            <p className="text-[10px] text-green-600">{t.afterSubsidy}</p>
+            {hasSubsidy && (
+              <p className="text-[10px] text-green-600">{t.afterSubsidy}</p>
+            )}
           </div>
 
           <div className="border-t border-gray-200 pt-2 text-center">
             <p className="text-[12px] font-semibold text-[#F88A22]">
-              {t.basicEmi}
+              {hasSubsidy ? t.basicEmi : emiLine("basic")}
             </p>
-            <p className="text-[9px] text-gray-500 mt-0.5">{t.basicEmiNote}</p>
+            <p className="text-[9px] text-gray-500 mt-0.5">
+              {hasSubsidy ? t.basicEmiNote : t.emiNoteNoSubsidy}
+            </p>
           </div>
         </div>
       </div>
@@ -138,19 +189,21 @@ export default function Page4Content() {
             <p className="text-[12px] font-bold text-[#1a1a1a] leading-tight">
               {t.premiumName}
             </p>
-            <p className="text-[10px] text-[#1a1a1a]">₹2,60,000</p>
+            <p className="text-[10px] text-[#1a1a1a]">
+              {fmt(price("premium"))}
+            </p>
           </div>
           <div className="px-2 py-1.5 text-center border-l border-white">
             <p className="text-[12px] font-bold text-[#1a1a1a] leading-tight">
               {t.smartName}
             </p>
-            <p className="text-[10px] text-[#1a1a1a]">₹1,90,000</p>
+            <p className="text-[10px] text-[#1a1a1a]">{fmt(price("smart"))}</p>
           </div>
           <div className="px-2 py-1.5 text-center border-l border-white">
             <p className="text-[12px] font-bold text-[#1a1a1a] leading-tight">
               {t.basicName}
             </p>
-            <p className="text-[10px] text-[#1a1a1a]">₹1,20,000</p>
+            <p className="text-[10px] text-[#1a1a1a]">{fmt(price("basic"))}</p>
           </div>
         </div>
 

@@ -2,28 +2,34 @@
 
 import { useQuotationStrings } from "./i18n/QuotationLanguageContext";
 import { fill } from "./i18n/quotationStrings";
+import { quotationPricing } from "./subsidy";
 
 interface Page7ContentProps {
   systemPrice: number;
   systemSize: string;
+  /** PM Surya Ghar subsidy applicable to this customer; 0 for Non-DCR. */
+  subsidy: number;
 }
 
 export default function Page7Content({
   systemPrice,
   systemSize,
+  subsidy,
 }: Page7ContentProps) {
   const { page7: t } = useQuotationStrings();
+  const hasSubsidy = subsidy > 0;
 
-  // Tier prices derived from the calculated Smart System price (after subsidy)
-  const subsidy = 78000;
-  const smartAfterSubsidy = systemPrice;
-  const basicAfterSubsidy = smartAfterSubsidy - 70000;
-  const premiumAfterSubsidy = smartAfterSubsidy + 70000;
+  // Tier costs derived from the calculated Smart System price. The tiers sit
+  // ±₹70,000 around it on the gross (pre-subsidy) cost.
+  const { grossCost: smartTotal } = quotationPricing(systemPrice, 0, subsidy);
+  const basicTotal = smartTotal - 70000;
+  const premiumTotal = smartTotal + 70000;
 
-  // Before-subsidy totals
-  const smartTotal = smartAfterSubsidy + subsidy;
-  const basicTotal = basicAfterSubsidy + subsidy;
-  const premiumTotal = premiumAfterSubsidy + subsidy;
+  // What each tier costs after the applicable subsidy — the same totals when
+  // the customer is not eligible.
+  const smartFinal = smartTotal - subsidy;
+  const basicFinal = basicTotal - subsidy;
+  const premiumFinal = premiumTotal - subsidy;
 
   const fmt = (n: number) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
@@ -169,74 +175,79 @@ export default function Page7Content({
           </div>
         ))}
 
-        {/* Total System Cost */}
-        <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-gray-300 bg-[#F4F4F6] items-stretch">
-          <div className="px-3 py-2 flex items-center">
-            <span className="text-[10.5px] font-bold text-[#1a1a1a]">
-              {t.totalSystemCost}
-            </span>
+        {/* Total System Cost — without a subsidy this equals the final cost
+            below, so only the highlighted row is kept */}
+        {hasSubsidy && (
+          <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-gray-300 bg-[#F4F4F6] items-stretch">
+            <div className="px-3 py-2 flex items-center">
+              <span className="text-[10.5px] font-bold text-[#1a1a1a]">
+                {t.totalSystemCost}
+              </span>
+            </div>
+            <div className="px-2 py-2 flex items-center border-l border-gray-200">
+              <span className="text-[10.5px] font-bold text-[#1a1a1a]">
+                {fmt(premiumTotal)}
+              </span>
+            </div>
+            <div className="px-2 py-2 flex items-center border-l border-gray-200 bg-[#FFF7ED]">
+              <span className="text-[10.5px] font-bold text-[#1a1a1a]">
+                {fmt(smartTotal)}
+              </span>
+            </div>
+            <div className="px-2 py-2 flex items-center border-l border-gray-200">
+              <span className="text-[10.5px] font-bold text-[#1a1a1a]">
+                {fmt(basicTotal)}
+              </span>
+            </div>
           </div>
-          <div className="px-2 py-2 flex items-center border-l border-gray-200">
-            <span className="text-[10.5px] font-bold text-[#1a1a1a]">
-              {fmt(premiumTotal)}
-            </span>
-          </div>
-          <div className="px-2 py-2 flex items-center border-l border-gray-200 bg-[#FFF7ED]">
-            <span className="text-[10.5px] font-bold text-[#1a1a1a]">
-              {fmt(smartTotal)}
-            </span>
-          </div>
-          <div className="px-2 py-2 flex items-center border-l border-gray-200">
-            <span className="text-[10.5px] font-bold text-[#1a1a1a]">
-              {fmt(basicTotal)}
-            </span>
-          </div>
-        </div>
+        )}
 
-        {/* Subsidy Amount */}
-        <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-gray-200 bg-[#F4F4F6] items-stretch">
-          <div className="px-3 py-2 flex items-center">
-            <span className="text-[10.5px] font-bold text-[#1a1a1a]">
-              {t.subsidyAmount}
-            </span>
+        {/* Subsidy Amount — dropped entirely for a Non-DCR customer */}
+        {hasSubsidy && (
+          <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-gray-200 bg-[#F4F4F6] items-stretch">
+            <div className="px-3 py-2 flex items-center">
+              <span className="text-[10.5px] font-bold text-[#1a1a1a]">
+                {t.subsidyAmount}
+              </span>
+            </div>
+            <div className="px-2 py-2 flex items-center border-l border-gray-200">
+              <span className="text-[10.5px] font-bold text-[#16a34a]">
+                {fmt(subsidy)}
+              </span>
+            </div>
+            <div className="px-2 py-2 flex items-center border-l border-gray-200 bg-[#FFF7ED]">
+              <span className="text-[10.5px] font-bold text-[#16a34a]">
+                {fmt(subsidy)}
+              </span>
+            </div>
+            <div className="px-2 py-2 flex items-center border-l border-gray-200">
+              <span className="text-[10.5px] font-bold text-[#16a34a]">
+                {fmt(subsidy)}
+              </span>
+            </div>
           </div>
-          <div className="px-2 py-2 flex items-center border-l border-gray-200">
-            <span className="text-[10.5px] font-bold text-[#16a34a]">
-              {fmt(subsidy)}
-            </span>
-          </div>
-          <div className="px-2 py-2 flex items-center border-l border-gray-200 bg-[#FFF7ED]">
-            <span className="text-[10.5px] font-bold text-[#16a34a]">
-              {fmt(subsidy)}
-            </span>
-          </div>
-          <div className="px-2 py-2 flex items-center border-l border-gray-200">
-            <span className="text-[10.5px] font-bold text-[#16a34a]">
-              {fmt(subsidy)}
-            </span>
-          </div>
-        </div>
+        )}
 
-        {/* Total System Cost After Subsidy */}
+        {/* Final cost the customer pays */}
         <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-gray-200 bg-[#16a34a] items-stretch">
           <div className="px-3 py-2.5 flex items-center">
             <span className="text-[10.5px] font-bold text-white leading-tight">
-              {t.totalAfterSubsidy}
+              {hasSubsidy ? t.totalAfterSubsidy : t.totalSystemCost}
             </span>
           </div>
           <div className="px-2 py-2.5 flex items-center border-l border-[#2fb35d]">
             <span className="text-[10.5px] font-bold text-white">
-              {fmt(premiumAfterSubsidy)}
+              {fmt(premiumFinal)}
             </span>
           </div>
           <div className="px-2 py-2.5 flex items-center border-l border-[#2fb35d]">
             <span className="text-[10.5px] font-bold text-white">
-              {fmt(smartAfterSubsidy)}
+              {fmt(smartFinal)}
             </span>
           </div>
           <div className="px-2 py-2.5 flex items-center border-l border-[#2fb35d]">
             <span className="text-[10.5px] font-bold text-white">
-              {fmt(basicAfterSubsidy)}
+              {fmt(basicFinal)}
             </span>
           </div>
         </div>

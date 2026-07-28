@@ -21,6 +21,8 @@ const en = {
       "Empowering Kerala homes with clean energy, smart savings, and the joy of sustainability.",
     statSubsidyMain: "₹78,000 Subsidy",
     statSubsidySub: "PM Surya Ghar – guaranteed",
+    statWarrantyMain: "25-Year Warranty",
+    statWarrantySub: "Performance guaranteed",
     statHomesMain: "300+ Homes",
     statHomesSub: "Installed in Kerala",
     statMnreMain: "MNRE Empanelled",
@@ -149,6 +151,8 @@ const en = {
     title: "Three Options. One Smart Choice.",
     subtitle:
       "All prices shown after ₹78,000 PM Surya Ghar subsidy. Pick what fits your home.",
+    subtitleNoSubsidy:
+      "All prices shown are the full system cost — PM Surya Ghar subsidy is not applicable. Pick what fits your home.",
     premiumName: "Premium System",
     smartName: "Smart System",
     basicName: "Basic System",
@@ -162,6 +166,8 @@ const en = {
     smartEmiNote: "Net positive from Day 1: saving +₹1,280–1,760/mo",
     basicEmi: "EMI (5yr): ~₹2,490/mo",
     basicEmiNote: "Net saving: +₹2,710–3,210/mo even during EMI",
+    emiNoSubsidy: "EMI (5yr): ~₹{amount}/mo",
+    emiNoteNoSubsidy: "On the full system cost, without subsidy",
     itemsHeader: "Items",
     comparisonRows: [
       {
@@ -632,6 +638,7 @@ const en = {
     emiValue: "~₹{amount}/month",
     netMonthlyDuringEmi: "Net monthly during EMI",
     netMonthlyValue: "+₹{min}–{max} (positive from Day 1)",
+    netMonthlyValuePlain: "₹{min}–{max}",
     readyTitle: "💡 Keep the Power On, Even During Outages.",
     readySubtitle:
       "Call us to learn more about hybrid solar — the new solution more Kerala homes are choosing.",
@@ -679,6 +686,8 @@ const ml: QuotationTranslation = {
       "സുരക്ഷിതമായ ഊർജ്ജം, മികച്ച ലാഭം, ദീർഘകാല സാമ്പത്തിക സുരക്ഷ — നിങ്ങളുടെ വീടിനായി.",
     statSubsidyMain: "₹78,000 സബ്സിഡി",
     statSubsidySub: "PM സൂര്യ ഘർ പദ്ധതിയിലൂടെ",
+    statWarrantyMain: "25 വർഷ വാറന്റി",
+    statWarrantySub: "പ്രകടനം ഉറപ്പ്",
     statHomesMain: "300+ വീടുകളിൽ",
     statHomesSub: "വിജയകരമായ ഇൻസ്റ്റലേഷനുകൾ",
     statMnreMain: "MNRE Government",
@@ -842,10 +851,14 @@ const ml: QuotationTranslation = {
     title: "മൂന്ന് ഓപ്ഷനുകൾ. ഒരു മികച്ച തീരുമാനം.",
     subtitle:
       "₹78,000 പി.എം. സൂര്യ ഘർ സബ്‌സിഡിക്ക് ശേഷമുള്ള വിലകൾ താഴെ നൽകിയിരിക്കുന്നു.",
+    subtitleNoSubsidy:
+      "കാണിച്ചിരിക്കുന്ന വിലകൾ സിസ്റ്റത്തിന്റെ മൊത്തം വിലയാണ് — പി.എം. സൂര്യ ഘർ സബ്‌സിഡി ബാധകമല്ല.",
     premiumName: "പ്രീമിയം സിസ്റ്റം",
     smartName: "സ്മാർട്ട് സിസ്റ്റം",
     basicName: "ബേസിക് സിസ്റ്റം",
     afterSubsidy: "₹78,000 Subsidy ലഭിച്ച ശേഷം",
+    emiNoSubsidy: "EMI (5 വർഷം): ~₹{amount}/മാസം",
+    emiNoteNoSubsidy: "സബ്‌സിഡി ഇല്ലാതെ, മൊത്തം വിലയ്ക്ക്",
     itemsHeader: "ഇനം",
     comparisonRows: [
       {
@@ -1195,6 +1208,7 @@ const ml: QuotationTranslation = {
     emiOption: "EMI പദ്ധതി (5 വർഷം, ഏകദേശം 9%)",
     netMonthlyDuringEmi: "EMI അടയ്ക്കുന്ന കാലത്തും പ്രതിമാസ ലാഭം",
     netMonthlyValue: "+₹{min}–{max} ആദ്യ മാസം മുതൽ ലാഭം",
+    netMonthlyValuePlain: "₹{min}–{max}",
     readyTitle: "💡 പവർ കട്ട് സമയത്തും വൈദ്യുതി ഉറപ്പാക്കാം.",
     readySubtitle:
       "ഹൈബ്രിഡ് സോളാർ സിസ്റ്റത്തെക്കുറിച്ച് കൂടുതൽ അറിയാം ഇപ്പോൾ തന്നെ വിളിക്കൂ — കേരളത്തിലെ വീടുകൾ കൂടുതൽ തിരഞ്ഞെടുക്കുന്ന പുതിയ പരിഹാരം.",

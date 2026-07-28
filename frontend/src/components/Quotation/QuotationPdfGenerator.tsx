@@ -19,6 +19,7 @@ import type { QuotationBom } from "@/services/bomService";
 import { QuotationLanguageProvider } from "./i18n/QuotationLanguageContext";
 import { quotationFontClass } from "./i18n/quotationFonts";
 import type { QuotationLanguage } from "./i18n/quotationStrings";
+import { subsidyForEligibility } from "./subsidy";
 
 export interface QuotationPdfData {
   customerName: string;
@@ -26,6 +27,8 @@ export interface QuotationPdfData {
   phoneNumber: string;
   /** Language the customer asked the quotation in; defaults to English. */
   preferredLanguage?: QuotationLanguage;
+  /** PM Surya Ghar eligibility picked on the details form (DCR / Non-DCR). */
+  subsidyEligibility?: string;
   pincode: string;
   monthlyBill: number | "";
   systemSize: string;
@@ -54,6 +57,7 @@ export default function QuotationPdfGenerator({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isRendered, setIsRendered] = useState(false);
   const language: QuotationLanguage = data.preferredLanguage ?? "English";
+  const subsidy = subsidyForEligibility(data.subsidyEligibility);
 
   const logo =
     "https://gym-manager-pull.b-cdn.net/golden_ray/home/logo_header.png";
@@ -210,6 +214,7 @@ export default function QuotationPdfGenerator({
         <PageShell>
           <Page1Content
             quotationData={data}
+            subsidy={subsidy}
             quoteNo={quoteNo}
             currentDate={formatDate(currentDate)}
             validUntilDate={formatDate(validUntilDate)}
@@ -232,7 +237,7 @@ export default function QuotationPdfGenerator({
         </PageShell>
 
         <PageShell>
-          <Page4Content />
+          <Page4Content subsidy={subsidy} />
         </PageShell>
 
         <PageShell>
@@ -247,6 +252,7 @@ export default function QuotationPdfGenerator({
           <Page7Content
             systemPrice={data.systemPrice}
             systemSize={data.systemSize}
+            subsidy={subsidy}
           />
         </PageShell>
 
@@ -274,6 +280,7 @@ export default function QuotationPdfGenerator({
             monthlyBill={data.monthlyBill}
             systemPrice={data.systemPrice}
             emiPerMonth={data.emiPerMonth}
+            subsidy={subsidy}
           />
         </PageShell>
       </div>

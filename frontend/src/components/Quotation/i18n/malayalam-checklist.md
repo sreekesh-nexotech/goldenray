@@ -27,6 +27,8 @@ Total: 415 strings.
 | page1.subheadline | Empowering Kerala homes with clean energy, smart savings, and the joy of sustainability. | സുരക്ഷിതമായ ഊർജ്ജം, മികച്ച ലാഭം, ദീർഘകാല സാമ്പത്തിക സുരക്ഷ — നിങ്ങളുടെ വീടിനായി. |
 | page1.statSubsidyMain | ₹78,000 Subsidy | ₹78,000 സബ്സിഡി |
 | page1.statSubsidySub | PM Surya Ghar – guaranteed | PM സൂര്യ ഘർ പദ്ധതിയിലൂടെ |
+| page1.statWarrantyMain | 25-Year Warranty | 25 വർഷ വാറന്റി |
+| page1.statWarrantySub | Performance guaranteed | പ്രകടനം ഉറപ്പ് |
 | page1.statHomesMain | 300+ Homes | 300+ വീടുകളിൽ |
 | page1.statHomesSub | Installed in Kerala | വിജയകരമായ ഇൻസ്റ്റലേഷനുകൾ |
 | page1.statMnreMain | MNRE Empanelled | MNRE Government |
@@ -162,6 +164,7 @@ Total: 415 strings.
 | page4.smartName | Smart System | സ്മാർട്ട് സിസ്റ്റം |
 | page4.basicName | Basic System | ബേസിക് സിസ്റ്റം |
 | page4.systemSizeLabel | 5 kW Solar System |  |
+| page4.subtitleNoSubsidy | All prices shown are the full system cost — PM Surya Ghar subsidy is not applicable. Pick what fits your home. | കാണിച്ചിരിക്കുന്ന വിലകൾ സിസ്റ്റത്തിന്റെ മൊത്തം വിലയാണ് — പി.എം. സൂര്യ ഘർ സബ്‌സിഡി ബാധകമല്ല. |
 | page4.afterSubsidy | after ₹78,000 subsidy | ₹78,000 Subsidy ലഭിച്ച ശേഷം |
 | page4.recommendedBadge | ★ Recommended – Most Popular |  |
 | page4.premiumEmi | EMI (5yr): ~₹5,390/mo |  |
@@ -170,6 +173,8 @@ Total: 415 strings.
 | page4.smartEmiNote | Net positive from Day 1: saving +₹1,280–1,760/mo |  |
 | page4.basicEmi | EMI (5yr): ~₹2,490/mo |  |
 | page4.basicEmiNote | Net saving: +₹2,710–3,210/mo even during EMI |  |
+| page4.emiNoSubsidy | EMI (5yr): ~₹{amount}/mo | EMI (5 വർഷം): ~₹{amount}/മാസം |
+| page4.emiNoteNoSubsidy | On the full system cost, without subsidy | സബ്‌സിഡി ഇല്ലാതെ, മൊത്തം വിലയ്ക്ക് |
 | page4.itemsHeader | Items | ഇനം |
 | page4.comparisonRows[0].label | Installation: | ഇൻസ്റ്റലേഷൻ |
 | page4.comparisonRows[0].premium | 5–10 Working Days | 5–10 പ്രവൃത്തി ദിവസങ്ങൾ |
@@ -477,6 +482,7 @@ Total: 415 strings.
 | page11.emiValue | ~₹{amount}/month |  |
 | page11.netMonthlyDuringEmi | Net monthly during EMI | EMI അടയ്ക്കുന്ന കാലത്തും പ്രതിമാസ ലാഭം |
 | page11.netMonthlyValue | +₹{min}–{max} (positive from Day 1) | +₹{min}–{max} ആദ്യ മാസം മുതൽ ലാഭം |
+| page11.netMonthlyValuePlain | ₹{min}–{max} | ₹{min}–{max} |
 | page11.readyTitle | 💡 Keep the Power On, Even During Outages. | 💡 പവർ കട്ട് സമയത്തും വൈദ്യുതി ഉറപ്പാക്കാം. |
 | page11.readySubtitle | Call us to learn more about hybrid solar — the new solution more Kerala homes are choosing. | ഹൈബ്രിഡ് സോളാർ സിസ്റ്റത്തെക്കുറിച്ച് കൂടുതൽ അറിയാം ഇപ്പോൾ തന്നെ വിളിക്കൂ — കേരളത്തിലെ വീടുകൾ കൂടുതൽ തിരഞ്ഞെടുക്കുന്ന പുതിയ പരിഹാരം. |
 | page11.priorityTitle | Priority 10-Day Installation | 10 ദിവസത്തിനുള്ളിൽ മുൻഗണനാ ഇൻസ്റ്റലേഷൻ |

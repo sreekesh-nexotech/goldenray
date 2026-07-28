@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { HandCoins, Home, BadgeCheck } from "lucide-react";
+import { HandCoins, Home, BadgeCheck, ShieldCheck } from "lucide-react";
 import { useQuotationStrings } from "./i18n/QuotationLanguageContext";
 import { fill } from "./i18n/quotationStrings";
 
@@ -39,6 +39,8 @@ interface QuotationData {
 
 interface Page1ContentProps {
   quotationData: QuotationData;
+  /** PM Surya Ghar subsidy applicable to this customer; 0 for Non-DCR. */
+  subsidy: number;
   quoteNo: string;
   currentDate: string;
   validUntilDate: string;
@@ -50,6 +52,7 @@ interface Page1ContentProps {
 
 export default function Page1Content({
   quotationData,
+  subsidy,
   quoteNo,
   currentDate,
   validUntilDate,
@@ -60,6 +63,11 @@ export default function Page1Content({
   heroImage,
 }: Page1ContentProps) {
   const { page1: t } = useQuotationStrings();
+
+  // A Non-DCR customer gets no subsidy, so the headline stat leads with the
+  // warranty instead of a subsidy the quotation never applies.
+  const hasSubsidy = subsidy > 0;
+  const StatIcon = hasSubsidy ? HandCoins : ShieldCheck;
 
   return (
     <>
@@ -85,17 +93,17 @@ export default function Page1Content({
       {/* Stats Cards */}
       <div className="grid grid-cols-3 gap-3 mb-3">
         <div className="flex items-center gap-3 p-2">
-          <HandCoins
+          <StatIcon
             size={30}
             strokeWidth={2}
             className="shrink-0 text-[#123532]"
           />
           <div>
             <p className="text-lg font-bold leading-tight text-[#F88A22]">
-              {t.statSubsidyMain}
+              {hasSubsidy ? t.statSubsidyMain : t.statWarrantyMain}
             </p>
             <p className="text-sm leading-tight text-[#4B5563]">
-              {t.statSubsidySub}
+              {hasSubsidy ? t.statSubsidySub : t.statWarrantySub}
             </p>
           </div>
         </div>
