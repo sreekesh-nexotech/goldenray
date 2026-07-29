@@ -12,7 +12,7 @@ export default function Page9Content() {
   return (
     <div className="flex flex-col h-full">
       {/* Title */}
-      <div className="text-center mt-4 mb-10">
+      <div className="text-center mt-4 mb-6">
         <h1 className="text-[28px] font-semibold">
           <span className="text-[#F88A22]">{t.titlePart1}</span>
           <span className="text-[#123532]">{t.titlePart2}</span>
@@ -27,25 +27,25 @@ export default function Page9Content() {
           style={{ zIndex: 0 }}
         />
 
-        <div className="grid grid-cols-6 gap-2">
+        <div className="grid grid-cols-6 gap-3 mx-auto">
           {steps.map((step, idx) => (
-            <div key={idx} className="flex flex-col items-center">
+            <div key={idx} className="flex flex-col items-start ">
               {/* Day circle */}
-              <div className="relative z-10 flex-shrink-0 w-[44px] h-[44px] rounded-full bg-[#123532] flex flex-col items-center justify-center mb-4">
+              <div className="relative z-10 flex-shrink-0 w-[50px] h-[50px] rounded-full bg-[#123532] flex flex-col items-center justify-center mb-4">
                 <span className="text-white text-[12px] font-bold leading-none">
                   {step.day}
                 </span>
-                <span className="text-white text-[5.5px] font-semibold tracking-widest uppercase mt-[2px]">
+                <span className="text-white text-[10px] font-semibold tracking-widest uppercase mt-[2px]">
                   {t.daysLabel}
                 </span>
               </div>
 
               {/* Content */}
-              <div className="text-left w-full">
-                <h3 className="text-[10px] font-bold text-[#1a1a1a] mb-1.5 leading-snug">
+              <div className="text-left w-full px-2">
+                <h3 className="text-[11px] font-bold text-[#1a1a1a] mb-1.5 leading-snug">
                   {step.title}
                 </h3>
-                <p className="text-[8.5px] text-gray-500 leading-relaxed">
+                <p className="text-[10px] text-gray-500 leading-relaxed">
                   {step.description}
                 </p>
               </div>
@@ -59,7 +59,7 @@ export default function Page9Content() {
         <h4 className="text-[12px] font-bold text-[#1a1a1a] tracking-wide mb-1 uppercase">
           {t.refundTitle}
         </h4>
-        <p className="text-[9.5px] text-gray-600 mb-1.5">{t.refundNote}</p>
+        <p className="text-[10px] text-gray-600 mb-1.5">{t.refundNote}</p>
         <p className="text-[11px] font-bold text-[#1a1a1a]">{t.refundValue}</p>
       </div>
 
@@ -67,7 +67,7 @@ export default function Page9Content() {
       <div className="mx-4 grid grid-cols-2 gap-3 mb-2">
         {/* What We Handle */}
         <div className="rounded-lg p-4 bg-[#FEF3E8]">
-          <h4 className="text-[11px] font-bold text-[#1a1a1a] tracking-wide mb-3 uppercase">
+          <h4 className="text-[12px] font-bold text-[#1a1a1a] tracking-wide mb-3 uppercase">
             {t.whatWeHandle}
           </h4>
           <ul className="space-y-2.5">
@@ -88,7 +88,7 @@ export default function Page9Content() {
                     />
                   </svg>
                 </span>
-                <span className="text-[9.5px] text-gray-700 leading-relaxed">
+                <span className="text-[11px] text-gray-700 leading-relaxed">
                   {item}
                 </span>
               </li>
@@ -98,14 +98,14 @@ export default function Page9Content() {
 
         {/* What You Need To Do */}
         <div className="rounded-lg p-4 bg-[#16A34A1A]">
-          <h4 className="text-[11px] font-bold text-[#1a1a1a] tracking-wide mb-3 uppercase">
+          <h4 className="text-[12px] font-bold text-[#1a1a1a] tracking-wide mb-3 uppercase">
             {t.whatYouNeedToDo}
           </h4>
           <ul className="space-y-2.5">
             {youNeedToDo.map((item, idx) => (
               <li key={idx} className="flex items-start gap-2">
                 <span className="flex-shrink-0 w-[12px] h-[12px] rounded-full border-[3px] border-[#F88A22] mt-[2px]" />
-                <span className="text-[9.5px] text-gray-700 leading-relaxed">
+                <span className="text-[11px] text-gray-700 leading-relaxed">
                   {item}
                 </span>
               </li>

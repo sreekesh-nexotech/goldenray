@@ -18,10 +18,10 @@ export default function Page10Content() {
       <div className="space-y-4">
         {t.terms.map((term, idx) => (
           <div key={idx}>
-            <h3 className="text-[12px] font-semibold text-[#123532] mb-1">
+            <h3 className="text-[13px] font-semibold text-[#123532] mb-1">
               {term.title}
             </h3>
-            <p className="text-[10.5px] text-[#123532] leading-relaxed">
+            <p className="text-[11.5px] text-[#123532] leading-relaxed">
               {term.body}
             </p>
           </div>

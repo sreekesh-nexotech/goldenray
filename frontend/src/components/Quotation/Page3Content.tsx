@@ -114,12 +114,12 @@ export default function Page3Content() {
           <span className="text-[#F88A22]">Flarize</span>
           <span className="text-[#1a1a1a]">{t.whyChooseSuffix}</span>
         </h1>
-        <p className="text-[11px] text-[#1a1a1a] leading-relaxed mb-3">
+        <p className="text-[16px] text-[#1a1a1a] leading-relaxed mb-3">
           {t.intro}
         </p>
 
         {/* Our Promise */}
-        <p className="text-[11px] text-[#1a1a1a] leading-relaxed mb-4 pl-3">
+        <p className="text-[14px] text-[#1a1a1a] leading-relaxed mb-4 pl-3">
           &ldquo;<span className="font-bold">{t.promiseLabel}</span>
           {t.promiseBody}&rdquo;
         </p>
@@ -133,10 +133,10 @@ export default function Page3Content() {
             className="border border-[#F8B878] rounded-lg py-2.5 px-1 flex flex-col items-center text-center bg-white"
           >
             <span className="mb-1.5">{statIcons[idx]}</span>
-            <p className="text-[11px] font-bold text-[#F88A22] leading-tight">
+            <p className="text-[13px] font-bold text-[#F88A22] leading-tight">
               {stat.main}
             </p>
-            <p className="text-[8px] text-[#1a1a1a] leading-tight mt-0.5">
+            <p className="text-[13px] text-[#1a1a1a] leading-tight mt-0.5">
               {stat.sub}
             </p>
           </div>

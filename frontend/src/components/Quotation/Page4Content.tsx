@@ -63,7 +63,7 @@ export default function Page4Content({ subsidy }: Page4ContentProps) {
         </span>
       );
     }
-    return <span className="text-[10px] text-[#1a1a1a]">{value}</span>;
+    return <span className="text-[13px] text-[#1a1a1a]">{value}</span>;
   };
 
   return (
@@ -83,11 +83,11 @@ export default function Page4Content({ subsidy }: Page4ContentProps) {
           <h3 className="font-bold text-[#1a1a1a] text-[15px] mb-0.5">
             {t.premiumName}
           </h3>
-          <p className="text-[11px] text-gray-500 mb-3">{t.systemSizeLabel}</p>
+          <p className="text-[13px] text-gray-500 mb-3">{t.systemSizeLabel}</p>
 
           <div className="mb-3">
             {hasSubsidy && (
-              <p className="text-[11px] text-gray-400 line-through">
+              <p className="text-[13px] text-gray-400 line-through">
                 ₹3,38,000
               </p>
             )}
@@ -95,15 +95,15 @@ export default function Page4Content({ subsidy }: Page4ContentProps) {
               {fmt(price("premium"))}
             </p>
             {hasSubsidy && (
-              <p className="text-[10px] text-green-600">{t.afterSubsidy}</p>
+              <p className="text-[12px] text-green-600">{t.afterSubsidy}</p>
             )}
           </div>
 
           <div className="border-t border-gray-200 pt-2 text-center">
-            <p className="text-[12px] font-semibold text-[#F88A22]">
+            <p className="text-[13px] font-semibold text-[#F88A22]">
               {hasSubsidy ? t.premiumEmi : emiLine("premium")}
             </p>
-            <p className="text-[9px] text-gray-500 mt-0.5">
+            <p className="text-[11px] text-gray-500 mt-0.5">
               {hasSubsidy ? t.premiumEmiNote : t.emiNoteNoSubsidy}
             </p>
           </div>
@@ -118,11 +118,11 @@ export default function Page4Content({ subsidy }: Page4ContentProps) {
           <h3 className="font-bold text-[#1a1a1a] text-[15px] mb-0.5 mt-2">
             {t.smartName}
           </h3>
-          <p className="text-[11px] text-gray-500 mb-3">{t.systemSizeLabel}</p>
+          <p className="text-[13px] text-gray-500 mb-3">{t.systemSizeLabel}</p>
 
           <div className="mb-3">
             {hasSubsidy && (
-              <p className="text-[11px] text-gray-400 line-through">
+              <p className="text-[13px] text-gray-400 line-through">
                 ₹2,68,000
               </p>
             )}
@@ -130,15 +130,15 @@ export default function Page4Content({ subsidy }: Page4ContentProps) {
               {fmt(price("smart"))}
             </p>
             {hasSubsidy && (
-              <p className="text-[10px] text-green-600">{t.afterSubsidy}</p>
+              <p className="text-[12px] text-green-600">{t.afterSubsidy}</p>
             )}
           </div>
 
           <div className="border-t border-[#F8D9B8] pt-2 text-center">
-            <p className="text-[12px] font-semibold text-[#F88A22]">
+            <p className="text-[13px] font-semibold text-[#F88A22]">
               {hasSubsidy ? t.smartEmi : emiLine("smart")}
             </p>
-            <p className="text-[9px] text-gray-500 mt-0.5">
+            <p className="text-[11px] text-gray-500 mt-0.5">
               {hasSubsidy ? t.smartEmiNote : t.emiNoteNoSubsidy}
             </p>
           </div>
@@ -149,11 +149,11 @@ export default function Page4Content({ subsidy }: Page4ContentProps) {
           <h3 className="font-bold text-[#1a1a1a] text-[15px] mb-0.5">
             {t.basicName}
           </h3>
-          <p className="text-[11px] text-gray-500 mb-3">{t.systemSizeLabel}</p>
+          <p className="text-[13px] text-gray-500 mb-3">{t.systemSizeLabel}</p>
 
           <div className="mb-3">
             {hasSubsidy && (
-              <p className="text-[11px] text-gray-400 line-through">
+              <p className="text-[13px] text-gray-400 line-through">
                 ₹1,98,000
               </p>
             )}
@@ -161,15 +161,15 @@ export default function Page4Content({ subsidy }: Page4ContentProps) {
               {fmt(price("basic"))}
             </p>
             {hasSubsidy && (
-              <p className="text-[10px] text-green-600">{t.afterSubsidy}</p>
+              <p className="text-[12px] text-green-600">{t.afterSubsidy}</p>
             )}
           </div>
 
           <div className="border-t border-gray-200 pt-2 text-center">
-            <p className="text-[12px] font-semibold text-[#F88A22]">
+            <p className="text-[13px] font-semibold text-[#F88A22]">
               {hasSubsidy ? t.basicEmi : emiLine("basic")}
             </p>
-            <p className="text-[9px] text-gray-500 mt-0.5">
+            <p className="text-[11px] text-gray-500 mt-0.5">
               {hasSubsidy ? t.basicEmiNote : t.emiNoteNoSubsidy}
             </p>
           </div>
@@ -181,29 +181,29 @@ export default function Page4Content({ subsidy }: Page4ContentProps) {
         {/* Header */}
         <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] bg-[#F4F4F6] items-center">
           <div className="px-3 py-2.5">
-            <span className="text-[12px] font-bold text-[#1a1a1a]">
+            <span className="text-[13px] font-bold text-[#1a1a1a]">
               {t.itemsHeader}
             </span>
           </div>
           <div className="px-2 py-1.5 text-center border-l border-white">
-            <p className="text-[12px] font-bold text-[#1a1a1a] leading-tight">
+            <p className="text-[13px] font-bold text-[#1a1a1a] leading-tight">
               {t.premiumName}
             </p>
-            <p className="text-[10px] text-[#1a1a1a]">
+            <p className="text-[13px] text-[#1a1a1a]">
               {fmt(price("premium"))}
             </p>
           </div>
           <div className="px-2 py-1.5 text-center border-l border-white">
-            <p className="text-[12px] font-bold text-[#1a1a1a] leading-tight">
+            <p className="text-[13px] font-bold text-[#1a1a1a] leading-tight">
               {t.smartName}
             </p>
-            <p className="text-[10px] text-[#1a1a1a]">{fmt(price("smart"))}</p>
+            <p className="text-[13px] text-[#1a1a1a]">{fmt(price("smart"))}</p>
           </div>
           <div className="px-2 py-1.5 text-center border-l border-white">
-            <p className="text-[12px] font-bold text-[#1a1a1a] leading-tight">
+            <p className="text-[13px] font-bold text-[#1a1a1a] leading-tight">
               {t.basicName}
             </p>
-            <p className="text-[10px] text-[#1a1a1a]">{fmt(price("basic"))}</p>
+            <p className="text-[13px] text-[#1a1a1a]">{fmt(price("basic"))}</p>
           </div>
         </div>
 
@@ -214,7 +214,7 @@ export default function Page4Content({ subsidy }: Page4ContentProps) {
             className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-gray-200 items-stretch"
           >
             <div className="px-3 py-1.5 flex items-center">
-              <span className="text-[10px] text-[#1a1a1a] leading-snug">
+              <span className="text-[13px] text-[#1a1a1a] leading-snug">
                 {row.label}
               </span>
             </div>

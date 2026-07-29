@@ -114,7 +114,7 @@ export default function Page7Content({
             </span>
           )}
         </h1>
-        <p className="text-[11px] text-gray-600">{t.subtitle}</p>
+        <p className="text-[12px] text-gray-600">{t.subtitle}</p>
       </div>
 
       {/* Specification Table */}
@@ -122,24 +122,24 @@ export default function Page7Content({
         {/* Header */}
         <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr]">
           <div className="px-3 py-2.5 flex items-center">
-            <span className="text-[11px] font-bold text-[#1a1a1a]">
+            <span className="text-[13px] font-bold text-[#1a1a1a]">
               {t.itemsHeader}
             </span>
           </div>
           <div className="px-2 py-2 border-l border-gray-100">
-            <p className="text-[11px] font-bold text-[#1a1a1a] leading-tight">
+            <p className="text-[13px] font-bold text-[#1a1a1a] leading-tight">
               {t.premiumName}
             </p>
             <p className="text-[9px] text-gray-500">{sizeLabel}</p>
           </div>
           <div className="px-2 py-2 border-l border-gray-100 bg-[#FFF7ED]">
-            <p className="text-[11px] font-bold text-[#F88A22] leading-tight">
+            <p className="text-[13px] font-bold text-[#F88A22] leading-tight">
               {t.smartName}
             </p>
             <p className="text-[9px] text-gray-500">{sizeLabel}</p>
           </div>
           <div className="px-2 py-2 border-l border-gray-100">
-            <p className="text-[11px] font-bold text-[#1a1a1a] leading-tight">
+            <p className="text-[13px] font-bold text-[#1a1a1a] leading-tight">
               {t.basicName}
             </p>
             <p className="text-[9px] text-gray-500">{sizeLabel}</p>
@@ -153,22 +153,22 @@ export default function Page7Content({
             className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-gray-200 items-stretch"
           >
             <div className="px-3 py-2 flex items-center">
-              <span className="text-[9.5px] text-[#1a1a1a] leading-snug">
+              <span className="text-[13px] text-[#1a1a1a] leading-snug">
                 {t.specLabels[idx]}
               </span>
             </div>
             <div className="px-2 py-2 flex items-center border-l border-gray-200">
-              <span className="text-[9.5px] text-[#1a1a1a] leading-snug">
+              <span className="text-[13px] text-[#1a1a1a] leading-snug">
                 {row.premium}
               </span>
             </div>
             <div className="px-2 py-2 flex items-center border-l border-gray-200 bg-[#FFF7ED]">
-              <span className="text-[9.5px] text-[#1a1a1a] leading-snug">
+              <span className="text-[13px] text-[#1a1a1a] leading-snug">
                 {row.smart}
               </span>
             </div>
             <div className="px-2 py-2 flex items-center border-l border-gray-200">
-              <span className="text-[9.5px] text-[#1a1a1a] leading-snug">
+              <span className="text-[13px] text-[#1a1a1a] leading-snug">
                 {row.basic}
               </span>
             </div>
@@ -180,22 +180,22 @@ export default function Page7Content({
         {hasSubsidy && (
           <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-gray-300 bg-[#F4F4F6] items-stretch">
             <div className="px-3 py-2 flex items-center">
-              <span className="text-[10.5px] font-bold text-[#1a1a1a]">
+              <span className="text-[14px] font-bold text-[#1a1a1a]">
                 {t.totalSystemCost}
               </span>
             </div>
             <div className="px-2 py-2 flex items-center border-l border-gray-200">
-              <span className="text-[10.5px] font-bold text-[#1a1a1a]">
+              <span className="text-[14px] font-bold text-[#1a1a1a]">
                 {fmt(premiumTotal)}
               </span>
             </div>
             <div className="px-2 py-2 flex items-center border-l border-gray-200 bg-[#FFF7ED]">
-              <span className="text-[10.5px] font-bold text-[#1a1a1a]">
+              <span className="text-[14px] font-bold text-[#1a1a1a]">
                 {fmt(smartTotal)}
               </span>
             </div>
             <div className="px-2 py-2 flex items-center border-l border-gray-200">
-              <span className="text-[10.5px] font-bold text-[#1a1a1a]">
+              <span className="text-[14px] font-bold text-[#1a1a1a]">
                 {fmt(basicTotal)}
               </span>
             </div>
@@ -206,22 +206,22 @@ export default function Page7Content({
         {hasSubsidy && (
           <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-gray-200 bg-[#F4F4F6] items-stretch">
             <div className="px-3 py-2 flex items-center">
-              <span className="text-[10.5px] font-bold text-[#1a1a1a]">
+              <span className="text-[14px] font-bold text-[#1a1a1a]">
                 {t.subsidyAmount}
               </span>
             </div>
             <div className="px-2 py-2 flex items-center border-l border-gray-200">
-              <span className="text-[10.5px] font-bold text-[#16a34a]">
+              <span className="text-[14px] font-bold text-[#16a34a]">
                 {fmt(subsidy)}
               </span>
             </div>
             <div className="px-2 py-2 flex items-center border-l border-gray-200 bg-[#FFF7ED]">
-              <span className="text-[10.5px] font-bold text-[#16a34a]">
+              <span className="text-[14px] font-bold text-[#16a34a]">
                 {fmt(subsidy)}
               </span>
             </div>
             <div className="px-2 py-2 flex items-center border-l border-gray-200">
-              <span className="text-[10.5px] font-bold text-[#16a34a]">
+              <span className="text-[14px] font-bold text-[#16a34a]">
                 {fmt(subsidy)}
               </span>
             </div>
@@ -231,22 +231,22 @@ export default function Page7Content({
         {/* Final cost the customer pays */}
         <div className="grid grid-cols-[1.1fr_1fr_1fr_1fr] border-t border-gray-200 bg-[#16a34a] items-stretch">
           <div className="px-3 py-2.5 flex items-center">
-            <span className="text-[10.5px] font-bold text-white leading-tight">
+            <span className="text-[14px] font-bold text-white leading-tight">
               {hasSubsidy ? t.totalAfterSubsidy : t.totalSystemCost}
             </span>
           </div>
           <div className="px-2 py-2.5 flex items-center border-l border-[#2fb35d]">
-            <span className="text-[10.5px] font-bold text-white">
+            <span className="text-[14px] font-bold text-white">
               {fmt(premiumFinal)}
             </span>
           </div>
           <div className="px-2 py-2.5 flex items-center border-l border-[#2fb35d]">
-            <span className="text-[10.5px] font-bold text-white">
+            <span className="text-[14px] font-bold text-white">
               {fmt(smartFinal)}
             </span>
           </div>
           <div className="px-2 py-2.5 flex items-center border-l border-[#2fb35d]">
-            <span className="text-[10.5px] font-bold text-white">
+            <span className="text-[14px] font-bold text-white">
               {fmt(basicFinal)}
             </span>
           </div>
