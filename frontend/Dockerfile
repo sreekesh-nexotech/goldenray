@@ -26,7 +26,22 @@ ENV NEXT_PUBLIC_BLOG_API_BASE_URL=$NEXT_PUBLIC_BLOG_API_BASE_URL
 
 RUN npm run build
 
-# Stage 2: Production image
+# Stage 2 (dev only): dependencies without a production build. The source is
+# bind-mounted by docker-compose.override.yml and `next dev` compiles on the
+# fly, so a code change never needs an image rebuild. Not used in production —
+# the final stage below stays the default build target.
+FROM node:18-alpine AS dev
+
+RUN apk add --no-cache build-base vips-dev
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --include=optional
+
+EXPOSE 3000
+CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
+
+# Stage 3: Production image
 FROM node:18-alpine
 WORKDIR /app
 COPY --from=builder /app/.next ./.next

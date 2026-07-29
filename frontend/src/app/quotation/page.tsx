@@ -22,6 +22,7 @@ import { quotationFontClass } from "@/components/Quotation/i18n/quotationFonts";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
 import type { QuotationBom } from "@/services/bomService";
 import { subsidyForEligibility } from "@/components/Quotation/subsidy";
+import { sampleQuotationData } from "@/components/Quotation/sampleQuotationData";
 
 interface QuotationData {
   customerName: string;
@@ -52,6 +53,8 @@ export default function QuotationPage() {
   );
   const [loading, setLoading] = useState(true);
   const [quoteNo, setQuoteNo] = useState("");
+  const [languageOverride, setLanguageOverride] =
+    useState<QuotationLanguage | null>(null);
 
   // Static data
   const currentDate = new Date();
@@ -80,10 +83,21 @@ export default function QuotationPage() {
     const random = String(Math.floor(Math.random() * 999)).padStart(3, "0");
     setQuoteNo(`QUO-GR-AS-${year}-${month}-${random}`);
 
+    const lang = new URLSearchParams(window.location.search)
+      .get("lang")
+      ?.toLowerCase();
+    if (lang === "ml" || lang === "malayalam") setLanguageOverride("Malayalam");
+    else if (lang === "en" || lang === "english") setLanguageOverride("English");
+
     // Get data from sessionStorage
     const storedData = sessionStorage.getItem("quotationData");
     if (storedData) {
       setQuotationData(JSON.parse(storedData));
+    } else if (process.env.NODE_ENV !== "production") {
+      // Dev convenience: render a sample quote so /quotation can be opened
+      // directly and edited live, instead of having to redo the calculator
+      // flow after every change. Production still redirects home.
+      setQuotationData(sampleQuotationData);
     } else {
       // Redirect back if no data
       router.push("/");
@@ -105,8 +119,10 @@ export default function QuotationPage() {
 
   const proposalBy = quotationData.bom?.salesPerson || "Golden Ray Team";
   const companyRegistration = quotationData.systemSize;
+  // ?lang=ml (or =en) previews the other language without regenerating the
+  // quote — handy while translating. Falls back to what the customer chose.
   const language: QuotationLanguage =
-    quotationData.preferredLanguage ?? "English";
+    languageOverride ?? quotationData.preferredLanguage ?? "English";
   const subsidy = subsidyForEligibility(quotationData.subsidyEligibility);
 
   return (

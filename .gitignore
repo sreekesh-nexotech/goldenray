@@ -1,3 +1,6 @@
 
 # Docker compose root env (local dev)
 /.env
+
+# Local dev compose overrides (dev servers + bind mounts, never deployed)
+/docker-compose.override.yml
