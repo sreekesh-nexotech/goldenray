@@ -80,9 +80,9 @@ export default function QuotationPdfGenerator({
   const random = String(Math.floor(Math.random() * 999)).padStart(3, "0");
   const quoteNo = `QUO-GR-AS-${year}-${month}-${random}`;
 
-  const proposalBy = data.bom?.salesPerson || "Golden Ray Team";
+  const proposalBy = data.bom?.salesPerson || "Flarize Team";
   const gstNo = "32AAUFG1464A1ZP";
-  const companyRegistration = data.systemSize;
+  const companyRegistration = "U40109KA2021PTC155197";
 
   // Wait for images and webfonts to load after render. Fonts must be ready
   // before rasterising, otherwise the capture bakes in fallback glyphs.

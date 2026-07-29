@@ -117,8 +117,8 @@ export default function QuotationPage() {
     return null;
   }
 
-  const proposalBy = quotationData.bom?.salesPerson || "Golden Ray Team";
-  const companyRegistration = quotationData.systemSize;
+  const proposalBy = quotationData.bom?.salesPerson || "Flarize Team";
+  const companyRegistration =  "U40109KA2021PTC155197";
   // ?lang=ml (or =en) previews the other language without regenerating the
   // quote — handy while translating. Falls back to what the customer chose.
   const language: QuotationLanguage =
