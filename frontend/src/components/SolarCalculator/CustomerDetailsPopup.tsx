@@ -112,13 +112,20 @@ export default function CustomerDetailsPopup({
       bom: bom ?? undefined,
     };
 
-    // Also store in sessionStorage so /quotation/v2 can be opened directly.
+    // Also store in sessionStorage so /quotation/v2 (or /quotation/v2-malayalam)
+    // can be opened directly.
     sessionStorage.setItem("quotationData", JSON.stringify(quotationData));
 
     try {
-      // Chrome renders the real /quotation/v2 page server-side and returns the
-      // PDF, so the download is exactly what the preview page shows.
-      const response = await fetch("/api/quotation/pdf", {
+      // Chrome renders the real /quotation/v2 (or /quotation/v2-malayalam) page
+      // server-side and returns the PDF, so the download is exactly what the
+      // preview page shows. The Malayalam document is a separate page/PDF
+      // pipeline, not a language flag on the English one.
+      const pdfEndpoint =
+        preferredLanguage === "Malayalam"
+          ? "/api/quotation/pdf-malayalam"
+          : "/api/quotation/pdf";
+      const response = await fetch(pdfEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(quotationData),

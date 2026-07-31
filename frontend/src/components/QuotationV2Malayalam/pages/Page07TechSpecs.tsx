@@ -1,7 +1,7 @@
 // Page 7 of the Flarize quotation document (English) — Technical Specifications — full spec comparison table
 import type { CSSProperties } from "react";
 import FooterLocationPin from "../icons/FooterLocationPin";
-import type { QuotationV2Data } from "../quotationV2Data";
+import type { QuotationV2Data } from "../quotationV2MalayalamData";
 
 interface Page07TechSpecsProps {
   className?: string;
@@ -120,9 +120,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 whiteSpace: "pre-wrap"
               }}><span style={{
                   fontSize: 42
-                }}>Technical Specifications  </span><span style={{
-                  fontSize: 42
-                }}>(Equivalent to {data.equivalentWatts})</span></span></div><span style={{
+                }}>സാങ്കേതിക വിവരങ്ങൾ</span></span></div><span style={{
               position: "relative",
               fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
               fontWeight: 500,
@@ -132,7 +130,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               color: "var(--grey)",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}>Every component, every specification — total transparency for your peace of mind.</span></div><div style={{
+            }}>ഓരോ ഘടകത്തിന്റെയും വിവരങ്ങൾ വ്യക്തമായി അവതരിപ്പിക്കുന്നു.</span></div><div style={{
             position: "relative",
             width: 1274,
             height: 1574,
@@ -167,7 +165,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 letterSpacing: "-0.500px",
                 color: "rgb(0,0,0)",
                 flexGrow: 1
-              }}>Items</span></div><div style={{
+              }}>ഇനങ്ങൾ</span></div><div style={{
               gridRow: "1",
               gridColumn: "2",
               position: "relative",
@@ -200,7 +198,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 whiteSpace: "pre-wrap"
               }}><span style={{
                   fontSize: 23
-                }}>Elite System (Micro inverter)</span>{"\n"}<span style={{
+                }}>പ്രീമിയം സിസ്റ്റം</span>{"\n"}<span style={{
                   fontWeight: 300,
                   fontSize: 21
                 }}>{data.sizeLabel}</span></span></div><div style={{
@@ -234,7 +232,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               }}><span style={{
                   color: "rgb(248,138,34)",
                   fontSize: 23
-                }}>Smart System (Premium string)</span>{"\n"}<span style={{
+                }}>സ്മാർട്ട് സിസ്റ്റം</span>{"\n"}<span style={{
                   fontWeight: 300,
                   color: "rgb(248,138,34)",
                   fontSize: 21
@@ -271,7 +269,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 whiteSpace: "pre-wrap"
               }}><span style={{
                   fontSize: 23
-                }}>Essential</span>{"\n"}<span style={{
+                }}>ബേസിക് സിസ്റ്റം</span>{"\n"}<span style={{
                   fontWeight: 300,
                   fontSize: 21
                 }}>{data.sizeLabel}</span></span></div><div style={{
@@ -301,7 +299,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 letterSpacing: "-0.500px",
                 color: "var(--text-2)",
                 flexGrow: 1
-              }}>Solar Module Brand</span></div><div style={{
+              }}>സോളാർ പാനൽ ബ്രാൻഡ്</span></div><div style={{
               gridRow: "2",
               gridColumn: "2",
               position: "relative",
@@ -412,7 +410,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 color: "var(--text-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>Module Power (W) and Type</span></div><div style={{
+              }}>പാനൽ ശേഷിയും ടൈപ്പും</span></div><div style={{
               gridRow: "3",
               gridColumn: "2",
               position: "relative",
@@ -524,7 +522,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 letterSpacing: "-0.500px",
                 color: "var(--text-2)",
                 flexGrow: 1
-              }}>Panel Warranty</span></div><div style={{
+              }}>പാനൽ വാറന്റി</span></div><div style={{
               gridRow: "4",
               gridColumn: "2",
               position: "relative",
@@ -634,7 +632,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 letterSpacing: "-0.500px",
                 color: "var(--text-2)",
                 flexGrow: 1
-              }}>Inverter Type</span></div><div style={{
+              }}>ഇൻവെർട്ടർ ടൈപ്പ്</span></div><div style={{
               gridRow: "5",
               gridColumn: "2",
               position: "relative",
@@ -746,7 +744,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 letterSpacing: "-0.500px",
                 color: "var(--text-2)",
                 flexGrow: 1
-              }}>Inverter Brand & Warranty</span></div><div style={{
+              }}>ഇൻവെർട്ടർ ബ്രാൻഡും വാറന്റിയും</span></div><div style={{
               gridRow: "6",
               gridColumn: "2",
               position: "relative",
@@ -858,7 +856,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 letterSpacing: "-0.500px",
                 color: "var(--text-2)",
                 flexGrow: 1
-              }}>Mounting Structure </span></div><div style={{
+              }}>മൗണ്ടിംഗ് സ്ട്രക്ചർ </span></div><div style={{
               gridRow: "7",
               gridColumn: "2",
               position: "relative",
@@ -1535,7 +1533,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 color: "var(--black)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>Total System Cost</span></div><div style={{
+              }}>ആകെ സിസ്റ്റം വില</span></div><div style={{
               gridRow: "13",
               gridColumn: "2",
               position: "relative",
@@ -1645,7 +1643,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 color: "var(--black)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>Subsidy Amount</span></div><div style={{
+              }}>Subsidy തുക</span></div><div style={{
               gridRow: "14",
               gridColumn: "2",
               position: "relative",

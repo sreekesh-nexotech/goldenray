@@ -68,7 +68,7 @@ export default function QuotationPage() {
     return `${day}/${month}/${year}`;
   };
 
-  const gstNo = "32AAUFG1464A1ZP";
+  const gstNo = "32AAGCF7283D1ZR";
 
   const logo =
     "https://gym-manager-pull.b-cdn.net/golden_ray/home/logo_header.png";
@@ -118,7 +118,7 @@ export default function QuotationPage() {
   }
 
   const proposalBy = quotationData.bom?.salesPerson || "Flarize Team";
-  const companyRegistration =  "U40109KA2021PTC155197";
+  const companyRegistration =  "U43222KL2025PTC098799";
   // ?lang=ml (or =en) previews the other language without regenerating the
   // quote — handy while translating. Falls back to what the customer chose.
   const language: QuotationLanguage =

@@ -1,0 +1,16 @@
+export { default as QuotationV2MalayalamDocument } from "./QuotationV2MalayalamDocument";
+export { QuotationV2MalayalamPages } from "./QuotationV2MalayalamDocument";
+export { default as A4PageFrame } from "./A4PageFrame";
+export { default as SavingsChart } from "./SavingsChart";
+export { default as Page01Cover } from "./pages/Page01Cover";
+export { default as Page02OnamFest } from "./pages/Page02OnamFest";
+export { default as Page03Usage } from "./pages/Page03Usage";
+export { default as Page04WhyFlarize } from "./pages/Page04WhyFlarize";
+export { default as Page05Options } from "./pages/Page05Options";
+export { default as Page06SocialProof } from "./pages/Page06SocialProof";
+export { default as Page07TechSpecs } from "./pages/Page07TechSpecs";
+export { default as Page08Savings } from "./pages/Page08Savings";
+export { default as Page09Journey } from "./pages/Page09Journey";
+export { default as Page10Terms } from "./pages/Page10Terms";
+export { default as Page11Terms2 } from "./pages/Page11Terms2";
+export { default as Page12Summary } from "./pages/Page12Summary";

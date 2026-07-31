@@ -1,0 +1,163 @@
+/* Styles for the Malayalam quotation document.
+ *
+ * Everything is scoped under .quotation-v2 so the design-system tokens
+ * (which carry very generic names like --1, --grey straight from Figma
+ * Variables) cannot leak into the rest of the site.
+ */
+
+/* "Noto Sans Malayalam Condensed": Google serves it as the wdth-62.5 instance
+ * of Noto Sans Malayalam, so the exact instance ships locally under the family
+ * name the document uses. Split per script via unicode-range. */
+@font-face {
+  font-family: "Noto Sans Malayalam Condensed";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/noto-sans-malayalam-condensed/noto-sans-malayalam-cond-malayalam.woff2")
+    format("woff2");
+  unicode-range: U+0307, U+0323, U+0951-0952, U+0964-0965, U+0D00-0D7F, U+1CDA,
+    U+1CF2, U+200C-200D, U+20B9, U+25CC, U+A830-A832;
+}
+@font-face {
+  font-family: "Noto Sans Malayalam Condensed";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/noto-sans-malayalam-condensed/noto-sans-malayalam-cond-latin-ext.woff2")
+    format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Noto Sans Malayalam Condensed";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/noto-sans-malayalam-condensed/noto-sans-malayalam-cond-latin.woff2")
+    format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Design-system tokens (raw Figma Variables) the page components reference. */
+.quotation-v2 {
+  --1-2: rgb(248, 138, 34);
+  --1: rgb(248, 138, 34);
+  --2-2: rgb(18, 53, 50);
+  --2: rgb(18, 53, 50);
+  --3-2: rgb(254, 243, 232);
+  --3: rgb(254, 243, 232);
+  --4-2: rgb(247, 244, 230);
+  --4: rgb(247, 244, 230);
+  --accents-red: rgb(255, 56, 60);
+  --backgrounds-grouped-primary: rgb(242, 242, 247);
+  --black: rgb(0, 0, 0);
+  --blue: rgba(30, 64, 175, 0.2);
+  --grays-gray-5: rgb(229, 229, 234);
+  --green-2-2: rgba(22, 163, 74, 0.1);
+  --green-2: rgb(0, 129, 48);
+  --green-3: rgb(18, 53, 50);
+  --green1: rgb(0, 129, 48);
+  --green: rgb(22, 163, 74);
+  --grey-2: rgba(0, 0, 0, 0.2);
+  --grey: rgb(68, 68, 68);
+  --greyy2: rgb(117, 117, 117);
+  --icon-bg: rgba(178, 178, 178, 0.2);
+  --labels-vibrant-primary: rgb(26, 26, 26);
+  --light-grey: rgb(243, 244, 246);
+  --p1: rgb(248, 138, 34);
+  --primary: rgb(247, 186, 65);
+  --red-2: rgb(220, 38, 38);
+  --red: rgb(220, 38, 38);
+  --sec: rgb(7, 74, 77);
+  --text-1: rgba(0, 0, 0, 0.2);
+  --text-2: rgb(68, 68, 68);
+  --text: rgb(68, 68, 68);
+}
+
+/* Every page component still writes `fontFamily: "var(--font-poppins), Poppins, ..."`
+ * verbatim (copied from the English pages) — redefining the custom property
+ * here, instead of editing each of those inline styles, repaints the whole
+ * document in Noto Sans Malayalam without touching page markup. */
+.quotation-v2-ml {
+  --font-poppins: var(--font-noto-malayalam);
+  --font-inter: var(--font-noto-malayalam);
+  --font-hanken-grotesk: var(--font-noto-malayalam);
+}
+
+/* Bitmap crops extracted from the Figma file (generated positions/sizes —
+ * do not hand-tune). One rule per line. */
+.quotation-v2 .fig-asset-0701f7494693611f-5d8c127c { background: url(/quotation-v2/assets/0701f7494693611f.jpg) 49.674% 61.761% / 129.135% 146.664% no-repeat; }
+.quotation-v2 .fig-asset-2c1b68d43856ffd7 { background: url(/quotation-v2/assets/2c1b68d43856ffd7.png) center / cover no-repeat; }
+.quotation-v2 .fig-asset-3505ba533a4c31a4 { background: url(/quotation-v2/assets/3505ba533a4c31a4.png) center / cover no-repeat; }
+.quotation-v2 .fig-asset-46044665435adb03-898fb5cd { background: url(/quotation-v2/assets/46044665435adb03.png) 51.825% 49.985% / 134.921% 137.600% no-repeat; }
+.quotation-v2 .fig-asset-67f845a3da270fe1-f735f282 { background: url(/quotation-v2/assets/67f845a3da270fe1.png) 52.239% 50.002% / 117.448% 100.337% no-repeat; }
+.quotation-v2 .fig-asset-8b319f8907bd6fc0 { background: url(/quotation-v2/assets/8b319f8907bd6fc0.png) center / cover no-repeat; }
+.quotation-v2 .fig-asset-91ca06ccd699e450 { background: url(/quotation-v2/assets/91ca06ccd699e450.png) center / cover no-repeat; }
+.quotation-v2 .fig-asset-a633cb1664c8569f-76d774a5 { background: url(/quotation-v2/assets/a633cb1664c8569f.png) 50% 50% / 151.062% 100% no-repeat; }
+.quotation-v2 .fig-asset-db0497502244a62d-3df8ef3e { background: url(/quotation-v2/assets/db0497502244a62d.png) 50.579% 46.318% / 134.953% 632.911% no-repeat; }
+.quotation-v2 .fig-asset-efb490138fedbb55-85f393ff { background: url(/quotation-v2/assets/efb490138fedbb55.jpg) 0% 50% / 101.466% 110.259% no-repeat; }
+.quotation-v2 .fig-asset-fb37b4210913ca92-fba75ad2 { background: url(/quotation-v2/assets/fb37b4210913ca92.png) 50% 43.496% / 100% 164.661% no-repeat; }
+.quotation-v2 .fig-asset-d8cfe15f1edf44e1-hero { background: url(/quotation-v2/assets/d8cfe15f1edf44e1.jpg) 50% 50% / 100% 104.271% no-repeat; }
+.quotation-v2 .fig-asset-dbb05df00ee3d6d3-card { background: url(/quotation-v2/assets/dbb05df00ee3d6d3.jpg) 50% 50% / 113.333% 100% no-repeat; }
+.quotation-v2 .fig-asset-3fbe4a9660430870-card { background: url(/quotation-v2/assets/3fbe4a9660430870.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-0fa2940cc26cbd37-card { background: url(/quotation-v2/assets/0fa2940cc26cbd37.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-95b00dab74228195-card { background: url(/quotation-v2/assets/95b00dab74228195.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-1bdf2d751001a1ca-card { background: url(/quotation-v2/assets/1bdf2d751001a1ca.jpg) 50% 50% / 113.333% 100% no-repeat; }
+.quotation-v2 .fig-asset-16e4761db567b5c1-card { background: url(/quotation-v2/assets/16e4761db567b5c1.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-f30995db0d999969-card { background: url(/quotation-v2/assets/f30995db0d999969.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-4e88f9f7a610e4c5-card { background: url(/quotation-v2/assets/4e88f9f7a610e4c5.jpg) center / cover no-repeat; }
+
+/* A4 sheet: the design canvas is 1440×2038px; 210mm = 793.7px at CSS 96dpi,
+ * so the canvas is scaled by 793.7/1440 ≈ 0.551181 to fill the sheet width.
+ * The ~0.8px of scaled height beyond 297mm is clipped by overflow:hidden so
+ * printing never spills onto an extra blank sheet. */
+.quotation-v2 .qv2-sheet {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  overflow: hidden;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.quotation-v2 .qv2-canvas {
+  width: 1440px;
+  height: 2038px;
+  transform: scale(0.551181);
+  transform-origin: top left;
+}
+
+@media screen {
+  .quotation-v2 .qv2-sheet {
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.1),
+      0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  .quotation-v2 .qv2-zoom-wrap {
+    zoom: 1 !important;
+  }
+
+  .quotation-v2 .qv2-sheet {
+    box-shadow: none;
+    break-after: page;
+  }
+  .quotation-v2 .qv2-sheet:last-child {
+    break-after: auto;
+  }
+}

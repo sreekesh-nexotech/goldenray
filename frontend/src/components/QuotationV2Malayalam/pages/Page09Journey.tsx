@@ -1,7 +1,7 @@
-// Page 9 of the Flarize quotation document (English) — From Booking to Savings — Step by Step timeline
+// Page 9 of the Flarize quotation document (Malayalam) — From Booking to Savings — Step by Step timeline
 import type { CSSProperties } from "react";
 import FooterLocationPin from "../icons/FooterLocationPin";
-import type { QuotationV2Data } from "../quotationV2Data";
+import type { QuotationV2Data } from "../quotationV2MalayalamData";
 
 interface Page09JourneyProps {
   className?: string;
@@ -124,9 +124,9 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                 letterSpacing: "-0.500px",
                 color: "var(--1)",
                 flexShrink: 0
-              }}>From Booking to Savings — <span style={{
+              }}>ബുക്കിംഗ് മുതൽ ലാഭം വരെ — <span style={{
                   color: "rgb(18,53,50)"
-                }}>Step by Step</span></span></div><div style={{
+                }}>ഓരോ ഘട്ടവും വ്യക്തമായി</span></span></div><div style={{
               position: "relative",
               display: "flex",
               flexDirection: "column",
@@ -193,7 +193,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         color: "rgb(17,24,39)",
                         flexShrink: 0,
                         alignSelf: "stretch"
-                      }}>DAYS</span></div><svg width={213} height={1} viewBox="0 -0.500 213 1" fill="none" style={{
+                      }}>ദിവസം</span></div><svg width={213} height={1} viewBox="0 -0.500 213 1" fill="none" style={{
                       position: "absolute",
                       left: 32,
                       top: 35.75,
@@ -252,7 +252,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                           color: "rgb(17,24,39)",
                           flexShrink: 0,
                           alignSelf: "stretch"
-                        }}>DAYS</span></div><svg width={213} height={1} viewBox="0 -0.500 213 1" fill="none" style={{
+                        }}>ദിവസം</span></div><svg width={213} height={1} viewBox="0 -0.500 213 1" fill="none" style={{
                         position: "absolute",
                         left: 70,
                         top: 35.75,
@@ -311,7 +311,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         color: "rgb(17,24,39)",
                         flexShrink: 0,
                         alignSelf: "stretch"
-                      }}>DAYS</span></div><svg width={213} height={1} viewBox="0 -0.500 213 1" fill="none" style={{
+                      }}>ദിവസം</span></div><svg width={213} height={1} viewBox="0 -0.500 213 1" fill="none" style={{
                       position: "absolute",
                       left: 91.906,
                       top: 35.75,
@@ -370,7 +370,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         color: "rgb(17,24,39)",
                         flexShrink: 0,
                         alignSelf: "stretch"
-                      }}>DAYS</span></div><svg width={213} height={1} viewBox="0 -0.500 213 1" fill="none" style={{
+                      }}>ദിവസം</span></div><svg width={213} height={1} viewBox="0 -0.500 213 1" fill="none" style={{
                       position: "absolute",
                       left: 89,
                       top: 36.75,
@@ -435,7 +435,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         color: "rgb(17,24,39)",
                         flexShrink: 0,
                         alignSelf: "stretch"
-                      }}>DAYS</span></div><svg width={200} height={1} viewBox="0 -0.500 200 1" fill="none" style={{
+                      }}>ദിവസം</span></div><svg width={200} height={1} viewBox="0 -0.500 200 1" fill="none" style={{
                       position: "absolute",
                       left: 77,
                       top: 36.75,
@@ -481,7 +481,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                     lineHeight: "32px",
                     letterSpacing: "-0.500px",
                     color: "rgb(17,24,39)"
-                  }}>DAYS</span></div></div><div style={{
+                  }}>ദിവസം</span></div></div><div style={{
                 position: "relative",
                 display: "flex",
                 flexDirection: "column",
@@ -519,7 +519,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "rgb(17,24,39)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Pay ₹5,000 – Slot Locked</span><span style={{
+                    }}>₹5,000 നൽകി നിങ്ങളുടെ സ്ലോട്ട് ഉറപ്പാക്കൂ</span><span style={{
                       position: "relative",
                       fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                       fontWeight: 400,
@@ -529,7 +529,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "var(--grey)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Lock your installation slot with a small booking fee and we’ll begin the technical assessment right away.</span></div><div style={{
+                    }}>ഒരു ചെറിയ ബുക്കിംഗ് തുക നൽകി ഇൻസ്റ്റലേഷൻ സ്ലോട്ട് ഉറപ്പാക്കുകയും, സാങ്കേതിക പരിശോധന ആരംഭിക്കുകയും ചെയ്യും.</span></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
@@ -548,7 +548,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "rgb(17,24,39)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Site Inspection & Documentation</span><span style={{
+                    }}>സൈറ്റ് പരിശോധനയും ഡോക്യുമെന്റേഷൻ നടപടികളും</span><span style={{
                       position: "relative",
                       fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                       fontWeight: 400,
@@ -558,7 +558,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "var(--grey)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Our team visits your site to evaluate roof, wiring, and shading. All measurements and documentation are managed by us.</span></div><div style={{
+                    }}>ഞങ്ങളുടെ ടീം നിങ്ങളുടെ വീടും മേൽക്കൂരയും പരിശോധിക്കും. ആവശ്യമായ അളവുകളും രേഖകളും ഞങ്ങൾ കൈകാര്യം ചെയ്യും.</span></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
@@ -577,7 +577,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "rgb(17,24,39)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Payment and Material Delivery</span><span style={{
+                    }}>പേയ്‌മെന്റും മെറ്റീരിയൽ ഡെലിവറിയും</span><span style={{
                       position: "relative",
                       fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                       fontWeight: 400,
@@ -587,7 +587,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "var(--grey)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Deliver solar panel, inverters and structures; follow up with the next payment installment (80% loan amount)</span></div><div style={{
+                    }}>സോളാർ പാനൽ, ഇൻവെർട്ടർ, സ്ട്രക്ചർ എന്നിവ സൈറ്റിലെത്തിക്കും. തുടർന്ന് ഇൻസ്റ്റലേഷൻ ഘട്ടത്തിലെ പേയ്‌മെന്റ് പൂർത്തിയാക്കാം.</span></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
@@ -606,7 +606,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "rgb(17,24,39)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Installation </span><span style={{
+                    }}>ഇൻസ്റ്റലേഷൻ </span><span style={{
                       position: "relative",
                       fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                       fontWeight: 400,
@@ -616,7 +616,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "var(--grey)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>We handle the full installation and system integration. Once commissioned, your solar system begins producing clean energy.</span></div><div style={{
+                    }}>സിസ്റ്റത്തിന്റെ മുഴുവൻ ഇൻസ്റ്റലേഷനും ഞങ്ങൾ നിർവഹിക്കും. ഇൻസ്റ്റലേഷൻ പൂർത്തിയായാൽ നിങ്ങളുടെ Solar System ഉൽപ്പാദിപ്പിക്കാൻ തുടങ്ങും.</span></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
@@ -635,7 +635,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "rgb(17,24,39)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Commissioning and Customer Orientation</span><span style={{
+                    }}>കമ്മീഷനിംഗും ഉപഭോക്തൃ പരിശീലനവും</span><span style={{
                       position: "relative",
                       fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                       fontWeight: 400,
@@ -645,7 +645,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "var(--grey)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Commission the system and orient the customer on operation and maintenance.</span></div><div style={{
+                    }}>സിസ്റ്റം പ്രവർത്തനക്ഷമമാക്കി ഉപയോഗ രീതികൾ, സുരക്ഷാ നിർദേശങ്ങൾ, അറ്റകുറ്റപ്പണികൾ എന്നിവ വിശദീകരിക്കും.</span></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
@@ -664,7 +664,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "rgb(17,24,39)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Net Meter Installation and Activation</span><span style={{
+                    }}>Net Meter ഇൻസ്റ്റലേഷനും ആക്ടിവേഷനും</span><span style={{
                       position: "relative",
                       fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                       fontWeight: 400,
@@ -674,7 +674,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                       color: "var(--grey)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Install net meter for grid integration, enabling the customer to start using solar power </span></div></div></div></div></div><div style={{
+                    }}>Net Meter സ്ഥാപിച്ച് Grid-ലേക്ക് കണക്ട് ചെയ്യും. തുടർന്ന് Solar വഴി വൈദ്യുതി ഉപയോഗം ആരംഭിക്കാം. </span></div></div></div></div></div><div style={{
             position: "relative",
             overflow: "hidden",
             boxShadow: "0px 0.500px 1px 0px rgba(25,33,61,0.04)",
@@ -707,7 +707,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                 lineHeight: 1.2000000476837158,
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>REFUND FROM KSEB</span><span style={{
+              }}>KSEB-യിൽ നിന്ന് ലഭിക്കുന്ന റീഫണ്ട്</span><span style={{
                 position: "relative",
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                 fontWeight: 400,
@@ -717,7 +717,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                 color: "var(--2-2)",
                 flexShrink: 0,
                 alignSelf: "stretch"
-              }}>(80% of Pre-tax value of registration fee ) ( 1000 per kw + 18% tax ) </span><span style={{
+              }}>രജിസ്ട്രേഷൻ ഫീസിന്റെ Pre-Tax തുകയുടെ 80% വരെ KSEB-യിൽ നിന്ന് തിരികെ ലഭിക്കും. (₹1,000 per kW + 18% GST അടിസ്ഥാനത്തിൽ) </span><span style={{
                 position: "relative",
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                 fontWeight: 600,
@@ -780,7 +780,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                     textTransform: "uppercase",
                     flexShrink: 0,
                     alignSelf: "stretch"
-                  }}> What We Handle</span><div style={{
+                  }}> ഞങ്ങൾ കൈകാര്യം ചെയ്യുന്നത്</span><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
@@ -849,7 +849,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                           lineHeight: "28px",
                           color: "var(--2)",
                           flexShrink: 0
-                        }}>Design the panels according to site-specific requirements</span></div></div><div style={{
+                        }}>നിങ്ങളുടെ വീടിന് അനുയോജ്യമായ Solar System ഡിസൈനിംഗ്</span></div></div><div style={{
                       position: "relative",
                       backgroundColor: "rgba(0,0,0,0)",
                       display: "flex",
@@ -899,7 +899,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         lineHeight: "28px",
                         color: "var(--2)",
                         flexShrink: 0
-                      }}>Analyze the site for shading and optimize panel placement</span></div><div style={{
+                      }}>നിഴൽ പരിശോധനയും പാനൽ സ്ഥാപിക്കാനുള്ള മികച്ച സ്ഥാനം കണ്ടെത്തലും</span></div><div style={{
                       position: "relative",
                       display: "flex",
                       flexDirection: "column",
@@ -958,7 +958,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                           lineHeight: "28px",
                           color: "var(--2)",
                           flexShrink: 0
-                        }}>Procure Solar Panels, Inverter, Structure and BOQ according to project requirements</span></div></div><div style={{
+                        }}>Solar Panel, Inverter, Structure, BOQ എന്നിവയുടെ ക്രമീകരണം</span></div></div><div style={{
                       position: "relative",
                       backgroundColor: "rgba(0,0,0,0)",
                       display: "flex",
@@ -1007,7 +1007,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         lineHeight: "28px",
                         color: "var(--2)",
                         flexGrow: 1
-                      }}>Install all required components, fittings, and equipment</span></div><div style={{
+                      }}>ആവശ്യമായ എല്ലാ ഉപകരണങ്ങളുടെയും ഇൻസ്റ്റലേഷൻ</span></div><div style={{
                       position: "relative",
                       display: "flex",
                       flexDirection: "column",
@@ -1066,7 +1066,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                           lineHeight: "28px",
                           color: "var(--2)",
                           flexShrink: 0
-                        }}>Test and commission the solar power plant, Invite authorities for final approval before commissioning</span></div></div><div style={{
+                        }}>സിസ്റ്റം പരിശോധന, കമ്മീഷനിംഗ്, ആവശ്യമായ അനുമതി നടപടികൾ</span></div></div><div style={{
                       position: "relative",
                       display: "flex",
                       flexDirection: "column",
@@ -1125,7 +1125,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                           lineHeight: "28px",
                           color: "var(--2)",
                           flexShrink: 0
-                        }}>Installation scope is limited to the DC side; solar meter installation is included</span></div></div><div style={{
+                        }}>Solar Meter ഇൻസ്റ്റലേഷൻ ഉൾപ്പെടെയുള്ള DC Side ജോലികൾ</span></div></div><div style={{
                       position: "relative",
                       display: "flex",
                       flexDirection: "column",
@@ -1184,7 +1184,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                           lineHeight: "28px",
                           color: "var(--2)",
                           flexShrink: 0
-                        }}>Train client&apos;s personnel on system operation, safety, and maintenance</span></div></div></div></div></div></div><div style={{
+                        }}>സിസ്റ്റത്തിന്റെ ഉപയോഗം, സുരക്ഷ, പരിപാലനം എന്നിവയെക്കുറിച്ചുള്ള പരിശീലനം</span></div></div></div></div></div></div><div style={{
               position: "relative",
               overflow: "hidden",
               borderRadius: 32,
@@ -1227,7 +1227,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                     textTransform: "uppercase",
                     flexShrink: 0,
                     alignSelf: "stretch"
-                  }}> What You Need to Do</span><div style={{
+                  }}> നിങ്ങൾ ചെയ്യേണ്ടത് ( CUSTOMER SCOPE)</span><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
@@ -1296,7 +1296,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                           lineHeight: "28px",
                           color: "var(--2-2)",
                           flexShrink: 0
-                        }}>Provide a shade-free roof area and a safe, weather-protected space for the inverter.</span></div></div><div style={{
+                        }}>നിഴൽ ഇല്ലാത്ത മേൽക്കൂരയും ഇൻവെർട്ടറിനായി സുരക്ഷിതമായ സ്ഥലവും ഒരുക്കുക</span></div></div><div style={{
                       position: "relative",
                       backgroundColor: "rgba(0,0,0,0)",
                       display: "flex",
@@ -1345,7 +1345,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         lineHeight: "28px",
                         color: "var(--2-2)",
                         flexGrow: 1
-                      }}>Arrange basic installation support, including water, electricity, storage space, and site access and ladder.</span></div><div style={{
+                      }}>വെള്ളം, വൈദ്യുതി, സ്റ്റോറേജ് സൗകര്യം, സൈറ്റ് ആക്‌സസ് എന്നിവ ലഭ്യമാക്കുക</span></div><div style={{
                       position: "relative",
                       backgroundColor: "rgba(0,0,0,0)",
                       display: "flex",
@@ -1394,7 +1394,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         lineHeight: "28px",
                         color: "var(--2-2)",
                         flexGrow: 1
-                      }}>Provide necessary technical provisions such as internet connectivity, termination points, CT/AC components, and upgrades required for HT or generator setups.</span></div><div style={{
+                      }}>Internet Connection, CT/AC Components തുടങ്ങിയ ആവശ്യമായ സാങ്കേതിക സൗകര്യങ്ങൾ ഒരുക്കുക (ആവശ്യമെങ്കിൽ)</span></div><div style={{
                       position: "relative",
                       backgroundColor: "rgba(0,0,0,0)",
                       display: "flex",
@@ -1443,7 +1443,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         lineHeight: "28px",
                         color: "var(--2-2)",
                         flexGrow: 1
-                      }}>Complete any KSEB-related requirements, including net metering formalities, load enhancement, consumer name change, ownership transfer, or other utility-related modifications, if applicable.</span></div><div style={{
+                      }}>Net Metering, Load Enhancement, Name Change, Ownership Transfer തുടങ്ങിയ KSEB നടപടികൾ പൂർത്തിയാക്കുക (ബാധകമെങ്കിൽ)</span></div><div style={{
                       position: "relative",
                       backgroundColor: "rgba(0,0,0,0)",
                       display: "flex",
@@ -1492,7 +1492,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         lineHeight: "28px",
                         color: "var(--2-2)",
                         flexGrow: 1
-                      }}>Pay applicable statutory fees, deposits, registration charges, and other charges imposed by KSEB or relevant authorities.</span></div><div style={{
+                      }}>KSEB അല്ലെങ്കിൽ മറ്റ് അധികാരികൾ ഈടാക്കുന്ന ഫീസ്, ഡെപ്പോസിറ്റ്, രജിസ്ട്രേഷൻ ചാർജുകൾ എന്നിവ അടക്കുക</span></div><div style={{
                       position: "relative",
                       backgroundColor: "rgba(0,0,0,0)",
                       display: "flex",
@@ -1541,7 +1541,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
                         lineHeight: "28px",
                         color: "var(--2-2)",
                         flexGrow: 1
-                      }}>Any civil work, roof repairs, waterproofing, structural modifications, trenching, masonry work, painting, restoration work, or additional structural work required for installation shall be under the customer&apos;s scope unless specifically included in the quotation.</span></div></div></div></div></div></div></div><div style={{
+                      }}>Civil Work, Roof Repair, Waterproofing, Structural Modification, Trenching, Masonry Work തുടങ്ങിയ ജോലികൾ ക്വട്ടേഷനിൽ ഉൾപ്പെടുത്തിയിട്ടില്ലെങ്കിൽ ഉപഭോക്താവിന്റെ ഉത്തരവാദിത്വമായിരിക്കും.</span></div></div></div></div></div></div></div><div style={{
           position: "relative",
           height: 98,
           backgroundColor: "rgb(247,244,230)",

@@ -5,7 +5,7 @@ import TermsPageLayout, { type TermsClause } from "../TermsPageLayout";
 const CLAUSES: TermsClause[] = [
   {
     title: "1. Warranty",
-    body: "Golden Ray Renewable Energy provides a five (5) year warranty for the complete solar power system against manufacturing and technical defects, subject to the terms and conditions mentioned herein. Solar panels, inverters, and other OEM products shall carry warranty coverage as provided by their respective manufacturers.",
+    body: "Golden Ray Renewable Energy provides a five (5) year warranty for the complete solar power system against technical defects, subject to the terms and conditions mentioned herein. Solar panels, inverters, and other OEM products shall carry warranty coverage as provided by their respective manufacturers.",
   },
   {
     title: "2. Warranty Exclusions",
@@ -21,7 +21,7 @@ const CLAUSES: TermsClause[] = [
   },
   {
     title: "5. Service & Training",
-    body: "Basic service and maintenance training shall be provided to the customer at the time of commissioning. Standby inverter support may be provided during inverter repair periods, subject to availability.",
+    body: "Basic service and maintenance training shall be provided to the customer at the time of commissioning. Standby inverter(On-grid) support may be provided during inverter repair periods, subject to availability.",
   },
   {
     title: "6. Payment Terms",

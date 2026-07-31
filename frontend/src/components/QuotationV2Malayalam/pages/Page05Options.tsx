@@ -1,7 +1,7 @@
-// Page 4 of the Flarize quotation document (English) — Three Options. One Smart Choice. — Premium/Smart/Basic comparison table
+// Page 4 of the Flarize quotation document (Malayalam) — Three Options. One Smart Choice. — Premium/Smart/Basic comparison table
 import type { CSSProperties } from "react";
 import FooterLocationPin from "../icons/FooterLocationPin";
-import type { QuotationV2Data } from "../quotationV2Data";
+import type { QuotationV2Data } from "../quotationV2MalayalamData";
 
 interface Page05OptionsProps {
   className?: string;
@@ -97,7 +97,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             color: "var(--2)",
             flexShrink: 0,
             alignSelf: "stretch"
-          }}>Three Options. One Smart Choice.</span><span style={{
+          }}>മൂന്ന് ഓപ്ഷനുകൾ. ഒരു മികച്ച തീരുമാനം.</span><span style={{
             position: "relative",
             fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
             fontWeight: 400,
@@ -152,7 +152,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                 letterSpacing: "-0.500px",
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>Elite System (Micro inverter)</span><div style={{
+              }}>പ്രീമിയം സിസ്റ്റം</span><div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -266,7 +266,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               }}><span style={{
                   color: "rgb(18,53,50)",
                   fontSize: 24
-                }}>EMI (5yr)</span><span style={{
+                }}>EMI (5 വർഷം)</span><span style={{
                   fontSize: 24
                 }}>: </span><span style={{
                   color: "rgb(248,138,34)",
@@ -343,7 +343,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                 letterSpacing: "-0.500px",
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>Smart System ( Premium string)</span><div style={{
+              }}>സ്മാർട്ട് സിസ്റ്റം</span><div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -457,7 +457,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               }}><span style={{
                   color: "rgb(18,53,50)",
                   fontSize: 24
-                }}>EMI (5yr)</span><span style={{
+                }}>EMI (5 വർഷം)</span><span style={{
                   fontSize: 24
                 }}>: </span><span style={{
                   color: "rgb(248,138,34)",
@@ -504,7 +504,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                 letterSpacing: "-0.500px",
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>Essential</span><div style={{
+              }}>ബേസിക് സിസ്റ്റം</span><div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -618,7 +618,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               }}><span style={{
                   color: "rgb(18,53,50)",
                   fontSize: 24
-                }}>EMI (5yr)</span><span style={{
+                }}>EMI (5 വർഷം)</span><span style={{
                   fontSize: 24
                 }}>: </span><span style={{
                   color: "rgb(248,138,34)",
@@ -666,7 +666,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "rgb(0,0,0)",
               flexGrow: 1
-            }}>Items</span></div><div style={{
+            }}>ഇനം</span></div><div style={{
             gridRow: "1",
             gridColumn: "2",
             position: "relative",
@@ -699,7 +699,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Elite System (Micro inverter)</span>{"\n"}<span style={{
+              }}>പ്രീമിയം സിസ്റ്റം</span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.premium.final}</span></span></div><div style={{
@@ -735,7 +735,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Smart System ( Premium string)</span>{"\n"}<span style={{
+              }}>സ്മാർട്ട് സിസ്റ്റം</span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.smart.final}</span></span></div><div style={{
@@ -772,7 +772,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Essential</span>{"\n"}<span style={{
+              }}>ബേസിക് സിസ്റ്റം</span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.basic.final}</span></span></div><div style={{
@@ -804,7 +804,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>Installation:</span></div><div style={{
+            }}>ഇൻസ്റ്റലേഷൻ</span></div><div style={{
             gridRow: "2",
             gridColumn: "2",
             position: "relative",
@@ -835,7 +835,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>5–10 Working Days</span></div><div style={{
+            }}>5–10 പ്രവൃത്തി ദിവസങ്ങൾ</span></div><div style={{
             gridRow: "2",
             gridColumn: "3",
             position: "relative",
@@ -866,7 +866,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>10–15 Working Days</span></div><div style={{
+            }}>10–15 പ്രവൃത്തി ദിവസങ്ങൾ</span></div><div style={{
             gridRow: "2",
             gridColumn: "4",
             position: "relative",
@@ -897,7 +897,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>15–20 Working Days</span></div><div style={{
+            }}>15–20 പ്രവൃത്തി ദിവസങ്ങൾ</span></div><div style={{
             gridRow: "3",
             gridColumn: "1",
             position: "relative",
@@ -926,7 +926,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>Service Response:</span></div><div style={{
+            }}>സർവീസ് റെസ്‌പോൺസ്</span></div><div style={{
             gridRow: "3",
             gridColumn: "2",
             position: "relative",
@@ -957,7 +957,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>24×7 Priority Support</span></div><div style={{
+            }}>24×7 മുൻഗണനാ സേവനം</span></div><div style={{
             gridRow: "3",
             gridColumn: "3",
             position: "relative",
@@ -988,7 +988,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}> Priority Support</span></div><div style={{
+            }}> മുൻഗണനാ സേവനം</span></div><div style={{
             gridRow: "3",
             gridColumn: "4",
             position: "relative",
@@ -1019,7 +1019,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>Business Hours</span></div><div style={{
+            }}>ഓഫീസ് പ്രവർത്തന സമയങ്ങളിൽ</span></div><div style={{
             gridRow: "4",
             gridColumn: "1",
             position: "relative",
@@ -1048,7 +1048,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>Standard Warranty Support</span></div><div style={{
+            }}>സ്റ്റാൻഡേർഡ് വാറന്റി സപ്പോർട്ട്</span></div><div style={{
             gridRow: "4",
             gridColumn: "2",
             position: "relative",
@@ -1175,7 +1175,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>Emergency Visit</span></div><div style={{
+            }}>എമർജൻസി വിസിറ്റ്</span></div><div style={{
             gridRow: "5",
             gridColumn: "2",
             position: "relative",
@@ -1302,7 +1302,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>WhatsApp Support</span></div><div style={{
+            }}>വാട്‌സ്ആപ്പ് സപ്പോർട്ട്</span></div><div style={{
             gridRow: "6",
             gridColumn: "2",
             position: "relative",
@@ -1430,7 +1430,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>Preventive Maintenance</span></div><div style={{
+            }}>പ്രിവന്റീവ് മെയിന്റനൻസ്</span></div><div style={{
             gridRow: "7",
             gridColumn: "2",
             position: "relative",
@@ -1461,7 +1461,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>5 years</span></div><div style={{
+            }}>5 വർഷം</span></div><div style={{
             gridRow: "7",
             gridColumn: "3",
             position: "relative",
@@ -1492,7 +1492,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>5 years</span></div><div style={{
+            }}>5 വർഷം</span></div><div style={{
             gridRow: "7",
             gridColumn: "4",
             position: "relative",
@@ -1523,7 +1523,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>5 years</span></div><div style={{
+            }}>5 വർഷം</span></div><div style={{
             gridRow: "8",
             gridColumn: "1",
             position: "relative",
@@ -1552,7 +1552,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>Annual Health Check</span></div><div style={{
+            }}>വാർഷിക പരിശോധന</span></div><div style={{
             gridRow: "8",
             gridColumn: "2",
             position: "relative",
@@ -1583,7 +1583,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>2 Free Visits (1st Year)</span></div><div style={{
+            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷം)</span></div><div style={{
             gridRow: "8",
             gridColumn: "3",
             position: "relative",
@@ -1614,7 +1614,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>2 Free Visits (1st Year)</span></div><div style={{
+            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷം)</span></div><div style={{
             gridRow: "8",
             gridColumn: "4",
             position: "relative",
@@ -1645,7 +1645,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>2 Free Visits (1st Year)</span></div><div style={{
+            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷം)</span></div><div style={{
             gridRow: "9",
             gridColumn: "1",
             position: "relative",
@@ -1673,7 +1673,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>Panel Cleaning Visit</span></div><div style={{
+            }}>പാനൽ ക്ലീനിംഗ് സന്ദർശനം</span></div><div style={{
             gridRow: "9",
             gridColumn: "2",
             position: "relative",
@@ -1703,7 +1703,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>2 Free Visits (1st Year)</span></div><div style={{
+            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷം)</span></div><div style={{
             gridRow: "9",
             gridColumn: "3",
             position: "relative",
@@ -1733,7 +1733,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>2 Free Visits (1st Year)</span></div><div style={{
+            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷം)</span></div><div style={{
             gridRow: "9",
             gridColumn: "4",
             position: "relative",
@@ -1794,7 +1794,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>Standby Inverter Access</span></div><div style={{
+            }}>സ്റ്റാൻഡ്‌ബൈ ഇൻവെർട്ടർ</span></div><div style={{
             gridRow: "10",
             gridColumn: "2",
             position: "relative",
@@ -1921,7 +1921,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>Priority Service Queue</span></div><div style={{
+            }}>പ്രയോറിറ്റി സർവീസ് ക്യൂ</span></div><div style={{
             gridRow: "11",
             gridColumn: "2",
             position: "relative",
@@ -2049,7 +2049,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>Annual Energy Audit & Report</span></div><div style={{
+            }}>വാർഷിക എനർജി ഓഡിറ്റ് & റിപ്പോർട്ട്</span></div><div style={{
             gridRow: "12",
             gridColumn: "2",
             position: "relative",
@@ -2176,7 +2176,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>Emergency Support</span></div><div style={{
+            }}>എമർജൻസി സപ്പോർട്ട്</span></div><div style={{
             gridRow: "13",
             gridColumn: "2",
             position: "relative",
@@ -2303,7 +2303,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>AMC Discount</span></div><div style={{
+            }}>AMC ഡിസ്‌കൗണ്ട്</span></div><div style={{
             gridRow: "14",
             gridColumn: "2",
             position: "relative",
