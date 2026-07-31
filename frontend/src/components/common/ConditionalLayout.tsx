@@ -17,7 +17,8 @@ export default function ConditionalLayout({
   children,
 }: ConditionalLayoutProps) {
   const pathname = usePathname();
-  const isQuotationPage = pathname === "/quotation";
+  const isQuotationPage =
+    pathname === "/quotation" || (pathname?.startsWith("/quotation/") ?? false);
   // The Content Studio (blog CMS) renders its own full-screen chrome.
   const isStudioPage = pathname?.startsWith("/studio") ?? false;
   const isStandalone = isQuotationPage || isStudioPage;

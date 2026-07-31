@@ -14,6 +14,7 @@ module.exports = {
     "/advanced-calculator",
     "/industrial",
     "/quotation",
+    "/quotation/*",
     "/subsidy",
     "/resources",
   ],
