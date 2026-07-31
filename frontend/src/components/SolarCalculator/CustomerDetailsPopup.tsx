@@ -5,8 +5,10 @@ import dynamic from "next/dynamic";
 import { getQuotationBom, type QuotationBom } from "@/services/bomService";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
 
-const QuotationPdfGenerator = dynamic(
-  () => import("@/components/Quotation/QuotationPdfGenerator"),
+// The redesigned (v2) document is what customers receive; it downloads the
+// PDF rather than opening it in a new tab.
+const QuotationV2PdfGenerator = dynamic(
+  () => import("@/components/QuotationV2/QuotationV2PdfGenerator"),
   { ssr: false },
 );
 
@@ -300,9 +302,9 @@ export default function CustomerDetailsPopup({
           </div>
         </form>
 
-        {/* PDF Generator - renders off-screen and generates PDF */}
+        {/* PDF Generator - renders off-screen and downloads the PDF */}
         {pdfData && (
-          <QuotationPdfGenerator
+          <QuotationV2PdfGenerator
             data={pdfData}
             onComplete={handlePdfComplete}
             onError={handlePdfError}

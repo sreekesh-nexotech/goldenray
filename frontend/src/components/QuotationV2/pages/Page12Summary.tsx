@@ -1,13 +1,17 @@
 // Page 12 of the Flarize quotation document (English) — Your Investment Summary — final pricing + next steps
 import type { CSSProperties } from "react";
+import FooterLocationPin from "../icons/FooterLocationPin";
+import type { QuotationV2Data } from "../quotationV2Data";
 import NotoLightBulb from "../icons/NotoLightBulb";
 
 interface Page12SummaryProps {
   className?: string;
   style?: CSSProperties;
+  /** Derived quotation values for this customer. */
+  data: QuotationV2Data;
 }
 
-export default function Page12Summary({ className, style }: Page12SummaryProps) {
+export default function Page12Summary({ className, style, data }: Page12SummaryProps) {
   return <div className={className} style={{
     position: "relative",
     width: 1440,
@@ -125,7 +129,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
             overflow: "hidden",
             borderRadius: 16,
             backgroundColor: "rgb(255,255,255)",
-            boxShadow: "inset 0 0 0 1px rgb(229,231,235), 0px 4px 6px 0px rgba(0,0,0,0.1), 0px 10px 15px 0px rgba(0,0,0,0.1)",
+            border: "1px solid rgb(229,231,235)", boxShadow: "0px 4px 6px 0px rgba(0,0,0,0.1), 0px 10px 15px 0px rgba(0,0,0,0.1)",
             display: "flex",
             flexDirection: "column",
             padding: "0px 1px 0px 1px",
@@ -153,7 +157,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                 lineHeight: "32px",
                 letterSpacing: "-0.500px",
                 color: "rgb(255,255,255)"
-              }}>5 kW Solar System — Recommended Package</span></div><div style={{
+              }}>{data.sizeLabel} — Recommended Package</span></div><div style={{
               position: "relative",
               backgroundColor: "rgba(0,0,0,0)",
               display: "flex",
@@ -175,7 +179,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                 flexWrap: "nowrap",
                 flexShrink: 0,
                 alignSelf: "stretch"
-              }}><div style={{
+              }}>{data.hasSubsidy && (<div style={{
                   position: "relative",
                   display: "flex",
                   flexDirection: "column",
@@ -219,7 +223,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                       letterSpacing: "-0.500px",
                       color: "rgb(17,24,39)",
                       flexShrink: 0
-                    }}>₹2,68,000</span></div><div style={{
+                    }}>{data.grossCost}</span></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     borderTop: "1px solid rgb(229,231,235)",
@@ -255,7 +259,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                       letterSpacing: "-0.500px",
                       color: "rgb(17,24,39)",
                       flexShrink: 0
-                    }}>– ₹78,000</span></div></div><div style={{
+                    }}>– {data.subsidyAmount}</span></div></div>)}<div style={{
                   position: "relative",
                   display: "flex",
                   flexDirection: "column",
@@ -299,7 +303,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                       letterSpacing: "-0.500px",
                       color: "rgb(248,138,34)",
                       flexShrink: 0
-                    }}>₹1,90,000</span></div></div><div style={{
+                    }}>{data.netCost}</span></div></div><div style={{
                   position: "relative",
                   display: "flex",
                   flexDirection: "column",
@@ -343,7 +347,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                       letterSpacing: "-0.500px",
                       color: "rgb(17,24,39)",
                       flexShrink: 0
-                    }}>₹5,200–5,700</span></div><div style={{
+                    }}>{data.monthlySavingsRange}</span></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     borderTop: "1px solid rgb(229,231,235)",
@@ -379,7 +383,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                       letterSpacing: "-0.500px",
                       color: "rgb(17,24,39)",
                       flexShrink: 0
-                    }}>~3 years</span></div><div style={{
+                    }}>{data.paybackYears}</span></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     borderTop: "1px solid rgb(229,231,235)",
@@ -415,7 +419,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                       letterSpacing: "-0.500px",
                       color: "rgb(17,24,39)",
                       flexShrink: 0
-                    }}>₹13,60,000+</span></div></div><div style={{
+                    }}>{data.netSavings25}</span></div></div><div style={{
                   position: "relative",
                   borderRadius: 12,
                   backgroundColor: "rgba(22,163,74,0.2)",
@@ -464,7 +468,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                       letterSpacing: "-0.500px",
                       color: "rgb(21,128,61)",
                       flexShrink: 0
-                    }}>~₹3,940/month</span></div><div style={{
+                    }}>{data.emi}</span></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     borderTop: "1px solid rgb(229,231,235)",
@@ -500,7 +504,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                       letterSpacing: "-0.500px",
                       color: "rgb(21,128,61)",
                       flexShrink: 0
-                    }}>+₹1,260–1,760 (positive from Day 1)</span></div></div></div></div></div></div><div style={{
+                    }}>{data.netMonthlyDuringEmi}</span></div></div></div></div></div></div><div style={{
           position: "relative",
           width: 1440,
           backgroundColor: "rgb(255,255,255)",
@@ -893,7 +897,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
               color: "var(--red-2)",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}>Offer valid for bookings confirmed before 12 August 2026</span></div></div><div style={{
+            }}>Offer valid for bookings confirmed before {data.offerValidDate}</span></div></div><div style={{
           position: "relative",
           width: 1039,
           height: 149,
@@ -1272,20 +1276,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                 height: 18,
                 overflow: "hidden",
                 flexShrink: 0
-              }}><div style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 18,
-                  height: 18,
-                  border: "1px dashed currentColor",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  fontSize: 10,
-                  opacity: 0.45
-                }}>Vector</div></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+              }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
             position: "absolute",
             left: 85,
             top: 30,

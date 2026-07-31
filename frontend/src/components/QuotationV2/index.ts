@@ -1,5 +1,8 @@
 export { default as QuotationV2Document } from "./QuotationV2Document";
+export { QuotationV2Pages } from "./QuotationV2Document";
+export { default as QuotationV2PdfGenerator } from "./QuotationV2PdfGenerator";
 export { default as A4PageFrame } from "./A4PageFrame";
+export { default as SavingsChart } from "./SavingsChart";
 export { default as Page01Cover } from "./pages/Page01Cover";
 export { default as Page02OnamFest } from "./pages/Page02OnamFest";
 export { default as Page03Usage } from "./pages/Page03Usage";

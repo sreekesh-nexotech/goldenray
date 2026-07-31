@@ -1,12 +1,16 @@
 // Page 9 of the Flarize quotation document (English) — From Booking to Savings — Step by Step timeline
 import type { CSSProperties } from "react";
+import FooterLocationPin from "../icons/FooterLocationPin";
+import type { QuotationV2Data } from "../quotationV2Data";
 
 interface Page09JourneyProps {
   className?: string;
   style?: CSSProperties;
+  /** Derived quotation values for this customer. */
+  data: QuotationV2Data;
 }
 
-export default function Page09Journey({ className, style }: Page09JourneyProps) {
+export default function Page09Journey({ className, style, data }: Page09JourneyProps) {
   return <div className={className} style={{
     position: "relative",
     width: 1440,
@@ -726,7 +730,7 @@ export default function Page09Journey({ className, style }: Page09JourneyProps) 
                 color: "var(--2-2)",
                 flexShrink: 0,
                 alignSelf: "stretch"
-              }}>5kw - Rs 4000</span></div></div><div style={{
+              }}>{data.ksebRefund}</span></div></div><div style={{
             position: "relative",
             width: 1268,
             display: "flex",
@@ -741,7 +745,7 @@ export default function Page09Journey({ className, style }: Page09JourneyProps) 
               overflow: "hidden",
               borderRadius: 32,
               backgroundColor: "var(--3)",
-              boxShadow: "inset 0 0 0 1px rgb(217,219,233), 0px 0.500px 1px 0px rgba(25,33,61,0.04)",
+              border: "1px solid rgb(217,219,233)", boxShadow: "0px 0.500px 1px 0px rgba(25,33,61,0.04)",
               display: "flex",
               flexDirection: "row",
               padding: "36px 24px 36px 24px",
@@ -1188,7 +1192,7 @@ export default function Page09Journey({ className, style }: Page09JourneyProps) 
               overflow: "hidden",
               borderRadius: 32,
               backgroundColor: "rgba(22,163,74,0.1)",
-              boxShadow: "inset 0 0 0 1px rgb(217,219,233), 0px 0.500px 1px 0px rgba(25,33,61,0.04)",
+              border: "1px solid rgb(217,219,233)", boxShadow: "0px 0.500px 1px 0px rgba(25,33,61,0.04)",
               display: "flex",
               flexDirection: "column",
               gap: 28,
@@ -1585,20 +1589,7 @@ export default function Page09Journey({ className, style }: Page09JourneyProps) 
                 height: 18,
                 overflow: "hidden",
                 flexShrink: 0
-              }}><div style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 18,
-                  height: 18,
-                  border: "1px dashed currentColor",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  fontSize: 10,
-                  opacity: 0.45
-                }}>Vector</div></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+              }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
             position: "absolute",
             left: 85,
             top: 30,

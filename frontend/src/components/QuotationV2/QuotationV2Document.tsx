@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import "./quotation-v2.css";
 import { quotationV2FontVariables } from "./fonts";
 import A4PageFrame from "./A4PageFrame";
+import type { QuotationV2Data } from "./quotationV2Data";
 import Page01Cover from "./pages/Page01Cover";
 import Page02OnamFest from "./pages/Page02OnamFest";
 import Page03Usage from "./pages/Page03Usage";
@@ -18,31 +19,58 @@ import Page10Terms from "./pages/Page10Terms";
 import Page11Terms2 from "./pages/Page11Terms2";
 import Page12Summary from "./pages/Page12Summary";
 
+interface PageEntry {
+  id: string;
+  /** Static pages ignore the argument; the rest read their figures from it. */
+  render: (data: QuotationV2Data) => React.ReactNode;
+}
+
 /** Document page order as approved in the design prototype. */
-const PAGES: { id: string; Content: React.ComponentType }[] = [
-  { id: "01-cover", Content: Page01Cover },
-  { id: "02-onam-fest", Content: Page02OnamFest },
-  { id: "03-usage", Content: Page03Usage },
-  { id: "04-why-flarize", Content: Page04WhyFlarize },
-  { id: "05-options", Content: Page05Options },
-  { id: "06-social-proof", Content: Page06SocialProof },
-  { id: "07-tech-specs", Content: Page07TechSpecs },
-  { id: "08-savings", Content: Page08Savings },
-  { id: "09-journey", Content: Page09Journey },
-  { id: "10-terms", Content: Page10Terms },
-  { id: "11-terms-2", Content: Page11Terms2 },
-  { id: "12-summary", Content: Page12Summary },
+const PAGES: PageEntry[] = [
+  { id: "01-cover", render: (d) => <Page01Cover data={d} /> },
+  { id: "02-onam-fest", render: () => <Page02OnamFest /> },
+  { id: "03-usage", render: (d) => <Page03Usage data={d} /> },
+  { id: "04-why-flarize", render: () => <Page04WhyFlarize /> },
+  { id: "05-options", render: (d) => <Page05Options data={d} /> },
+  { id: "06-social-proof", render: (d) => <Page06SocialProof data={d} /> },
+  { id: "07-tech-specs", render: (d) => <Page07TechSpecs data={d} /> },
+  { id: "08-savings", render: (d) => <Page08Savings data={d} /> },
+  { id: "09-journey", render: (d) => <Page09Journey data={d} /> },
+  { id: "10-terms", render: () => <Page10Terms /> },
+  { id: "11-terms-2", render: () => <Page11Terms2 /> },
+  { id: "12-summary", render: (d) => <Page12Summary data={d} /> },
 ];
+
+/**
+ * The 12 design pages in order, each already sized to its A4 sheet.
+ *
+ * Shared by the on-screen document and the PDF generator so both render
+ * exactly the same markup from exactly the same data.
+ */
+export function QuotationV2Pages({
+  data,
+  renderFrame,
+}: {
+  data: QuotationV2Data;
+  renderFrame: (page: {
+    id: string;
+    children: React.ReactNode;
+  }) => React.ReactNode;
+}) {
+  return (
+    <>{PAGES.map(({ id, render }) => renderFrame({ id, children: render(data) }))}</>
+  );
+}
 
 /**
  * The redesigned (v2) 12-page A4 quotation document, stacked vertically and
  * print-ready (one design page per A4 sheet via the browser's print dialog).
- *
- * Customer/pricing values are currently static sample data baked into the
- * page components, pending review of the static quote; they will be swapped
- * for backend-driven props afterwards.
  */
-export default function QuotationV2Document() {
+export default function QuotationV2Document({
+  data,
+}: {
+  data: QuotationV2Data;
+}) {
   const [zoomLevel, setZoomLevel] = useState(1);
 
   useEffect(() => {
@@ -70,11 +98,14 @@ export default function QuotationV2Document() {
         className="qv2-zoom-wrap flex flex-col items-center py-4 gap-4 print:py-0 print:gap-0"
         style={{ zoom: zoomLevel }}
       >
-        {PAGES.map(({ id, Content }) => (
-          <A4PageFrame key={id} pageId={id}>
-            <Content />
-          </A4PageFrame>
-        ))}
+        <QuotationV2Pages
+          data={data}
+          renderFrame={({ id, children }) => (
+            <A4PageFrame key={id} pageId={id}>
+              {children}
+            </A4PageFrame>
+          )}
+        />
       </div>
     </div>
   );

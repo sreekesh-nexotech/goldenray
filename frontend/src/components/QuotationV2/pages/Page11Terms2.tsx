@@ -1,5 +1,6 @@
 // Page 11 of the Flarize quotation document (English) — Terms and Conditions — items 10–17
 import type { CSSProperties } from "react";
+import FooterLocationPin from "../icons/FooterLocationPin";
 
 interface Page11Terms2Props {
   className?: string;
@@ -203,20 +204,7 @@ export default function Page11Terms2({ className, style }: Page11Terms2Props) {
               height: 18,
               overflow: "hidden",
               flexShrink: 0
-            }}><div style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                width: 18,
-                height: 18,
-                border: "1px dashed currentColor",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-                fontSize: 10,
-                opacity: 0.45
-              }}>Vector</div></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+            }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
           position: "absolute",
           left: 85,
           top: 30,

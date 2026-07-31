@@ -1,14 +1,18 @@
 // Page 6 of the Flarize quotation document (English) — Homeowners Around You Have Already Switched — testimonials
 import type { CSSProperties } from "react";
+import FooterLocationPin from "../icons/FooterLocationPin";
+import type { QuotationV2Data } from "../quotationV2Data";
 import LetsIconsArrowLeft from "../icons/LetsIconsArrowLeft";
 import MingcuteLocation2Fill from "../icons/MingcuteLocation2Fill";
 
 interface Page06SocialProofProps {
   className?: string;
   style?: CSSProperties;
+  /** Derived quotation values for this customer. */
+  data: QuotationV2Data;
 }
 
-export default function Page06SocialProof({ className, style }: Page06SocialProofProps) {
+export default function Page06SocialProof({ className, style, data }: Page06SocialProofProps) {
   return <div className={className} style={{
     position: "relative",
     width: 1440,
@@ -114,7 +118,7 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
           overflow: "hidden",
           borderRadius: 28,
           backgroundColor: "rgba(22,163,74,0.1)",
-          boxShadow: "inset 0 0 0 1px rgb(217,219,233), 0px 0.500px 1px 0px rgba(25,33,61,0.04)",
+          border: "1px solid rgb(217,219,233)", boxShadow: "0px 0.500px 1px 0px rgba(25,33,61,0.04)",
           display: "flex",
           flexDirection: "row",
           gap: 24,
@@ -151,9 +155,9 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 28
-              }}>12 homes in Alappuzha (688008</span><span style={{
+              }}>{data.stats.homes} homes in {data.stats.district} ({data.pincode}</span><span style={{
                 fontSize: 28
-              }}>) are already running on Flarize solar. 43 installations across Alappuzha district in 2025 alone.</span></span></div></div><div style={{
+              }}>) are already running on Flarize solar. {data.stats.installations} installations across {data.stats.district} district in {data.stats.year} alone.</span></span></div></div><div style={{
           position: "relative",
           backgroundColor: "rgb(255,255,255)",
           display: "flex",
@@ -190,7 +194,7 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
                 overflow: "hidden",
                 borderRadius: 12,
                 backgroundColor: "rgb(255,255,255)",
-                boxShadow: "inset 0 0 0 1px rgba(68,68,68,0.32)",
+                border: "1px solid rgba(68,68,68,0.32)",
                 display: "flex",
                 flexDirection: "column",
                 gap: 24,
@@ -369,7 +373,7 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
                 overflow: "hidden",
                 borderRadius: 12,
                 backgroundColor: "rgb(255,255,255)",
-                boxShadow: "inset 0 0 0 1px rgba(68,68,68,0.32)",
+                border: "1px solid rgba(68,68,68,0.32)",
                 display: "flex",
                 flexDirection: "column",
                 gap: 24,
@@ -545,7 +549,7 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
                 overflow: "hidden",
                 borderRadius: 12,
                 backgroundColor: "rgb(255,255,255)",
-                boxShadow: "inset 0 0 0 1px rgba(68,68,68,0.32)",
+                border: "1px solid rgba(68,68,68,0.32)",
                 display: "flex",
                 flexDirection: "column",
                 gap: 24,
@@ -717,7 +721,7 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
           overflow: "hidden",
           borderRadius: 28,
           backgroundColor: "var(--3)",
-          boxShadow: "inset 0 0 0 1px rgb(217,219,233), 0px 0.500px 1px 0px rgba(25,33,61,0.04)",
+          border: "1px solid rgb(217,219,233)", boxShadow: "0px 0.500px 1px 0px rgba(25,33,61,0.04)",
           display: "flex",
           flexDirection: "row",
           gap: 24,
@@ -966,20 +970,7 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
                 height: 18,
                 overflow: "hidden",
                 flexShrink: 0
-              }}><div style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 18,
-                  height: 18,
-                  border: "1px dashed currentColor",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  fontSize: 10,
-                  opacity: 0.45
-                }}>Vector</div></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+              }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
             position: "absolute",
             left: 85,
             top: 30,

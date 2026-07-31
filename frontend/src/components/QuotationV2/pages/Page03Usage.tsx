@@ -1,13 +1,17 @@
 // Page 2 of the Flarize quotation document (English) — See Exactly What Your Solar Powers Every Day — appliance usage table
 import type { CSSProperties } from "react";
+import FooterLocationPin from "../icons/FooterLocationPin";
+import type { QuotationV2Data } from "../quotationV2Data";
 import MingcuteArrowLeftFill from "../icons/MingcuteArrowLeftFill";
 
 interface Page03UsageProps {
   className?: string;
   style?: CSSProperties;
+  /** Derived quotation values for this customer. */
+  data: QuotationV2Data;
 }
 
-export default function Page03Usage({ className, style }: Page03UsageProps) {
+export default function Page03Usage({ className, style, data }: Page03UsageProps) {
   return <div className={className} style={{
     position: "relative",
     width: 1440,
@@ -176,7 +180,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                   letterSpacing: "-0.500px",
                   color: "rgb(255,255,255)",
                   flexShrink: 0
-                }}>18–22 units</span><span style={{
+                }}>{data.dailyGeneration}</span><span style={{
                   position: "relative",
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
@@ -219,7 +223,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                   color: "rgb(255,255,255)",
                   flexShrink: 0,
                   alignSelf: "stretch"
-                }}>₹5,500–6,600</span><span style={{
+                }}>{data.monthlyValue}</span><span style={{
                   position: "relative",
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
@@ -1234,7 +1238,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                 overflow: "hidden",
                 borderRadius: 16,
                 backgroundColor: "rgb(255,255,255)",
-                boxShadow: "inset 0 0 0 1px rgb(217,219,233), -2px 2px 4px 0px rgba(0,0,0,0.1)",
+                border: "1px solid rgb(217,219,233)", boxShadow: "-2px 2px 4px 0px rgba(0,0,0,0.1)",
                 display: "flex",
                 flexDirection: "column",
                 gap: 10,
@@ -1273,7 +1277,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                       textBox: "trim-both cap alphabetic",
                       color: "rgb(18,53,50)",
                       flexShrink: 0
-                    }}>18–22</span></div><div style={{
+                    }}>{data.dailyGenerationRange}</span></div><div style={{
                     position: "relative",
                     display: "flex",
                     flexDirection: "row",
@@ -1346,7 +1350,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                 overflow: "hidden",
                 borderRadius: 16,
                 backgroundColor: "rgb(255,255,255)",
-                boxShadow: "inset 0 0 0 1px rgb(217,219,233), -2px 2px 4px 0px rgba(0,0,0,0.1)",
+                border: "1px solid rgb(217,219,233)", boxShadow: "-2px 2px 4px 0px rgba(0,0,0,0.1)",
                 display: "flex",
                 flexDirection: "column",
                 gap: 10,
@@ -1385,7 +1389,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                       textBox: "trim-both cap alphabetic",
                       color: "rgb(18,53,50)",
                       flexShrink: 0
-                    }}>~12</span></div><div style={{
+                    }}>{data.dailyUsage}</span></div><div style={{
                     position: "relative",
                     display: "flex",
                     flexDirection: "row",
@@ -1458,7 +1462,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                 overflow: "hidden",
                 borderRadius: 16,
                 backgroundColor: "rgb(255,255,255)",
-                boxShadow: "inset 0 0 0 1px rgb(217,219,233), -2px 2px 4px 0px rgba(0,0,0,0.1)",
+                border: "1px solid rgb(217,219,233)", boxShadow: "-2px 2px 4px 0px rgba(0,0,0,0.1)",
                 display: "flex",
                 flexDirection: "column",
                 gap: 10,
@@ -1497,7 +1501,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                       textBox: "trim-both cap alphabetic",
                       color: "rgb(18,53,50)",
                       flexShrink: 0
-                    }}>4–8</span></div><div style={{
+                    }}>{data.surplusRange}</span></div><div style={{
                     position: "relative",
                     display: "flex",
                     flexDirection: "row",
@@ -2136,20 +2140,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                 height: 18,
                 overflow: "hidden",
                 flexShrink: 0
-              }}><div style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 18,
-                  height: 18,
-                  border: "1px dashed currentColor",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  fontSize: 10,
-                  opacity: 0.45
-                }}>Vector</div></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+              }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
             position: "absolute",
             left: 85,
             top: 30,

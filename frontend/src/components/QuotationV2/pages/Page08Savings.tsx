@@ -1,13 +1,18 @@
 // Page 8 of the Flarize quotation document (English) — Your Savings Over Time — savings chart + payback
 import type { CSSProperties } from "react";
+import FooterLocationPin from "../icons/FooterLocationPin";
+import type { QuotationV2Data } from "../quotationV2Data";
+import SavingsChart from "../SavingsChart";
 import MingcuteArrowLeftFill from "../icons/MingcuteArrowLeftFill";
 
 interface Page08SavingsProps {
   className?: string;
   style?: CSSProperties;
+  /** Derived quotation values for this customer. */
+  data: QuotationV2Data;
 }
 
-export default function Page08Savings({ className, style }: Page08SavingsProps) {
+export default function Page08Savings({ className, style, data }: Page08SavingsProps) {
   return <div className={className} style={{
     position: "relative",
     width: 1440,
@@ -122,863 +127,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
               backgroundColor: "rgba(0,0,0,0)",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}><div style={{
-                position: "absolute",
-                left: 0,
-                top: 7,
-                width: 612,
-                height: 400,
-                borderRadius: 12,
-                backgroundColor: "rgb(249,250,251)"
-              }}><div style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 520,
-                  height: 1,
-                  backgroundColor: "rgba(0,0,0,0)"
-                }}><div style={{
-                    position: "absolute",
-                    left: 0,
-                    top: 0.5,
-                    width: 605,
-                    height: 1,
-                    backgroundColor: "rgba(0,0,0,0)"
-                  }}><div style={{
-                      position: "absolute",
-                      left: 0,
-                      top: 0,
-                      width: 520,
-                      height: 1,
-                      backgroundColor: "rgba(0,0,0,0)"
-                    }} /><div style={{
-                      position: "absolute",
-                      left: 0,
-                      top: 0,
-                      width: 520,
-                      height: 400,
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexWrap: "nowrap"
-                    }}><div style={{
-                        position: "relative",
-                        width: 520,
-                        overflow: "hidden",
-                        backgroundColor: "rgb(249,250,251)",
-                        flexShrink: 0,
-                        alignSelf: "stretch"
-                      }}><div style={{
-                          position: "absolute",
-                          left: 59.5,
-                          top: 40,
-                          width: 440.5,
-                          height: 320.5,
-                          overflow: "hidden"
-                        }}><div style={{
-                            position: "absolute",
-                            left: 0,
-                            top: 0,
-                            width: 440.5,
-                            height: 320.5,
-                            overflow: "hidden"
-                          }}><div style={{
-                              position: "absolute",
-                              left: 20.5,
-                              top: 20,
-                              width: 400,
-                              height: 280,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div><div style={{
-                              position: "absolute",
-                              left: 0.5,
-                              top: 0,
-                              width: 20,
-                              height: 20,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div><div style={{
-                              position: "absolute",
-                              left: 420.5,
-                              top: 0,
-                              width: 20,
-                              height: 20,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div><div style={{
-                              position: "absolute",
-                              left: 0.5,
-                              top: 300,
-                              width: 20,
-                              height: 20,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div><div style={{
-                              position: "absolute",
-                              left: 420.5,
-                              top: 300,
-                              width: 20,
-                              height: 20,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div><div style={{
-                              position: "absolute",
-                              left: 60.5,
-                              top: 300.5,
-                              width: 320,
-                              height: 20,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div><div style={{
-                              position: "absolute",
-                              left: 20.5,
-                              top: 300.5,
-                              width: 40,
-                              height: 20,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div><div style={{
-                              position: "absolute",
-                              left: 380.5,
-                              top: 300.5,
-                              width: 40,
-                              height: 20,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div><div style={{
-                              position: "absolute",
-                              left: 0,
-                              top: 48,
-                              width: 20,
-                              height: 224,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div><div style={{
-                              position: "absolute",
-                              left: 0,
-                              top: 272,
-                              width: 20,
-                              height: 28,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div><div style={{
-                              position: "absolute",
-                              left: 0,
-                              top: 20,
-                              width: 20,
-                              height: 28,
-                              border: "1px dashed currentColor",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              fontSize: 10,
-                              opacity: 0.45
-                            }}>Vector</div></div></div><div style={{
-                          position: "absolute",
-                          left: 63,
-                          top: 60,
-                          width: 424.5,
-                          height: 296,
-                          overflow: "hidden"
-                        }}><div style={{
-                            position: "absolute",
-                            left: 0,
-                            top: 0,
-                            width: 424.5,
-                            height: 296,
-                            overflow: "hidden"
-                          }}><div style={{
-                              position: "absolute",
-                              left: 17,
-                              top: 0,
-                              width: 400,
-                              height: 280,
-                              overflow: "hidden"
-                            }}><div style={{
-                                position: "absolute",
-                                left: 80,
-                                top: 0,
-                                width: 240,
-                                height: 280,
-                                overflow: "hidden"
-                              }}><svg width={1} height={280} viewBox="-0.500 0 1 280" fill="none" style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 1,
-                                  height: 280,
-                                  color: "rgb(0,0,0)"
-                                }}><path d="M 0 0 L 0 280 Z" fill="rgb(0,0,0)" fillRule="nonzero" /><path d="M 0 0 L -0.5 0 L -0.5 280 L 0 280 L 0.5 280 L 0.5 0 L 0 0 Z" fill="rgb(229,231,235)" fillRule="nonzero" /></svg><svg width={1} height={280} viewBox="-0.500 0 1 280" fill="none" style={{
-                                  position: "absolute",
-                                  left: 80,
-                                  top: 0,
-                                  width: 1,
-                                  height: 280,
-                                  color: "rgb(0,0,0)"
-                                }}><path d="M 0 0 L 0 280 Z" fill="rgb(0,0,0)" fillRule="nonzero" /><path d="M 0 0 L -0.5 0 L -0.5 280 L 0 280 L 0.5 280 L 0.5 0 L 0 0 Z" fill="rgb(229,231,235)" fillRule="nonzero" /></svg><svg width={1} height={280} viewBox="-0.500 0 1 280" fill="none" style={{
-                                  position: "absolute",
-                                  left: 160,
-                                  top: 0,
-                                  width: 1,
-                                  height: 280,
-                                  color: "rgb(0,0,0)"
-                                }}><path d="M 0 0 L 0 280 Z" fill="rgb(0,0,0)" fillRule="nonzero" /><path d="M 0 0 L -0.5 0 L -0.5 280 L 0 280 L 0.5 280 L 0.5 0 L 0 0 Z" fill="rgb(229,231,235)" fillRule="nonzero" /></svg><svg width={1} height={280} viewBox="-0.500 0 1 280" fill="none" style={{
-                                  position: "absolute",
-                                  left: 240,
-                                  top: 0,
-                                  width: 1,
-                                  height: 280,
-                                  color: "rgb(0,0,0)"
-                                }}><path d="M 0 0 L 0 280 Z" fill="rgb(0,0,0)" fillRule="nonzero" /><path d="M 0 0 L -0.5 0 L -0.5 280 L 0 280 L 0.5 280 L 0.5 0 L 0 0 Z" fill="rgb(229,231,235)" fillRule="nonzero" /></svg></div><div style={{
-                                position: "absolute",
-                                left: 0,
-                                top: 45.2,
-                                width: 400,
-                                height: 165.6,
-                                overflow: "hidden"
-                              }}><svg width={400} height={1} viewBox="0 -0.500 400 1" fill="none" style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 165.6,
-                                  width: 400,
-                                  height: 1,
-                                  color: "rgb(0,0,0)"
-                                }}><path d="M 0 0 L 400 0 Z" fill="rgb(0,0,0)" fillRule="nonzero" /><path d="M 0 0 L 0 0.5 L 400 0.5 L 400 0 L 400 -0.5 L 0 -0.5 L 0 0 Z" fill="rgb(229,231,235)" fillRule="nonzero" /></svg><svg width={400} height={1} viewBox="0 -0.500 400 1" fill="none" style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 110.4,
-                                  width: 400,
-                                  height: 1,
-                                  color: "rgb(0,0,0)"
-                                }}><path d="M 0 0 L 400 0 Z" fill="rgb(0,0,0)" fillRule="nonzero" /><path d="M 0 0 L 0 0.5 L 400 0.5 L 400 0 L 400 -0.5 L 0 -0.5 L 0 0 Z" fill="rgb(229,231,235)" fillRule="nonzero" /></svg><svg width={400} height={1} viewBox="0 -0.500 400 1" fill="none" style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 55.2,
-                                  width: 400,
-                                  height: 1,
-                                  color: "rgb(0,0,0)"
-                                }}><path d="M 0 0 L 400 0 Z" fill="rgb(0,0,0)" fillRule="nonzero" /><path d="M 0 0 L 0 0.5 L 400 0.5 L 400 0 L 400 -0.5 L 0 -0.5 L 0 0 Z" fill="rgb(229,231,235)" fillRule="nonzero" /></svg><svg width={400} height={1} viewBox="0 -0.500 400 1" fill="none" style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 400,
-                                  height: 1,
-                                  color: "rgb(0,0,0)"
-                                }}><path d="M 0 0 L 400 0 Z" fill="rgb(0,0,0)" fillRule="nonzero" /><path d="M 0 0 L 0 0.5 L 400 0.5 L 400 0 L 400 -0.5 L 0 -0.5 L 0 0 Z" fill="rgb(229,231,235)" fillRule="nonzero" /></svg></div></div><div style={{
-                              position: "absolute",
-                              left: 17,
-                              top: 0,
-                              width: 400,
-                              height: 280,
-                              overflow: "hidden"
-                            }}><svg width={1} height={280} viewBox="-0.500 0 1 280" fill="none" style={{
-                                position: "absolute",
-                                left: 0,
-                                top: 0,
-                                width: 1,
-                                height: 280,
-                                color: "rgb(0,0,0)"
-                              }}><path d="M 0 0 L 0 280 Z" fill="rgb(0,0,0)" fillRule="nonzero" /><path d="M 0 0 L -0.5 0 L -0.5 280 L 0 280 L 0.5 280 L 0.5 0 L 0 0 Z" fill="rgb(68,68,68)" fillRule="nonzero" /></svg><svg width={400} height={1} viewBox="0 -0.500 400 1" fill="none" style={{
-                                position: "absolute",
-                                left: 0,
-                                top: 266,
-                                width: 400,
-                                height: 1,
-                                color: "rgb(0,0,0)"
-                              }}><path d="M 0 0 L 400 0 Z" fill="rgb(0,0,0)" fillRule="nonzero" /><path d="M 0 0 L 0 0.5 L 400 0.5 L 400 0 L 400 -0.5 L 0 -0.5 L 0 0 Z" fill="rgb(68,68,68)" fillRule="nonzero" /></svg></div><div style={{
-                              position: "absolute",
-                              left: 17,
-                              top: 0,
-                              width: 400,
-                              height: 280,
-                              overflow: "hidden"
-                            }}><div style={{
-                                position: "absolute",
-                                left: 0,
-                                top: 0,
-                                width: 400,
-                                height: 280,
-                                overflow: "hidden"
-                              }}><div style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 400,
-                                  height: 280,
-                                  clipPath: "inset(0px 0px 0px 0px)"
-                                }}><div style={{
-                                    position: "absolute",
-                                    left: 0,
-                                    top: 14,
-                                    width: 400,
-                                    height: 252,
-                                    overflow: "hidden"
-                                  }}><div style={{
-                                      position: "absolute",
-                                      left: 0,
-                                      top: 0,
-                                      width: 400,
-                                      height: 252,
-                                      overflow: "hidden"
-                                    }}><div style={{
-                                        position: "absolute",
-                                        left: 0,
-                                        top: 0,
-                                        width: 400,
-                                        height: 252,
-                                        overflow: "hidden"
-                                      }}><div style={{
-                                          position: "absolute",
-                                          left: 0,
-                                          top: 0,
-                                          width: 400,
-                                          height: 252,
-                                          overflow: "hidden"
-                                        }}><svg width={400} height={252} viewBox="0 0 400 252" fill="none" style={{
-                                            position: "absolute",
-                                            left: 0,
-                                            top: 0,
-                                            width: 400,
-                                            height: 252,
-                                            color: "rgb(220,38,38)"
-                                          }}><path d="M 32 247.75 L 32.197 249.237 L 32.218 249.234 L 32.239 249.231 L 32 247.75 Z M 48 245.17 L 48.239 246.651 L 48.262 246.647 L 48.285 246.643 L 48 245.17 Z M 80 238.98 L 80.285 240.453 L 80.312 240.448 L 80.338 240.441 L 80 238.98 Z M 96 235.28 L 96.338 236.741 L 96.368 236.734 L 96.398 236.726 L 96 235.28 Z M 128 226.47 L 128.398 227.916 L 128.431 227.907 L 128.464 227.897 L 128 226.47 Z M 144 221.27 L 144.464 222.697 L 144.501 222.685 L 144.537 222.671 L 144 221.27 Z M 176 209 L 176.537 210.401 L 176.576 210.385 L 176.615 210.368 L 176 209 Z M 192 201.81 L 192.615 203.178 L 192.643 203.166 L 192.67 203.152 L 192 201.81 Z M 208 193.82 L 208.67 195.162 L 208.699 195.148 L 208.727 195.132 L 208 193.82 Z M 224 184.95 L 224.727 186.262 L 224.756 186.246 L 224.784 186.229 L 224 184.95 Z M 240 175.14 L 240.784 176.419 L 240.814 176.4 L 240.843 176.381 L 240 175.14 Z M 256 164.27 L 256.843 165.511 L 256.872 165.491 L 256.9 165.47 L 256 164.27 Z M 272 152.27 L 272.9 153.47 L 272.929 153.448 L 272.957 153.425 L 272 152.27 Z M 288 139.01 L 288.957 140.165 L 288.985 140.142 L 289.012 140.117 L 288 139.01 Z M 304 124.38 L 305.012 125.487 L 305.039 125.462 L 305.065 125.437 L 304 124.38 Z M 320 108.26 L 321.065 109.317 L 321.09 109.291 L 321.114 109.264 L 320 108.26 Z M 336 90.51 L 337.114 91.514 L 337.138 91.488 L 337.16 91.461 L 336 90.51 Z M 352 70.98 L 353.16 71.931 L 353.182 71.904 L 353.203 71.876 L 352 70.98 Z M 368 49.5 L 369.203 50.396 L 369.223 50.369 L 369.241 50.342 L 368 49.5 Z M 384 25.91 L 385.241 26.752 L 385.259 26.725 L 385.276 26.698 L 384 25.91 Z M 0 252 L 0.197 253.487 L 32.197 249.237 L 32 247.75 L 31.803 246.263 L -0.197 250.513 L 0 252 Z M 32 247.75 L 32.239 249.231 L 48.239 246.651 L 48 245.17 L 47.761 243.689 L 31.761 246.269 L 32 247.75 Z M 48 245.17 L 48.285 246.643 L 80.285 240.453 L 80 238.98 L 79.715 237.507 L 47.715 243.697 L 48 245.17 Z M 80 238.98 L 80.338 240.441 L 96.338 236.741 L 96 235.28 L 95.662 233.819 L 79.662 237.519 L 80 238.98 Z M 96 235.28 L 96.398 236.726 L 128.398 227.916 L 128 226.47 L 127.602 225.024 L 95.602 233.834 L 96 235.28 Z M 128 226.47 L 128.464 227.897 L 144.464 222.697 L 144 221.27 L 143.536 219.843 L 127.536 225.043 L 128 226.47 Z M 144 221.27 L 144.537 222.671 L 176.537 210.401 L 176 209 L 175.463 207.599 L 143.463 219.869 L 144 221.27 Z M 176 209 L 176.615 210.368 L 192.615 203.178 L 192 201.81 L 191.385 200.442 L 175.385 207.632 L 176 209 Z M 192 201.81 L 192.67 203.152 L 208.67 195.162 L 208 193.82 L 207.33 192.478 L 191.33 200.468 L 192 201.81 Z M 208 193.82 L 208.727 195.132 L 224.727 186.262 L 224 184.95 L 223.273 183.638 L 207.273 192.508 L 208 193.82 Z M 224 184.95 L 224.784 186.229 L 240.784 176.419 L 240 175.14 L 239.216 173.861 L 223.216 183.671 L 224 184.95 Z M 240 175.14 L 240.843 176.381 L 256.843 165.511 L 256 164.27 L 255.157 163.029 L 239.157 173.899 L 240 175.14 Z M 256 164.27 L 256.9 165.47 L 272.9 153.47 L 272 152.27 L 271.1 151.07 L 255.1 163.07 L 256 164.27 Z M 272 152.27 L 272.957 153.425 L 288.957 140.165 L 288 139.01 L 287.043 137.855 L 271.043 151.115 L 272 152.27 Z M 288 139.01 L 289.012 140.117 L 305.012 125.487 L 304 124.38 L 302.988 123.273 L 286.988 137.903 L 288 139.01 Z M 304 124.38 L 305.065 125.437 L 321.065 109.317 L 320 108.26 L 318.935 107.203 L 302.935 123.323 L 304 124.38 Z M 320 108.26 L 321.114 109.264 L 337.114 91.514 L 336 90.51 L 334.886 89.506 L 318.886 107.256 L 320 108.26 Z M 336 90.51 L 337.16 91.461 L 353.16 71.931 L 352 70.98 L 350.84 70.029 L 334.84 89.559 L 336 90.51 Z M 352 70.98 L 353.203 71.876 L 369.203 50.396 L 368 49.5 L 366.797 48.604 L 350.797 70.084 L 352 70.98 Z M 368 49.5 L 369.241 50.342 L 385.241 26.752 L 384 25.91 L 382.759 25.068 L 366.759 48.658 L 368 49.5 Z M 384 25.91 L 385.276 26.698 L 401.276 0.788 L 400 0 L 398.724 -0.788 L 382.724 25.122 L 384 25.91 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div><div style={{
-                                        position: "absolute",
-                                        left: 0,
-                                        top: 232.77,
-                                        width: 400,
-                                        height: 19.23,
-                                        overflow: "hidden"
-                                      }}><div style={{
-                                          position: "absolute",
-                                          left: 0,
-                                          top: 0,
-                                          width: 400,
-                                          height: 19.23,
-                                          overflow: "hidden"
-                                        }}><svg width={400} height={19.230} viewBox="0 0 400 19.230" fill="none" style={{
-                                            position: "absolute",
-                                            left: 0,
-                                            top: 0,
-                                            width: 400,
-                                            height: 19.23,
-                                            color: "rgb(5,150,105)"
-                                          }}><path d="M 16 11.25 L 15.956 9.751 L 15.626 9.76 L 15.331 9.908 L 16 11.25 Z M 32 10.78 L 31.956 9.281 L 31.956 9.281 L 32 10.78 Z M 0 19.23 L 0.669 20.572 L 16.669 12.592 L 16 11.25 L 15.331 9.908 L -0.669 17.888 L 0 19.23 Z M 16 11.25 L 16.044 12.749 L 32.044 12.279 L 32 10.78 L 31.956 9.281 L 15.956 9.751 L 16 11.25 Z M 32 10.78 L 32.044 12.279 L 400.044 1.499 L 400 0 L 399.956 -1.499 L 31.956 9.281 L 32 10.78 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div></div></div></div></div></div><div style={{
-                              position: "absolute",
-                              left: 13,
-                              top: 281,
-                              width: 411.5,
-                              height: 15,
-                              overflow: "hidden"
-                            }}><div style={{
-                                position: "absolute",
-                                left: 0,
-                                top: 0,
-                                width: 8,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 8,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "center",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>0</span></div><div style={{
-                                position: "absolute",
-                                left: 80,
-                                top: 0,
-                                width: 8,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 8,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "center",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>5</span></div><div style={{
-                                position: "absolute",
-                                left: 157,
-                                top: 0,
-                                width: 14,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 14,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "center",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>10</span></div><div style={{
-                                position: "absolute",
-                                left: 237.5,
-                                top: 0,
-                                width: 13,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 13,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "center",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>15</span></div><div style={{
-                                position: "absolute",
-                                left: 316.5,
-                                top: 0,
-                                width: 15,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 15,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "center",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>20</span></div><div style={{
-                                position: "absolute",
-                                left: 396.5,
-                                top: 0,
-                                width: 15,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 15,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "center",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>25</span></div></div><div style={{
-                              position: "absolute",
-                              left: 0,
-                              top: 37.4,
-                              width: 16,
-                              height: 235.8,
-                              overflow: "hidden"
-                            }}><div style={{
-                                position: "absolute",
-                                left: 8,
-                                top: 220.8,
-                                width: 8,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 8,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "right",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>0</span></div><div style={{
-                                position: "absolute",
-                                left: 1,
-                                top: 165.6,
-                                width: 15,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 15,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "right",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>20</span></div><div style={{
-                                position: "absolute",
-                                left: 0,
-                                top: 110.4,
-                                width: 16,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 16,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "right",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>40</span></div><div style={{
-                                position: "absolute",
-                                left: 1,
-                                top: 55.2,
-                                width: 15,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 15,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "right",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>60</span></div><div style={{
-                                position: "absolute",
-                                left: 1,
-                                top: 0,
-                                width: 15,
-                                height: 15,
-                                overflow: "hidden"
-                              }}><span style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 0,
-                                  width: 15,
-                                  height: 15,
-                                  fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                  fontWeight: 400,
-                                  fontSize: 12,
-                                  textAlign: "right",
-                                  whiteSpace: "nowrap",
-                                  lineHeight: "100%",
-                                  color: "rgb(68,68,68)"
-                                }}>80</span></div></div></div></div></div></div><div style={{
-                      position: "absolute",
-                      left: 0,
-                      top: 0,
-                      width: 520,
-                      height: 400,
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexWrap: "nowrap"
-                    }}><div style={{
-                        position: "relative",
-                        width: 520,
-                        overflow: "hidden",
-                        backgroundColor: "rgba(0,0,0,0)",
-                        flexShrink: 0,
-                        alignSelf: "stretch"
-                      }}><div style={{
-                          position: "absolute",
-                          left: 78,
-                          top: 12,
-                          width: 364,
-                          height: 103.1,
-                          overflow: "hidden"
-                        }}><div style={{
-                            position: "absolute",
-                            left: 10.5,
-                            top: 54.1,
-                            width: 113,
-                            height: 49,
-                            overflow: "hidden"
-                          }}><svg width={113} height={49} viewBox="0 0 113 49" fill="none" style={{
-                              position: "absolute",
-                              left: 0,
-                              top: 0,
-                              width: 113,
-                              height: 49,
-                              color: "rgba(255,255,255,0.8)"
-                            }}><path d="M 113 0 L 0 0 L 0 49 L 113 49 L 113 0 Z" fill="rgba(255,255,255,0.8)" fillRule="nonzero" /><path d="M 0 0 L 0 -0.5 L -0.5 -0.5 L -0.5 0 L 0 0 Z M 113 0 L 113.5 0 L 113.5 -0.5 L 113 -0.5 L 113 0 Z M 113 49 L 113 49.5 L 113.5 49.5 L 113.5 49 L 113 49 Z M 0 49 L -0.5 49 L -0.5 49.5 L 0 49.5 L 0 49 Z M 0 0 L 0 0.5 L 113 0.5 L 113 0 L 113 -0.5 L 0 -0.5 L 0 0 Z M 113 0 L 112.5 0 L 112.5 49 L 113 49 L 113.5 49 L 113.5 0 L 113 0 Z M 113 49 L 113 48.5 L 0 48.5 L 0 49 L 0 49.5 L 113 49.5 L 113 49 Z M 0 49 L 0.5 49 L 0.5 0 L 0 0 L -0.5 0 L -0.5 49 L 0 49 Z" fill="rgb(229,231,235)" fillRule="nonzero" /></svg><div style={{
-                              position: "absolute",
-                              left: 0.5,
-                              top: 0.5,
-                              width: 112,
-                              height: 48,
-                              overflow: "hidden"
-                            }}><div style={{
-                                position: "absolute",
-                                left: 0,
-                                top: 0,
-                                width: 112,
-                                height: 48,
-                                clipPath: "inset(0px 0px 0px 0px)"
-                              }}><div style={{
-                                  position: "absolute",
-                                  left: 0,
-                                  top: 5,
-                                  width: 107,
-                                  height: 38,
-                                  overflow: "hidden"
-                                }}><div style={{
-                                    position: "absolute",
-                                    left: 0,
-                                    top: 0,
-                                    width: 107,
-                                    height: 38,
-                                    overflow: "hidden"
-                                  }}><div style={{
-                                      position: "absolute",
-                                      left: 0,
-                                      top: 0,
-                                      width: 107,
-                                      height: 19,
-                                      overflow: "hidden"
-                                    }}><span style={{
-                                        position: "absolute",
-                                        left: 40,
-                                        top: 2.18,
-                                        width: 67,
-                                        height: 15,
-                                        fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                        fontWeight: 400,
-                                        fontSize: 12,
-                                        whiteSpace: "nowrap",
-                                        lineHeight: "100%",
-                                        color: "rgb(68,68,68)"
-                                      }}>KSEB Costs</span><div style={{
-                                        position: "absolute",
-                                        left: 5,
-                                        top: 9.5,
-                                        width: 30,
-                                        height: 0,
-                                        overflow: "hidden"
-                                      }}><div style={{
-                                          position: "absolute",
-                                          left: 0,
-                                          top: 0,
-                                          width: 30,
-                                          height: 0,
-                                          overflow: "hidden"
-                                        }}><svg width={30} height={3} viewBox="0 -1.500 30 3" fill="none" style={{
-                                            position: "absolute",
-                                            left: 0,
-                                            top: 0,
-                                            width: 30,
-                                            height: 3,
-                                            color: "rgb(220,38,38)"
-                                          }}><path d="M 0 0 L 0 1.5 L 30 1.5 L 30 0 L 30 -1.5 L 0 -1.5 L 0 0 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div><div style={{
-                                        position: "absolute",
-                                        left: 0,
-                                        top: 0,
-                                        width: 106.031,
-                                        height: 19,
-                                        border: "1px dashed currentColor",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        overflow: "hidden",
-                                        fontSize: 10,
-                                        opacity: 0.45
-                                      }}>Vector</div></div><div style={{
-                                      position: "absolute",
-                                      left: 0,
-                                      top: 19,
-                                      width: 107,
-                                      height: 19,
-                                      overflow: "hidden"
-                                    }}><span style={{
-                                        position: "absolute",
-                                        left: 40,
-                                        top: 2.18,
-                                        width: 67,
-                                        height: 15,
-                                        fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                                        fontWeight: 400,
-                                        fontSize: 12,
-                                        whiteSpace: "nowrap",
-                                        lineHeight: "100%",
-                                        color: "rgb(68,68,68)"
-                                      }}>Solar + Bills</span><div style={{
-                                        position: "absolute",
-                                        left: 5,
-                                        top: 9.5,
-                                        width: 30,
-                                        height: 0,
-                                        overflow: "hidden"
-                                      }}><div style={{
-                                          position: "absolute",
-                                          left: 0,
-                                          top: 0,
-                                          width: 30,
-                                          height: 0,
-                                          overflow: "hidden"
-                                        }}><svg width={30} height={3} viewBox="0 -1.500 30 3" fill="none" style={{
-                                            position: "absolute",
-                                            left: 0,
-                                            top: 0,
-                                            width: 30,
-                                            height: 3,
-                                            color: "rgb(5,150,105)"
-                                          }}><path d="M 0 0 L 0 1.5 L 30 1.5 L 30 0 L 30 -1.5 L 0 -1.5 L 0 0 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div><div style={{
-                                        position: "absolute",
-                                        left: 0,
-                                        top: 0,
-                                        width: 106.031,
-                                        height: 19,
-                                        border: "1px dashed currentColor",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        overflow: "hidden",
-                                        fontSize: 10,
-                                        opacity: 0.45
-                                      }}>Vector</div></div></div></div></div></div></div><div style={{
-                            position: "absolute",
-                            left: 0,
-                            top: 0,
-                            width: 364,
-                            height: 22,
-                            overflow: "hidden"
-                          }}><span style={{
-                              position: "absolute",
-                              left: 0,
-                              top: 0,
-                              width: 364,
-                              height: 22,
-                              fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                              fontWeight: 400,
-                              fontSize: 18,
-                              textAlign: "center",
-                              whiteSpace: "nowrap",
-                              lineHeight: "100%",
-                              color: "rgb(31,41,55)"
-                            }}>Cumulative Electricity Costs Over 25 Years</span></div></div></div></div><div style={{
-                      position: "absolute",
-                      left: 0,
-                      top: 0.5,
-                      width: 610,
-                      height: 1,
-                      backgroundColor: "rgba(0,0,0,0)"
-                    }} /><div style={{
-                      position: "absolute",
-                      left: 0,
-                      top: -0.5,
-                      width: 610,
-                      height: 401,
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexWrap: "nowrap"
-                    }}><div style={{
-                        position: "relative",
-                        overflow: "hidden",
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: 10,
-                        padding: "10px 10px 10px 10px",
-                        alignItems: "center",
-                        flexWrap: "nowrap",
-                        boxSizing: "border-box",
-                        flexGrow: 1,
-                        alignSelf: "stretch",
-                        border: "1px dashed currentColor",
-                        justifyContent: "center",
-                        fontSize: 10,
-                        opacity: 0.45,
-                        width: 1,
-                        height: 1
-                      }}>Frame</div></div></div></div></div><div style={{
+            }}><SavingsChart chart={data.chart} /><div style={{
                 position: "absolute",
                 left: 668,
                 top: 0,
@@ -1055,7 +204,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                         lineHeight: "33px",
                         letterSpacing: "-0.500px",
                         color: "var(--2)"
-                      }}>₹6,000</span></div><div style={{
+                      }}>{data.monthlyBillValue}</span></div><div style={{
                       position: "relative",
                       width: 21,
                       height: 32,
@@ -1122,7 +271,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                         letterSpacing: "-0.500px",
                         color: "var(--2)",
                         flexShrink: 0
-                      }}>₹250-380/month</span></div></div></div><div style={{
+                      }}>{data.withSolarBill}</span></div></div></div><div style={{
                   position: "relative",
                   backgroundColor: "rgba(0,0,0,0)",
                   display: "flex",
@@ -1136,7 +285,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                     position: "relative",
                     borderRadius: 8,
                     backgroundColor: "var(--primary)",
-                    boxShadow: "inset 0 0 0 1px rgb(191,219,254)",
+                    border: "1px solid rgb(191,219,254)",
                     display: "flex",
                     flexDirection: "column",
                     gap: 5,
@@ -1166,11 +315,11 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                       color: "var(--black)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>₹5,200-5,700</span></div><div style={{
+                    }}>{data.monthlySavingsRange}</span></div><div style={{
                     position: "relative",
                     borderRadius: 8,
                     backgroundColor: "var(--sec)",
-                    boxShadow: "inset 0 0 0 1px rgb(254,215,170)",
+                    border: "1px solid rgb(254,215,170)",
                     display: "flex",
                     flexDirection: "column",
                     gap: 5,
@@ -1199,7 +348,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                       color: "rgb(255,255,255)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>₹ 13,60,000 +</span></div></div><div style={{
+                    }}>{data.netSavings25}</span></div></div><div style={{
                   position: "relative",
                   borderRadius: 12,
                   borderTop: "1px solid var(--1-2)",
@@ -1234,7 +383,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                     color: "var(--black)",
                     flexShrink: 0,
                     alignSelf: "stretch"
-                  }}>In just 35 months, your solar system pays for itself. The next 25 years are pure savings.</span></div></div></div></div></div><div style={{
+                  }}>In just {data.paybackMonths}, your solar system pays for itself. The next 25 years are pure savings.</span></div></div></div></div></div><div style={{
           position: "relative",
           width: 1280,
           backgroundColor: "rgba(0,0,0,0)",
@@ -1248,7 +397,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
             position: "relative",
             borderRadius: 16,
             backgroundColor: "rgb(254,242,242)",
-            boxShadow: "inset 0 0 0 2px rgb(254,202,202)",
+            border: "2px solid rgb(254,202,202)",
             display: "flex",
             flexDirection: "column",
             gap: 24,
@@ -1358,10 +507,10 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                   display: "inline-block"
                 }}><span style={{
                     fontSize: 38
-                  }}>₹6,000 </span><span style={{
+                  }}>{data.monthlyBillValue} </span><span style={{
                     fontWeight: 500,
                     fontSize: 24
-                  }}>( Bi- monthly bill)</span></span></div><div style={{
+                  }}>( Monthly bill)</span></span></div><div style={{
                 position: "relative",
                 width: 432,
                 height: 28,
@@ -1423,7 +572,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                 }}><span style={{
                     color: "rgb(220,38,38)",
                     fontSize: 24
-                  }}>₹20+ lakh </span><span style={{
+                  }}>{data.paidToKsebLakh} </span><span style={{
                     fontSize: 24
                   }}>paid to KSEB in 25 years</span></span></div><div style={{
                 position: "relative",
@@ -1556,7 +705,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
             position: "relative",
             borderRadius: 16,
             background: "linear-gradient(117.977deg, rgb(240,253,250) -19.79%, rgb(209,250,229) 50.92%)",
-            boxShadow: "inset 0 0 0 2px var(--green), 0px 4px 6px 0px rgba(0,0,0,0.1), 0px 10px 15px 0px rgba(0,0,0,0.1)",
+            border: "2px solid var(--green)", boxShadow: "0px 4px 6px 0px rgba(0,0,0,0.1), 0px 10px 15px 0px rgba(0,0,0,0.1)",
             display: "flex",
             flexDirection: "column",
             gap: 28,
@@ -1672,7 +821,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                     fontWeight: 700,
                     color: "rgb(0,129,48)",
                     fontSize: 38
-                  }}>₹250-380</span><span style={{
+                  }}>₹300-800</span><span style={{
                     fontWeight: 500,
                     color: "rgb(0,129,48)",
                     fontSize: 24
@@ -1735,7 +884,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                 }}><span style={{
                     color: "rgb(22,163,74)",
                     fontSize: 24
-                  }}>₹13 lakh</span><span style={{
+                  }}>{data.savedLakh}</span><span style={{
                     color: "rgb(68,68,68)",
                     fontSize: 24
                   }}> saved over 25 years</span></span></div><div style={{
@@ -1911,7 +1060,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                 overflow: "hidden",
                 borderRadius: 28,
                 backgroundColor: "rgb(255,255,255)",
-                boxShadow: "inset 0 0 0 1px rgb(217,219,233), 0px 0.500px 1px 0px rgba(25,33,61,0.04)",
+                border: "1px solid rgb(217,219,233)", boxShadow: "0px 0.500px 1px 0px rgba(25,33,61,0.04)",
                 display: "flex",
                 flexDirection: "column",
                 padding: "20px 20px 20px 20px",
@@ -1976,7 +1125,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
               overflow: "hidden",
               borderRadius: 28,
               backgroundColor: "rgb(255,255,255)",
-              boxShadow: "inset 0 0 0 1px rgb(217,219,233), 0px 0.500px 1px 0px rgba(25,33,61,0.04)",
+              border: "1px solid rgb(217,219,233)", boxShadow: "0px 0.500px 1px 0px rgba(25,33,61,0.04)",
               display: "flex",
               flexDirection: "column",
               gap: 28,
@@ -2058,7 +1207,7 @@ Branch: <span style={{
           position: "relative",
           overflow: "hidden",
           backgroundColor: "var(--4-2)",
-          boxShadow: "inset 0 0 0 1px rgb(217,219,233), 0px 0.500px 1px 0px rgba(25,33,61,0.04)",
+          border: "1px solid rgb(217,219,233)", boxShadow: "0px 0.500px 1px 0px rgba(25,33,61,0.04)",
           display: "flex",
           flexDirection: "column",
           gap: 28,
@@ -2301,20 +1450,7 @@ Branch: <span style={{
                 height: 18,
                 overflow: "hidden",
                 flexShrink: 0
-              }}><div style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 18,
-                  height: 18,
-                  border: "1px dashed currentColor",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  fontSize: 10,
-                  opacity: 0.45
-                }}>Vector</div></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+              }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
             position: "absolute",
             left: 85,
             top: 30,

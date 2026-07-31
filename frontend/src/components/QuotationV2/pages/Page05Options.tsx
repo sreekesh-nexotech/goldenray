@@ -1,12 +1,16 @@
 // Page 4 of the Flarize quotation document (English) — Three Options. One Smart Choice. — Premium/Smart/Basic comparison table
 import type { CSSProperties } from "react";
+import FooterLocationPin from "../icons/FooterLocationPin";
+import type { QuotationV2Data } from "../quotationV2Data";
 
 interface Page05OptionsProps {
   className?: string;
   style?: CSSProperties;
+  /** Derived quotation values for this customer. */
+  data: QuotationV2Data;
 }
 
-export default function Page05Options({ className, style }: Page05OptionsProps) {
+export default function Page05Options({ className, style, data }: Page05OptionsProps) {
   return <div className={className} style={{
     position: "relative",
     width: 1440,
@@ -104,7 +108,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
             letterSpacing: "-0.500px",
             color: "var(--grey)",
             flexShrink: 0
-          }}>All prices shown after ₹78,000 PM Surya Ghar subsidy. Pick what fits your home.</span></div><div style={{
+          }}>{data.optionsSubtitle}</span></div><div style={{
           position: "relative",
           display: "flex",
           flexDirection: "row",
@@ -117,7 +121,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
             width: 410,
             borderRadius: 16,
             backgroundColor: "rgb(255,255,255)",
-            boxShadow: "inset 0 0 0 2px rgb(229,231,235)",
+            border: "2px solid rgb(229,231,235)",
             display: "flex",
             flexDirection: "column",
             gap: 32,
@@ -166,7 +170,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   lineHeight: "22px",
                   letterSpacing: "-0.500px",
                   color: "rgb(107,114,128)"
-                }}>5 kW Solar System</span></div></div><div style={{
+                }}>{data.sizeLabel}</span></div></div><div style={{
               position: "relative",
               backgroundColor: "rgba(0,0,0,0)",
               display: "flex",
@@ -176,7 +180,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
               flexWrap: "nowrap",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}><div style={{
+            }}>{data.hasSubsidy && (<div style={{
                 position: "relative",
                 backgroundColor: "rgba(0,0,0,0)",
                 display: "flex",
@@ -197,7 +201,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   color: "rgb(107,114,128)",
                   textDecoration: "line-through",
                   flexShrink: 0
-                }}>₹3,38,000</span></div><div style={{
+                }}>{data.premium.total}</span></div>)}<div style={{
                 position: "relative",
                 width: 342.656,
                 height: 40,
@@ -215,7 +219,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   lineHeight: "40px",
                   letterSpacing: "-0.500px",
                   color: "rgb(18,53,50)"
-                }}>₹2,60,000</span></div><div style={{
+                }}>{data.premium.final}</span></div>{data.hasSubsidy && (<div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -233,7 +237,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   lineHeight: "26.5px",
                   letterSpacing: "-0.500px",
                   color: "rgb(22,163,74)"
-                }}>after ₹78,000 subsidy</span></div></div><div style={{
+                }}>{data.afterSubsidyNote}</span></div>)}</div><div style={{
               position: "relative",
               backgroundColor: "rgba(0,0,0,0)",
               borderTop: "1px solid rgb(229,231,235)",
@@ -271,15 +275,15 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   fontWeight: 600,
                   color: "rgb(248,138,34)",
                   fontSize: 24
-                }}>~₹5,390/mo</span>
+                }}>{data.premium.emi}</span>
 <span style={{
                   fontSize: 17
-                }}>Near break-even during EMI; full ₹5,200–5,700/mo becomes pure savings once EMI ends</span></span></div></div><div style={{
+                }}>{data.premium.emiNote}</span></span></div></div><div style={{
             position: "relative",
             width: 410,
             borderRadius: 16,
             backgroundColor: "rgba(254,243,232,0.51)",
-            boxShadow: "inset 0 0 0 2px var(--1)",
+            border: "2px solid var(--1)",
             display: "flex",
             flexDirection: "column",
             gap: 32,
@@ -358,7 +362,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   lineHeight: "22px",
                   letterSpacing: "-0.500px",
                   color: "rgb(6,78,59)"
-                }}>5 kW Solar System</span></div></div><div style={{
+                }}>{data.sizeLabel}</span></div></div><div style={{
               position: "relative",
               backgroundColor: "rgba(0,0,0,0)",
               display: "flex",
@@ -368,7 +372,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
               flexWrap: "nowrap",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}><div style={{
+            }}>{data.hasSubsidy && (<div style={{
                 position: "relative",
                 backgroundColor: "rgba(0,0,0,0)",
                 display: "flex",
@@ -389,7 +393,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   color: "rgb(107,114,128)",
                   textDecoration: "line-through",
                   flexShrink: 0
-                }}>₹2,68,000</span></div><div style={{
+                }}>{data.smart.total}</span></div>)}<div style={{
                 position: "relative",
                 width: 342.656,
                 height: 40,
@@ -407,7 +411,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   lineHeight: "40px",
                   letterSpacing: "-0.500px",
                   color: "var(--1)"
-                }}>₹1,90,000</span></div><div style={{
+                }}>{data.smart.final}</span></div>{data.hasSubsidy && (<div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -425,7 +429,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   lineHeight: "26.5px",
                   letterSpacing: "-0.500px",
                   color: "rgb(22,163,74)"
-                }}>after ₹78,000 subsidy</span></div></div><div style={{
+                }}>{data.afterSubsidyNote}</span></div>)}</div><div style={{
               position: "relative",
               backgroundColor: "rgba(0,0,0,0)",
               borderTop: "1px solid rgb(229,231,235)",
@@ -463,15 +467,15 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   fontWeight: 600,
                   color: "rgb(248,138,34)",
                   fontSize: 24
-                }}>~₹3,940/mo</span>
+                }}>{data.smart.emi}</span>
 <span style={{
                   fontSize: 17
-                }}>Net positive from Day 1: saving +₹1,260–1,760/mo</span></span></div></div><div style={{
+                }}>{data.smart.emiNote}</span></span></div></div><div style={{
             position: "relative",
             width: 410,
             borderRadius: 16,
             backgroundColor: "rgb(255,255,255)",
-            boxShadow: "inset 0 0 0 2px rgb(229,231,235)",
+            border: "2px solid rgb(229,231,235)",
             display: "flex",
             flexDirection: "column",
             gap: 32,
@@ -520,7 +524,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   lineHeight: "22px",
                   letterSpacing: "-0.500px",
                   color: "rgb(107,114,128)"
-                }}>5 kW Solar System</span></div></div><div style={{
+                }}>{data.sizeLabel}</span></div></div><div style={{
               position: "relative",
               backgroundColor: "rgba(0,0,0,0)",
               display: "flex",
@@ -530,7 +534,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
               flexWrap: "nowrap",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}><div style={{
+            }}>{data.hasSubsidy && (<div style={{
                 position: "relative",
                 backgroundColor: "rgba(0,0,0,0)",
                 display: "flex",
@@ -551,7 +555,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   color: "rgb(107,114,128)",
                   textDecoration: "line-through",
                   flexShrink: 0
-                }}>₹1,98,000</span></div><div style={{
+                }}>{data.basic.total}</span></div>)}<div style={{
                 position: "relative",
                 width: 342.656,
                 height: 40,
@@ -569,7 +573,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   lineHeight: "40px",
                   letterSpacing: "-0.500px",
                   color: "rgb(18,53,50)"
-                }}>₹1,20,000</span></div><div style={{
+                }}>{data.basic.final}</span></div>{data.hasSubsidy && (<div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -587,7 +591,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   lineHeight: "26.5px",
                   letterSpacing: "-0.500px",
                   color: "rgb(22,163,74)"
-                }}>after ₹78,000 subsidy</span></div></div><div style={{
+                }}>{data.afterSubsidyNote}</span></div>)}</div><div style={{
               position: "relative",
               backgroundColor: "rgba(0,0,0,0)",
               borderTop: "1px solid rgb(229,231,235)",
@@ -625,10 +629,10 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   fontWeight: 600,
                   color: "rgb(248,138,34)",
                   fontSize: 24
-                }}>~₹2,490/mo</span>
+                }}>{data.basic.emi}</span>
 <span style={{
                   fontSize: 17
-                }}>Net saving: +₹2,710–3,210/mo even during EMI</span></span></div></div></div><div style={{
+                }}>{data.basic.emiNote}</span></span></div></div></div><div style={{
           position: "relative",
           width: 1274,
           height: 1139,
@@ -702,7 +706,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
 <span style={{
                 fontWeight: 300,
                 fontSize: 23
-              }}>₹2,60,000</span></span></div><div style={{
+              }}>{data.premium.final}</span></span></div><div style={{
             gridRow: "1",
             gridColumn: "3",
             position: "relative",
@@ -739,7 +743,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
 <span style={{
                 fontWeight: 300,
                 fontSize: 23
-              }}>₹1,90,000</span></span></div><div style={{
+              }}>{data.smart.final}</span></span></div><div style={{
             gridRow: "1",
             gridColumn: "4",
             position: "relative",
@@ -777,7 +781,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
 <span style={{
                 fontWeight: 300,
                 fontSize: 23
-              }}>₹1,20,000</span></span></div><div style={{
+              }}>{data.basic.final}</span></span></div><div style={{
             gridRow: "2",
             gridColumn: "1",
             position: "relative",
@@ -2449,20 +2453,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                 height: 18,
                 overflow: "hidden",
                 flexShrink: 0
-              }}><div style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 18,
-                  height: 18,
-                  border: "1px dashed currentColor",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  fontSize: 10,
-                  opacity: 0.45
-                }}>Vector</div></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+              }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
             position: "absolute",
             left: 85,
             top: 30,

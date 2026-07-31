@@ -1,12 +1,87 @@
 // Page 1 of the Flarize quotation document (English) — Cover — Stop Worrying About Electricity Bills Forever; proposal details
 import type { CSSProperties } from "react";
+import FooterLocationPin from "../icons/FooterLocationPin";
+import type { QuotationV2Data } from "../quotationV2Data";
 
 interface Page01CoverProps {
   className?: string;
   style?: CSSProperties;
+  /** Derived quotation values for this customer. */
+  data: QuotationV2Data;
 }
 
-export default function Page01Cover({ className, style }: Page01CoverProps) {
+const POPPINS =
+  'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+
+/**
+ * One "Label : Value" line of the proposal-details panel.
+ *
+ * The Figma export gave each of the twelve rows a slightly different shape —
+ * some sized the value column with `flexGrow`, others pinned it to 271px, and
+ * all of them set `lineHeight: 100%`. That left the colons out of line with
+ * each other and made any value longer than the column either overflow or wrap
+ * into itself. One row component with a fixed label column keeps every colon on
+ * the same edge, and lets a long value wrap cleanly under itself instead.
+ */
+function DetailRow({
+  label,
+  value,
+  labelWidth,
+}: {
+  label: string;
+  value: string;
+  /** Width of the label column; the colon sits at its right edge. */
+  labelWidth: number;
+}) {
+  return (
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-start",
+        flexWrap: "nowrap",
+        flexShrink: 0,
+        alignSelf: "stretch",
+      }}
+    >
+      <span
+        style={{
+          position: "relative",
+          width: labelWidth,
+          flexShrink: 0,
+          fontFamily: POPPINS,
+          fontWeight: 500,
+          fontSize: 22,
+          lineHeight: "130%",
+          color: "rgb(55,65,81)",
+        }}
+      >
+        {label}
+      </span>
+      <span
+        style={{
+          position: "relative",
+          flexGrow: 1,
+          // Without this a flex item refuses to shrink below its content width,
+          // which is what pushes a long value out past the panel edge.
+          minWidth: 0,
+          fontFamily: POPPINS,
+          fontWeight: 600,
+          fontSize: 22,
+          lineHeight: "130%",
+          color: "rgb(18,53,50)",
+          whiteSpace: "pre-wrap",
+          overflowWrap: "anywhere",
+        }}
+      >
+        : {value}
+      </span>
+    </div>
+  );
+}
+
+export default function Page01Cover({ className, style, data }: Page01CoverProps) {
   return <div className={className} style={{
     position: "relative",
     width: 1440,
@@ -194,7 +269,7 @@ export default function Page01Cover({ className, style }: Page01CoverProps) {
                 color: "var(--1-2)",
                 flexShrink: 0,
                 alignSelf: "stretch"
-              }}>₹78,000 Subsidy</span><span style={{
+              }}>{data.heroStatMain}</span><span style={{
                 position: "relative",
                 fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                 fontWeight: 400,
@@ -204,7 +279,7 @@ export default function Page01Cover({ className, style }: Page01CoverProps) {
                 color: "rgb(75,85,99)",
                 flexShrink: 0,
                 alignSelf: "stretch"
-              }}>PM Surya Ghar – guaranteed</span></div></div><div style={{
+              }}>{data.heroStatSub}</span></div></div><div style={{
             position: "relative",
             backgroundColor: "rgba(0,0,0,0)",
             display: "flex",
@@ -337,7 +412,7 @@ export default function Page01Cover({ className, style }: Page01CoverProps) {
                 color: "var(--2-2)",
                 flexShrink: 0,
                 alignSelf: "stretch"
-              }}>Dear Sareena,</span><span style={{
+              }}>Dear {data.firstName},</span><span style={{
                 position: "relative",
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                 fontWeight: 400,
@@ -435,180 +510,7 @@ We&apos;ve carefully designed this solution specifically for your home&apos;s en
               boxSizing: "border-box",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}><div style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0,
-                alignSelf: "stretch"
-              }}><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  whiteSpace: "nowrap",
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0
-                }}>Name</span><div style={{
-                  position: "relative",
-                  width: 271,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                  justifyContent: "center",
-                  alignItems: "flex-start",
-                  flexWrap: "nowrap",
-                  flexShrink: 0
-                }}><span style={{
-                    position: "relative",
-                    fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                    fontWeight: 600,
-                    fontSize: 22,
-                    whiteSpace: "nowrap",
-                    lineHeight: "100%",
-                    color: "rgb(18,53,50)",
-                    flexShrink: 0
-                  }}>:   Sareena KV</span></div></div><div style={{
-                position: "relative",
-                width: 581,
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0
-              }}><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  whiteSpace: "nowrap",
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0
-                }}>Address</span><span style={{
-                  position: "relative",
-                  width: 266,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(18,53,50)",
-                  flexShrink: 0,
-                  whiteSpace: "pre-wrap"
-                }}>:   Kurukkaankizhakke 
-     Vlappil, Azhikkode</span></div><div style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0,
-                alignSelf: "stretch"
-              }}><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  whiteSpace: "nowrap",
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0
-                }}>pincode</span><span style={{
-                  position: "relative",
-                  width: 271,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(18,53,50)",
-                  flexShrink: 0
-                }}>:   123456</span></div><div style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0,
-                alignSelf: "stretch"
-              }}><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  whiteSpace: "nowrap",
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0
-                }}>Phone Number</span><span style={{
-                  position: "relative",
-                  width: 271,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(18,53,50)",
-                  flexShrink: 0
-                }}>:   9809445408</span></div><div style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0,
-                alignSelf: "stretch"
-              }}><span style={{
-                  position: "relative",
-                  width: 315,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0
-                }}>Current Bill</span><span style={{
-                  position: "relative",
-                  width: 256,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(18,53,50)",
-                  flexShrink: 0
-                }}>:   ₹6,000/bi monthly</span></div><div style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0,
-                alignSelf: "stretch"
-              }}><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  whiteSpace: "nowrap",
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0,
-                  alignSelf: "stretch"
-                }}>System Size</span><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(18,53,50)",
-                  flexGrow: 1
-                }}>:   5 kW</span></div></div><div style={{
+            }}><DetailRow label="Name" value={data.customerName} labelWidth={200} /><DetailRow label="Address" value={data.address} labelWidth={200} /><DetailRow label="pincode" value={data.pincode} labelWidth={200} /><DetailRow label="Phone Number" value={data.phoneNumber} labelWidth={200} /><DetailRow label="Current Bill" value={data.currentBill} labelWidth={200} /><DetailRow label="System Size" value={data.systemSize} labelWidth={200} /></div><div style={{
               position: "relative",
               width: 626,
               overflow: "hidden",
@@ -623,180 +525,7 @@ We&apos;ve carefully designed this solution specifically for your home&apos;s en
               boxSizing: "border-box",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}><div style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0,
-                alignSelf: "stretch"
-              }}><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexGrow: 1
-                }}>Quo No</span><span style={{
-                  position: "relative",
-                  width: 271,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(18,53,50)",
-                  flexShrink: 0,
-                  whiteSpace: "pre-wrap"
-                }}>:   QUO-GR-AS-2025
-    -26-062</span></div><div style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0,
-                alignSelf: "stretch"
-              }}><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  whiteSpace: "nowrap",
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0
-                }}>Proposal By</span><div style={{
-                  position: "relative",
-                  width: 271,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                  justifyContent: "center",
-                  alignItems: "flex-start",
-                  flexWrap: "nowrap",
-                  flexShrink: 0
-                }}><span style={{
-                    position: "relative",
-                    fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                    fontWeight: 600,
-                    fontSize: 22,
-                    whiteSpace: "nowrap",
-                    lineHeight: "100%",
-                    color: "rgb(18,53,50)",
-                    flexShrink: 0
-                  }}>:   XXX</span></div></div><div style={{
-                position: "relative",
-                width: 581,
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0
-              }}><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  whiteSpace: "nowrap",
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0
-                }}>Date</span><span style={{
-                  position: "relative",
-                  width: 266,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(18,53,50)",
-                  flexShrink: 0
-                }}>:   29/07/2026</span></div><div style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0,
-                alignSelf: "stretch"
-              }}><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  whiteSpace: "nowrap",
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0
-                }}>Valid Until</span><span style={{
-                  position: "relative",
-                  width: 271,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(18,53,50)",
-                  flexShrink: 0
-                }}>:   12/08/2026</span></div><div style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0,
-                alignSelf: "stretch"
-              }}><span style={{
-                  position: "relative",
-                  width: 315,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0
-                }}>GST No</span><span style={{
-                  position: "relative",
-                  width: 256,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(18,53,50)",
-                  flexShrink: 0
-                }}>:  32AAUFG1464A1ZP</span></div><div style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                flexShrink: 0,
-                alignSelf: "stretch"
-              }}><span style={{
-                  position: "relative",
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 500,
-                  fontSize: 22,
-                  whiteSpace: "nowrap",
-                  lineHeight: "100%",
-                  color: "rgb(55,65,81)",
-                  flexShrink: 0,
-                  alignSelf: "stretch"
-                }}>Company Registration</span><span style={{
-                  position: "relative",
-                  width: 271,
-                  fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  lineHeight: "100%",
-                  color: "rgb(18,53,50)",
-                  flexShrink: 0
-                }}>:   AAP-6531</span></div></div></div></div><div style={{
+            }}><DetailRow label="Quo No" value={data.quoteNo} labelWidth={260} /><DetailRow label="Proposal By" value={data.proposalBy} labelWidth={260} /><DetailRow label="Date" value={data.currentDate} labelWidth={260} /><DetailRow label="Valid Until" value={data.validUntilDate} labelWidth={260} /><DetailRow label="GST No" value={data.gstNo} labelWidth={260} /><DetailRow label="Company Registration" value={data.companyRegistration} labelWidth={260} /></div></div></div><div style={{
           position: "relative",
           height: 98,
           backgroundColor: "rgb(247,244,230)",
@@ -841,20 +570,7 @@ We&apos;ve carefully designed this solution specifically for your home&apos;s en
                 height: 18,
                 overflow: "hidden",
                 flexShrink: 0
-              }}><div style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 18,
-                  height: 18,
-                  border: "1px dashed currentColor",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  fontSize: 10,
-                  opacity: 0.45
-                }}>Vector</div></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+              }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
             position: "absolute",
             left: 85,
             top: 30,

@@ -1,12 +1,16 @@
 // Page 7 of the Flarize quotation document (English) — Technical Specifications — full spec comparison table
 import type { CSSProperties } from "react";
+import FooterLocationPin from "../icons/FooterLocationPin";
+import type { QuotationV2Data } from "../quotationV2Data";
 
 interface Page07TechSpecsProps {
   className?: string;
   style?: CSSProperties;
+  /** Derived quotation values for this customer. */
+  data: QuotationV2Data;
 }
 
-export default function Page07TechSpecs({ className, style }: Page07TechSpecsProps) {
+export default function Page07TechSpecs({ className, style, data }: Page07TechSpecsProps) {
   return <div className={className} style={{
     position: "relative",
     width: 1440,
@@ -118,7 +122,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                   fontSize: 42
                 }}>Technical Specifications  </span><span style={{
                   fontSize: 42
-                }}>(Equivalent to 5000 W)</span></span></div><span style={{
+                }}>(Equivalent to {data.equivalentWatts})</span></span></div><span style={{
               position: "relative",
               fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
               fontWeight: 500,
@@ -200,7 +204,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
 <span style={{
                   fontWeight: 300,
                   fontSize: 21
-                }}>5 kW Solar System</span></span></div><div style={{
+                }}>{data.sizeLabel}</span></span></div><div style={{
               gridRow: "1",
               gridColumn: "3",
               position: "relative",
@@ -208,7 +212,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 123,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -235,7 +239,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                   fontWeight: 300,
                   color: "rgb(248,138,34)",
                   fontSize: 21
-                }}>5 kW Solar System</span></span></div><div style={{
+                }}>{data.sizeLabel}</span></span></div><div style={{
               gridRow: "1",
               gridColumn: "4",
               position: "relative",
@@ -272,7 +276,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
 <span style={{
                   fontWeight: 300,
                   fontSize: 21
-                }}>5 kW Solar System</span></span></div><div style={{
+                }}>{data.sizeLabel}</span></span></div><div style={{
               gridRow: "2",
               gridColumn: "1",
               position: "relative",
@@ -335,7 +339,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               width: 318.5,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -446,7 +450,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 112,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -556,7 +560,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 133,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -666,7 +670,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 110,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -777,7 +781,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 110,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -888,7 +892,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 110,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -999,7 +1003,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 110,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -1110,7 +1114,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 88,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -1222,7 +1226,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 88,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -1334,7 +1338,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 88,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -1446,7 +1450,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 88,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -1551,7 +1555,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 color: "var(--2-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>₹3,38,000</span></div><div style={{
+              }}>{data.premium.total}</span></div><div style={{
               gridRow: "13",
               gridColumn: "3",
               position: "relative",
@@ -1559,7 +1563,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 88,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -1577,7 +1581,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 color: "var(--2-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>₹2,68,000</span></div><div style={{
+              }}>{data.smart.total}</span></div><div style={{
               gridRow: "13",
               gridColumn: "4",
               position: "relative",
@@ -1606,7 +1610,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 color: "var(--2-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>₹1,98,000</span></div><div style={{
+              }}>{data.basic.total}</span></div><div style={{
               gridRow: "14",
               gridColumn: "1",
               position: "relative",
@@ -1660,7 +1664,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 color: "var(--green-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>₹78,000</span></div><div style={{
+              }}>{data.subsidyRowValue}</span></div><div style={{
               gridRow: "14",
               gridColumn: "3",
               position: "relative",
@@ -1668,7 +1672,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
               height: 88,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
-              boxShadow: "inset 0 0 0 1px rgb(248,138,34)",
+              border: "1px solid rgb(248,138,34)",
               display: "flex",
               flexDirection: "row",
               gap: 10,
@@ -1686,7 +1690,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 color: "var(--green-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>₹78,000</span></div><div style={{
+              }}>{data.subsidyRowValue}</span></div><div style={{
               gridRow: "14",
               gridColumn: "4",
               position: "relative",
@@ -1715,7 +1719,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 color: "var(--green-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>₹78,000</span></div><div style={{
+              }}>{data.subsidyRowValue}</span></div><div style={{
               gridRow: "15",
               gridColumn: "1",
               position: "relative",
@@ -1744,7 +1748,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 color: "rgb(255,255,255)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>Total System Cost After Subsidy</span></div><div style={{
+              }}>{data.totalPayableLabel}</span></div><div style={{
               gridRow: "15",
               gridColumn: "2",
               position: "relative",
@@ -1772,7 +1776,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 letterSpacing: "-0.500px",
                 color: "rgb(255,255,255)",
                 flexGrow: 1
-              }}>₹2,60,000</span></div><div style={{
+              }}>{data.premium.final}</span></div><div style={{
               gridRow: "15",
               gridColumn: "3",
               position: "relative",
@@ -1800,7 +1804,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 letterSpacing: "-0.500px",
                 color: "rgb(255,255,255)",
                 flexGrow: 1
-              }}>₹1,90,000</span></div><div style={{
+              }}>{data.smart.final}</span></div><div style={{
               gridRow: "15",
               gridColumn: "4",
               position: "relative",
@@ -1828,7 +1832,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 letterSpacing: "-0.500px",
                 color: "rgb(255,255,255)",
                 flexGrow: 1
-              }}>₹1,20,000</span></div></div></div><div style={{
+              }}>{data.basic.final}</span></div></div></div><div style={{
           position: "relative",
           height: 98,
           backgroundColor: "rgb(247,244,230)",
@@ -1873,20 +1877,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 height: 18,
                 overflow: "hidden",
                 flexShrink: 0
-              }}><div style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 18,
-                  height: 18,
-                  border: "1px dashed currentColor",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  fontSize: 10,
-                  opacity: 0.45
-                }}>Vector</div></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+              }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
             position: "absolute",
             left: 85,
             top: 30,

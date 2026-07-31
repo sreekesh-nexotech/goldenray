@@ -1,5 +1,6 @@
 // Page 3 of the Flarize quotation document (English) — Why Choose Flarize? — value props + homes powered across Kerala photo grid
 import type { CSSProperties } from "react";
+import FooterLocationPin from "../icons/FooterLocationPin";
 
 interface Page04WhyFlarizeProps {
   className?: string;
@@ -189,7 +190,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
           }}><div style={{
               position: "relative",
               borderRadius: 12,
-              boxShadow: "inset 0 0 0 1px var(--p1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+              border: "1px solid var(--p1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
               display: "flex",
               flexDirection: "column",
               gap: 4,
@@ -261,7 +262,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
               }}>Successful Installations</span></div><div style={{
               position: "relative",
               borderRadius: 12,
-              boxShadow: "inset 0 0 0 1px var(--p1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+              border: "1px solid var(--p1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
               display: "flex",
               flexDirection: "column",
               gap: 4,
@@ -319,7 +320,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
               }}>Industry Experience</span></div><div style={{
               position: "relative",
               borderRadius: 12,
-              boxShadow: "inset 0 0 0 1px var(--p1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+              border: "1px solid var(--p1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
               display: "flex",
               flexDirection: "column",
               gap: 4,
@@ -377,7 +378,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
               }}>INSTALLATION TEAM</span></div><div style={{
               position: "relative",
               borderRadius: 12,
-              boxShadow: "inset 0 0 0 1px var(--p1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+              border: "1px solid var(--p1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
               display: "flex",
               flexDirection: "column",
               gap: 4,
@@ -435,7 +436,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
               }}>wide Service</span></div><div style={{
               position: "relative",
               borderRadius: 12,
-              boxShadow: "inset 0 0 0 1px var(--p1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+              border: "1px solid var(--p1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
               display: "flex",
               flexDirection: "column",
               gap: 4,
@@ -602,7 +603,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    boxShadow: "inset 0 0 0 1px rgba(198,198,205,0.1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -631,7 +632,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    boxShadow: "inset 0 0 0 1px rgba(198,198,205,0.1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -660,7 +661,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    boxShadow: "inset 0 0 0 1px rgba(198,198,205,0.1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -689,7 +690,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    boxShadow: "inset 0 0 0 1px rgba(198,198,205,0.1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -728,7 +729,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    boxShadow: "inset 0 0 0 1px rgba(198,198,205,0.1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -757,7 +758,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    boxShadow: "inset 0 0 0 1px rgba(198,198,205,0.1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -786,7 +787,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    boxShadow: "inset 0 0 0 1px rgba(198,198,205,0.1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -815,7 +816,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    boxShadow: "inset 0 0 0 1px rgba(198,198,205,0.1), 0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -901,7 +902,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 109,
                       height: 109,
                       borderRadius: "50%",
-                      boxShadow: "inset 0 0 0 2px var(--green-2)"
+                      border: "2px solid var(--green-2)"
                     }} /><div style={{
                       position: "absolute",
                       left: 5.45,
@@ -909,7 +910,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 98.1,
                       height: 98.1,
                       borderRadius: "50%",
-                      boxShadow: "inset 0 0 0 1px var(--green-2)"
+                      border: "1px solid var(--green-2)"
                     }} /></div><div className="fig-asset-46044665435adb03-898fb5cd" style={{
                     position: "absolute",
                     left: 24.5,
@@ -974,7 +975,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 109,
                       height: 109,
                       borderRadius: "50%",
-                      boxShadow: "inset 0 0 0 2px var(--green-2)"
+                      border: "2px solid var(--green-2)"
                     }} /><div style={{
                       position: "absolute",
                       left: 5.45,
@@ -982,7 +983,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 98.1,
                       height: 98.1,
                       borderRadius: "50%",
-                      boxShadow: "inset 0 0 0 1px var(--green-2)"
+                      border: "1px solid var(--green-2)"
                     }} /></div><div className="fig-asset-91ca06ccd699e450" style={{
                     position: "absolute",
                     left: 19.5,
@@ -1047,7 +1048,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 109,
                       height: 109,
                       borderRadius: "50%",
-                      boxShadow: "inset 0 0 0 2px rgb(0,129,48)"
+                      border: "2px solid rgb(0,129,48)"
                     }} /><div style={{
                       position: "absolute",
                       left: 5.45,
@@ -1055,7 +1056,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 98.1,
                       height: 98.1,
                       borderRadius: "50%",
-                      boxShadow: "inset 0 0 0 1px rgb(0,129,48)"
+                      border: "1px solid rgb(0,129,48)"
                     }} /></div><div style={{
                     position: "absolute",
                     left: 30.5,
@@ -1154,7 +1155,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 109,
                       height: 109,
                       borderRadius: "50%",
-                      boxShadow: "inset 0 0 0 2px var(--green-2)"
+                      border: "2px solid var(--green-2)"
                     }} /><div style={{
                       position: "absolute",
                       left: 5.45,
@@ -1162,7 +1163,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 98.1,
                       height: 98.1,
                       borderRadius: "50%",
-                      boxShadow: "inset 0 0 0 1px var(--green-2)"
+                      border: "1px solid var(--green-2)"
                     }} /></div><div style={{
                     position: "absolute",
                     left: 35,
@@ -1247,7 +1248,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 109,
                       height: 109,
                       borderRadius: "50%",
-                      boxShadow: "inset 0 0 0 2px var(--green-2)"
+                      border: "2px solid var(--green-2)"
                     }} /><div style={{
                       position: "absolute",
                       left: 5.45,
@@ -1255,7 +1256,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 98.1,
                       height: 98.1,
                       borderRadius: "50%",
-                      boxShadow: "inset 0 0 0 1px var(--green-2)"
+                      border: "1px solid var(--green-2)"
                     }} /></div><div style={{
                     position: "absolute",
                     left: 30,
@@ -1359,20 +1360,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                   height: 18,
                   overflow: "hidden",
                   flexShrink: 0
-                }}><div style={{
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                    width: 18,
-                    height: 18,
-                    border: "1px dashed currentColor",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    overflow: "hidden",
-                    fontSize: 10,
-                    opacity: 0.45
-                  }}>Vector</div></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+                }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
               position: "absolute",
               left: 85,
               top: 30,
