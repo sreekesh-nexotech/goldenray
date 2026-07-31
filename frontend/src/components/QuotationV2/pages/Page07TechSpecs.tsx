@@ -200,14 +200,14 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 whiteSpace: "pre-wrap"
               }}><span style={{
                   fontSize: 23
-                }}>Premium System</span>
-<span style={{
+                }}>Premium System</span>{"\n"}<span style={{
                   fontWeight: 300,
                   fontSize: 21
                 }}>{data.sizeLabel}</span></span></div><div style={{
               gridRow: "1",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 123,
               overflow: "hidden",
@@ -234,8 +234,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               }}><span style={{
                   color: "rgb(248,138,34)",
                   fontSize: 23
-                }}>Smart System</span>
-<span style={{
+                }}>Smart System</span>{"\n"}<span style={{
                   fontWeight: 300,
                   color: "rgb(248,138,34)",
                   fontSize: 21
@@ -272,8 +271,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 whiteSpace: "pre-wrap"
               }}><span style={{
                   fontSize: 23
-                }}>Basic System</span>
-<span style={{
+                }}>Basic System</span>{"\n"}<span style={{
                   fontWeight: 300,
                   fontSize: 21
                 }}>{data.sizeLabel}</span></span></div><div style={{
@@ -336,6 +334,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "2",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               overflow: "hidden",
               backgroundColor: "rgb(255,249,243)",
@@ -446,6 +445,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "3",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 112,
               overflow: "hidden",
@@ -556,6 +556,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "4",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 133,
               overflow: "hidden",
@@ -666,6 +667,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "5",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 110,
               overflow: "hidden",
@@ -777,6 +779,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "6",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 110,
               overflow: "hidden",
@@ -888,6 +891,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "7",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 110,
               overflow: "hidden",
@@ -999,6 +1003,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "8",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 110,
               overflow: "hidden",
@@ -1110,6 +1115,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "9",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 88,
               overflow: "hidden",
@@ -1222,6 +1228,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "10",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 88,
               overflow: "hidden",
@@ -1334,6 +1341,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "11",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 88,
               overflow: "hidden",
@@ -1446,6 +1454,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "12",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 88,
               overflow: "hidden",
@@ -1559,6 +1568,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "13",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 88,
               overflow: "hidden",
@@ -1668,6 +1678,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "14",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 88,
               overflow: "hidden",
@@ -1780,6 +1791,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               gridRow: "15",
               gridColumn: "3",
               position: "relative",
+              zIndex: 1,
               width: 318.5,
               height: 128,
               overflow: "hidden",

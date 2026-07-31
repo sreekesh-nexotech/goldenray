@@ -2,7 +2,7 @@
 import type { CSSProperties } from "react";
 import FooterLocationPin from "../icons/FooterLocationPin";
 import type { QuotationV2Data } from "../quotationV2Data";
-import MingcuteArrowLeftFill from "../icons/MingcuteArrowLeftFill";
+import FlowArrow from "../icons/FlowArrow";
 
 interface Page03UsageProps {
   className?: string;
@@ -1190,7 +1190,8 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                         position: "absolute",
                         left: -3,
                         top: 17.25,
-                        width: 123,
+                        whiteSpace: "nowrap",
+                        flexShrink: 0,
                         height: 24,
                         fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                         fontWeight: 700,
@@ -1308,18 +1309,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                       textBox: "trim-both cap alphabetic",
                       color: "rgb(18,53,50)",
                       flexShrink: 0
-                    }}>units/day (average)</span></div></div></div></div><div style={{
-              position: "relative",
-              width: 46,
-              height: 46,
-              transform: "matrix(-1,0,0,1,0,0)",
-              flexShrink: 0,
-              color: "var(--1-2)"
-            }}><MingcuteArrowLeftFill style={{
-                transform: "scale(1.917, 1.917)",
-                transformOrigin: "0 0",
-                color: "var(--1-2)"
-              }} /></div><div style={{
+                    }}>units/day (average)</span></div></div></div></div><FlowArrow size={46} style={{ flexShrink: 0, color: "var(--1-2)" }} /><div style={{
               position: "relative",
               height: 198,
               borderRadius: 16,
@@ -1328,8 +1318,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
               flexDirection: "column",
               gap: 24,
               padding: "15px 0px 15px 0px",
-              justifyContent: "center",
-              alignItems: "flex-start",
+                            alignItems: "center",
               flexWrap: "nowrap",
               boxSizing: "border-box",
               flexGrow: 1
@@ -1420,18 +1409,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                       textBox: "trim-both cap alphabetic",
                       color: "rgb(18,53,50)",
                       flexShrink: 0
-                    }}>units/day (all appliances)</span></div></div></div></div><div style={{
-              position: "relative",
-              width: 46,
-              height: 46,
-              transform: "matrix(-1,0,0,1,0,0)",
-              flexShrink: 0,
-              color: "var(--1-2)"
-            }}><MingcuteArrowLeftFill style={{
-                transform: "scale(1.917, 1.917)",
-                transformOrigin: "0 0",
-                color: "var(--1-2)"
-              }} /></div><div style={{
+                    }}>units/day (all appliances)</span></div></div></div></div><FlowArrow size={46} style={{ flexShrink: 0, color: "var(--1-2)" }} /><div style={{
               position: "relative",
               height: 198,
               borderRadius: 16,
@@ -1440,8 +1418,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
               flexDirection: "column",
               gap: 24,
               padding: "15px 0px 15px 0px",
-              justifyContent: "center",
-              alignItems: "flex-start",
+                            alignItems: "center",
               flexWrap: "nowrap",
               boxSizing: "border-box",
               flexGrow: 1

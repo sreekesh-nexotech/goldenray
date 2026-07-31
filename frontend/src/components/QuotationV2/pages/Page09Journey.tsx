@@ -689,9 +689,6 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
             alignSelf: "stretch"
           }}><div style={{
               position: "relative",
-              borderTop: "1px solid var(--1-2)",
-              borderRight: "1px solid var(--1-2)",
-              borderBottom: "1px solid var(--1-2)",
               borderLeft: "2px solid var(--1-2)",
               display: "flex",
               flexDirection: "column",

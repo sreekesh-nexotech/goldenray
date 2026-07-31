@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element -- fixed-pixel print artwork; a plain
+   <img> keeps the QR crisp in the PDF and avoids next/image's wrapper. */
 // Page 6 of the Flarize quotation document (English) — Homeowners Around You Have Already Switched — testimonials
 import type { CSSProperties } from "react";
 import FooterLocationPin from "../icons/FooterLocationPin";
@@ -730,167 +732,13 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
           flexWrap: "nowrap",
           boxSizing: "border-box",
           flexShrink: 0
-        }}><div style={{
-            position: "relative",
-            width: 193,
-            height: 193,
-            overflow: "hidden",
-            flexShrink: 0
-          }}><svg width={193} height={193} viewBox="0 0 193 193" fill="none" style={{
-              position: "absolute",
-              left: 0,
-              top: 0,
-              width: 193,
-              height: 193,
-              color: "rgb(255,255,255)"
-            }}><path d="M 193 0 L 0 0 L 0 193 L 193 193 L 193 0 Z" fill="currentColor" fillRule="nonzero" /></svg><div style={{
-              position: "absolute",
-              left: 7.334,
-              top: 7.334,
-              width: 178.332,
-              height: 178.332,
-              overflow: "hidden"
-            }}><div style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                width: 178.33192443847656,
-                height: 178.33203125,
-                clipPath: "inset(0px 0.000px 0px -0.000px)"
-              }}><svg width={193} height={193} viewBox="0 0 193 193" fill="none" style={{
-                  position: "absolute",
-                  left: -7.334,
-                  top: -7.334,
-                  width: 193,
-                  height: 193,
-                  color: "rgb(0,0,0)"
-                }}><path d="M 193 0 L 0 0 L 0 193 L 193 193 L 193 0 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div><div style={{
-              position: "absolute",
-              left: 7.334,
-              top: 7.334,
-              width: 37.828,
-              height: 37.828,
-              overflow: "hidden"
-            }}><div style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                width: 37.828006744384766,
-                height: 37.828006744384766,
-                clipPath: "inset(0px 0px 0px 0px)"
-              }}><svg width={37.828} height={37.828} viewBox="0 0 37.828 37.828" fill="none" style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 37.828,
-                  height: 37.828,
-                  color: "rgb(0,0,0)"
-                }}><path d="M 37.828 0 L 0 0 L 0 37.828 L 37.828 37.828 L 37.828 0 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div><div style={{
-              position: "absolute",
-              left: 18.142,
-              top: 18.142,
-              width: 16.212,
-              height: 16.212,
-              overflow: "hidden"
-            }}><div style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                width: 16.211999893188477,
-                height: 16.211999893188477,
-                clipPath: "inset(0px 0px 0px 0px)"
-              }}><svg width={16.212} height={16.212} viewBox="0 0 16.212 16.212" fill="none" style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 16.212,
-                  height: 16.212,
-                  color: "rgb(0,0,0)"
-                }}><path d="M 16.212 0 L 0 0 L 0 16.212 L 16.212 16.212 L 16.212 0 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div><div style={{
-              position: "absolute",
-              left: 147.838,
-              top: 7.334,
-              width: 37.828,
-              height: 37.828,
-              overflow: "hidden"
-            }}><div style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                width: 37.828006744384766,
-                height: 37.828006744384766,
-                clipPath: "inset(-0.000px 0px 0.000px 0px)"
-              }}><svg width={37.828} height={37.828} viewBox="0 0 37.828 37.828" fill="none" style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 37.828,
-                  height: 37.828,
-                  color: "rgb(0,0,0)"
-                }}><path d="M 37.828 0 L 0 0 L 0 37.828 L 37.828 37.828 L 37.828 0 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div><div style={{
-              position: "absolute",
-              left: 158.646,
-              top: 18.142,
-              width: 16.212,
-              height: 16.212,
-              overflow: "hidden"
-            }}><div style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                width: 16.211999893188477,
-                height: 16.211999893188477,
-                clipPath: "inset(0px 0px 0px 0px)"
-              }}><svg width={16.212} height={16.212} viewBox="0 0 16.212 16.212" fill="none" style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 16.212,
-                  height: 16.212,
-                  color: "rgb(0,0,0)"
-                }}><path d="M 16.212 0 L 0 0 L 0 16.212 L 16.212 16.212 L 16.212 0 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div><div style={{
-              position: "absolute",
-              left: 7.334,
-              top: 147.838,
-              width: 37.828,
-              height: 37.828,
-              overflow: "hidden"
-            }}><div style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                width: 37.828006744384766,
-                height: 37.828006744384766,
-                clipPath: "inset(0px 0px 0px 0.000px)"
-              }}><svg width={37.828} height={37.828} viewBox="0 0 37.828 37.828" fill="none" style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 37.828,
-                  height: 37.828,
-                  color: "rgb(0,0,0)"
-                }}><path d="M 37.828 0 L 0 0 L 0 37.828 L 37.828 37.828 L 37.828 0 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div><div style={{
-              position: "absolute",
-              left: 18.142,
-              top: 158.646,
-              width: 16.212,
-              height: 16.212,
-              overflow: "hidden"
-            }}><div style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                width: 16.211999893188477,
-                height: 16.211999893188477,
-                clipPath: "inset(0.000px 0px 0px 0px)"
-              }}><svg width={16.212} height={16.212} viewBox="0 0 16.212 16.212" fill="none" style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 16.212,
-                  height: 16.212,
-                  color: "rgb(0,0,0)"
-                }}><path d="M 16.212 0 L 0 0 L 0 16.212 L 16.212 16.212 L 16.212 0 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div></div><div style={{
+        }}><img
+            src="/quotation-v2/qr-testimonials.png"
+            alt="QR code linking to Flarize customer testimonial videos"
+            width={193}
+            height={193}
+            style={{ position: "relative", width: 193, height: 193, flexShrink: 0 }}
+          /><div style={{
             position: "relative",
             display: "flex",
             flexDirection: "column",

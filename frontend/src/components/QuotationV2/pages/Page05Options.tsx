@@ -275,8 +275,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                   fontWeight: 600,
                   color: "rgb(248,138,34)",
                   fontSize: 24
-                }}>{data.premium.emi}</span>
-<span style={{
+                }}>{data.premium.emi}</span>{"\n"}<span style={{
                   fontSize: 17
                 }}>{data.premium.emiNote}</span></span></div></div><div style={{
             position: "relative",
@@ -467,8 +466,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                   fontWeight: 600,
                   color: "rgb(248,138,34)",
                   fontSize: 24
-                }}>{data.smart.emi}</span>
-<span style={{
+                }}>{data.smart.emi}</span>{"\n"}<span style={{
                   fontSize: 17
                 }}>{data.smart.emiNote}</span></span></div></div><div style={{
             position: "relative",
@@ -629,8 +627,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                   fontWeight: 600,
                   color: "rgb(248,138,34)",
                   fontSize: 24
-                }}>{data.basic.emi}</span>
-<span style={{
+                }}>{data.basic.emi}</span>{"\n"}<span style={{
                   fontSize: 17
                 }}>{data.basic.emiNote}</span></span></div></div></div><div style={{
           position: "relative",
@@ -702,8 +699,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Premium System</span>
-<span style={{
+              }}>Premium System</span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.premium.final}</span></span></div><div style={{
@@ -739,8 +735,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Smart System</span>
-<span style={{
+              }}>Smart System</span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.smart.final}</span></span></div><div style={{
@@ -777,8 +772,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Basic System</span>
-<span style={{
+              }}>Basic System</span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.basic.final}</span></span></div><div style={{

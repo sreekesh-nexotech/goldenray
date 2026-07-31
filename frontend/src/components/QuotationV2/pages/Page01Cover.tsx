@@ -445,8 +445,7 @@ We&apos;ve carefully designed this solution specifically for your home&apos;s en
                 whiteSpace: "pre-wrap"
               }}><span style={{
                   fontSize: 24
-                }}>Warm Regards, </span>
-<span style={{
+                }}>Warm Regards, </span>{"\n"}<span style={{
                   fontWeight: 600,
                   fontSize: 24
                 }}>Team Flarize</span></span><div className="fig-asset-3505ba533a4c31a4" style={{

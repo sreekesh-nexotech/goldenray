@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import FooterLocationPin from "../icons/FooterLocationPin";
 import type { QuotationV2Data } from "../quotationV2Data";
 import SavingsChart from "../SavingsChart";
-import MingcuteArrowLeftFill from "../icons/MingcuteArrowLeftFill";
+import FlowArrow from "../icons/FlowArrow";
 
 interface Page08SavingsProps {
   className?: string;
@@ -690,18 +690,7 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                   letterSpacing: "-0.500px",
                   color: "rgb(68,68,68)",
                   flexShrink: 0
-                }}>No ownership, no control</span></div></div></div><div style={{
-            position: "relative",
-            width: 46,
-            height: 46,
-            transform: "matrix(-1,0,0,1,0,0)",
-            flexShrink: 0,
-            color: "rgb(0,0,0)"
-          }}><MingcuteArrowLeftFill style={{
-              transform: "scale(1.917, 1.917)",
-              transformOrigin: "0 0",
-              color: "rgb(0,0,0)"
-            }} /></div><div style={{
+                }}>No ownership, no control</span></div></div></div><FlowArrow size={46} style={{ flexShrink: 0, color: "rgb(0,0,0)" }} /><div style={{
             position: "relative",
             borderRadius: 16,
             background: "linear-gradient(117.977deg, rgb(240,253,250) -19.79%, rgb(209,250,229) 50.92%)",
@@ -1371,9 +1360,6 @@ Branch: <span style={{
           alignSelf: "stretch"
         }}><div style={{
             position: "relative",
-            borderTop: "1px solid var(--1-2)",
-            borderRight: "1px solid var(--1-2)",
-            borderBottom: "1px solid var(--1-2)",
             borderLeft: "2px solid var(--1-2)",
             display: "flex",
             flexDirection: "column",

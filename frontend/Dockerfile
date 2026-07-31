@@ -3,6 +3,8 @@ FROM node:18-alpine AS builder
 
 RUN apk add --no-cache build-base vips-dev
 
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --include=optional
@@ -34,6 +36,14 @@ FROM node:18-alpine AS dev
 
 RUN apk add --no-cache build-base vips-dev
 
+# Chromium for the quotation PDF: the document is rendered by real Chrome via
+# puppeteer-core rather than rasterised in JS, so the PDF matches the page
+# exactly. puppeteer-core ships no browser of its own, hence the system one.
+RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates \
+        ttf-freefont font-noto font-noto-emoji
+ENV PUPPETEER_SKIP_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --include=optional
@@ -43,6 +53,15 @@ CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
 
 # Stage 3: Production image
 FROM node:18-alpine
+
+# Chromium for the quotation PDF: the document is rendered by real Chrome via
+# puppeteer-core rather than rasterised in JS, so the PDF matches the page
+# exactly. puppeteer-core ships no browser of its own, hence the system one.
+RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates \
+        ttf-freefont font-noto font-noto-emoji
+ENV PUPPETEER_SKIP_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
 WORKDIR /app
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public

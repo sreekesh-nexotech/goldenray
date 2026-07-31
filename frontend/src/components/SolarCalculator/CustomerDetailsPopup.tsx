@@ -1,16 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
 import { getQuotationBom, type QuotationBom } from "@/services/bomService";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
-
-// The redesigned (v2) document is what customers receive; it downloads the
-// PDF rather than opening it in a new tab.
-const QuotationV2PdfGenerator = dynamic(
-  () => import("@/components/QuotationV2/QuotationV2PdfGenerator"),
-  { ssr: false },
-);
 
 interface CustomerDetailsPopupProps {
   onClose: () => void;
@@ -64,7 +56,6 @@ export default function CustomerDetailsPopup({
   const [subsidyEligibility, setSubsidyEligibility] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isGenerating, setIsGenerating] = useState(false);
-  const [pdfData, setPdfData] = useState<QuotationData | null>(null);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -121,23 +112,40 @@ export default function CustomerDetailsPopup({
       bom: bom ?? undefined,
     };
 
-    // Also store in sessionStorage for the /quotation page fallback
+    // Also store in sessionStorage so /quotation/v2 can be opened directly.
     sessionStorage.setItem("quotationData", JSON.stringify(quotationData));
 
-    // Trigger PDF generation
-    setPdfData(quotationData);
-  };
+    try {
+      // Chrome renders the real /quotation/v2 page server-side and returns the
+      // PDF, so the download is exactly what the preview page shows.
+      const response = await fetch("/api/quotation/pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(quotationData),
+      });
 
-  const handlePdfComplete = () => {
-    setIsGenerating(false);
-    setPdfData(null);
-    onClose();
-  };
+      if (!response.ok) throw new Error(`PDF request failed: ${response.status}`);
 
-  const handlePdfError = (error: string) => {
-    setIsGenerating(false);
-    setPdfData(null);
-    alert(error);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Flarize-Quotation-${
+        customerName.trim().replace(/[^a-zA-Z0-9]+/g, "-") || "Customer"
+      }.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      // Revoking immediately can cancel the download in some browsers.
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+
+      setIsGenerating(false);
+      onClose();
+    } catch (error) {
+      console.error("PDF generation error:", error);
+      setIsGenerating(false);
+      alert("Failed to generate the quotation PDF. Please try again.");
+    }
   };
 
   return (
@@ -301,15 +309,6 @@ export default function CustomerDetailsPopup({
             </button>
           </div>
         </form>
-
-        {/* PDF Generator - renders off-screen and downloads the PDF */}
-        {pdfData && (
-          <QuotationV2PdfGenerator
-            data={pdfData}
-            onComplete={handlePdfComplete}
-            onError={handlePdfError}
-          />
-        )}
       </div>
     </div>
   );

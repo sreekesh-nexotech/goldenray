@@ -359,8 +359,11 @@ export function buildQuotationV2Data(
   // ── Daily generation (page 3) ────────────────────────────────────────────
   const minDaily = Math.round(sizeKW * 3.6);
   const maxDaily = Math.round(sizeKW * 4.4);
-  const minSurplus = Math.round(minDaily - DAILY_USAGE_UNITS);
-  const maxSurplus = Math.round(maxDaily - DAILY_USAGE_UNITS);
+  // A system smaller than the household's own draw exports nothing on a bad
+  // day, so the floor is zero — otherwise the surplus card advertises a
+  // negative export, e.g. "-1-1 units/day".
+  const minSurplus = Math.max(0, Math.round(minDaily - DAILY_USAGE_UNITS));
+  const maxSurplus = Math.max(0, Math.round(maxDaily - DAILY_USAGE_UNITS));
 
   const minNetEmi = minSavings - emi;
   const maxNetEmi = maxSavings - emi;

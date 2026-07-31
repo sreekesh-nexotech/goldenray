@@ -603,7 +603,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)",
+              boxSizing: "border-box", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -632,7 +633,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)",
+              boxSizing: "border-box", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -661,7 +663,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)",
+              boxSizing: "border-box", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -690,7 +693,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)",
+              boxSizing: "border-box", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -729,7 +733,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)",
+              boxSizing: "border-box", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -758,7 +763,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)",
+              boxSizing: "border-box", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -787,7 +793,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)",
+              boxSizing: "border-box", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -816,7 +823,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     overflow: "hidden",
                     borderRadius: 12,
                     backgroundColor: "rgb(255,255,255)",
-                    border: "1px solid rgba(198,198,205,0.1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(198,198,205,0.1)",
+              boxSizing: "border-box", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -902,7 +910,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 109,
                       height: 109,
                       borderRadius: "50%",
-                      border: "2px solid var(--green-2)"
+                      border: "2px solid var(--green-2)",
+              boxSizing: "border-box"
                     }} /><div style={{
                       position: "absolute",
                       left: 5.45,
@@ -910,7 +919,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 98.1,
                       height: 98.1,
                       borderRadius: "50%",
-                      border: "1px solid var(--green-2)"
+                      border: "1px solid var(--green-2)",
+              boxSizing: "border-box"
                     }} /></div><div className="fig-asset-46044665435adb03-898fb5cd" style={{
                     position: "absolute",
                     left: 24.5,
@@ -975,7 +985,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 109,
                       height: 109,
                       borderRadius: "50%",
-                      border: "2px solid var(--green-2)"
+                      border: "2px solid var(--green-2)",
+              boxSizing: "border-box"
                     }} /><div style={{
                       position: "absolute",
                       left: 5.45,
@@ -983,7 +994,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 98.1,
                       height: 98.1,
                       borderRadius: "50%",
-                      border: "1px solid var(--green-2)"
+                      border: "1px solid var(--green-2)",
+              boxSizing: "border-box"
                     }} /></div><div className="fig-asset-91ca06ccd699e450" style={{
                     position: "absolute",
                     left: 19.5,
@@ -1048,7 +1060,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 109,
                       height: 109,
                       borderRadius: "50%",
-                      border: "2px solid rgb(0,129,48)"
+                      border: "2px solid rgb(0,129,48)",
+              boxSizing: "border-box"
                     }} /><div style={{
                       position: "absolute",
                       left: 5.45,
@@ -1056,7 +1069,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 98.1,
                       height: 98.1,
                       borderRadius: "50%",
-                      border: "1px solid rgb(0,129,48)"
+                      border: "1px solid rgb(0,129,48)",
+              boxSizing: "border-box"
                     }} /></div><div style={{
                     position: "absolute",
                     left: 30.5,
@@ -1155,7 +1169,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 109,
                       height: 109,
                       borderRadius: "50%",
-                      border: "2px solid var(--green-2)"
+                      border: "2px solid var(--green-2)",
+              boxSizing: "border-box"
                     }} /><div style={{
                       position: "absolute",
                       left: 5.45,
@@ -1163,7 +1178,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 98.1,
                       height: 98.1,
                       borderRadius: "50%",
-                      border: "1px solid var(--green-2)"
+                      border: "1px solid var(--green-2)",
+              boxSizing: "border-box"
                     }} /></div><div style={{
                     position: "absolute",
                     left: 35,
@@ -1248,7 +1264,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 109,
                       height: 109,
                       borderRadius: "50%",
-                      border: "2px solid var(--green-2)"
+                      border: "2px solid var(--green-2)",
+              boxSizing: "border-box"
                     }} /><div style={{
                       position: "absolute",
                       left: 5.45,
@@ -1256,7 +1273,8 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                       width: 98.1,
                       height: 98.1,
                       borderRadius: "50%",
-                      border: "1px solid var(--green-2)"
+                      border: "1px solid var(--green-2)",
+              boxSizing: "border-box"
                     }} /></div><div style={{
                     position: "absolute",
                     left: 30,
