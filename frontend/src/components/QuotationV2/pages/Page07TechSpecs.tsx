@@ -1958,7 +1958,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 whiteSpace: "nowrap",
                 lineHeight: 1.399999976158142,
                 color: "rgb(18,53,50)"
-              }}>www.goldenray.in</span></div><div style={{
+              }}>www.flarize.com</span></div><div style={{
               position: "relative",
               display: "flex",
               flexDirection: "row",
@@ -1982,7 +1982,7 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 lineHeight: 1.399999976158142,
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>goldenray@gmail.com</span></div><div style={{
+              }}>sales@flarize.com</span></div><div style={{
               position: "relative",
               display: "flex",
               flexDirection: "row",
@@ -2006,5 +2006,5 @@ export default function Page07TechSpecs({ className, style }: Page07TechSpecsPro
                 lineHeight: 1.399999976158142,
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>+91 6282 922 988</span></div></div></div></div></div></div>;
+              }}>+91 9995 073 579</span></div></div></div></div></div></div>;
 }

@@ -101,13 +101,13 @@ export default function Page10Terms({ className, style }: Page10TermsProps) {
         }}><span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>1. Warranty</span><span style={{
+          }}>1. Warranty</span><span style={{
             fontSize: 21
           }}>:</span>
 <span style={{
             fontSize: 21
-          }}> Golden Ray Renewable Energy provides a five (5) year warranty for the complete solar powersystem against manufacturing and technical defects, subject to the terms and conditions mentionedherein. Solar panels, inverters, and other OEM products shall carry warranty coverage as providedby their respective manufacturers.</span>
-<span style={{
+          }}> Golden Ray Renewable Energy provides a five (5) year warranty for the complete solar power system against manufacturing and technical defects, subject to the terms and conditions mentioned herein. Solar panels, inverters, and other OEM products shall carry warranty coverage as provided by their respective manufacturers.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
           }}>2. Warranty Exclusions</span><span style={{
@@ -118,8 +118,8 @@ export default function Page10Terms({ className, style }: Page10TermsProps) {
           }}>:</span>
 <span style={{
             fontSize: 21
-          }}> The warranty shall not apply to defects or damages resulting from misuse, negligence,unauthorized modifications, third-party interference, improper operation, storage, or maintenance.Warranty coverage also excludes damage caused by accidents, natural calamities, lightning,flooding, landslides, external grid surges, or any other Force Majeure events.</span>
-<span style={{
+          }}> The warranty shall not apply to defects or damages resulting from misuse, negligence, unauthorized modifications, third-party interference, improper operation, storage, or maintenance. Warranty coverage also excludes damage caused by accidents, natural calamities, lightning, flooding, landslides, external grid surges, or any other Force Majeure events.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
           }}>3. Consumables :</span>
@@ -128,8 +128,8 @@ export default function Page10Terms({ className, style }: Page10TermsProps) {
             fontSize: 25
           }}> </span><span style={{
             fontSize: 21
-          }}>Consumable and protective components such as Fuses, Surge Protection Devices (SPDs),connectors, and similar accessories are not covered under warranty and may require periodicreplacement as part of normal maintenance.</span>
-<span style={{
+          }}>Consumable and protective components such as Fuses, Surge Protection Devices (SPDs), connectors, and similar accessories are not covered under warranty and may require periodic replacement as part of normal maintenance.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
           }}>4. Customer Responsibilities</span><span style={{
@@ -137,8 +137,8 @@ export default function Page10Terms({ className, style }: Page10TermsProps) {
           }}> : </span>
 <span style={{
             fontSize: 21
-          }}>The customer shall provide a shade-free area suitable for solar panel installation along withadequate space for inverters, meters, and associated equipment. Water access for panel cleaning,site accessibility, internet connectivity for monitoring systems, and any loading or unloadingarrangements at site shall be arranged by the customer. If vehicle access to the installation site isrestricted or unavailable, the customer shall arrange the necessary manpower or alternate transportation required for material movement, installation, servicing, or maintenance activities. Anyadditional costs arising due to restricted site access shall be borne by the customer.</span>
-<span style={{
+          }}>The customer shall provide a shade-free area suitable for solar panel installation along with adequate space for inverters, meters, and associated equipment. Water access for panel cleaning, site accessibility, internet connectivity for monitoring systems, and any loading or unloading arrangements at site shall be arranged by the customer. If vehicle access to the installation site is restricted or unavailable, the customer shall arrange the necessary manpower or alternate transportation required for material movement, installation, servicing, or maintenance activities. Any additional costs arising due to restricted site access shall be borne by the customer.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
           }}>5. Service & Training </span><span style={{
@@ -146,17 +146,17 @@ export default function Page10Terms({ className, style }: Page10TermsProps) {
           }}>: </span>
 <span style={{
             fontSize: 21
-          }}>Basic service and maintenance training shall be provided to the customer at the time ofcommissioning. Standby inverter support may be provided during inverter repair periods, subject toavailability.</span>
-<span style={{
+          }}>Basic service and maintenance training shall be provided to the customer at the time of commissioning. Standby inverter support may be provided during inverter repair periods, subject to availability.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>6. Payment Terms</span><span style={{
+          }}>6. Payment Terms</span><span style={{
             fontSize: 21
           }}>:</span>
 <span style={{
             fontSize: 21
-          }}> Payments shall be made as per the payment schedule agreed in the quotation and are dueimmediately upon completion of each project stage. In case the project duration is extended,invoices for completed work, supplied materials, or specially ordered materials may be raisedperiodically and shall be payable upon receipt. Any additional charges arising from scope changes,statutory requirements, material variations, or customer-requested modifications shall be paidbefore the related work is undertaken. The agreed project price shall be considered final uponacceptance of the quotation and requests for price reductions, discounts, or renegotiation afterorder confirmation shall not be entertained. Payments shall be made only to the official bankaccount of Golden Ray Renewable Energy, and the Company shall not be responsible forpayments made to employee or third-party accounts. Eligible refunds shall be processed withinseven (7) working days, subject to banking procedures.</span>
-<span style={{
+          }}> Payments shall be made as per the payment schedule agreed in the quotation and are due immediately upon completion of each project stage. In case the project duration is extended, invoices for completed work, supplied materials, or specially ordered materials may be raised periodically and shall be payable upon receipt. Any additional charges arising from scope changes, statutory requirements, material variations, or customer-requested modifications shall be paid before the related work is undertaken. The agreed project price shall be considered final upon acceptance of the quotation and requests for price reductions, discounts, or renegotiation after order confirmation shall not be entertained. Payments shall be made only to the official bank account of Golden Ray Renewable Energy, and the Company shall not be responsible for payments made to employee or third-party accounts. Eligible refunds shall be processed within seven (7) working days, subject to banking procedures.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
           }}>7. Price Variations</span><span style={{
@@ -164,25 +164,25 @@ export default function Page10Terms({ className, style }: Page10TermsProps) {
           }}> : </span>
 <span style={{
             fontSize: 21
-          }}>If payments are not made as agreed, any increase in labour costs, material costs, taxes, duties, orstatutory charges occurring after the quotation date may be charged additionally to the customer.Such revisions shall be reflected in the final invoice.</span>
-<span style={{
+          }}>If payments are not made as agreed, any increase in labour costs, material costs, taxes, duties, or statutory charges occurring after the quotation date may be charged additionally to the customer. Such revisions shall be reflected in the final invoice.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
           }}>8. GST & Tax Changes</span><span style={{
             fontSize: 21
-          }}>:</span>
+          }}> :</span>
 <span style={{
             fontSize: 21
-          }}> Prices quoted are inclusive of applicable GST and taxes prevailing on the date of quotation. Anyrevision in GST, government levies, duties, or statutory charges shall be reflected in the finalinvoice.</span>
-<span style={{
+          }}> Prices quoted are inclusive of applicable GST and taxes prevailing on the date of quotation. Any revision in GST, government levies, duties, or statutory charges shall be reflected in the final invoice.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
           }}>9. System Capacity & Product Confirmation</span><span style={{
             fontSize: 21
-          }}>:</span>
+          }}>:</span>
 <span style={{
             fontSize: 21
-          }}>Once the customer confirms the system capacity, panel make/model, inverter make/model, andquotation, subsequent changes may not be possible. Any changes requested thereafter may resultin revised pricing, additional charges, material replacement costs, or project delays.</span></span></div><div style={{
+          }}>Once the customer confirms the system capacity, panel make/model, inverter make/model, and quotation, subsequent changes may not be possible. Any changes requested thereafter may result in revised pricing, additional charges, material replacement costs, or project delays.</span></span></div><div style={{
         position: "relative",
         width: 1440,
         height: 98,

@@ -230,7 +230,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                   color: "rgb(255,255,255)",
                   flexShrink: 0,
                   alignSelf: "stretch"
-                }}>Worth of free electricit</span></div></div></div><div style={{
+                }}>Worth of free electricity</span></div></div></div><div style={{
             position: "relative",
             borderRadius: 8,
             backgroundColor: "rgb(255,255,255)",
@@ -673,7 +673,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                         lineHeight: "26.5px",
                         letterSpacing: "-0.500px",
                         color: "rgb(30,64,175)"
-                      }}>0.8 uniits</span></div></div><div style={{
+                      }}>0.8 units</span></div></div><div style={{
                     position: "relative",
                     width: 1155,
                     backgroundColor: "rgba(0,0,0,0)",
@@ -1141,7 +1141,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                         lineHeight: "26.5px",
                         letterSpacing: "-0.500px",
                         color: "rgb(30,64,175)"
-                      }}>0.8 uniits</span></div></div><div style={{
+                      }}>0.8 units</span></div></div><div style={{
                     position: "relative",
                     width: 1152,
                     borderRadius: "0px 0px 16px 16px",
@@ -1194,7 +1194,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                         lineHeight: "31px",
                         letterSpacing: "-0.500px",
                         color: "var(--green)"
-                      }}>13.1 units</span></div></div></div></div></div></div><div style={{
+                      }}>12.4 units</span></div></div></div></div></div></div><div style={{
             position: "relative",
             backgroundColor: "rgba(0,0,0,0)",
             display: "flex",
@@ -1385,7 +1385,7 @@ export default function Page03Usage({ className, style }: Page03UsageProps) {
                       textBox: "trim-both cap alphabetic",
                       color: "rgb(18,53,50)",
                       flexShrink: 0
-                    }}>~13</span></div><div style={{
+                    }}>~12</span></div><div style={{
                     position: "relative",
                     display: "flex",
                     flexDirection: "row",

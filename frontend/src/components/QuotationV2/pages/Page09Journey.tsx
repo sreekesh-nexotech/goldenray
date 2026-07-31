@@ -583,7 +583,7 @@ export default function Page09Journey({ className, style }: Page09JourneyProps) 
                       color: "var(--grey)",
                       flexShrink: 0,
                       alignSelf: "stretch"
-                    }}>Deliver solar panel, inverters and structures; follow up with the next payment installation (80% loan amount)</span></div><div style={{
+                    }}>Deliver solar panel, inverters and structures; follow up with the next payment installment (80% loan amount)</span></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
@@ -1183,7 +1183,7 @@ export default function Page09Journey({ className, style }: Page09JourneyProps) 
                           lineHeight: "28px",
                           color: "var(--2)",
                           flexShrink: 0
-                        }}>Train client&apos;s personal on system operation, safety, and maintenance</span></div></div></div></div></div></div><div style={{
+                        }}>Train client&apos;s personnel on system operation, safety, and maintenance</span></div></div></div></div></div></div><div style={{
               position: "relative",
               overflow: "hidden",
               borderRadius: 32,

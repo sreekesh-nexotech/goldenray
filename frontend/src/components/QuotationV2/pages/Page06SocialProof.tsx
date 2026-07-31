@@ -230,7 +230,7 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
                       flexShrink: 0,
                       alignSelf: "stretch",
                       filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                    }}>Jose V P - Vadakkal, Alapuzha</span><span style={{
+                    }}>Jose V P - Vadakkal, Alappuzha</span><span style={{
                       position: "relative",
                       fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                       fontWeight: 400,
@@ -402,7 +402,7 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
                     lineHeight: "28px",
                     color: "rgb(255,255,255)",
                     filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>Siraj K P - Cherthala, Alapuzha</span><span style={{
+                  }}>Siraj K P - Cherthala, Alappuzha</span><span style={{
                     position: "absolute",
                     left: 10,
                     top: 291,
@@ -415,7 +415,7 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
                     lineHeight: "30px",
                     color: "rgb(255,255,255)",
                     filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>5 kW System | Installed on Mach 2025</span></div><div style={{
+                  }}>5 kW System | Installed on March 2025</span></div><div style={{
                   position: "relative",
                   overflow: "hidden",
                   borderRadius: 8,
@@ -577,7 +577,7 @@ export default function Page06SocialProof({ className, style }: Page06SocialProo
                     lineHeight: "28px",
                     color: "rgb(255,255,255)",
                     filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>Stephen V C - Vattayal, Alapuzha</span><span style={{
+                  }}>Stephen V C - Vattayal, Alappuzha</span><span style={{
                     position: "absolute",
                     left: 17,
                     top: 291,

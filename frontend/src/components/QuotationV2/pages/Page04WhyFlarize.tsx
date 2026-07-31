@@ -946,7 +946,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     color: "var(--greyy2)",
                     flexShrink: 0,
                     alignSelf: "stretch"
-                  }}>Bloomberg-listed manufacture</span></div></div><div style={{
+                  }}>Bloomberg-listed manufacturer</span></div></div><div style={{
                 position: "relative",
                 display: "flex",
                 flexDirection: "column",
@@ -1020,7 +1020,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     color: "var(--greyy2)",
                     flexShrink: 0,
                     alignSelf: "stretch"
-                  }}>Independently lap tested</span></div></div><div style={{
+                  }}>Independently lab tested</span></div></div><div style={{
                 position: "relative",
                 display: "flex",
                 flexDirection: "column",
@@ -1116,7 +1116,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     color: "var(--black)",
                     flexShrink: 0,
                     alignSelf: "stretch"
-                  }}>AMML2  Listed</span><span style={{
+                  }}>ALMM2 Listed</span><span style={{
                     position: "relative",
                     fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                     fontWeight: 500,
@@ -1127,7 +1127,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                     color: "var(--greyy2)",
                     flexShrink: 0,
                     alignSelf: "stretch"
-                  }}>Domestic cell manufacturig</span></div></div><div style={{
+                  }}>Domestic cell manufacturing</span></div></div><div style={{
                 position: "relative",
                 display: "flex",
                 flexDirection: "column",

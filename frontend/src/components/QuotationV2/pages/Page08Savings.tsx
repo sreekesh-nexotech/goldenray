@@ -1423,7 +1423,7 @@ export default function Page08Savings({ className, style }: Page08SavingsProps) 
                 }}><span style={{
                     color: "rgb(220,38,38)",
                     fontSize: 24
-                  }}>₹2O+ lakh </span><span style={{
+                  }}>₹20+ lakh </span><span style={{
                     fontSize: 24
                   }}>paid to KSEB in 25 years</span></span></div><div style={{
                 position: "relative",
@@ -2137,7 +2137,7 @@ Branch: <span style={{
                   color: "var(--2-2)",
                   whiteSpace: "pre-wrap",
                   display: "inline-block"
-                }}>1. Proof of Identity(Aadhar & PAN Card)</span><span style={{
+                }}>2. Proof of Identity (Aadhar & PAN Card)</span><span style={{
                   position: "relative",
                   width: 632,
                   height: 28,
@@ -2149,7 +2149,7 @@ Branch: <span style={{
                   color: "var(--2-2)",
                   whiteSpace: "pre-wrap",
                   display: "inline-block"
-                }}>1. Proof of Address</span><span style={{
+                }}>3. Proof of Address</span><span style={{
                   position: "relative",
                   width: 632,
                   height: 28,
@@ -2161,7 +2161,7 @@ Branch: <span style={{
                   color: "var(--2-2)",
                   whiteSpace: "pre-wrap",
                   display: "inline-block"
-                }}>1. Salary Slips/Bank Statements (above 2L)</span><span style={{
+                }}>4. Salary Slips/Bank Statements (above 2L)</span><span style={{
                   position: "relative",
                   width: 632,
                   height: 28,
@@ -2173,7 +2173,7 @@ Branch: <span style={{
                   color: "var(--2-2)",
                   whiteSpace: "pre-wrap",
                   display: "inline-block"
-                }}>1. Land tax, Building tax</span><span style={{
+                }}>5. Land tax, Building tax</span><span style={{
                   position: "relative",
                   width: 632,
                   height: 28,
@@ -2185,7 +2185,7 @@ Branch: <span style={{
                   color: "var(--2-2)",
                   whiteSpace: "pre-wrap",
                   display: "inline-block"
-                }}>1. Latest KSEB Bill (2 months)</span><span style={{
+                }}>6. Latest KSEB Bill (2 months)</span><span style={{
                   position: "relative",
                   width: 632,
                   height: 28,
@@ -2197,7 +2197,7 @@ Branch: <span style={{
                   color: "var(--2-2)",
                   whiteSpace: "pre-wrap",
                   display: "inline-block"
-                }}>1. KSEB Feasibility Report</span><span style={{
+                }}>7. KSEB Feasibility Report</span><span style={{
                   position: "relative",
                   width: 632,
                   height: 28,
@@ -2209,7 +2209,7 @@ Branch: <span style={{
                   color: "var(--2-2)",
                   whiteSpace: "pre-wrap",
                   display: "inline-block"
-                }}>1. ITR ( above 2L)</span></div></div></div></div><div style={{
+                }}>8. ITR (above 2L)</span></div></div></div></div><div style={{
           position: "relative",
           display: "flex",
           flexDirection: "column",

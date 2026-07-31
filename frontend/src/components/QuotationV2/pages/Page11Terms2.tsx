@@ -90,75 +90,75 @@ export default function Page11Terms2({ className, style }: Page11Terms2Props) {
         }}><span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>10. Project Completion Timeline:</span>
+          }}>10. Project Completion Timeline :</span>
 <span style={{
             fontSize: 21
-          }}>The Company shall endeavour to complete the project within the timeline specified in the quotationor within a reasonable period where no timeline is specified. However, the Company shall not beresponsible for delays caused by approvals, shipment delays, transportation issues, weatherconditions, or other factors beyond its reasonable control.</span>
-<span style={{
+          }}>The Company shall endeavour to complete the project within the timeline specified in the quotation or within a reasonable period where no timeline is specified. However, the Company shall not be responsible for delays caused by approvals, shipment delays, transportation issues, weather conditions, or other factors beyond its reasonable control.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>11. Statutory & KSEB Related Scope:</span>
+          }}>11. Statutory & KSEB Related Scope :</span>
 <span style={{
             fontSize: 21
-          }}>Golden Ray Renewable Energy shall assist with statutory approvals and KSEB-related proceduresas applicable. Any charges, deposits, penalties, load enhancement costs, tariff changes, namechanges, ownership transfers, meter shifting, or similar modifications shall be borne by thecustomer.</span>
-<span style={{
+          }}>Golden Ray Renewable Energy shall assist with statutory approvals and KSEB-related procedures as applicable. Any charges, deposits, penalties, load enhancement costs, tariff changes, name changes, ownership transfers, meter shifting, or similar modifications shall be borne by the customer.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>12. Government Subsidy Disclaimer:</span>
+          }}>12. Government Subsidy Disclaimer :</span>
 <span style={{
             fontSize: 21
-          }}>Government subsidy schemes, eligibility criteria, approval procedures, and reimbursementtimelines are governed by the respective authorities and may change without prior notice. TheCompany shall not be responsible for delays, rejections, policy changes, reduction in subsidyamount, or subsidy disbursement timelines.</span>
-<span style={{
+          }}>Government subsidy schemes, eligibility criteria, approval procedures, and reimbursement timelines are governed by the respective authorities and may change without prior notice. The Company shall not be responsible for delays, rejections, policy changes, reduction in subsidy amount, or subsidy disbursement timelines.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>13. Data Privacy:</span>
+          }}>13. Data Privacy :</span>
 <span style={{
             fontSize: 21
-          }}>The Company reserves the right to monitor, record, and utilize customer information and solarproduction data obtained directly from the system or through remote monitoring platforms. Suchinformation may be shared with vendors, technical support teams, regulatory authorities, and otherrelevant agencies for warranty support, compliance requirements, research, service improvement,and promotional activities.</span>
-<span style={{
+          }}>The Company reserves the right to monitor, record, and utilize customer information and solar production data obtained directly from the system or through remote monitoring platforms. Such information may be shared with vendors, technical support teams, regulatory authorities, and other relevant agencies for warranty support, compliance requirements, research, service improvement, and promotional activities.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>14. Additional Expenses & Civil Works:</span>
+          }}>14. Additional Expenses & Civil Works :</span>
 <span style={{
             fontSize: 21
-          }}>Unless specifically included in the quotation, charges relating to KSEB applications, registration,documentation, testing, agreements, net meter connections, additional structures, extended cableruns, site-specific modifications, and any civil work including foundation work, roof repairs,waterproofing, structural modifications, masonry work, painting, trenching, cutting, restoration work,or related activities shall be borne by the customer.</span>
-<span style={{
+          }}>Unless specifically included in the quotation, charges relating to KSEB applications, registration, documentation, testing, agreements, net meter connections, additional structures, extended cable runs, site-specific modifications, and any civil work including foundation work, roof repairs, waterproofing, structural modifications, masonry work, painting, trenching, cutting, restoration work, or related activities shall be borne by the customer.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>15. Retention of Title:</span>
+          }}>15. Retention of Title :</span>
 <span style={{
             fontSize: 21
-          }}>All materials, equipment, and goods supplied by the Company shall remain its property until fullpayment has been received and all outstanding dues have been cleared. Ownership shall transferto the customer only upon complete settlement of outstanding dues.</span>
-<span style={{
+          }}>All materials, equipment, and goods supplied by the Company shall remain its property until full payment has been received and all outstanding dues have been cleared. Ownership shall transfer to the customer only upon complete settlement of outstanding dues.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>16. Liability:</span>
+          }}>16. Liability :</span>
 <span style={{
             fontSize: 21
-          }}>The Company shall not be liable for business interruption, loss of profit, loss of savings, or anyindirect or consequential damages arising from the use or performance of the solar power system.Claims arising from non-compliance with operating, maintenance, or installation instructions shallalso be excluded.</span>
-<span style={{
+          }}>The Company shall not be liable for business interruption, loss of profit, loss of savings, or any indirect or consequential damages arising from the use or performance of the solar power system. Claims arising from non-compliance with operating, maintenance, or installation instructions shall also be excluded.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
           }}>17. Force Majeure</span><span style={{
             fontSize: 21
-          }}>:</span>
+          }}> :</span>
 <span style={{
             fontSize: 21
-          }}>The Company shall not be liable for delays or failure to perform its obligations due to circumstancesbeyond its reasonable control. Such circumstances include natural disasters, strikes, transportationdisruptions, utility delays, government actions, regulatory changes, or other Force Majeure events.</span>
-<span style={{
+          }}>The Company shall not be liable for delays or failure to perform its obligations due to circumstances beyond its reasonable control. Such circumstances include natural disasters, strikes, transportation disruptions, utility delays, government actions, regulatory changes, or other Force Majeure events.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>18. Confidentiality :</span>
+          }}>18. Confidentiality :</span>
 <span style={{
             fontSize: 21
-          }}>Both parties shall treat all non-public commercial and technical information exchanged during thecourse of the project as confidential. Such information shall not be disclosed to any third partywithout prior written consent, except where required by law.</span>
-<span style={{
+          }}>Both parties shall treat all non-public commercial and technical information exchanged during the course of the project as confidential. Such information shall not be disclosed to any third party without prior written consent, except where required by law.</span>
+{"\n"}<span style={{
             fontWeight: 500,
             fontSize: 25
-          }}>19. Jurisdiction :</span>
+          }}>19. Jurisdiction :</span>
 <span style={{
             fontSize: 21
-          }}>This quotation and all related agreements shall be governed by the laws of India. Any disputesarising out of or in connection with this agreement shall be subject to the jurisdiction of the courts ofKerala.</span></span></div><div style={{
+          }}>This quotation and all related agreements shall be governed by the laws of India. Any disputes arising out of or in connection with this agreement shall be subject to the jurisdiction of the courts of Kerala.</span></span></div><div style={{
         position: "relative",
         width: 1440,
         height: 98,

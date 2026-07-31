@@ -893,7 +893,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
               color: "var(--red-2)",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}>Offer valid for bookings confirmed before 16  February 2026</span></div></div><div style={{
+            }}>Offer valid for bookings confirmed before 12 August 2026</span></div></div><div style={{
           position: "relative",
           width: 1039,
           height: 149,
@@ -1227,7 +1227,7 @@ export default function Page12Summary({ className, style }: Page12SummaryProps) 
                   letterSpacing: "-0.500px",
                   color: "rgb(75,85,99)",
                   flexShrink: 0
-                }}> in 15–20 day</span></div></div></div></div><div style={{
+                }}> in 15–20 days</span></div></div></div></div><div style={{
           position: "relative",
           width: 1440,
           height: 98,

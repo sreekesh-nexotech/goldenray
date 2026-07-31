@@ -127,7 +127,7 @@ export default function Page01Cover({ className, style }: Page01CoverProps) {
             color: "rgb(17,24,39)",
             flexShrink: 0,
             alignSelf: "stretch"
-          }}>Stop Worrying About Electricity BillsForever </span><span style={{
+          }}>Stop Worrying About Electricity Bills Forever</span><span style={{
             position: "relative",
             fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
             fontWeight: 600,
@@ -370,7 +370,7 @@ We&apos;ve carefully designed this solution specifically for your home&apos;s en
                 whiteSpace: "pre-wrap"
               }}><span style={{
                   fontSize: 24
-                }}>Warm Regards,</span>
+                }}>Warm Regards, </span>
 <span style={{
                   fontWeight: 600,
                   fontSize: 24
@@ -490,7 +490,7 @@ We&apos;ve carefully designed this solution specifically for your home&apos;s en
                   lineHeight: "100%",
                   color: "rgb(55,65,81)",
                   flexShrink: 0
-                }}>Adress</span><span style={{
+                }}>Address</span><span style={{
                   position: "relative",
                   width: 266,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
@@ -501,7 +501,7 @@ We&apos;ve carefully designed this solution specifically for your home&apos;s en
                   flexShrink: 0,
                   whiteSpace: "pre-wrap"
                 }}>:   Kurukkaankizhakke 
-     Vlappil, Azhikkode</span></div><div style={{
+     Vlappil, Azhikkode</span></div><div style={{
                 position: "relative",
                 display: "flex",
                 flexDirection: "row",
@@ -651,7 +651,7 @@ We&apos;ve carefully designed this solution specifically for your home&apos;s en
                   flexShrink: 0,
                   whiteSpace: "pre-wrap"
                 }}>:   QUO-GR-AS-2025
-    -26-062</span></div><div style={{
+    -26-062</span></div><div style={{
                 position: "relative",
                 display: "flex",
                 flexDirection: "row",
@@ -715,7 +715,7 @@ We&apos;ve carefully designed this solution specifically for your home&apos;s en
                   lineHeight: "100%",
                   color: "rgb(18,53,50)",
                   flexShrink: 0
-                }}>:   10/02/2026</span></div><div style={{
+                }}>:   29/07/2026</span></div><div style={{
                 position: "relative",
                 display: "flex",
                 flexDirection: "row",
@@ -742,7 +742,7 @@ We&apos;ve carefully designed this solution specifically for your home&apos;s en
                   lineHeight: "100%",
                   color: "rgb(18,53,50)",
                   flexShrink: 0
-                }}>:   20/02/2026</span></div><div style={{
+                }}>:   12/08/2026</span></div><div style={{
                 position: "relative",
                 display: "flex",
                 flexDirection: "row",

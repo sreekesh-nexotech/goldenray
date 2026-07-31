@@ -463,7 +463,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   fontWeight: 600,
                   color: "rgb(248,138,34)",
                   fontSize: 24
-                }}>~₹3,940/mo</span>
+                }}>~₹3,940/mo</span>
 <span style={{
                   fontSize: 17
                 }}>Net positive from Day 1: saving +₹1,260–1,760/mo</span></span></div></div><div style={{
@@ -625,7 +625,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                   fontWeight: 600,
                   color: "rgb(248,138,34)",
                   fontSize: 24
-                }}>~₹2,490/mo</span>
+                }}>~₹2,490/mo</span>
 <span style={{
                   fontSize: 17
                 }}>Net saving: +₹2,710–3,210/mo even during EMI</span></span></div></div></div><div style={{
@@ -1585,7 +1585,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>2  Free Visits (1st Year)</span></div><div style={{
+            }}>2 Free Visits (1st Year)</span></div><div style={{
             gridRow: "8",
             gridColumn: "3",
             position: "relative",
@@ -1616,7 +1616,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>2  Free Visits (1st Year)</span></div><div style={{
+            }}>2 Free Visits (1st Year)</span></div><div style={{
             gridRow: "8",
             gridColumn: "4",
             position: "relative",
@@ -1647,7 +1647,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
               color: "var(--grey)",
               flexGrow: 1,
               alignSelf: "stretch"
-            }}>2  Free Visits (1st Year)</span></div><div style={{
+            }}>2 Free Visits (1st Year)</span></div><div style={{
             gridRow: "9",
             gridColumn: "1",
             position: "relative",
@@ -1705,7 +1705,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>2  Free Visits (1st Year)</span></div><div style={{
+            }}>2 Free Visits (1st Year)</span></div><div style={{
             gridRow: "9",
             gridColumn: "3",
             position: "relative",
@@ -1735,7 +1735,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>2  Free Visits (1st Year)</span></div><div style={{
+            }}>2 Free Visits (1st Year)</span></div><div style={{
             gridRow: "9",
             gridColumn: "4",
             position: "relative",
@@ -2534,7 +2534,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                 whiteSpace: "nowrap",
                 lineHeight: 1.399999976158142,
                 color: "rgb(18,53,50)"
-              }}>www.goldenray.in</span></div><div style={{
+              }}>www.flarize.com</span></div><div style={{
               position: "relative",
               display: "flex",
               flexDirection: "row",
@@ -2558,7 +2558,7 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                 lineHeight: 1.399999976158142,
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>goldenray@gmail.com</span></div><div style={{
+              }}>sales@flarize.com</span></div><div style={{
               position: "relative",
               display: "flex",
               flexDirection: "row",
@@ -2582,5 +2582,5 @@ export default function Page05Options({ className, style }: Page05OptionsProps) 
                 lineHeight: 1.399999976158142,
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>+91 6282 922 988</span></div></div></div></div></div></div>;
+              }}>+91 9995 073 579</span></div></div></div></div></div></div>;
 }
