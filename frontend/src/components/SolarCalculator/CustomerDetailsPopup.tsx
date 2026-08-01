@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getQuotationBom, type QuotationBom } from "@/services/bomService";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
 
@@ -56,6 +56,18 @@ export default function CustomerDetailsPopup({
   const [subsidyEligibility, setSubsidyEligibility] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isGenerating, setIsGenerating] = useState(false);
+  // Tied to this popup instance's lifetime: if the customer closes the
+  // popup (unmounting this component) while a PDF request is in flight, we
+  // abort it — both so the browser doesn't surprise-download a PDF for a
+  // request the user already walked away from, and so the server (which
+  // listens for this same abort) stops burning Chrome/CPU on it.
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -116,6 +128,9 @@ export default function CustomerDetailsPopup({
     // can be opened directly.
     sessionStorage.setItem("quotationData", JSON.stringify(quotationData));
 
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     try {
       // Chrome renders the real /quotation/v2 (or /quotation/v2-malayalam) page
       // server-side and returns the PDF, so the download is exactly what the
@@ -132,6 +147,7 @@ export default function CustomerDetailsPopup({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(quotationData),
+        signal: abortController.signal,
       });
 
       if (!response.ok) throw new Error(`PDF request failed: ${response.status}`);
@@ -152,6 +168,12 @@ export default function CustomerDetailsPopup({
       setIsGenerating(false);
       onClose();
     } catch (error) {
+      // The customer closed the popup while this was in flight — we
+      // triggered this abort ourselves (see the unmount effect above), so
+      // there's no failure to report and nothing left to update state on.
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
       console.error("PDF generation error:", error);
       setIsGenerating(false);
       alert("Failed to generate the quotation PDF. Please try again.");

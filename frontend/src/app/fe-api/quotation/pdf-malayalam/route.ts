@@ -74,6 +74,13 @@ export async function POST(request: Request) {
       ],
     });
 
+    // If the customer closes the popup (or otherwise disconnects) before
+    // the PDF finishes, don't keep burning Chrome/CPU on a response nobody
+    // will receive — close the browser as soon as we notice.
+    request.signal.addEventListener("abort", () => {
+      browser?.close().catch(() => {});
+    });
+
     const page = await browser.newPage();
     // Render at the sheet's CSS width so layout matches the on-screen document.
     await page.setViewport({ width: 900, height: 1400, deviceScaleFactor: 1 });

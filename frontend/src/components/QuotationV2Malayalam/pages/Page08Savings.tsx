@@ -612,11 +612,11 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 24,
+                  width: 370,
                   whiteSpace: "pre-wrap",
                   lineHeight: "26.5px",
                   letterSpacing: "-0.500px",
-                  color: "rgb(68,68,68)",
-                  flexShrink: 0
+                  color: "rgb(68,68,68)"
                 }}><span style={{
                     fontSize: 24
                   }}>വൈദ്യുതി നിരക്ക് വർഷംതോറും</span><span style={{
@@ -679,7 +679,7 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                   letterSpacing: "-0.500px",
                   color: "rgb(68,68,68)",
                   flexShrink: 0
-                }}>സ്വന്തമായി വൈദ്യുതി ഉൽപ്പാദനം ഇല്ല</span></div></div></div><FlowArrow size={46} style={{ flexShrink: 0, color: "rgb(0,0,0)" }} /><div style={{
+                }}>സ്വന്തമായി വൈദ്യുതി ഉൽപ്പാദനം ഇല്ല</span></div></div></div><FlowArrow size={46} style={{ flexShrink: 0, alignSelf: "center", color: "rgb(0,0,0)" }} /><div style={{
             position: "relative",
             borderRadius: 16,
             background: "linear-gradient(117.977deg, rgb(240,253,250) -19.79%, rgb(209,250,229) 50.92%)",
