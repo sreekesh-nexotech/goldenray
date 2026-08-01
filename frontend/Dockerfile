@@ -39,8 +39,11 @@ RUN apk add --no-cache build-base vips-dev
 # Chromium for the quotation PDF: the document is rendered by real Chrome via
 # puppeteer-core rather than rasterised in JS, so the PDF matches the page
 # exactly. puppeteer-core ships no browser of its own, hence the system one.
+# icu-data-full is required on top of the chromium package's default (reduced,
+# English-only) ICU data — without it, Chromium mis-shapes/mis-segments
+# non-Latin complex scripts (e.g. Malayalam conjuncts render broken).
 RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates \
-        ttf-freefont font-noto font-noto-emoji
+        ttf-freefont font-noto font-noto-emoji icu-data-full
 ENV PUPPETEER_SKIP_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
@@ -57,8 +60,11 @@ FROM node:18-alpine
 # Chromium for the quotation PDF: the document is rendered by real Chrome via
 # puppeteer-core rather than rasterised in JS, so the PDF matches the page
 # exactly. puppeteer-core ships no browser of its own, hence the system one.
+# icu-data-full is required on top of the chromium package's default (reduced,
+# English-only) ICU data — without it, Chromium mis-shapes/mis-segments
+# non-Latin complex scripts (e.g. Malayalam conjuncts render broken).
 RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates \
-        ttf-freefont font-noto font-noto-emoji
+        ttf-freefont font-noto font-noto-emoji icu-data-full
 ENV PUPPETEER_SKIP_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 

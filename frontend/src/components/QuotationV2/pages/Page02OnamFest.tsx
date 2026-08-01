@@ -12,7 +12,7 @@ interface Page02OnamFestProps {
   showFlowers?: boolean;
 }
 
-const ASSETS = "/quotation-v2/onam";
+const ASSETS = "https://golden-ray.b-cdn.net/quotation-v2/onam";
 
 function StarGlyph({ size = 9 }: { size?: number }) {
   return (

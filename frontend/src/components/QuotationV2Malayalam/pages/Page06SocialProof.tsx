@@ -733,7 +733,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
           boxSizing: "border-box",
           flexShrink: 0
         }}><img
-            src="/quotation-v2/qr-testimonials.png"
+            src="https://golden-ray.b-cdn.net/quotation-v2/qr-testimonials.png"
             alt="QR code linking to Flarize customer testimonial videos"
             width={193}
             height={193}

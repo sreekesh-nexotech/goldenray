@@ -79,26 +79,26 @@
 
 /* Bitmap crops extracted from the Figma file (generated positions/sizes —
  * do not hand-tune). One rule per line. */
-.quotation-v2 .fig-asset-0701f7494693611f-5d8c127c { background: url(/quotation-v2/assets/0701f7494693611f.jpg) 49.674% 61.761% / 129.135% 146.664% no-repeat; }
-.quotation-v2 .fig-asset-2c1b68d43856ffd7 { background: url(/quotation-v2/assets/2c1b68d43856ffd7.png) center / cover no-repeat; }
-.quotation-v2 .fig-asset-3505ba533a4c31a4 { background: url(/quotation-v2/assets/3505ba533a4c31a4.png) center / cover no-repeat; }
-.quotation-v2 .fig-asset-46044665435adb03-898fb5cd { background: url(/quotation-v2/assets/46044665435adb03.png) 51.825% 49.985% / 134.921% 137.600% no-repeat; }
-.quotation-v2 .fig-asset-67f845a3da270fe1-f735f282 { background: url(/quotation-v2/assets/67f845a3da270fe1.png) 52.239% 50.002% / 117.448% 100.337% no-repeat; }
-.quotation-v2 .fig-asset-8b319f8907bd6fc0 { background: url(/quotation-v2/assets/8b319f8907bd6fc0.png) center / cover no-repeat; }
-.quotation-v2 .fig-asset-91ca06ccd699e450 { background: url(/quotation-v2/assets/91ca06ccd699e450.png) center / cover no-repeat; }
-.quotation-v2 .fig-asset-a633cb1664c8569f-76d774a5 { background: url(/quotation-v2/assets/a633cb1664c8569f.png) 50% 50% / 151.062% 100% no-repeat; }
-.quotation-v2 .fig-asset-db0497502244a62d-3df8ef3e { background: url(/quotation-v2/assets/db0497502244a62d.png) 50.579% 46.318% / 134.953% 632.911% no-repeat; }
-.quotation-v2 .fig-asset-efb490138fedbb55-85f393ff { background: url(/quotation-v2/assets/efb490138fedbb55.jpg) 0% 50% / 101.466% 110.259% no-repeat; }
-.quotation-v2 .fig-asset-fb37b4210913ca92-fba75ad2 { background: url(/quotation-v2/assets/fb37b4210913ca92.png) 50% 43.496% / 100% 164.661% no-repeat; }
-.quotation-v2 .fig-asset-d8cfe15f1edf44e1-hero { background: url(/quotation-v2/assets/d8cfe15f1edf44e1.jpg) 50% 50% / 100% 104.271% no-repeat; }
-.quotation-v2 .fig-asset-dbb05df00ee3d6d3-card { background: url(/quotation-v2/assets/dbb05df00ee3d6d3.jpg) 50% 50% / 113.333% 100% no-repeat; }
-.quotation-v2 .fig-asset-3fbe4a9660430870-card { background: url(/quotation-v2/assets/3fbe4a9660430870.jpg) center / cover no-repeat; }
-.quotation-v2 .fig-asset-0fa2940cc26cbd37-card { background: url(/quotation-v2/assets/0fa2940cc26cbd37.jpg) center / cover no-repeat; }
-.quotation-v2 .fig-asset-95b00dab74228195-card { background: url(/quotation-v2/assets/95b00dab74228195.jpg) center / cover no-repeat; }
-.quotation-v2 .fig-asset-1bdf2d751001a1ca-card { background: url(/quotation-v2/assets/1bdf2d751001a1ca.jpg) 50% 50% / 113.333% 100% no-repeat; }
-.quotation-v2 .fig-asset-16e4761db567b5c1-card { background: url(/quotation-v2/assets/16e4761db567b5c1.jpg) center / cover no-repeat; }
-.quotation-v2 .fig-asset-f30995db0d999969-card { background: url(/quotation-v2/assets/f30995db0d999969.jpg) center / cover no-repeat; }
-.quotation-v2 .fig-asset-4e88f9f7a610e4c5-card { background: url(/quotation-v2/assets/4e88f9f7a610e4c5.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-0701f7494693611f-5d8c127c { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/0701f7494693611f.jpg) 49.674% 61.761% / 129.135% 146.664% no-repeat; }
+.quotation-v2 .fig-asset-2c1b68d43856ffd7 { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/2c1b68d43856ffd7.png) center / cover no-repeat; }
+.quotation-v2 .fig-asset-3505ba533a4c31a4 { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/3505ba533a4c31a4.png) center / cover no-repeat; }
+.quotation-v2 .fig-asset-46044665435adb03-898fb5cd { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/46044665435adb03.png) 51.825% 49.985% / 134.921% 137.600% no-repeat; }
+.quotation-v2 .fig-asset-67f845a3da270fe1-f735f282 { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/67f845a3da270fe1.png) 52.239% 50.002% / 117.448% 100.337% no-repeat; }
+.quotation-v2 .fig-asset-8b319f8907bd6fc0 { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/8b319f8907bd6fc0.png) center / cover no-repeat; }
+.quotation-v2 .fig-asset-91ca06ccd699e450 { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/91ca06ccd699e450.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-a633cb1664c8569f-76d774a5 { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/a633cb1664c8569f.jpg) 50% 50% / 151.062% 100% no-repeat; }
+.quotation-v2 .fig-asset-db0497502244a62d-3df8ef3e { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/db0497502244a62d.png) 50.579% 46.318% / 134.953% 632.911% no-repeat; }
+.quotation-v2 .fig-asset-efb490138fedbb55-85f393ff { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/efb490138fedbb55.jpg) 0% 50% / 101.466% 110.259% no-repeat; }
+.quotation-v2 .fig-asset-fb37b4210913ca92-fba75ad2 { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/fb37b4210913ca92.png) 50% 43.496% / 100% 164.661% no-repeat; }
+.quotation-v2 .fig-asset-d8cfe15f1edf44e1-hero { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/d8cfe15f1edf44e1.jpg) 50% 50% / 100% 104.271% no-repeat; }
+.quotation-v2 .fig-asset-dbb05df00ee3d6d3-card { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/dbb05df00ee3d6d3.jpg) 50% 50% / 113.333% 100% no-repeat; }
+.quotation-v2 .fig-asset-3fbe4a9660430870-card { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/3fbe4a9660430870.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-0fa2940cc26cbd37-card { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/0fa2940cc26cbd37.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-95b00dab74228195-card { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/95b00dab74228195.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-1bdf2d751001a1ca-card { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/1bdf2d751001a1ca.jpg) 50% 50% / 113.333% 100% no-repeat; }
+.quotation-v2 .fig-asset-16e4761db567b5c1-card { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/16e4761db567b5c1.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-f30995db0d999969-card { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/f30995db0d999969.jpg) center / cover no-repeat; }
+.quotation-v2 .fig-asset-4e88f9f7a610e4c5-card { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/4e88f9f7a610e4c5.jpg) center / cover no-repeat; }
 
 /* A4 sheet: the design canvas is 1440×2038px; 210mm = 793.7px at CSS 96dpi,
  * so the canvas is scaled by 793.7/1440 ≈ 0.551181 to fill the sheet width.
