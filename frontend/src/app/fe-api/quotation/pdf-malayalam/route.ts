@@ -4,7 +4,7 @@ import puppeteer, { type Browser } from "puppeteer-core";
 /**
  * Renders the Malayalam quotation to a PDF with real Chrome.
  *
- * A dedicated route from `/api/quotation/pdf` (the English one) rather than a
+ * A dedicated route from `/fe-api/quotation/pdf` (the English one) rather than a
  * shared route with a language flag: it loads the separate `/quotation/v2-malayalam`
  * page, which is its own component tree, so the two PDFs can evolve
  * independently. See that route's comment for why Chrome renders the real

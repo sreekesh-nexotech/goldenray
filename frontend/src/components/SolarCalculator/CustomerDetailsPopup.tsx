@@ -121,10 +121,13 @@ export default function CustomerDetailsPopup({
       // server-side and returns the PDF, so the download is exactly what the
       // preview page shows. The Malayalam document is a separate page/PDF
       // pipeline, not a language flag on the English one.
+      // Deliberately not under /api/ — nginx already routes that whole
+      // prefix to the Django backend, so a route here would 404 in
+      // production despite working locally. See fe-api/ sibling routes.
       const pdfEndpoint =
         preferredLanguage === "Malayalam"
-          ? "/api/quotation/pdf-malayalam"
-          : "/api/quotation/pdf";
+          ? "/fe-api/quotation/pdf-malayalam"
+          : "/fe-api/quotation/pdf";
       const response = await fetch(pdfEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
