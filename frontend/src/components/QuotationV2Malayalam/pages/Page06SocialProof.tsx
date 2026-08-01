@@ -184,13 +184,13 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
           }}><div style={{
               position: "relative",
               width: 1298,
-              height: 1057,
-              overflow: "hidden",
+              display: "flex",
+              flexDirection: "row",
+              gap: 28,
+              alignItems: "stretch",
               flexShrink: 0
             }}><div style={{
-                position: "absolute",
-                left: 0,
-                top: 3.589,
+                position: "relative",
                 width: 414,
                 overflow: "hidden",
                 borderRadius: 12,
@@ -218,7 +218,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                   }} /><div style={{
                     position: "absolute",
                     left: 14,
-                    top: 263,
+                    bottom: 14,
                     width: 367,
                     display: "flex",
                     flexDirection: "column",
@@ -258,6 +258,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
                   flexShrink: 0,
+                  flexGrow: 1,
                   alignSelf: "stretch"
                 }}><span style={{
                     position: "relative",
@@ -367,9 +368,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                       color: "var(--green-2)",
                       flexShrink: 0
                     }}>പ്രതിമാസ ലാഭം ₹2,900</span></div></div></div><div style={{
-                position: "absolute",
-                left: 442,
-                top: 3.089,
+                position: "relative",
                 width: 414,
                 overflow: "hidden",
                 borderRadius: 12,
@@ -394,33 +393,37 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                     width: 394,
                     height: 333.229,
                     borderRadius: 8
-                  }} /><span style={{
+                  }} /><div style={{
                     position: "absolute",
-                    left: 30.5,
-                    top: 263,
-                    width: 314,
-                    height: 28,
-                    fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                    fontWeight: 700,
-                    fontSize: 20,
-                    whiteSpace: "nowrap",
-                    lineHeight: "28px",
-                    color: "rgb(255,255,255)",
-                    filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>Siraj K P - Cherthala, Alappuzha</span><span style={{
-                    position: "absolute",
-                    left: 10,
-                    top: 291,
-                    width: 374,
-                    height: 30,
-                    fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 20,
-                    whiteSpace: "nowrap",
-                    lineHeight: "30px",
-                    color: "rgb(255,255,255)",
-                    filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>5 kW System | Installed on മാർച്ച് 2025</span></div><div style={{
+                    left: 14,
+                    bottom: 14,
+                    width: 367,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    flexWrap: "nowrap"
+                  }}><span style={{
+                      position: "relative",
+                      fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+                      fontWeight: 700,
+                      fontSize: 20,
+                      textAlign: "center",
+                      lineHeight: "28px",
+                      color: "rgb(255,255,255)",
+                      flexShrink: 0,
+                      alignSelf: "stretch",
+                      filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
+                    }}>Siraj K P - Cherthala, Alappuzha</span><span style={{
+                      position: "relative",
+                      fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+                      fontWeight: 400,
+                      fontSize: 20,
+                      lineHeight: "30px",
+                      color: "rgb(255,255,255)",
+                      flexShrink: 0,
+                      alignSelf: "stretch",
+                      filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
+                    }}>5 kW System | Installed on മാർച്ച് 2025</span></div></div><div style={{
                   position: "relative",
                   overflow: "hidden",
                   borderRadius: 8,
@@ -433,6 +436,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
                   flexShrink: 0,
+                  flexGrow: 1,
                   alignSelf: "stretch"
                 }}><span style={{
                     position: "relative",
@@ -542,11 +546,8 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                       color: "var(--green-2)",
                       flexShrink: 0
                     }}>പ്രതിമാസ ലാഭം ₹2,900</span></div></div></div><div style={{
-                position: "absolute",
-                left: 884,
-                top: 0,
+                position: "relative",
                 width: 414,
-                height: 1057,
                 overflow: "hidden",
                 borderRadius: 12,
                 backgroundColor: "rgb(255,255,255)",
@@ -570,32 +571,37 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                     width: 394,
                     height: 333.229,
                     borderRadius: 8
-                  }} /><span style={{
+                  }} /><div style={{
                     position: "absolute",
-                    left: 24,
-                    top: 262.716,
-                    width: 347,
-                    height: 28,
-                    fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                    fontWeight: 700,
-                    fontSize: 20,
-                    lineHeight: "28px",
-                    color: "rgb(255,255,255)",
-                    filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>Stephen V C - Vattayal, Alappuzha</span><span style={{
-                    position: "absolute",
-                    left: 17,
-                    top: 291,
-                    width: 360,
-                    height: 30,
-                    fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 20,
-                    whiteSpace: "nowrap",
-                    lineHeight: "30px",
-                    color: "rgb(255,255,255)",
-                    filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>5 kW System | Installed on മേയ് 2024</span></div><div style={{
+                    left: 14,
+                    bottom: 14,
+                    width: 367,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    flexWrap: "nowrap"
+                  }}><span style={{
+                      position: "relative",
+                      fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+                      fontWeight: 700,
+                      fontSize: 20,
+                      textAlign: "center",
+                      lineHeight: "28px",
+                      color: "rgb(255,255,255)",
+                      flexShrink: 0,
+                      alignSelf: "stretch",
+                      filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
+                    }}>Stephen V C - Vattayal, Alappuzha</span><span style={{
+                      position: "relative",
+                      fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+                      fontWeight: 400,
+                      fontSize: 20,
+                      lineHeight: "30px",
+                      color: "rgb(255,255,255)",
+                      flexShrink: 0,
+                      alignSelf: "stretch",
+                      filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
+                    }}>5 kW System | Installed on മേയ് 2024</span></div></div><div style={{
                   position: "relative",
                   overflow: "hidden",
                   borderRadius: 8,
@@ -607,6 +613,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                   alignItems: "flex-start",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
+                  flexGrow: 1,
                   flexGrow: 1,
                   alignSelf: "stretch"
                 }}><span style={{

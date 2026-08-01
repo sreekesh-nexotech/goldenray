@@ -355,7 +355,7 @@ export function buildQuotationV2MalayalamData(
     phoneNumber: input.phoneNumber,
     pincode: input.pincode,
     // page1.currentBillValue leaves the Malayalam column blank — "/month" stays.
-    currentBill: `${rupees(billAmount)}/month`,
+    currentBill: `${rupees(billAmount)}/bi-monthly`,
     systemSize: input.systemSize,
     quoteNo,
     proposalBy: input.bom?.salesPerson || "Flarize Team",

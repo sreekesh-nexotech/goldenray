@@ -202,6 +202,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
               flexWrap: "nowrap",
               boxSizing: "border-box",
               flexGrow: 1,
+              minWidth: 0,
               alignSelf: "stretch"
             }}><div style={{
                 position: "relative",
@@ -245,7 +246,6 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 fontWeight: 600,
                 fontSize: 24,
                 textAlign: "center",
-                whiteSpace: "nowrap",
                 lineHeight: "32px",
                 color: "var(--1-2)",
                 flexShrink: 0
@@ -255,7 +255,6 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 fontWeight: 500,
                 fontSize: 20,
                 textAlign: "center",
-                whiteSpace: "nowrap",
                 lineHeight: "22px",
                 letterSpacing: "0.600px",
                 color: "var(--grey)",
@@ -274,6 +273,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
               flexWrap: "nowrap",
               boxSizing: "border-box",
               flexGrow: 1,
+              minWidth: 0,
               alignSelf: "stretch"
             }}><div style={{
                 position: "relative",
@@ -303,7 +303,6 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 fontWeight: 600,
                 fontSize: 24,
                 textAlign: "center",
-                whiteSpace: "nowrap",
                 lineHeight: "32px",
                 color: "var(--1-2)",
                 flexShrink: 0
@@ -313,7 +312,6 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 fontWeight: 500,
                 fontSize: 20,
                 textAlign: "center",
-                whiteSpace: "nowrap",
                 lineHeight: "22px",
                 letterSpacing: "0.600px",
                 color: "var(--grey)",
@@ -332,6 +330,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
               flexWrap: "nowrap",
               boxSizing: "border-box",
               flexGrow: 1,
+              minWidth: 0,
               alignSelf: "stretch"
             }}><div style={{
                 position: "relative",
@@ -361,7 +360,6 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 fontWeight: 600,
                 fontSize: 24,
                 textAlign: "center",
-                whiteSpace: "nowrap",
                 lineHeight: "32px",
                 color: "var(--1-2)",
                 flexShrink: 0
@@ -371,7 +369,6 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 fontWeight: 500,
                 fontSize: 20,
                 textAlign: "center",
-                whiteSpace: "nowrap",
                 lineHeight: "22px",
                 letterSpacing: "0.600px",
                 color: "var(--grey)",
@@ -390,6 +387,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
               flexWrap: "nowrap",
               boxSizing: "border-box",
               flexGrow: 1,
+              minWidth: 0,
               alignSelf: "stretch"
             }}><div style={{
                 position: "relative",
@@ -419,7 +417,6 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 fontWeight: 600,
                 fontSize: 24,
                 textAlign: "center",
-                whiteSpace: "nowrap",
                 lineHeight: "32px",
                 color: "var(--1-2)",
                 flexShrink: 0
@@ -429,7 +426,6 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 fontWeight: 500,
                 fontSize: 20,
                 textAlign: "center",
-                whiteSpace: "nowrap",
                 lineHeight: "22px",
                 letterSpacing: "0.600px",
                 color: "var(--grey)",
@@ -448,6 +444,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
               flexWrap: "nowrap",
               boxSizing: "border-box",
               flexGrow: 1,
+              minWidth: 0,
               alignSelf: "stretch"
             }}><div style={{
                 position: "relative",
@@ -477,7 +474,6 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 fontWeight: 600,
                 fontSize: 24,
                 textAlign: "center",
-                whiteSpace: "nowrap",
                 lineHeight: "32px",
                 color: "var(--1-2)",
                 flexShrink: 0
@@ -487,7 +483,6 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 fontWeight: 500,
                 fontSize: 20,
                 textAlign: "center",
-                whiteSpace: "nowrap",
                 lineHeight: "22px",
                 letterSpacing: "0.600px",
                 color: "var(--grey)",

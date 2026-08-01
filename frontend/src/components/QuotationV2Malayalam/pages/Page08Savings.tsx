@@ -379,7 +379,7 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
           display: "flex",
           flexDirection: "row",
           gap: 24,
-          alignItems: "center",
+          alignItems: "stretch",
           flexWrap: "nowrap",
           flexShrink: 0
         }}><div style={{
@@ -502,7 +502,8 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                   }}>( Monthly bill)</span></span></div><div style={{
                 position: "relative",
                 width: 432,
-                height: 28,
+                height: "auto",
+                minHeight: 28,
                 backgroundColor: "rgba(0,0,0,0)",
                 flexShrink: 0
               }}><div style={{
@@ -545,19 +546,18 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                         flexShrink: 0,
                         color: "rgb(68,68,68)"
                       }}><path d="M 0 2.875 L 0 13.94 C 0 14.583 0.351 15.19 0.938 15.415 C 3.958 16.576 6.979 15.783 10 14.99 C 12.771 14.265 15.542 13.536 18.309 14.315 C 19.108 14.54 20 13.975 20 13.122 L 20 2.06 C 20 1.417 19.649 0.81 19.063 0.585 C 16.042 -0.576 13.021 0.217 10 1.01 C 7.229 1.735 4.458 2.46 1.691 1.682 C 0.889 1.457 0 2.021 0 2.875 Z M 10 11.429 C 8.465 11.429 7.222 9.893 7.222 8 C 7.222 6.107 8.465 4.571 10 4.571 C 11.535 4.571 12.778 6.107 12.778 8 C 12.778 9.893 11.535 11.429 10 11.429 Z M 2.222 11.429 C 3.448 11.429 4.444 12.454 4.444 13.715 L 2.222 13.715 L 2.222 11.429 Z M 4.444 4 C 4.444 5.261 3.448 6.286 2.222 6.286 L 2.222 4 L 4.444 4 Z M 17.778 9.714 L 17.778 12 L 15.556 12 C 15.556 10.739 16.552 9.714 17.778 9.714 Z M 15.556 2.285 L 17.778 2.285 L 17.778 4.571 C 16.552 4.571 15.556 3.546 15.556 2.285 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div></div><span style={{
-                  position: "absolute",
-                  left: 38,
-                  top: 2,
+                  position: "relative",
+                  display: "block",
+                  marginLeft: 38,
+                  marginTop: 2,
                   width: 393,
-                  height: 24,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 24,
                   whiteSpace: "pre-wrap",
                   lineHeight: "26.5px",
                   letterSpacing: "-0.500px",
-                  color: "rgb(68,68,68)",
-                  display: "inline-block"
+                  color: "rgb(68,68,68)"
                 }}><span style={{
                     color: "rgb(220,38,38)",
                     fontSize: 24
