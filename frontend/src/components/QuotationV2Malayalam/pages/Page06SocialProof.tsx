@@ -2,7 +2,6 @@
    <img> keeps the QR crisp in the PDF and avoids next/image's wrapper. */
 // Page 6 of the Flarize quotation document (Malayalam) — Homeowners Around You Have Already Switched — testimonials
 import type { CSSProperties } from "react";
-import FooterLocationPin from "../icons/FooterLocationPin";
 import type { QuotationV2Data } from "../quotationV2MalayalamData";
 import LetsIconsArrowLeft from "../icons/LetsIconsArrowLeft";
 import MingcuteLocation2Fill from "../icons/MingcuteLocation2Fill";
@@ -779,46 +778,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
           backgroundColor: "rgb(247,244,230)",
           flexShrink: 0,
           alignSelf: "stretch"
-        }}><div style={{
-            position: "absolute",
-            left: 786,
-            top: 14,
-            display: "flex",
-            flexDirection: "row",
-            gap: 36,
-            alignItems: "center",
-            flexWrap: "nowrap"
-          }}><div style={{
-              position: "relative",
-              display: "flex",
-              flexDirection: "row",
-              gap: 7,
-              alignItems: "center",
-              flexWrap: "nowrap",
-              flexShrink: 0
-            }} /><div style={{
-              position: "relative",
-              display: "flex",
-              flexDirection: "row",
-              gap: 7,
-              alignItems: "center",
-              flexWrap: "nowrap",
-              flexShrink: 0
-            }} /><div style={{
-              position: "relative",
-              display: "flex",
-              flexDirection: "row",
-              gap: 7,
-              alignItems: "center",
-              flexWrap: "nowrap",
-              flexShrink: 0
-            }}><div style={{
-                position: "relative",
-                width: 18,
-                height: 18,
-                overflow: "hidden",
-                flexShrink: 0
-              }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+        }}><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
             position: "absolute",
             left: 85,
             top: 30,

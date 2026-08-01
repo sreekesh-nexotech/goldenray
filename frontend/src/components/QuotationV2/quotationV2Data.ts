@@ -377,7 +377,7 @@ export function buildQuotationV2Data(
     address: input.address,
     phoneNumber: input.phoneNumber,
     pincode: input.pincode,
-    currentBill: `${rupees(billAmount)}/month`,
+    currentBill: `${rupees(billAmount)}/bi-monthly`,
     systemSize: input.systemSize,
     quoteNo,
     proposalBy: input.bom?.salesPerson || "Flarize Team",

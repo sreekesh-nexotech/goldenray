@@ -5,7 +5,7 @@ import TermsPageLayout, { type TermsClause } from "../TermsPageLayout";
 const CLAUSES: TermsClause[] = [
   {
     title: "10. Project Completion Timeline",
-    body: "The Company shall endeavor to complete the project within the timeline specified in the quotation or within a reasonable period where no timeline is specified. However, the Company shall not be responsible for delays caused by approvals, shipment delays, transportation issues, weather conditions, or other factors beyond its reasonable control.KSEB",
+    body: "The Company will make every reasonable effort to complete the project within the estimated timeline. However, delays due to approvals, KSEB procedures, material availability, weather, site readiness, or other factors beyond the Company's control may affect the timeline. The Company shall not be held responsible for such delays.",
   },
   {
     title: "11. Statutory & KSEB Related Scope",

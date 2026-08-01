@@ -1,6 +1,5 @@
 // Page 1 of the Flarize quotation document (English) — Cover — Stop Worrying About Electricity Bills Forever; proposal details
 import type { CSSProperties } from "react";
-import FooterLocationPin from "../icons/FooterLocationPin";
 import type { QuotationV2Data } from "../quotationV2Data";
 
 interface Page01CoverProps {
@@ -848,64 +847,6 @@ export default function Page01Cover({
               alignSelf: "stretch",
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                left: 786,
-                top: 14,
-                display: "flex",
-                flexDirection: "row",
-                gap: 36,
-                alignItems: "center",
-                flexWrap: "nowrap",
-              }}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 7,
-                  alignItems: "center",
-                  flexWrap: "nowrap",
-                  flexShrink: 0,
-                }}
-              />
-              <div
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 7,
-                  alignItems: "center",
-                  flexWrap: "nowrap",
-                  flexShrink: 0,
-                }}
-              />
-              <div
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 7,
-                  alignItems: "center",
-                  flexWrap: "nowrap",
-                  flexShrink: 0,
-                }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    width: 18,
-                    height: 18,
-                    overflow: "hidden",
-                    flexShrink: 0,
-                  }}
-                >
-                  <FooterLocationPin />
-                </div>
-              </div>
-            </div>
             <div
               className="fig-asset-db0497502244a62d-3df8ef3e"
               style={{

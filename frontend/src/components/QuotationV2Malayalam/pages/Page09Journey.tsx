@@ -1,6 +1,5 @@
 // Page 9 of the Flarize quotation document (Malayalam) — From Booking to Savings — Step by Step timeline
 import type { CSSProperties } from "react";
-import FooterLocationPin from "../icons/FooterLocationPin";
 import type { QuotationV2Data } from "../quotationV2MalayalamData";
 
 interface Page09JourneyProps {
@@ -1547,46 +1546,7 @@ export default function Page09Journey({ className, style, data }: Page09JourneyP
           backgroundColor: "rgb(247,244,230)",
           flexShrink: 0,
           alignSelf: "stretch"
-        }}><div style={{
-            position: "absolute",
-            left: 786,
-            top: 14,
-            display: "flex",
-            flexDirection: "row",
-            gap: 36,
-            alignItems: "center",
-            flexWrap: "nowrap"
-          }}><div style={{
-              position: "relative",
-              display: "flex",
-              flexDirection: "row",
-              gap: 7,
-              alignItems: "center",
-              flexWrap: "nowrap",
-              flexShrink: 0
-            }} /><div style={{
-              position: "relative",
-              display: "flex",
-              flexDirection: "row",
-              gap: 7,
-              alignItems: "center",
-              flexWrap: "nowrap",
-              flexShrink: 0
-            }} /><div style={{
-              position: "relative",
-              display: "flex",
-              flexDirection: "row",
-              gap: 7,
-              alignItems: "center",
-              flexWrap: "nowrap",
-              flexShrink: 0
-            }}><div style={{
-                position: "relative",
-                width: 18,
-                height: 18,
-                overflow: "hidden",
-                flexShrink: 0
-              }}><FooterLocationPin /></div></div></div><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
+        }}><div className="fig-asset-db0497502244a62d-3df8ef3e" style={{
             position: "absolute",
             left: 85,
             top: 30,
