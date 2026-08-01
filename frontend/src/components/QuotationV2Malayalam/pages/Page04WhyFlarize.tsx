@@ -423,7 +423,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 lineHeight: "32px",
                 color: "var(--1-2)",
                 flexShrink: 0
-              }}>KERALA</span><span style={{
+              }}>DEDICATED</span><span style={{
                 position: "relative",
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                 fontWeight: 500,
@@ -435,7 +435,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 color: "var(--grey)",
                 textTransform: "capitalize",
                 flexShrink: 0
-              }}>മുഴുവൻ സേവനം ലഭ്യമാണ്</span></div><div style={{
+              }}>സർവീസ് ഓഫീസ്</span></div><div style={{
               position: "relative",
               borderRadius: 12,
               border: "1px solid var(--p1)", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)",
@@ -494,7 +494,7 @@ export default function Page04WhyFlarize({ className, style }: Page04WhyFlarizeP
                 textTransform: "capitalize",
                 flexShrink: 0,
                 alignSelf: "stretch"
-              }}>Government അംഗീകൃത സ്ഥാപനം</span></div></div><div style={{
+              }}>അംഗീകൃത VENDOR</span></div></div><div style={{
             position: "relative",
             backgroundColor: "var(--light-grey)",
             display: "flex",

@@ -151,7 +151,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                 letterSpacing: "-0.500px",
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>പ്രീമിയം സിസ്റ്റം</span><div style={{
+              }}>Elite System (Micro inverter)</span><div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -342,7 +342,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                 letterSpacing: "-0.500px",
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>സ്മാർട്ട് സിസ്റ്റം</span><div style={{
+              }}>Smart System</span><div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -503,7 +503,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                 letterSpacing: "-0.500px",
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>ബേസിക് സിസ്റ്റം</span><div style={{
+              }}>Essential System</span><div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -698,7 +698,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>പ്രീമിയം സിസ്റ്റം</span>{"\n"}<span style={{
+              }}>Elite System (Micro inverter)</span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.premium.final}</span></span></div><div style={{
@@ -734,7 +734,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>സ്മാർട്ട് സിസ്റ്റം</span>{"\n"}<span style={{
+              }}>Smart System </span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.smart.final}</span></span></div><div style={{
@@ -771,7 +771,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>ബേസിക് സിസ്റ്റം</span>{"\n"}<span style={{
+              }}>Essential System</span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.basic.final}</span></span></div><div style={{

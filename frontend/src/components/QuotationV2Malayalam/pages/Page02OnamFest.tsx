@@ -184,7 +184,7 @@ export default function Page02OnamFest({
             zIndex: 4,
           }}
         >
-          <div style={{ width: "62%" }}>
+          <div style={{ width: "46%" }}>
             <div
               style={{
                 display: "inline-flex",
@@ -228,8 +228,8 @@ export default function Page02OnamFest({
                 margin: "4px 0 0 0",
               }}
             >
-              Celebrate <span style={{ color: "#008130" }}>Onam</span> with{" "}
-              <span style={{ color: "#F88A22" }}>Flarize!</span>
+              <span style={{ color: "#F88A22" }}>Flarize</span>-നൊപ്പം ഈ{" "}
+              <span style={{ color: "#008130" }}>ഓണം</span> ആഘോഷിക്കൂ!
             </p>
           </div>
           <img
@@ -249,8 +249,8 @@ export default function Page02OnamFest({
             style={{
               position: "absolute",
               top: 8,
-              right: 216,
-              width: 172,
+              right: 206,
+              width: 205,
               background: "#ffffff",
               border: "1px solid #F3D9B8",
               borderRadius: 12,
@@ -293,10 +293,11 @@ export default function Page02OnamFest({
                 fontWeight: 800,
                 color: "#123532",
                 marginTop: 3,
-                lineHeight: 1.15,
+                lineHeight: 1.25,
               }}
             >
-              Only <span style={{ color: "#F88A22" }}>35</span> Left
+              ഇനി വെറും <span style={{ color: "#F88A22" }}>35</span> സ്ലോട്ടുകൾ
+              മാത്രം!
             </div>
             <div
               style={{
@@ -306,7 +307,8 @@ export default function Page02OnamFest({
                 lineHeight: 1.35,
               }}
             >
-              Festival bookings close soon — reserve yours today.
+              ഓഫർ അവസാനിക്കുന്നതിന് മുമ്പ് നിങ്ങളുടെ സോളാർ ബുക്കിംഗ്
+              ഉറപ്പാക്കൂ.
             </div>
           </div>
         </div>
@@ -347,14 +349,14 @@ export default function Page02OnamFest({
                 color: "rgba(247,244,230,0.75)",
               }}
             >
-              FESTIVAL OFFERS WORTH UP TO
+              ഓണം ഓഫറുകൾ
             </div>
             <div
               style={{
-                fontSize: 46,
+                fontSize: 34,
                 fontWeight: 900,
                 color: "#ffffff",
-                lineHeight: 1.1,
+                lineHeight: 1.2,
                 marginTop: 3,
                 letterSpacing: -0.5,
               }}
@@ -368,7 +370,7 @@ export default function Page02OnamFest({
                   color: "#F7BA41",
                 }}
               >
-                IN BENEFITS*
+                വിലവരുന്ന ഓഫറുകൾ*
               </span>
             </div>
           </div>
@@ -388,9 +390,9 @@ export default function Page02OnamFest({
               flexShrink: 0,
             }}
           >
-            LIMITED TIME
+            പരിമിതകാല
             <br />
-            FESTIVAL OFFER
+            ഫെസ്റ്റിവൽ ഓഫർ
           </div>
         </div>
         {/* Mega lucky draw card */}
@@ -468,7 +470,7 @@ export default function Page02OnamFest({
                   color: "#8D4F00",
                 }}
               >
-                MEGA LUCKY DRAW
+                മെഗാ ലക്കി ഡ്രോ
               </div>
               <div
                 style={{
@@ -479,7 +481,7 @@ export default function Page02OnamFest({
                   marginTop: 4,
                 }}
               >
-                Win an Electric Scooter
+                ഇലക്ട്രിക് സ്കൂട്ടർ നേടാം!
               </div>
               <p
                 style={{
@@ -490,10 +492,11 @@ export default function Page02OnamFest({
                   textWrap: "pretty",
                 }}
               >
-                Every eligible solar booking during the campaign enters you into
-                our grand festival draw for a brand-new{" "}
-                <b style={{ color: "#123532" }}>premium electric scooter</b>. Go
-                solar, ride electric — celebrate Onam the sustainable way.
+                ഓരോ യോഗ്യമായ സോളാർ ബുക്കിംഗിനും{" "}
+                <b style={{ color: "#123532" }}>
+                  5 പ്രീമിയം ഇലക്ട്രിക് സ്കൂട്ടറുകളിൽ
+                </b>{" "}
+                ഒന്ന് നേടാനുള്ള അവസരം.
               </p>
               <div
                 style={{
@@ -559,7 +562,7 @@ export default function Page02OnamFest({
                 whiteSpace: "nowrap",
               }}
             >
-              MORE FESTIVAL BENEFITS
+              കൂടുതൽ ഓണം ഓഫറുകൾ
             </span>
             <span
               style={{
@@ -582,7 +585,7 @@ export default function Page02OnamFest({
                 {
                   img: "ac.jpg",
                   alt: "Split AC and gift voucher",
-                  title: "Win an AC Voucher",
+                  title: "AC Voucher നേടാം",
                   text: "Available for Eligible Bookings",
                 },
                 {
@@ -667,7 +670,7 @@ export default function Page02OnamFest({
                 color: "#123532",
               }}
             >
-              WHY BOOK DURING ONAM?
+              എന്തുകൊണ്ട് ഓണത്തിൽ തന്നെ ബുക്ക് ചെയ്യണം?
             </div>
             <div
               style={{
@@ -701,7 +704,7 @@ export default function Page02OnamFest({
                       lineHeight: 1.15,
                     }}
                   >
-                    Better Savings
+                    കൂടുതൽ ലാഭം
                   </div>
                   <div
                     style={{
@@ -711,7 +714,7 @@ export default function Page02OnamFest({
                       lineHeight: 1.3,
                     }}
                   >
-                    Offers worth up to ₹40,000+
+                    ₹40,000+ വരെ വിലവരുന്ന ഓഫറുകൾ
                   </div>
                 </div>
               </div>
@@ -740,7 +743,7 @@ export default function Page02OnamFest({
                       lineHeight: 1.15,
                     }}
                   >
-                    Exclusive Gifts
+                    കൂടുതൽ റിവാർഡുകൾ
                   </div>
                   <div
                     style={{
@@ -750,7 +753,7 @@ export default function Page02OnamFest({
                       lineHeight: 1.3,
                     }}
                   >
-                    Exciting gifts &amp; vouchers
+                    എക്സ്ക്ലൂസിവ് ഓഫറുകളും വൗച്ചറുകളും
                   </div>
                 </div>
               </div>
@@ -779,7 +782,7 @@ export default function Page02OnamFest({
                       lineHeight: 1.15,
                     }}
                   >
-                    Faster Installation
+                    വേഗത്തിലുള്ള ഇൻസ്റ്റലേഷൻ
                   </div>
                   <div
                     style={{
@@ -789,7 +792,7 @@ export default function Page02OnamFest({
                       lineHeight: 1.3,
                     }}
                   >
-                    Priority festival scheduling
+                    പ്രയോറിറ്റി ഫെസ്റ്റിവൽ ഷെഡ്യൂളിംഗ്
                   </div>
                 </div>
               </div>
@@ -817,7 +820,7 @@ export default function Page02OnamFest({
                       lineHeight: 1.15,
                     }}
                   >
-                    Limited Time Only
+                    Limited Time Offer
                   </div>
                   <div
                     style={{
@@ -827,7 +830,7 @@ export default function Page02OnamFest({
                       lineHeight: 1.3,
                     }}
                   >
-                    Valid for a short period
+                    പരിമിത കാലയളവിൽ മാത്രം
                   </div>
                 </div>
               </div>
@@ -853,7 +856,7 @@ export default function Page02OnamFest({
                 color: "#4B5563",
               }}
             >
-              CAMPAIGN PERIOD
+              ക്യാമ്പയിൻ കാലയളവ്
             </div>
             <div
               style={{
@@ -885,7 +888,7 @@ export default function Page02OnamFest({
                   lineHeight: 1.1,
                 }}
               >
-                29 JULY – 12 AUGUST
+                29 ജൂലൈ – 12 ഓഗസ്റ്റ്
               </div>
             </div>
             <div
@@ -896,7 +899,8 @@ export default function Page02OnamFest({
                 lineHeight: 1.4,
               }}
             >
-              Book before 12th August to avail these exclusive festival offers.
+              12 ഓഗസ്റ്റിന് മുമ്പ് ബുക്ക് ചെയ്ത് ഈ പ്രത്യേക ഓണം ഓഫറുകൾ
+              സ്വന്തമാക്കൂ.
             </div>
           </div>
         </div>
@@ -941,7 +945,7 @@ export default function Page02OnamFest({
               >
                 <path d="M5 0l1.2 3.8L10 5 6.2 6.2 5 10 3.8 6.2 0 5l3.8-1.2z" />
               </svg>
-              <span>Book Your Solar System Today!</span>
+              <span>ഇന്ന് തന്നെ നിങ്ങളുടെ സോളാർ സിസ്റ്റം ബുക്ക് ചെയ്യൂ!</span>
             </div>
             <div
               style={{
@@ -951,8 +955,8 @@ export default function Page02OnamFest({
                 lineHeight: 1.45,
               }}
             >
-              Celebrate Onam with clean energy for a brighter tomorrow — limited
-              festival slots available.
+              ശുദ്ധമായ ഊർജ്ജത്തോടൊപ്പം ഈ ഓണം ആഘോഷിക്കൂ. പരിമിതമായ ഫെസ്റ്റിവൽ
+              സ്ലോട്ടുകൾ മാത്രം ലഭ്യമാണ്.
             </div>
           </div>
           <div
@@ -966,7 +970,7 @@ export default function Page02OnamFest({
               gap: 11,
             }}
           >
-            <div style={{ textAlign: "center", flexShrink: 0 }}>
+            <div style={{ textAlign: "center", flexShrink: 0, width: 72 }}>
               <div
                 style={{
                   fontSize: 8,
@@ -974,12 +978,13 @@ export default function Page02OnamFest({
                   letterSpacing: 1,
                   color: "#4B5563",
                   marginBottom: 4,
+                  lineHeight: 1.3,
                 }}
               >
-                SCAN TO BOOK
+                SCAN ചെയ്ത് ബുക്ക് ചെയ്യൂ
               </div>
               <img
-                src={`${ASSETS}/qr_v2.jpg`}
+                src={`${ASSETS}/scanner.jpeg`}
                 alt="Booking QR code"
                 style={{
                   width: 66,
@@ -1046,8 +1051,8 @@ export default function Page02OnamFest({
               'var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
           }}
         >
-          *T&amp;C Apply. Offer valid during the campaign period. Benefits vary
-          by system configuration and eligibility. Prize terms apply.
+          *നിബന്ധനകൾ ബാധകം. ഓഫറുകൾ ക്യാമ്പയിൻ കാലയളവിൽ മാത്രം. സിസ്റ്റം
+          കോൺഫിഗറേഷനും യോഗ്യതയ്ക്കും അനുസരിച്ച് ആനുകൂല്യങ്ങൾ വ്യത്യാസപ്പെടും.
         </div>
       </div>
     </div>

@@ -120,8 +120,8 @@ export interface QuotationV2Data {
   offerValidDate: string;
 }
 
-const GST_NO = "32AAUFG1464A1ZP";
-const COMPANY_REGISTRATION = "U40109KA2021PTC155197";
+const GST_NO = "32AAGCF7283D1ZR";
+const COMPANY_REGISTRATION = "U43222KL2025PTC098799";
 
 /** Neighbourhood install counts quoted on the social-proof page. */
 export interface InstallationSummary {

@@ -979,7 +979,7 @@ export default function Page02OnamFest({
                 SCAN TO BOOK
               </div>
               <img
-                src={`${ASSETS}/qr_v2.jpg`}
+                src={`${ASSETS}/scanner.jpeg`}
                 alt="Booking QR code"
                 style={{
                   width: 66,

@@ -197,7 +197,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 whiteSpace: "pre-wrap"
               }}><span style={{
                   fontSize: 23
-                }}>പ്രീമിയം സിസ്റ്റം</span>{"\n"}<span style={{
+                }}>Elite System (Micro inverter)</span>{"\n"}<span style={{
                   fontWeight: 300,
                   fontSize: 21
                 }}>{data.sizeLabel}</span></span></div><div style={{
@@ -231,7 +231,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               }}><span style={{
                   color: "rgb(248,138,34)",
                   fontSize: 23
-                }}>സ്മാർട്ട് സിസ്റ്റം</span>{"\n"}<span style={{
+                }}>Smart System </span>{"\n"}<span style={{
                   fontWeight: 300,
                   color: "rgb(248,138,34)",
                   fontSize: 21
@@ -268,7 +268,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 whiteSpace: "pre-wrap"
               }}><span style={{
                   fontSize: 23
-                }}>ബേസിക് സിസ്റ്റം</span>{"\n"}<span style={{
+                }}>Essential System</span>{"\n"}<span style={{
                   fontWeight: 300,
                   fontSize: 21
                 }}>{data.sizeLabel}</span></span></div><div style={{

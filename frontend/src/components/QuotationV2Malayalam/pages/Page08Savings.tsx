@@ -806,7 +806,8 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                   }}>/month</span></span></div><div style={{
                 position: "relative",
                 width: 432,
-                height: 24,
+                height: "auto",
+                minHeight: 24,
                 backgroundColor: "rgba(0,0,0,0)",
                 flexShrink: 0
               }}><div style={{
@@ -847,18 +848,17 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                         height: 18,
                         color: "var(--text)"
                       }}><path d="M 13.889 3.375 L 13.889 3.4 C 13.705 3.386 13.521 3.375 13.333 3.375 L 8.889 3.375 C 8.316 3.375 7.76 3.449 7.229 3.586 C 7.226 3.516 7.222 3.445 7.222 3.375 C 7.222 1.512 8.715 0 10.556 0 C 12.396 0 13.889 1.512 13.889 3.375 Z M 13.333 4.5 C 13.455 4.5 13.576 4.504 13.694 4.511 C 13.84 4.521 13.986 4.535 14.132 4.556 C 14.743 3.836 15.653 3.375 16.667 3.375 L 17.066 3.375 C 17.427 3.375 17.691 3.72 17.604 4.075 L 17.125 6.015 C 17.674 6.536 18.122 7.168 18.427 7.875 L 18.889 7.875 C 19.503 7.875 20 8.378 20 9 L 20 12.375 C 20 12.997 19.503 13.5 18.889 13.5 L 17.778 13.5 C 17.462 13.925 17.087 14.305 16.667 14.625 L 16.667 16.875 C 16.667 17.497 16.17 18 15.556 18 L 14.444 18 C 13.83 18 13.333 17.497 13.333 16.875 L 13.333 15.75 L 8.889 15.75 L 8.889 16.875 C 8.889 17.497 8.392 18 7.778 18 L 6.667 18 C 6.052 18 5.556 17.497 5.556 16.875 L 5.556 14.625 C 4.344 13.704 3.517 12.294 3.361 10.688 L 2.361 10.688 C 1.056 10.688 0 9.619 0 8.297 C 0 6.975 1.056 5.906 2.361 5.906 L 2.5 5.906 C 2.962 5.906 3.333 6.282 3.333 6.75 C 3.333 7.218 2.962 7.594 2.5 7.594 L 2.361 7.594 C 1.979 7.594 1.667 7.91 1.667 8.297 C 1.667 8.684 1.979 9 2.361 9 L 3.444 9 C 3.865 6.898 5.448 5.221 7.483 4.683 C 7.931 4.563 8.403 4.5 8.889 4.5 L 13.333 4.5 Z M 15.556 9.281 C 15.556 9.057 15.468 8.843 15.311 8.685 C 15.155 8.526 14.943 8.438 14.722 8.438 C 14.501 8.438 14.289 8.526 14.133 8.685 C 13.977 8.843 13.889 9.057 13.889 9.281 C 13.889 9.505 13.977 9.72 14.133 9.878 C 14.289 10.036 14.501 10.125 14.722 10.125 C 14.943 10.125 15.155 10.036 15.311 9.878 C 15.468 9.72 15.556 9.505 15.556 9.281 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div></div><span style={{
-                  position: "absolute",
-                  left: 38,
-                  top: 2,
+                  position: "relative",
+                  display: "block",
+                  marginLeft: 38,
+                  marginTop: 2,
                   width: 327,
-                  height: 24,
                   fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 24,
                   whiteSpace: "pre-wrap",
                   lineHeight: "26.5px",
-                  color: "rgb(0,0,0)",
-                  display: "inline-block"
+                  color: "rgb(0,0,0)"
                 }}><span style={{
                     color: "rgb(22,163,74)",
                     fontSize: 24
@@ -868,7 +868,8 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                   }}> വരെ ലാഭം</span></span></div><div style={{
                 position: "relative",
                 width: 432,
-                height: 24,
+                height: "auto",
+                minHeight: 24,
                 backgroundColor: "rgba(0,0,0,0)",
                 flexShrink: 0
               }}><div style={{
@@ -905,18 +906,17 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                         alignSelf: "stretch",
                         color: "var(--text)"
                       }}><path d="M 10 0 C 10.192 0 10.383 0.041 10.558 0.12 L 18.404 3.415 C 19.321 3.798 20.004 4.693 20 5.774 C 19.979 9.865 18.279 17.35 11.1 20.753 C 10.404 21.082 9.596 21.082 8.9 20.753 C 1.721 17.35 0.021 9.865 0 5.774 C -0.004 4.693 0.679 3.798 1.596 3.415 L 9.446 0.12 C 9.617 0.041 9.808 0 10 0 Z M 10 2.755 L 10 18.344 C 15.75 15.589 17.296 9.49 17.333 5.832 L 10 2.755 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div></div><span style={{
-                  position: "absolute",
-                  left: 34,
-                  top: 2,
+                  position: "relative",
+                  display: "block",
+                  marginLeft: 34,
+                  marginTop: 2,
                   width: 297,
-                  height: 24,
                   fontFamily: "var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 24,
                   whiteSpace: "pre-wrap",
                   lineHeight: "26.5px",
-                  color: "rgb(0,0,0)",
-                  display: "inline-block"
+                  color: "rgb(0,0,0)"
                 }}><span style={{
                     color: "rgb(68,68,68)",
                     fontSize: 24
@@ -926,7 +926,8 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                   }}> സംരക്ഷണം</span></span></div><div style={{
                 position: "relative",
                 width: 432,
-                height: 24,
+                height: "auto",
+                minHeight: 24,
                 backgroundColor: "rgba(0,0,0,0)",
                 flexShrink: 0
               }}><div style={{
@@ -965,19 +966,18 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                         alignSelf: "stretch",
                         color: "var(--text)"
                       }}><path d="M 12.42 0.298 C 11.993 -0.099 11.337 -0.099 10.913 0.298 L 3.691 7.048 C 3.365 7.351 3.25 7.822 3.396 8.244 C 6.42 9.133 8.799 11.556 9.656 14.628 L 16.111 14.628 C 17.031 14.628 17.778 13.872 17.778 12.941 L 17.778 9 L 18.889 9 C 19.347 9 19.757 8.715 19.924 8.286 C 20.09 7.857 19.979 7.365 19.642 7.048 L 12.42 0.298 Z M 10 7.312 C 10 7.003 10.25 6.749 10.556 6.749 L 12.778 6.749 C 13.083 6.749 13.333 7.003 13.333 7.312 L 13.333 9.562 C 13.333 9.871 13.083 10.125 12.778 10.125 L 10.556 10.125 C 10.25 10.125 10 9.871 10 9.562 L 10 7.312 Z M 0.833 9 C 0.372 9 0 9.376 0 9.843 C 0 10.311 0.372 10.687 0.833 10.687 C 4.361 10.687 7.222 13.584 7.222 17.156 C 7.222 17.624 7.594 18 8.056 18 C 8.517 18 8.889 17.624 8.889 17.156 C 8.889 12.652 5.281 9 0.833 9 Z M 1.111 18 C 1.406 18 1.688 17.881 1.897 17.67 C 2.105 17.459 2.222 17.173 2.222 16.875 C 2.222 16.577 2.105 16.29 1.897 16.079 C 1.688 15.868 1.406 15.75 1.111 15.75 C 0.816 15.75 0.534 15.868 0.325 16.079 C 0.117 16.29 0 16.577 0 16.875 C 0 17.173 0.117 17.459 0.325 17.67 C 0.534 17.881 0.816 18 1.111 18 Z M 0 13.219 C 0 13.686 0.372 14.062 0.833 14.062 C 2.521 14.062 3.889 15.448 3.889 17.156 C 3.889 17.624 4.26 18 4.722 18 C 5.184 18 5.556 17.624 5.556 17.156 C 5.556 14.516 3.441 12.375 0.833 12.375 C 0.372 12.375 0 12.751 0 13.219 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div></div><span style={{
-                  position: "absolute",
-                  left: 36,
-                  top: 2,
+                  position: "relative",
+                  display: "block",
+                  marginLeft: 36,
+                  marginTop: 2,
                   width: 410,
-                  height: 24,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 24,
                   whiteSpace: "pre-wrap",
                   lineHeight: "26.5px",
                   letterSpacing: "-0.500px",
-                  color: "var(--text)",
-                  display: "inline-block"
+                  color: "var(--text)"
                 }}><span style={{
                     fontSize: 24
                   }}>25+ വർഷ</span><span style={{
@@ -1157,18 +1157,18 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                   }}>ബാങ്ക്: <span style={{
                       color: "rgb(248,138,34)",
                       fontSize: 26
-                    }}>Union Bank of India</span>
+                    }}>Union Bank of India</span><br />
 അക്കൗണ്ട് നെയിം: <span style={{
                       color: "rgb(248,138,34)",
                       fontSize: 26
-                    }}>Golden Ray Renewable Energy LLP</span>
+                    }}>Golden Ray Renewable Energy LLP</span><br />
 അക്കൗണ്ട് നമ്പർ: <span style={{
                       color: "rgb(248,138,34)",
                       fontSize: 26
-                    }}>510 101 0069 819 30</span>
+                    }}>510 101 0069 819 30</span><br />
 IFSC: <span style={{
                       color: "rgb(248,138,34)"
-                    }}>UBIN 0901 725</span>
+                    }}>UBIN 0901 725</span><br />
 Branch: <span style={{
                       color: "rgb(248,138,34)"
                     }}>Alappuzha</span></span><span style={{
@@ -1232,7 +1232,7 @@ Branch: <span style={{
                   flexShrink: 0
                 }}>ആവശ്യമായ രേഖകൾ</span></div><div style={{
                 position: "relative",
-                height: 160,
+                height: "auto",
                 backgroundColor: "rgba(0,0,0,0)",
                 display: "grid",
                 gridTemplateRows: "auto auto auto auto",
@@ -1243,7 +1243,6 @@ Branch: <span style={{
               }}><span style={{
                   position: "relative",
                   width: 535,
-                  height: 28,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 28,
@@ -1255,7 +1254,6 @@ Branch: <span style={{
                 }}>1. ബാങ്ക് അക്കൗണ്ട് വിവരങ്ങൾ</span><span style={{
                   position: "relative",
                   width: 632,
-                  height: 28,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 28,
@@ -1267,7 +1265,6 @@ Branch: <span style={{
                 }}>2. ആധാർ കാർഡും PAN കാർഡും</span><span style={{
                   position: "relative",
                   width: 632,
-                  height: 28,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 28,
@@ -1279,7 +1276,6 @@ Branch: <span style={{
                 }}>3. അഡ്രസ് പ്രൂഫ് (Address Proof)</span><span style={{
                   position: "relative",
                   width: 632,
-                  height: 28,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 28,
@@ -1291,7 +1287,6 @@ Branch: <span style={{
                 }}>4. ശമ്പള സ്ലിപ്പ് / ബാങ്ക് സ്റ്റേറ്റ്മെന്റ് (ലോൺ ₹2 ലക്ഷത്തിന് മുകളിൽ ആണെങ്കിൽ)</span><span style={{
                   position: "relative",
                   width: 632,
-                  height: 28,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 28,
@@ -1303,7 +1298,6 @@ Branch: <span style={{
                 }}>5. ഭൂനികുതി / കെട്ടിട നികുതി രസീത്</span><span style={{
                   position: "relative",
                   width: 632,
-                  height: 28,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 28,
@@ -1315,7 +1309,6 @@ Branch: <span style={{
                 }}>6. ഏറ്റവും പുതിയ 2 മാസത്തെ KSEB ബിൽ</span><span style={{
                   position: "relative",
                   width: 632,
-                  height: 28,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 28,
@@ -1327,7 +1320,6 @@ Branch: <span style={{
                 }}>7. KSEB ഫീസിബിലിറ്റി റിപ്പോർട്ട്</span><span style={{
                   position: "relative",
                   width: 632,
-                  height: 28,
                   fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 28,
