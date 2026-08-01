@@ -245,6 +245,70 @@ export default function Page02OnamFest({
               zIndex: 3,
             }}
           />
+          <div
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 216,
+              width: 172,
+              background: "#ffffff",
+              border: "1px solid #F3D9B8",
+              borderRadius: 12,
+              padding: "9px 12px 10px",
+              boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
+              zIndex: 5,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 5,
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: 0.8,
+                color: "#F88A22",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <svg
+                width={11}
+                height={11}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#F88A22"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ flexShrink: 0 }}
+              >
+                <circle cx={12} cy={13} r={8} />
+                <path d="M12 9v4l3 2M9 2h6" />
+              </svg>
+              LIMITED SLOTS
+            </div>
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 800,
+                color: "#123532",
+                marginTop: 3,
+                lineHeight: 1.15,
+              }}
+            >
+              Only <span style={{ color: "#F88A22" }}>35</span> Left
+            </div>
+            <div
+              style={{
+                fontSize: 8,
+                color: "#6B7280",
+                marginTop: 4,
+                lineHeight: 1.35,
+              }}
+            >
+              Festival bookings close soon — reserve yours today.
+            </div>
+          </div>
         </div>
         {/* Benefits banner */}
         <div
@@ -366,7 +430,7 @@ export default function Page02OnamFest({
               }}
             >
               <img
-                src={`${ASSETS}/img-scooter.jpg`}
+                src={`${ASSETS}/e-scooter.jpg`}
                 alt="Electric scooter grand prize"
                 style={{
                   width: "100%",
@@ -459,7 +523,11 @@ export default function Page02OnamFest({
                   <circle cx={18} cy={17} r={3} />
                   <path d="M9 17h6M6 14l3-6h4l3 4h2" />
                 </svg>
-                <span>1 lucky winner every campaign</span>
+                <span>
+                  5 Lucky
+                  <br />
+                  Winners
+                </span>
               </div>
             </div>
           </div>
@@ -512,22 +580,22 @@ export default function Page02OnamFest({
             {(
               [
                 {
-                  img: "img-ac.jpg",
+                  img: "ac.jpg",
                   alt: "Split AC and gift voucher",
-                  title: "Free AC Voucher",
-                  text: "A modern split air-conditioner voucher on selected solar installations.",
+                  title: "Win an AC Voucher",
+                  text: "Available for Eligible Bookings",
                 },
                 {
-                  img: "img-hybrid.jpg",
+                  img: "battery.jpg",
                   alt: "Hybrid inverter and battery",
                   title: "Free Hybrid Upgrade",
-                  text: "Upgrade to a hybrid inverter & battery system on eligible configurations.",
+                  text: "+ Buyback Support",
                 },
                 {
-                  img: "img-gifts.jpg",
-                  alt: "Festive gift hampers",
-                  title: "Exclusive Onam Gifts",
-                  text: "Premium wrapped hampers & surprise festive gifts for every customer.",
+                  img: "refer.jpg",
+                  alt: "Refer a friend and earn rewards",
+                  title: "Refer Friends & Win More Prizes",
+                  text: "Earn rewards for every successful referral.",
                 },
               ] as const
             ).map((card) => (

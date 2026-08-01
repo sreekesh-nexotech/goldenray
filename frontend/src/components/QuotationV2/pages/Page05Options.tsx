@@ -343,7 +343,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                 letterSpacing: "-0.500px",
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>Smart System ( Premium string)</span><div style={{
+              }}>Smart System</span><div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -504,7 +504,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                 letterSpacing: "-0.500px",
                 color: "rgb(18,53,50)",
                 flexShrink: 0
-              }}>Essential</span><div style={{
+              }}>Essential System</span><div style={{
                 position: "relative",
                 width: 342.656,
                 height: 20,
@@ -735,7 +735,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Smart System ( Premium string)</span>{"\n"}<span style={{
+              }}>Smart System</span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.smart.final}</span></span></div><div style={{
@@ -772,7 +772,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Essential</span>{"\n"}<span style={{
+              }}>Essential System</span>{"\n"}<span style={{
                 fontWeight: 300,
                 fontSize: 23
               }}>{data.basic.final}</span></span></div><div style={{

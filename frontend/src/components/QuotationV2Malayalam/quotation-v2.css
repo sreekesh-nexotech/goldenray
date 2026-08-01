@@ -80,11 +80,19 @@
 /* Every page component still writes `fontFamily: "var(--font-poppins), Poppins, ..."`
  * verbatim (copied from the English pages) — redefining the custom property
  * here, instead of editing each of those inline styles, repaints the whole
- * document in Noto Sans Malayalam without touching page markup. */
+ * document in Noto Sans Malayalam without touching page markup.
+ *
+ * !important is required: next/font injects its own same-specificity rule
+ * for each font's own --font-poppins/--font-inter/--font-hanken-grotesk
+ * variable (e.g. `.__variable_xxx { --font-poppins: 'Poppins', ... }`), and
+ * without !important that rule can win the cascade depending on injection
+ * order, silently repainting the whole document back to Poppins/Inter/Hanken
+ * Grotesk — none of which have Malayalam glyphs, so every character renders
+ * as a tofu box. */
 .quotation-v2-ml {
-  --font-poppins: var(--font-noto-malayalam);
-  --font-inter: var(--font-noto-malayalam);
-  --font-hanken-grotesk: var(--font-noto-malayalam);
+  --font-poppins: var(--font-noto-malayalam) !important;
+  --font-inter: var(--font-noto-malayalam) !important;
+  --font-hanken-grotesk: var(--font-noto-malayalam) !important;
 }
 
 /* Bitmap crops extracted from the Figma file (generated positions/sizes —
