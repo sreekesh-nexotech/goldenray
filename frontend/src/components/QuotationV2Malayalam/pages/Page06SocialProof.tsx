@@ -614,7 +614,6 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
                   flexGrow: 1,
-                  flexGrow: 1,
                   alignSelf: "stretch"
                 }}><span style={{
                     position: "relative",

@@ -39,7 +39,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
         display: "flex",
         flexDirection: "row",
         gap: 40,
-        padding: "40px 0px 40px 0px",
+        padding: "16px 0px 16px 0px",
         alignItems: "flex-end",
         flexWrap: "nowrap",
         boxSizing: "border-box",
@@ -233,7 +233,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                   alignSelf: "stretch"
                 }}>ഓരോ മാസവും ലഭിക്കുന്ന സൗജന്യ വൈദ്യുതിയുടെ മൂല്യം</span></div></div></div><div style={{
             position: "relative",
-            marginTop: 32,
+            marginTop: 12,
             borderRadius: 8,
             backgroundColor: "rgb(255,255,255)",
             display: "flex",
@@ -1199,7 +1199,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                         color: "var(--green)"
                       }}>12.4 യൂണിറ്</span></div></div></div></div></div></div><div style={{
             position: "relative",
-            marginTop: 32,
+            marginTop: 12,
             backgroundColor: "rgba(0,0,0,0)",
             display: "flex",
             flexDirection: "row",
@@ -1226,7 +1226,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                 position: "relative",
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                 fontWeight: 600,
-                fontSize: 24,
+                fontSize: 22,
                 textAlign: "center",
                 lineHeight: 1.2000000476837158,
                 textBox: "trim-both cap alphabetic",
@@ -1327,7 +1327,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                 position: "relative",
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                 fontWeight: 600,
-                fontSize: 24,
+                fontSize: 22,
                 textAlign: "center",
                 lineHeight: 1.2000000476837158,
                 textBox: "trim-both cap alphabetic",
@@ -1428,7 +1428,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                 position: "relative",
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                 fontWeight: 600,
-                fontSize: 24,
+                fontSize: 22,
                 textAlign: "center",
                 lineHeight: 1.2000000476837158,
                 textBox: "trim-both cap alphabetic",
@@ -1513,7 +1513,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                       flexShrink: 0
                     }}>യൂണിറ്റ് / ദിവസം</span></div></div></div></div></div><div style={{
             position: "relative",
-            marginTop: 32,
+            marginTop: 12,
             borderRadius: 24,
             backgroundColor: "rgba(255,255,255,0.6)",
             display: "flex",
