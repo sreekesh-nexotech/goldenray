@@ -63,6 +63,14 @@ export async function POST(request: Request) {
         "--no-zygote",
         "--no-first-run",
         "--font-render-hinting=none",
+        // Crashpad (Chrome's crash-report handler) needs to create a
+        // database directory on disk before the browser will finish
+        // starting up. In a container with a read-only filesystem outside
+        // a few mounted paths, that write fails and Chrome never launches
+        // at all ("chrome_crashpad_handler: --database is required"). We
+        // don't need crash reports in a server context, so disable the
+        // handler entirely rather than depend on a writable path for it.
+        "--disable-crash-reporter",
       ],
     });
 
