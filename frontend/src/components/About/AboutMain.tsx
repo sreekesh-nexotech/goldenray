@@ -1,9 +1,11 @@
 import Certified from "../certified-by";
 import AboutHero from "./AboutHero";
+import CareerBanner from "./CareerBanner";
 import Founder from "./Founder";
 import FounderNote from "./FounderNote";
 import Milestones from "./Milestones";
 import MissionVisionGoals from "./MissionVissionGoals";
+import Recognition from "./Recognition";
 import StatsSection from "./StatSection";
 import TeamSection from "./TeamSection";
 import TeamShowcase from "./TeamShowcase";
@@ -30,6 +32,9 @@ export default function AboutMain() {
       {/* Milestones */}
       <Milestones />
 
+      {/* Recognition */}
+      <Recognition />
+
       {/* Certified by */}
       <Certified />
 
@@ -41,6 +46,9 @@ export default function AboutMain() {
 
       {/* Team showcase */}
       <TeamShowcase />
+
+      {/* Career banner */}
+      <CareerBanner />
 
       {/* Video section */}
       {/* <VideoSection/> */}
