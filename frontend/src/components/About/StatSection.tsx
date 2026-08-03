@@ -5,26 +5,26 @@ const statsData = [
   {
     value: "8+",
     label: "YEARS OF EXPERIENCE",
-    description: "Years of building solar care & mastery",
-    highlight: "solar care & mastery",
+    description: "Years of Making solar simple & accessible.",
+    highlight: "simple & accessible.",
   },
   {
     value: "300+",
     label: "PROJECTS",
-    description: "Projects powering Kerala & beyond",
-    highlight: "Kerala & beyond",
+    description: "Projects powering  homes & businesses",
+    highlight: " homes & businesses",
   },
   {
     value: "4.9/5",
     label: "CUSTOMER RATING",
-    description: "Customer-rated solar installer",
-    highlight: "solar installer",
+    description: "Average rating from customers we've installed for.",
+    highlight: "rating from customers",
   },
   {
-    value: "3,000+",
-    label: "CAPACITY INSTALLED",
-    description: "Capacity installed across Kerala",
-    highlight: "across Kerala",
+    value: "2,000+",
+    label: "kW Installed",
+    description: "kW clean energy enabled",
+    highlight: "kW clean energy",
   },
 ];
 
