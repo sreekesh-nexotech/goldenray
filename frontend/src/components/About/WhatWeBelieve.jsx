@@ -49,7 +49,7 @@ export default function WhatWeBelieve() {
         {/* Image */}
         <div className="w-full h-[320px] sm:h-[400px] lg:h-[460px] rounded-2xl overflow-hidden">
           <Image
-            src="https://golden-ray.b-cdn.net/images/img52.jpeg"
+            src="https://golden-ray.b-cdn.net/About%20us/29939b82a17e1e41862f56586c43584aae7b32ce.jpg"
             alt="The Flarize team collaborating"
             width={640}
             height={460}

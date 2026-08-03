@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Linkedin } from "lucide-react";
 
 type TeamMemberProps = {
   name: string;
@@ -20,52 +21,41 @@ export default function TeamMember({
   imageUrl,
 }: TeamMemberProps) {
   return (
-    <div className="flex flex-row items-center bg-white gap-6">
-      {/* Circular Image Container - Left Side */}
-      <div className="relative flex-shrink-0">
-        <div className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full overflow-hidden shadow-lg">
-          {imageUrl && (
-            <Image
-              src={imageUrl}
-              alt={name}
-              width={192}
-              height={192}
-              className="w-full h-full object-cover"
-            />
-          )}
-        </div>
+    <div className="bg-gray-50 rounded-xl overflow-hidden">
+      {/* Photo */}
+      <div className="relative w-full aspect-square bg-gray-100">
+        {imageUrl && (
+          <Image
+            src={imageUrl}
+            alt={name}
+            fill
+            className="object-cover"
+          />
+        )}
       </div>
 
-      {/* Content Container - Right Side */}
-      <div className="flex flex-col items-start flex-1">
-        <div>
-          {/* Name */}
-          <h3 className="text-base md:text-xl font-semibold leading-snug text-[#2D3748] mb-1 uppercase tracking-wide">
-            {name}
-          </h3>
+      {/* Content */}
+      <div className="p-4">
+        <h3 className="text-base font-semibold text-[#2D3748] mb-1">
+          {name}
+        </h3>
 
-          {/* Title/Role */}
-          <p className="text-xs md:text-base font-semibold leading-normal text-[#F7BA41] uppercase tracking-wider">
-            {title}
+        <p className="text-sm font-medium text-indigo-600 mb-2">{title}</p>
+
+        {description && (
+          <p className="text-sm text-[#666666] leading-relaxed mb-4">
+            {description}
           </p>
+        )}
 
-          {/* Description if provided */}
-          {description && (
-            <p className="text-xs md:text-base font-normal leading-normal text-[#666666] mt-3">
-              {description}
-            </p>
-          )}
-        </div>
-
-        {/* LinkedIn Button */}
         {(linkedin || twitter) && (
           <Link
             href={linkedin || twitter || "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-4 py-2 text-xs md:text-base font-semibold leading-snug border-2 border-[#074A4D] text-[#074A4D] rounded-lg hover:bg-[#074A4D] hover:text-white transition-colors duration-300 mt-14"
+            className="inline-flex items-center justify-center w-8 h-8 rounded bg-gray-200 text-gray-500 hover:bg-gray-300 transition-colors"
           >
-            LinkedIn →
+            <Linkedin size={16} />
           </Link>
         )}
       </div>
