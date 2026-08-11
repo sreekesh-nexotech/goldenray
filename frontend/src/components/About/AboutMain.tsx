@@ -1,5 +1,6 @@
 import Certified from "../certified-by";
 import AboutHero from "./AboutHero";
+import AboutServices from "./AboutServices";
 import CareerBanner from "./CareerBanner";
 import Founder from "./Founder";
 import FounderNote from "./FounderNote";
@@ -49,6 +50,8 @@ export default function AboutMain() {
 
       {/* Career banner */}
       <CareerBanner />
+
+      <AboutServices/>
 
       {/* Video section */}
       {/* <VideoSection/> */}
