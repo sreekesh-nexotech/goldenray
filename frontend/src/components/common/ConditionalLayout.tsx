@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
-import IdleTimeoutPopup from "@/components/common/IdleTimoutPopup";
+// import IdleTimeoutPopup from "@/components/common/IdleTimoutPopup";
 import ExitIntentPopup from "@/components/common/ExitIntentPopup";
 import FloatingChatButton from "@/components/common/FloatingChatBoat";
 import FloatingPhoneButton from "@/components/common/FloatingPhoneButton";
@@ -44,7 +44,7 @@ export default function ConditionalLayout({
       <Header />
       {children}
       <Footer />
-      <IdleTimeoutPopup />
+      {/* <IdleTimeoutPopup /> */}
       <ExitIntentPopup />
       <FloatingPhoneButton />
       <FloatingChatButton />
