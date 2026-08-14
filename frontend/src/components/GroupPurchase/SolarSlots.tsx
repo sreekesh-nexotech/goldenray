@@ -43,7 +43,7 @@ export default function SolarSlots() {
             return (
               <div
                 key={slot.location}
-                className="rounded-xl border border-gray-200 bg-white p-5"
+                className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-5"
               >
                 {/* Header with location and status */}
                 <div className="flex items-center justify-between mb-3">
@@ -75,7 +75,7 @@ export default function SolarSlots() {
 
                 {/* First-family leader bonus — only while the group has no one yet */}
                 {!hasGroup && (
-                  <div className="flex items-center gap-2 mb-4 text-xs md:text-sm">
+                  <div className="flex min-h-[2.5rem] items-center gap-2 mb-4 text-xs md:text-sm">
                     <span>🏆</span>
                     <span className="text-[#059669]">
                       First-family leader bonus: +₹
@@ -84,18 +84,20 @@ export default function SolarSlots() {
                   </div>
                 )}
 
-                {/* CTA Button */}
-                <Link
-                  href={isFull ? "#" : "#reserve"}
-                  aria-disabled={isFull}
-                  className={`flex items-center justify-center w-full px-4 py-2.5 rounded-lg font-semibold text-sm transition-colors ${
-                    isFull
-                      ? "bg-gray-100 text-gray-400 pointer-events-none"
-                      : "bg-[#F7BA41] text-[#272218] hover:bg-[#e6a73a]"
-                  }`}
-                >
-                  {isFull ? "Group Full" : "Join this area"}
-                </Link>
+                <div className="mt-auto">
+                  {/* CTA Button */}
+                  <Link
+                    href={isFull ? "#" : "#reserve"}
+                    aria-disabled={isFull}
+                    className={`flex items-center justify-center w-full px-4 py-2.5 rounded-lg font-semibold text-sm transition-colors ${
+                      isFull
+                        ? "bg-gray-100 text-gray-400 pointer-events-none"
+                        : "bg-[#F7BA41] text-[#272218] hover:bg-[#e6a73a]"
+                    }`}
+                  >
+                    {isFull ? "Group Full" : "Join this area"}
+                  </Link>
+                </div>
               </div>
             );
           })}
