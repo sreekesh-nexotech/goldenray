@@ -12,6 +12,22 @@
 
 ## Table of contents
 
+**New here? Start with Part 0.** It assumes no backend knowledge at all and defines every
+word before using it. Sections 1+ assume you've read it.
+
+**[PART 0 — START HERE (no backend knowledge assumed)](#part-0--start-here-no-backend-knowledge-assumed)**
+
+- [0.1 What a backend actually is](#01-what-a-backend-actually-is)
+- [0.2 The words you keep tripping over](#02-the-words-you-keep-tripping-over)
+- [0.3 The tools this project uses, in one sentence each](#03-the-tools-this-project-uses-in-one-sentence-each)
+- [0.4 One complete story, with no code at all](#04-one-complete-story-with-no-code-at-all)
+- [0.5 The same story, now with the four files](#05-the-same-story-now-with-the-four-files)
+- [0.6 Now go see it with your own eyes](#06-now-go-see-it-with-your-own-eyes)
+- [0.7 Why this project has more than one backend](#07-why-this-project-has-more-than-one-backend)
+- [0.8 How to read the rest of this guide](#08-how-to-read-the-rest-of-this-guide)
+
+**Reference sections** (read in the order suggested in §0.8, not front to back):
+
 1. [Your current situation](#1-your-current-situation)
 2. [Project architecture](#2-project-architecture)
 3. [Backend folder structure](#3-backend-folder-structure)
@@ -38,6 +54,716 @@
 24. [Backend vocabulary](#24-backend-vocabulary)
 25. [Practical exercises](#25-practical-exercises)
 26. [Quick reference](#26-quick-reference)
+
+---
+
+# PART 0 — START HERE (no backend knowledge assumed)
+
+> **If you read the old Section 1 and felt lost, that was my fault, not yours.** It used
+> words like *serializer*, *SQL*, *migration* and *CORS* before explaining any of them.
+>
+> This Part 0 assumes you know **nothing** about backends. It defines every word before
+> using it. Read it start to finish — it should take about 30 minutes — and only then move
+> on to Section 1. Everything from Section 1 onward will make sense afterwards.
+
+---
+
+## 0.1 What a backend actually is
+
+You already use a backend every day. You've written this:
+
+```ts
+const res = await fetch("https://api.example.com/users");
+const users = await res.json();
+```
+
+You know what happens on **your** side. You do not know what happens on the other side.
+
+**The backend is the other side.** It is a program, running on a computer somewhere, whose
+entire job is: *sit there, wait for requests, and answer them.*
+
+That's genuinely it. Nothing more mysterious than that.
+
+### Why a backend has to exist at all
+
+Your React code runs **inside the user's browser**. That creates three problems a backend
+solves:
+
+**1. The browser forgets everything.**
+Close the tab and all your `useState` is gone. If someone fills in the affiliate form on
+this site, that data must survive — the sales team needs to call them next week. Something
+outside the browser has to keep it. That's the backend (and its database).
+
+**2. Every user has a different browser.**
+User A submits a form. User B must be able to see it (in the admin panel). Their browsers
+can't talk to each other. They both talk to the same backend instead. **The backend is the
+shared place in the middle.**
+
+**3. The browser cannot be trusted.**
+Anyone can open DevTools and change your JavaScript. If your React code says "phone must be
+10 digits", a person can delete that check and send whatever they want. So the backend has
+to check *again*. Your check is for **helpfulness**; the backend's check is for
+**correctness**. This idea comes up constantly later — remember it.
+
+### The one-sentence version
+
+> A backend is a program that waits for HTTP requests, decides what each one means, reads
+> or writes a database, and sends back JSON.
+
+Everything else in this guide — every file, every concept — is a detail of *how* this
+particular project does those four things.
+
+---
+
+## 0.2 The words you keep tripping over
+
+Here are the words the rest of this guide uses constantly. Read these once now. You don't
+need to memorise them — just stop them being scary. Come back here whenever one confuses
+you.
+
+I've written each as: **plain meaning** → *the closest thing you already know*.
+
+### About talking over the internet
+
+**HTTP**
+The set of rules browsers and servers use to talk. Every `fetch()` you've written speaks
+HTTP. → *It's the language of `fetch`. You already use it; you just never had to name it.*
+
+**Request**
+One message from the browser to the backend: "here is a URL, a method, some headers, and
+maybe a body." → *It's the thing `fetch()` sends.*
+
+**Response**
+The backend's reply: a status number, some headers, and usually a JSON body. → *It's the
+thing `await res.json()` reads.*
+
+**Method** (also called *HTTP verb*)
+A single word in the request saying what kind of action you want:
+- `GET` — "give me some data" (changes nothing)
+- `POST` — "here's new data, save it"
+- `PUT` / `PATCH` — "change something that already exists"
+- `DELETE` — "remove it"
+
+→ *You've written `method: "POST"` in `fetch` before. That's this.*
+
+**Status code**
+A 3-digit number in the response saying how it went. `200` = fine. `201` = created it.
+`400` = your request was wrong. `401` = I don't know who you are. `404` = no such thing.
+`500` = the backend crashed. → *You've seen `res.ok` — that's just "is the status 200–299".*
+
+**Endpoint**
+One specific URL + method combination that the backend knows how to answer. For example
+`POST /api/affiliate-applications/` is one endpoint. → *Like one function you can call, but
+over the internet.*
+
+**API**
+The whole collection of endpoints a backend offers. → *Like the public methods of a class,
+except you call them with `fetch` instead of a dot.*
+
+**JSON**
+The text format used for request and response bodies. → *You already know this one.*
+
+### About the backend's own structure
+
+**Server**
+Just a computer (or a program on it) that runs all the time and answers requests. Nothing
+special. → *Your `npm run dev` is a server. You've been running one for years.*
+
+**Route** (also called a *URL pattern*)
+A rule that says "when a request comes in for **this** URL, run **this** piece of code."
+→ *This is exactly what your `app/` folder does in Next.js — a file at `app/blog/page.tsx`
+handles the URL `/blog`. Django does the same thing, except you write the list of rules by
+hand in a file instead of using folders.*
+
+**View**
+The actual function that handles a request and produces a response. In this project a view
+is a Python class with methods named `get`, `post`, `put`, `delete` — one per HTTP method.
+→ *This is the same idea as a Next.js route handler:*
+
+```ts
+// Next.js — you know this shape
+export async function POST(req) { ... }
+```
+```python
+# Django — the same idea
+class MyView(APIView):
+    def post(self, request): ...
+```
+
+> ⚠️ **Confusing name alert:** Django says "view" where most other frameworks say
+> "controller". They mean the same thing: *the function that handles the request*. A "view"
+> in Django has nothing to do with visuals or UI. If you read a tutorial about another
+> framework that says "controller", mentally swap in "view".
+
+**Model**
+A Python class that describes one table in the database. One class = one table. Each
+attribute of the class = one column. → *Like a TypeScript `interface`, except this one
+actually creates the storage and enforces the types when data is saved.*
+
+```ts
+// TypeScript — describes a shape, disappears at runtime
+interface AffiliateApplication { full_name: string; phone: string; }
+```
+```python
+# Django — describes a shape AND creates a real database table
+class AffiliateApplication(models.Model):
+    full_name = models.CharField(max_length=255)
+    phone     = models.CharField(max_length=20)
+```
+
+**Serializer**
+The thing that (a) checks incoming JSON is valid, and (b) converts between JSON and model
+objects. → *Imagine `zod` (validation) and a mapping function (conversion) merged into one
+object.* This is the word you'll meet most often. It is not complicated: **it's the
+gatekeeper that checks the data and then converts it.**
+
+**Middleware**
+Code that runs on *every* request, before your view, and again on the way out. Used for
+things every request needs — security headers, working out who is logged in.
+→ *Next.js has `middleware.ts` and it does exactly this. This project has one of each: a
+Next.js one and a Django one. Same concept.*
+
+### About the database
+
+**Database**
+A separate program whose only job is storing data on disk in an organised way, and finding
+it again quickly. This project uses **PostgreSQL**. → *Think of it as a very fast, very
+strict, permanent spreadsheet that many programs can safely share.*
+
+**Table**
+One kind of thing being stored — like a sheet in that spreadsheet. This project has tables
+called `affiliate_application`, `job_application`, `solar_panel`, and so on.
+
+**Row** / **Record**
+One entry in a table. One person's affiliate application is one row.
+
+**Column** / **Field**
+One piece of information on every row — `full_name`, `phone`, `email`.
+
+**Primary key** (usually called `id`)
+A unique number automatically given to each row so you can refer to exactly one of them.
+Row 42 is always row 42. → *Like a React `key`, but permanent and assigned by the database.*
+
+**Foreign key**
+A column holding the `id` of a row in *another* table — that's how tables link together.
+"This blog post's author is user 7."
+
+**SQL**
+The language databases actually understand. Looks like:
+`INSERT INTO affiliate_application (full_name) VALUES ('Asha');`
+→ **Good news: you almost never write SQL in this project.** You write Python and something
+else generates the SQL for you. That something is:
+
+**ORM** (Object-Relational Mapper)
+The translation layer that turns your Python into SQL. Django has one built in. So you
+write:
+
+```python
+AffiliateApplication.objects.filter(district="Ernakulam")
+```
+
+and Django sends this to the database:
+
+```sql
+SELECT * FROM affiliate_application WHERE district = 'Ernakulam';
+```
+
+→ *Like an ORM/query builder you may have seen in JS (Prisma, Drizzle). Same purpose: write
+code, not SQL.*
+
+**Migration**
+A file that changes the database's structure — adding a table, adding a column. Databases
+don't update themselves when you edit your model file; you generate a migration and run it.
+→ *There's no real frontend equivalent. Closest: a numbered, ordered list of instructions,
+checked into git, that every computer runs in the same order so all databases end up with
+the same shape.*
+
+### About permission and safety
+
+**Authentication** — *who are you?* Logging in. Failing this gives you a **401**.
+
+**Authorization** — *are you allowed to do this?* Failing this gives you a **403**.
+
+> These two words look almost identical and it's genuinely annoying. Remember them as:
+> **authentication = identity. authorization = permission.** You can be perfectly
+> authenticated (the backend knows exactly who you are) and still be unauthorized (you're
+> not an admin).
+
+**Token**
+A long string the backend gives you when you log in. You send it back on every later
+request to prove it's still you. → *Like a wristband at a festival — checked at the door
+once, then you show it everywhere.*
+
+**Validation**
+Checking that incoming data is acceptable before using it. → *You already do this in forms.
+The backend does it again, because the browser can't be trusted (§0.1).*
+
+**CORS**
+A **browser** rule: a web page from site A isn't allowed to read a response from site B
+unless site B explicitly permits it. → *This is why you sometimes see "blocked by CORS
+policy" in the console. It's the browser stopping you, not the backend. It's also why the
+same request works fine in `curl` — `curl` isn't a browser, so the rule doesn't apply.*
+
+**Environment variable**
+A configuration value passed in from outside the code (a password, a URL) so secrets aren't
+written in the source. → *You've used `process.env.NEXT_PUBLIC_...`. Same thing.*
+
+That's the vocabulary. **You do not have to remember all of it.** Section 24 has a fuller
+glossary. Just come back here whenever a word blocks you.
+
+---
+
+## 0.3 The tools this project uses, in one sentence each
+
+**Python** — the programming language the backend is written in. Like JavaScript, but a
+different language. Files end in `.py`. You do not need to "learn Python" first; you'll
+pick up enough by reading. The main thing that will look odd: indentation matters (there
+are no `{}` braces), and there are no semicolons.
+
+**Django** — the framework the backend is built with. It handles routing, the database
+(the ORM), an admin panel, and lots more. → *It is to Python roughly what Next.js is to
+React: the big framework that makes all the decisions for you.*
+
+**DRF (Django REST Framework)** — an add-on to Django specifically for building JSON APIs.
+Views and serializers both come from DRF. → *If Django is Next.js, DRF is the part that
+makes route handlers pleasant.*
+
+**PostgreSQL** — the database program that actually stores the data.
+
+**Docker / docker-compose** — a tool that runs all these programs (database, backend, CMS,
+frontend) together with one command, each in its own isolated box, so you don't have to
+install PostgreSQL and Python by hand.
+
+**Next.js / React / TypeScript** — the frontend. You already know these.
+
+That's the entire stack. Six things.
+
+---
+
+## 0.4 One complete story, with no code at all
+
+Let's follow a single real thing this website does, in plain English. **No code in this
+section.** Someone fills in the affiliate application form on the website.
+
+**1.** A visitor is on the affiliate page. They type their name, phone, email, and pick a
+profession and a district. This is a React component — completely familiar to you. The
+values live in `useState`.
+
+**2.** They click **Submit Application**. Your `onSubmit` handler runs.
+
+**3.** The handler checks the values are sensible — is the name filled in? does the phone
+look like 10 digits? If not, it shows a red message and **stops**. Nothing is sent. This is
+the "helpful" check from §0.1.
+
+**4.** The checks pass. The handler sets a `submitting` flag to `true`, which makes the
+button show "Submitting..." and go grey. Standard React.
+
+**5.** The handler calls `fetch`, sending the five values as JSON to a URL ending in
+`/api/affiliate-applications/`. **This is the moment the frontend ends and the backend
+begins.** Everything after this happens on another computer.
+
+**6.** That request travels over the internet and arrives at the Django program.
+
+**7.** Django looks at the URL and consults a list it has — a list of "if the URL looks like
+this, run that code" rules. It finds the matching rule, which points at a specific Python
+class.
+
+**8.** Before running it, Django runs some standard checks: *Is this endpoint open to the
+public, or does it need a login?* (This one is public.) *Has this person already submitted
+5 times in the last minute?* (If yes, reject them — that's spam protection.)
+
+**9.** Now the actual handler code runs. It hands the incoming data to the **serializer** —
+the gatekeeper.
+
+**10.** The serializer checks every field on its own terms: Is `full_name` present and not
+empty? Is `email` shaped like an email? Is `profession` one of the seven allowed values? Is
+`phone` a valid Indian mobile number?
+
+**11.** The serializer also *cleans* the data as it goes. `+91 98765 43210` becomes
+`9876543210`. `ASHA@Example.COM` becomes `asha@example.com`. So everything in the database
+ends up in one consistent format. **This surprises people — the gatekeeper doesn't only
+check, it also tidies.**
+
+**12a. If something is wrong** — say the phone is only 5 digits — the serializer records
+*which field* failed and *why*. The handler sends back a response with status **400** and a
+body naming the field and the message.
+
+**12b. If everything is fine** — the handler says "save this". The ORM turns that into SQL
+and the database writes a new row. The database assigns it an `id` and a creation
+timestamp.
+
+**13.** The handler sends back a response with status **201** ("created"), containing a
+success message and the saved data.
+
+**14.** Back in the browser, your `fetch` call finishes. The code checks the status. If it
+was 400, it throws an error. If 201, it returns the data.
+
+**15.** Your React component reacts. On success: show a green message, clear the form. On
+failure: show the backend's error message in red. Either way, set `submitting` back to
+`false` so the button works again.
+
+**That's the whole thing.** Fifteen steps, and **steps 1–5 and 14–15 are frontend work you
+could already do today.** The backend is only steps 6–13.
+
+Read that list again if you need to. When you can retell it in your own words, you
+understand the core of this entire document.
+
+---
+
+## 0.5 The same story, now with the four files
+
+Now let's attach real files to that story. **Do not try to understand every line.** The goal
+here is only to see *which file does which job*. Details come later.
+
+The backend part of that story (steps 6–13) is spread across exactly **four files**. This
+is the pattern used by nearly every feature in this project, so it's worth learning once:
+
+```
+1. urls.py        ← the list of rules: "this URL → that code"
+2. views/…_views.py    ← the handler: what to actually do
+3. serializers/…_serializer.py  ← the gatekeeper: check and clean the data
+4. models/…py     ← the table: what gets stored
+```
+
+### File 1 — the routing rule
+
+`goldenray-backend/backend/goldenray/urls.py` is a long list. One line of it is ours:
+
+```python
+path("affiliate-applications/", AffiliateApplicationAPIView.as_view()),
+```
+
+Read it as: *"When a request comes in for `affiliate-applications/`, run the code in
+`AffiliateApplicationAPIView`."* That's all a route is.
+
+> **Tiny detail that causes real bugs:** notice the URL ends with a `/`. In Django the
+> trailing slash is part of the address. Leaving it off gives you a 404.
+
+### File 2 — the handler (the "view")
+
+`goldenray-backend/backend/goldenray/views/affiliate_application_views.py`. Here is the
+heart of it, with the noise removed:
+
+```python
+def post(self, request):
+    serializer = AffiliateApplicationSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({...success...}, status=201)
+    return Response({...errors...}, status=400)
+```
+
+Five lines. In English:
+
+- `def post` — "this code handles POST requests" (remember: method name = HTTP verb)
+- `request.data` — the JSON the browser sent, already turned into a Python dictionary
+- `serializer.is_valid()` — *"gatekeeper, is this data OK?"*
+- `serializer.save()` — *"then store it"* (this is the line that writes to the database)
+- `return Response(..., status=201)` — send the reply
+
+**That is genuinely the entire handler.** Steps 9–13 of the story, in five lines. Most
+handlers in this project are this small.
+
+### File 3 — the gatekeeper (the "serializer")
+
+`goldenray-backend/backend/goldenray/serializers/affiliate_application_serializer.py`.
+One representative piece:
+
+```python
+email = serializers.EmailField(required=True)
+```
+
+= *"there must be an `email` field, and it must look like an email address."*
+
+And a custom rule:
+
+```python
+def validate_email(self, value):
+    return value.strip().lower()
+```
+
+= *"whatever email arrives, remove surrounding spaces and lowercase it — and **that** is
+what gets saved."* This is step 11 (the cleaning) in the story.
+
+> **Important pattern:** a function named `validate_<fieldname>` is automatically run for
+> that field. You never call it yourself — Django finds it by its name. Whatever it
+> `return`s is what gets saved.
+
+### File 4 — the table (the "model")
+
+`goldenray-backend/backend/goldenray/models/affiliate_application.py`:
+
+```python
+class AffiliateApplication(models.Model):
+    full_name  = models.CharField(max_length=255)
+    phone      = models.CharField(max_length=20)
+    email      = models.EmailField(max_length=254)
+    created_at = models.DateTimeField(auto_now_add=True)
+```
+
+= *"there is a table with these four columns; `full_name` holds text up to 255 characters;
+`created_at` fills itself in automatically when a row is first created."*
+
+### That's the whole pattern
+
+```
+Browser sends JSON
+      ↓
+urls.py          finds the right handler
+      ↓
+views/…py        runs it
+      ↓
+serializers/…py  checks + cleans the data
+      ↓
+models/…py       describes where it goes
+      ↓
+Database         stores the row
+      ↓
+views/…py        sends JSON back
+```
+
+**Every form on this website works exactly like this.** Learn these four files once and you
+have learned about 80% of this backend. Sections 6, 7 and 8 walk through three real
+features in full detail — but they're all this same shape.
+
+---
+
+## 0.6 Now go see it with your own eyes
+
+Reading only gets you so far. Getting the thing running, and watching a request happen, is
+worth more than another ten pages. Do this now.
+
+### The easiest way: Docker
+
+From the top folder of the project:
+
+```bash
+docker compose up -d
+```
+
+That starts four things: the database, the main backend, the blog CMS and the frontend.
+Then:
+
+```bash
+docker compose logs -f backend
+```
+
+That shows the backend's live output. **Leave this window open.** You are about to watch
+requests arrive.
+
+With Docker, the addresses are:
+
+| What | Address |
+|---|---|
+| Website | http://localhost:3003 |
+| Main backend API | http://localhost:8012 |
+| Django admin panel | http://localhost:8012/admin/ |
+| Blog CMS | http://localhost:8009 |
+
+### The alternative: run the backend directly
+
+If you'd rather not use Docker (you'll need PostgreSQL running separately):
+
+```bash
+cd goldenray-backend/backend
+source ../venv/bin/activate      # switches on the project's Python environment
+pip install -r requirements.txt  # first time only
+python manage.py migrate         # build the database tables
+python manage.py runserver       # start the server on port 8000
+```
+
+> `source ../venv/bin/activate` is worth understanding. A **virtual environment** is a
+> private folder of Python libraries just for this project. → *It's the same idea as
+> `node_modules` being per-project rather than global — except in Python you have to
+> switch it on explicitly.* You'll know it worked because your terminal prompt changes.
+> This project already has one, at `goldenray-backend/venv/`.
+
+Then the API is at `http://localhost:8000` and the frontend (`npm run dev` in `frontend/`)
+at `http://localhost:3000`.
+
+### Win #1 — call the backend directly, with no frontend at all
+
+Open a second terminal and paste this (adjust the port to match how you started it):
+
+```bash
+curl http://localhost:8012/api/pincodes/
+```
+
+You should get a wall of JSON. **Look at what just happened.** You bypassed React entirely.
+No component, no browser, no `fetch`. You spoke to the backend directly and it answered.
+
+`curl` is just "send an HTTP request from the terminal". It will become your most useful
+debugging tool, because it lets you test the backend **without** the frontend — so when
+something breaks, you can find out which half is at fault.
+
+### Win #2 — watch a request arrive
+
+Go back to the terminal showing the logs. You should see a line like:
+
+```
+"GET /api/pincodes/ HTTP/1.1" 200 45231
+```
+
+That's the method, the URL, and the status code — of the request you just sent. **Every
+request you make shows up here.** When something isn't working, this line tells you
+instantly whether the backend even received it. (If nothing appears, your request never
+arrived — wrong URL, wrong port, or the server isn't running.)
+
+### Win #3 — see the actual data
+
+Go to http://localhost:8012/admin/ — this is Django's **admin panel**, a complete data-editing
+UI that Django generates for free from the model files. You'll need a login:
+
+```bash
+python manage.py createsuperuser
+```
+
+(or with Docker: `docker compose exec backend python manage.py createsuperuser`)
+
+Log in and you can browse the real tables and rows. **This is the single best way to make
+the database feel concrete instead of abstract.** Submit the affiliate form on the website,
+then refresh the admin page and watch your own submission appear as a row.
+
+### Win #4 — watch it from the browser's side
+
+Open the website, press **F12**, go to the **Network** tab, and submit a form. You'll see
+the request appear. Click it and you get:
+
+- **Headers** — the URL and method
+- **Payload** — exactly what your React code sent
+- **Response** — exactly what the backend sent back
+- The **status code**
+
+**The Network tab is where roughly half of all debugging happens.** Get comfortable in it.
+
+> **Do these four things before reading further.** Seeing a request leave the browser,
+> arrive in the log, become a row in the admin panel, and come back as JSON does more for
+> your understanding than any amount of reading — including this document.
+
+---
+
+## 0.7 Why this project has more than one backend
+
+This is the thing that most likely confused you in the old Section 2, so let's take it
+slowly.
+
+Most projects have one backend. **This one has two** (plus a couple of small extras). That
+isn't a mistake — but nobody explained it to you, so it just looked like chaos.
+
+**Backend #1 — the main API.** Lives in `goldenray-backend/backend/`. Handles everything
+about the *product*: the solar calculators, contact forms, affiliate applications, job
+applications, warranty requests, the catalogue of solar panels and inverters.
+**This is the one you'll work in almost all the time. If in doubt, it's this one.**
+
+**Backend #2 — the blog CMS.** Lives in `goldenray-backend/backend/cms/`. Handles only
+*blog content*: writing articles, saving them as drafts, publishing them, uploading images.
+It exists so that non-technical staff can publish blog posts through an admin screen
+without a developer.
+
+They are **completely separate programs**. Different settings, different databases,
+different logins. They do not share code. The only thing connecting them is that the same
+Next.js website talks to both.
+
+> **A useful way to picture it:** the same office building, two departments that never
+> share filing cabinets. The website is the receptionist who walks to whichever department
+> has what it needs.
+
+**Why should you care?** Two practical reasons:
+
+1. **When you add a feature, you must pick which backend it belongs in.** A new contact
+   form → backend #1. A new field on a blog article → backend #2.
+2. **They have different addresses.** The frontend keeps three separate base URLs in
+   `frontend/src/config.ts`. Calling the right endpoint on the *wrong* backend gives you a
+   confusing 404 from a server that's working perfectly. This is a very common
+   "why is this broken" moment.
+
+**The two extras**, mentioned only so you're not surprised later:
+- `goldenray-backend/backend/bom/` — an internal pricing tool for staff. Old-fashioned
+  server-generated HTML pages, not a JSON API. **You can ignore this entirely for now.**
+- A few files under `frontend/src/app/api/` and `frontend/src/app/fe-api/` — small pieces
+  of backend-style code living inside the Next.js app (one generates PDFs). These are
+  Next.js route handlers, which you may already have met.
+
+That's it. **For your first several weeks: assume backend #1, and you'll be right almost
+every time.**
+
+---
+
+## 0.8 How to read the rest of this guide
+
+This document is long — deliberately, because it's also meant to be a reference you come
+back to for months. **Reading it front-to-back right now is a mistake.** Here's the order I
+suggest instead.
+
+### Right now (your first sitting)
+
+You've done Part 0. Next:
+
+1. **§0.6 — actually run it.** If you skipped the hands-on part, go back and do it. It
+   matters more than the next three sections combined.
+2. **Section 4 — "How this application works."** This expands §0.5's four-file pattern.
+3. **Section 6 — Walkthrough #1.** The same affiliate-form story from §0.4, now traced in
+   complete detail with every file and function named. **When §0.4 and Section 6 feel like
+   the same story to you, you've got it.**
+
+**Skip for now:** Sections 2, 3 and 5. They're maps and reference material — much more
+useful once you have something to orient.
+
+### This week
+
+4. **Section 20 — "How to read backend code."** A repeatable 9-step method for opening any
+   unfamiliar backend file. Use it on a file you haven't seen.
+5. **Section 25, Exercises 1 and 2.** Trace one GET and one POST yourself. Change nothing —
+   just follow the path and write down what you find.
+6. **Section 19 — debugging.** Skim it so you know it exists, then come back the moment
+   something breaks.
+
+### When you get your first real task
+
+7. **Section 22 — the 12 questions.** Answer them *before* opening an editor.
+8. Then whichever applies: Section 11 (adding a field), 10 (a whole new form), 12 (a new
+   endpoint), 13 (updating), 14 (deleting).
+9. **Section 25, Exercises 3 onward.** In order. They build on each other.
+
+### As reference, when you need them
+
+Sections 9, 15, 16, 17, 18, 21, 24, 26. Look things up; don't read them cover to cover.
+
+### Section 23 — read this one early
+
+It tells you what **not** to learn yet. With limited time, knowing what to ignore is as
+valuable as knowing what to study.
+
+### If you get stuck
+
+- **A word you don't know?** → §0.2 above, or Section 24 for the fuller list.
+- **Lost in a file?** → Section 20's 9-step method.
+- **Something's broken?** → Section 19, and use `curl` (§0.6) to work out whether the
+  problem is in the frontend or the backend.
+- **Don't know where a change belongs?** → Section 22's 12 questions.
+
+### Two labels you'll see everywhere
+
+- **ACTUAL PROJECT** — this really exists here, at the path given.
+- **GENERAL CONCEPT** — useful background, but *not* used in this project. Don't go looking
+  for it.
+- **NOT IN REPO** — I checked; it genuinely isn't there.
+
+I kept these strict on purpose, so you never waste time hunting for something I made up.
+
+---
+
+> **One last thing before Section 1.**
+>
+> Section 1 opens with: *"the backend is mostly a thin translator between HTTP and SQL."*
+>
+> You now know what every word in that sentence means. **HTTP** is how the browser talks
+> (§0.2). **SQL** is what the database understands (§0.2). "Thin translator" means the
+> backend mostly just converts one into the other — which is exactly the four-file pattern
+> from §0.5.
+>
+> That sentence was useless to you an hour ago. It should make sense now. That's the
+> measure of whether Part 0 worked.
 
 ---
 
