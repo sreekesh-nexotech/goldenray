@@ -94,6 +94,22 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
     ],
   },
   {
+    title: "Leads",
+    items: [
+      {
+        key: "enq",
+        label: "Enquiries",
+        href: "/studio/enquiries",
+        icon: (
+          <svg {...iconProps}>
+            <rect x="2.5" y="4.5" width="19" height="15" rx="2.5" />
+            <path d="m3 7 9 6 9-6" />
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
     title: "Structure",
     items: [
       {

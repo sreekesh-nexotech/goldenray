@@ -21,6 +21,9 @@ export interface EMICalculatorResponse {
   principal: number;
   principal_source: string;
   interest_rate: number;
+  requested_interest_rate?: number;
+  interest_rate_min?: number;
+  interest_rate_locked?: boolean;
   tenure_years: number;
   tenure_months: number;
   emi_per_month: number;

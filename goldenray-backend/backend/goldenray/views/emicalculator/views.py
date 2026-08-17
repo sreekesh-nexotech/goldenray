@@ -10,6 +10,23 @@ from ...utils.finance import emi_calc
 DEFAULT_TENURE_YEARS = 10
 DEFAULT_INTEREST_RATE = 9.5
 
+# Interest rate policy.
+# Systems up to 3 kW get the fixed Flarize-SBI PM Surya Ghar rate and cannot be
+# changed by the caller. Larger systems are adjustable but never below 8%.
+SMALL_SYSTEM_MAX_KW = 3
+SMALL_SYSTEM_FIXED_RATE = 5.75
+LARGE_SYSTEM_MIN_RATE = 8.0
+
+
+def interest_rate_policy(power_capacity):
+    """Return (fixed_rate, min_rate) for a capacity in kW.
+
+    fixed_rate is not None when the rate is locked and any override is ignored.
+    """
+    if power_capacity is not None and power_capacity <= SMALL_SYSTEM_MAX_KW:
+        return SMALL_SYSTEM_FIXED_RATE, SMALL_SYSTEM_FIXED_RATE
+    return None, LARGE_SYSTEM_MIN_RATE
+
 
 def _to_float(value):
     if value is None or value == "":
@@ -40,6 +57,8 @@ class EMICalculatorAPIView(APIView):
       - property_type (str)     : disambiguates rows when multiple share a capacity.
       - tenure_years (int)      : loan tenure, defaults to 10.
       - interest_rate (float)   : optional override of the row's interest_rate.
+                                  Clamped by the capacity policy: <=3 kW is
+                                  locked to 5.75%, larger systems floor at 8%.
       - apply_subsidy (bool)    : if true (default) use final_cost as principal,
                                   otherwise use total_cost.
       - principal (float)       : direct principal override; bypasses subsidy logic.
@@ -107,6 +126,16 @@ class EMICalculatorAPIView(APIView):
         else:
             interest_rate = DEFAULT_INTEREST_RATE
 
+        capacity_kw = power_capacity
+        if capacity_kw is None and row is not None:
+            capacity_kw = row.power_capacity
+        fixed_rate, min_rate = interest_rate_policy(capacity_kw)
+        requested_rate = interest_rate
+        if fixed_rate is not None:
+            interest_rate = fixed_rate
+        else:
+            interest_rate = max(interest_rate, min_rate)
+
         if principal <= 0:
             return Response(
                 {"error": "Resolved principal must be greater than zero"},
@@ -144,6 +173,9 @@ class EMICalculatorAPIView(APIView):
             "principal": round(principal, 2),
             "principal_source": principal_source,
             "interest_rate": interest_rate,
+            "requested_interest_rate": requested_rate,
+            "interest_rate_min": min_rate,
+            "interest_rate_locked": fixed_rate is not None,
             "tenure_years": tenure_years,
             "tenure_months": tenure_years * 12,
             "emi_per_month": emi["emi_per_month"],

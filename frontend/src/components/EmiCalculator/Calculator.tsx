@@ -8,16 +8,20 @@ import { calculateEMI, EMICalculatorResponse } from "@/services/emiCalculator";
 const SUBSIDY = 78000;
 const PANEL_LIFE = 25;
 
+// Interest rate policy: 3kW runs on the fixed Flarize–SBI PM Surya Ghar rate
+// and cannot be adjusted. Larger systems are adjustable but never below 8%.
+const SMALL_SYSTEM_RATE = 5.75;
+const LARGE_SYSTEM_MIN_RATE = 8;
+
 const SYSTEM_SIZES = [
-  { label: "3kW", displayPrice: 80000, loanDefault: 107000, monthlyBill: 3000 },
-  { label: "5kW", displayPrice: 150000, loanDefault: 150000, monthlyBill: 5000 },
-  { label: "7kW", displayPrice: 280000, loanDefault: 280000, monthlyBill: 7000 },
-  { label: "10kW", displayPrice: 500000, loanDefault: 422000, monthlyBill: 10000 },
+  { label: "3kW", displayPrice: 80000, loanDefault: 107000, monthlyBill: 6000, rate: SMALL_SYSTEM_RATE, rateLocked: true },
+  { label: "5kW", displayPrice: 150000, loanDefault: 150000, monthlyBill: 10000, rate: LARGE_SYSTEM_MIN_RATE, rateLocked: false },
+  { label: "8kW", displayPrice: 310000, loanDefault: 232000, monthlyBill: 15000, rate: LARGE_SYSTEM_MIN_RATE, rateLocked: false },
+  { label: "10kW", displayPrice: 500000, loanDefault: 422000, monthlyBill: 20000, rate: LARGE_SYSTEM_MIN_RATE, rateLocked: false },
 ];
 
 const LOAN_MIN = 50000;
 const LOAN_MAX = 600000;
-const RATE_MIN = 5.65;
 const RATE_MAX = 18;
 const TENURE_MIN = 1;
 const TENURE_MAX = 10;
@@ -39,14 +43,15 @@ function fmtPrice(p: number) {
 export default function Calculator() {
   const [sizeIdx, setSizeIdx] = useState(0);
   const [loanAmount, setLoanAmount] = useState(107000);
-  const [rate, setRate] = useState(7);
+  const [rate, setRate] = useState(SYSTEM_SIZES[0].rate);
   const [tenure, setTenure] = useState(5);
   const [subsidyOn, setSubsidyOn] = useState(true);
   const [apiData, setApiData] = useState<EMICalculatorResponse | null>(null);
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
-  const { monthlyBill } = SYSTEM_SIZES[sizeIdx];
+  const { monthlyBill, rateLocked } = SYSTEM_SIZES[sizeIdx];
+  const rateMin = SYSTEM_SIZES[sizeIdx].rate;
 
   // Fetch EMI calculation from API
   useEffect(() => {
@@ -88,12 +93,17 @@ export default function Calculator() {
 
   const monthlySavings = monthlyBill - emi;
 
-  const maxBar = Math.max(emi, monthlyBill) * 1.05;
+  // The electricity bill bar is the fixed reference for the selected system
+  // size; only the EMI bar moves as the EMI changes.
+  const emiBarWidth = monthlyBill > 0 ? Math.min(100, (emi / monthlyBill) * 100) : 0;
 
   function handleSizeChange(i: number) {
     setSizeIdx(i);
     const base = SYSTEM_SIZES[i].loanDefault;
     setLoanAmount(subsidyOn ? base : Math.min(LOAN_MAX, base + SUBSIDY));
+    setRate((v) =>
+      SYSTEM_SIZES[i].rateLocked ? SYSTEM_SIZES[i].rate : Math.max(SYSTEM_SIZES[i].rate, v)
+    );
   }
 
   function handleSubsidyToggle() {
@@ -211,53 +221,81 @@ export default function Calculator() {
 
           {/* Interest Rate */}
           <div className="flex flex-col gap-2">
-            <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">Interest Rate</p>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() =>
-                  setRate((v) =>
-                    Math.max(RATE_MIN, Math.round((v - 0.25) * 100) / 100)
-                  )
-                }
-                className="cursor-pointer"
-              >
+            <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">
+              {rateLocked ? "Applicable Interest Rate" : "Interest Rate"}
+            </p>
+            {rateLocked ? (
+              <div className="bg-[#F7F5EC] rounded-lg px-4 py-3">
+                <span className="text-base sm:text-xl md:text-2xl font-bold text-[#123532]">
+                  {rate.toFixed(2)}%
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() =>
+                    setRate((v) =>
+                      Math.max(rateMin, Math.round((v - 0.25) * 100) / 100)
+                    )
+                  }
+                  className="cursor-pointer"
+                >
                   <Minus size={16} className="text-black" />
-              </button>
-              <span className="flex-1 text-center text-base sm:text-xl md:text-2xl font-bold text-[#123532]">
-                {rate.toFixed(2)}%
-              </span>
-              <button
-                onClick={() =>
-                  setRate((v) =>
-                    Math.min(RATE_MAX, Math.round((v + 0.25) * 100) / 100)
-                  )
-                }
-                className="cursor-pointer"
-              >
-                <Plus size={16} className="text-black" />
-              </button>
-            </div>
+                </button>
+                <span className="flex-1 text-center text-base sm:text-xl md:text-2xl font-bold text-[#123532]">
+                  {rate.toFixed(2)}%
+                </span>
+                <button
+                  onClick={() =>
+                    setRate((v) =>
+                      Math.min(RATE_MAX, Math.round((v + 0.25) * 100) / 100)
+                    )
+                  }
+                  className="cursor-pointer"
+                >
+                  <Plus size={16} className="text-black" />
+                </button>
+              </div>
+            )}
             <input
               type="range"
-              className="calc-slider w-full"
-              min={RATE_MIN}
+              className={`calc-slider w-full ${rateLocked ? "calc-slider--locked" : ""}`}
+              min={rateMin}
               max={RATE_MAX}
               step={0.25}
               value={rate}
+              disabled={rateLocked}
+              aria-label="Interest rate"
               style={
                 {
-                  "--progress": `${pct(rate, RATE_MIN, RATE_MAX)}%`,
+                  "--progress": `${pct(rate, rateMin, RATE_MAX)}%`,
                 } as React.CSSProperties
               }
-              onChange={(e) => setRate(Number(e.target.value))}
+              onChange={(e) =>
+                setRate(Math.max(rateMin, Number(e.target.value)))
+              }
             />
-            <div className="flex justify-between text-[11px] sm:text-sm text-[#6B7280]">
-              <span>{RATE_MIN}%</span>
-              <span>{RATE_MAX}%</span>
-            </div>
-            <span className="flex-1 text-start text-[9px] sm:text-xs text-[#444444]">
-                Most Kerala banks offer 7–9%
+            {!rateLocked && (
+              <div className="flex justify-between text-[11px] sm:text-sm text-[#6B7280]">
+                <span>{rateMin}%</span>
+                <span>{RATE_MAX}%</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-start text-[9px] sm:text-xs text-[#444444]">
+                {rateLocked
+                  ? `Fixed ${SMALL_SYSTEM_RATE}% Flarize–SBI rate for 3kW systems`
+                  : "Most Kerala banks offer 8–9%"}
               </span>
+              {!rateLocked && rate > rateMin && (
+                <button
+                  onClick={() => setRate(rateMin)}
+                  className="cursor-pointer shrink-0 text-[10px] sm:text-xs font-semibold text-[#123532] underline"
+                >
+                  Reset to {rateMin}%
+                </button>
+              )}
+            </div>
           </div>
 
           <hr className="border-[#F3F4F6]" />
@@ -460,9 +498,7 @@ export default function Calculator() {
                 <div className="w-full h-4 bg-[#F3F4F6] rounded-full overflow-hidden">
                   <div
                     className="h-full bg-[#16A34A] rounded-full transition-all duration-500"
-                    style={{
-                      width: `${Math.min(100, (emi / maxBar) * 100)}%`,
-                    }}
+                    style={{ width: `${emiBarWidth}%` }}
                   />
                 </div>
               </div>
@@ -475,10 +511,7 @@ export default function Calculator() {
                 </div>
                 <div className="w-full h-4 bg-[#F3F4F6] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#DC2626] rounded-full transition-all duration-500"
-                    style={{
-                      width: `${Math.min(100, (monthlyBill / maxBar) * 100)}%`,
-                    }}
+                    className="h-full w-full bg-[#DC2626] rounded-full"
                   />
                 </div>
               </div>
@@ -590,6 +623,18 @@ export default function Calculator() {
           background: #f7ba41;
           cursor: pointer;
           box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+        .calc-slider--locked {
+          background: #e5e7eb;
+          cursor: not-allowed;
+        }
+        .calc-slider--locked::-webkit-slider-thumb {
+          background: #c7c9cc;
+          cursor: not-allowed;
+        }
+        .calc-slider--locked::-moz-range-thumb {
+          background: #c7c9cc;
+          cursor: not-allowed;
         }
       `}</style>
     </section>
