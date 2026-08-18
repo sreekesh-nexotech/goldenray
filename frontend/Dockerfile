@@ -26,6 +26,12 @@ ENV NEXT_PUBLIC_ADMIN_API_BASE_URL=$NEXT_PUBLIC_ADMIN_API_BASE_URL
 ARG NEXT_PUBLIC_BLOG_API_BASE_URL=http://localhost:8009/api
 ENV NEXT_PUBLIC_BLOG_API_BASE_URL=$NEXT_PUBLIC_BLOG_API_BASE_URL
 
+# Canonical public origin, baked into canonical tags / OG / JSON-LD / sitemap
+# at build time. Defaults to the canonical non-www host; never set this to
+# www.flarize.com, which 301s and would publish redirecting URLs to Google.
+ARG NEXT_PUBLIC_SITE_URL=https://flarize.com
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+
 RUN npm run build
 
 # Stage 2 (dev only): dependencies without a production build. The source is

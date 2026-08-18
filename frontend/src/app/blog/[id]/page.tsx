@@ -13,8 +13,17 @@ import Image from "next/image";
 
 import JsonLD from "@/components/JsonLD";
 import { getArticleSchema, getBlogBreadcrumbSchema } from "@/data/jsonld";
+import { SITE_URL } from "@/config";
 
-const SITE_ORIGIN = "https://www.flarize.com";
+const SITE_ORIGIN = SITE_URL;
+
+// Editors can paste a canonical URL into the CMS, and a www one would put a
+// redirecting URL straight into <link rel="canonical"> -- the exact problem the
+// rest of the site was cleaned up to avoid. Force any Flarize URL onto the
+// canonical host; leave off-domain values (rare, deliberate cross-posts) alone.
+function toCanonicalOrigin(url: string): string {
+  return url.replace(/^https?:\/\/(?:www\.)?flarize\.com/i, SITE_ORIGIN);
+}
 
 // Revalidate pre-built pages every 2 minutes (ISR). The CMS publish webhook
 // clears this instantly; this window is the fallback for when that ping fails.
@@ -40,7 +49,9 @@ export async function generateMetadata({
   const result = await fetchArticleBySlug(id);
   if (!result) return {};
   const { article, seo, socialImage } = result;
-  const canonical = seo?.canonicalUrl ?? `${SITE_ORIGIN}/blog/${id}`;
+  const canonical = seo?.canonicalUrl
+    ? toCanonicalOrigin(seo.canonicalUrl)
+    : `${SITE_ORIGIN}/blog/${id}`;
 
   return {
     title: seo?.metaTitle ?? `${article.title}`,

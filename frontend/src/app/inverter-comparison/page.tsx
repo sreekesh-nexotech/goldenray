@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: "Compare Solar Inverters for Kerala | Find the Best Solar Inverter",
     description:
       "Compare solar inverters side-by-side with Kerala climate ratings. Browse string, hybrid, and microinverters from top brands.",
-    url: "https://www.flarize.com/inverter-comparison",
+    url: "https://flarize.com/inverter-comparison",
     siteName: "Flarize",
     images: [
       {
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/inverter-comparison",
+    canonical: "https://flarize.com/inverter-comparison",
   },
   robots: {
     index: true,

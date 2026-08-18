@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "How Flarize Works",
     description:
       "Discover how Flarize simplifies solar installation in Kerala with our streamlined 7-step process. From free roof assessments to quick installations, see how we make going solar easy and efficient.",
-    url: "https://www.flarize.com/how-flarize-works",
+    url: "https://flarize.com/how-flarize-works",
     siteName: "Flarize",
     images: [
       {
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/how-flarize-works",
+    canonical: "https://flarize.com/how-flarize-works",
   },
   robots: {
     index: true,

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "Solar Panel Comparison Table | Side-by-Side Analysis",
     description:
       "Compare solar panels side-by-side with detailed specifications, performance metrics, warranty information, and Kerala climate ratings.",
-    url: "https://www.flarize.com/comparison-table",
+    url: "https://flarize.com/comparison-table",
     siteName: "Flarize",
     images: [
       {
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/comparison-table",
+    canonical: "https://flarize.com/comparison-table",
   },
   robots: {
     index: true,

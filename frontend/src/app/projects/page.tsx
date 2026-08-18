@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "Solar Installation Projects in Kerala",
     description:
       "Explore completed solar projects across Kerala. Trusted residential and commercial installations delivered by Flarize experts.",
-    url: "https://www.flarize.com/projects",
+    url: "https://flarize.com/projects",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Solar Projects" },
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/projects",
+    canonical: "https://flarize.com/projects",
   },
   robots: {
     index: true,

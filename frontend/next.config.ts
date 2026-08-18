@@ -34,6 +34,26 @@ const nextConfig: NextConfig = {
     reactStrictMode: true,
     async redirects() {
         return [
+            // Host canonicalisation: www.flarize.com -> flarize.com, path and
+            // query preserved, single permanent hop. The hosting edge already
+            // performs this redirect, so in production this rule is a dormant
+            // safety net -- it only fires if a www request ever reaches the
+            // app (edge rule removed/misconfigured). It cannot create a chain:
+            // the destination host never matches the `has` condition.
+            {
+                source: '/:path*',
+                has: [{ type: 'host', value: 'www.flarize.com' }],
+                destination: 'https://flarize.com/:path*',
+                permanent: true,
+            },
+            // /aboutus is in the GSC report but its route was removed, so the
+            // www 301 currently lands on a 404. Point it at the live About page
+            // (a real equivalent, not the homepage) so the hop terminates on 200.
+            {
+                source: '/aboutus',
+                destination: '/about',
+                permanent: true,
+            },
             {
                 source: '/solar-faq',
                 destination: '/faq',

@@ -16,8 +16,9 @@ import RecentInstalls from "@/components/ServiceArea/RecentInstalls";
 import LocalStory from "@/components/ServiceArea/LocalStory";
 import Faq from "@/components/ServiceArea/Faq";
 import InstallationProcess from "@/components/ServiceArea/InstallationProcess";
+import { SITE_URL } from "@/config";
 
-const SITE_ORIGIN = "https://www.flarize.com";
+const SITE_ORIGIN = SITE_URL;
 
 // Only the districts we actively serve get a page — anything else 404s.
 export const dynamicParams = false;

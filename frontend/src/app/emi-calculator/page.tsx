@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: "EMI Calculator for Solar Installations in Kerala | Flarize",
     description:
       "Calculate your monthly EMI for solar installations in Kerala with our easy-to-use calculator. See how Flarize makes going solar affordable and efficient.",
-    url: "https://www.flarize.com/emi-calculator",
+    url: "https://flarize.com/emi-calculator",
     siteName: "Flarize",
     images: [
       {
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/emi-calculator",
+    canonical: "https://flarize.com/emi-calculator",
   },
   robots: {
     index: true,

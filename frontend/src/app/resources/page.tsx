@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "Solar Energy Blog Kerala | Tips, Guides & Updates",
     description:
       "Read expert insights on solar power in Kerala. Get updates on panels, subsidies, savings, and smart energy solutions.",
-    url: "https://www.flarize.com/resources",
+    url: "https://flarize.com/resources",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Solar Resources" },
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/resources",
+    canonical: "https://flarize.com/resources",
   },
   robots: {
     index: true,

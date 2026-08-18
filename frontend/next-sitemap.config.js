@@ -1,7 +1,7 @@
 // next-sitemap.config.js
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: "https://www.flarize.com",
+  siteUrl: "https://flarize.com",
   generateRobotsTxt: true,
   sitemapSize: 7000,
   outDir: "./public",
@@ -17,6 +17,11 @@ module.exports = {
     "/quotation/*",
     "/subsidy",
     "/resources",
+    // Content Studio is auth-gated: middleware 301s every anonymous request to
+    // /studio/login, so listing these ships redirecting URLs to Google -- the
+    // "Page with redirect" class this cleanup exists to remove.
+    "/studio",
+    "/studio/*",
   ],
   robotsTxtOptions: {
     // NOTE: this file is auto-generated into /public/robots.txt on every build
@@ -29,7 +34,7 @@ module.exports = {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/admin/", "/manifest.json"],
+        disallow: ["/api/", "/admin/", "/studio/", "/manifest.json"],
       },
       { userAgent: "Googlebot", allow: "/" },
       { userAgent: "Bingbot", allow: "/" },

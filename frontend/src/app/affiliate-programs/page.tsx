@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: "Flarize Affiliate Program ",
     description:
       "Earn a structured commission for every successful solar installation you refer — with zero investment, no solar expertise required, and a dedicated partner manager handling every lead you send.",
-    url: "https://www.flarize.com/affiliate-programs",
+    url: "https://flarize.com/affiliate-programs",
     siteName: "Flarize",
     images: [
       {
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/affiliate-programs",
+    canonical: "https://flarize.com/affiliate-programs",
   },
   robots: {
     index: true,
