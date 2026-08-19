@@ -1,31 +1,22 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+"""Public EMI calculator endpoints.
+
+Both are anonymous — they are what the marketing site renders from. Everything
+they return is derived from the admin-managed EmiConfig models, so the Studio
+is the single source of truth and the UI can no longer drift from the API.
+"""
+
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from ...models import SolarInstallationNew
+from ...models import EmiBank, EmiCalculatorSettings, EmiSystemSize
 from ...permissions import ApiMethodPermission, non_authenticated_view
-from ...utils.finance import emi_calc
-
-
-DEFAULT_TENURE_YEARS = 10
-DEFAULT_INTEREST_RATE = 9.5
-
-# Interest rate policy.
-# Systems up to 3 kW get the fixed Flarize-SBI PM Surya Ghar rate and cannot be
-# changed by the caller. Larger systems are adjustable but never below 8%.
-SMALL_SYSTEM_MAX_KW = 3
-SMALL_SYSTEM_FIXED_RATE = 5.75
-LARGE_SYSTEM_MIN_RATE = 8.0
-
-
-def interest_rate_policy(power_capacity):
-    """Return (fixed_rate, min_rate) for a capacity in kW.
-
-    fixed_rate is not None when the rate is locked and any override is ignored.
-    """
-    if power_capacity is not None and power_capacity <= SMALL_SYSTEM_MAX_KW:
-        return SMALL_SYSTEM_FIXED_RATE, SMALL_SYSTEM_FIXED_RATE
-    return None, LARGE_SYSTEM_MIN_RATE
+from ...serializers.emi_config_serializer import (
+    EmiBankSerializer,
+    EmiCalculatorSettingsSerializer,
+    EmiSystemSizeSerializer,
+)
+from ...utils import emi as emi_engine
 
 
 def _to_float(value):
@@ -48,20 +39,42 @@ def _to_bool(value, default=True):
     return str(value).strip().lower() in {"1", "true", "yes", "y"}
 
 
+class EMICalculatorConfigAPIView(APIView):
+    """GET the whole calculator configuration in one call.
+
+    The frontend loads this once on mount so the sliders, tiles and bank cards
+    render from admin data instead of hard-coded arrays.
+    """
+
+    permission_classes = [ApiMethodPermission]
+
+    @non_authenticated_view
+    def get(self, request):
+        settings_row = EmiCalculatorSettings.load()
+        sizes = EmiSystemSize.objects.filter(is_active=True)
+        banks = EmiBank.objects.filter(is_active=True)
+
+        return Response(
+            {
+                "settings": EmiCalculatorSettingsSerializer(settings_row).data,
+                "system_sizes": EmiSystemSizeSerializer(sizes, many=True).data,
+                "banks": EmiBankSerializer(banks, many=True).data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
 class EMICalculatorAPIView(APIView):
-    """Public EMI calculator backed by SolarInstallationNew rows.
+    """POST a system size (+ optional customer adjustments) → full EMI breakdown.
 
     Inputs (JSON body):
-      - power_capacity (float)  : kW capacity to look up; OR
-      - installation_id (int)   : SolarInstallationNew PK.
-      - property_type (str)     : disambiguates rows when multiple share a capacity.
-      - tenure_years (int)      : loan tenure, defaults to 10.
-      - interest_rate (float)   : optional override of the row's interest_rate.
-                                  Clamped by the capacity policy: <=3 kW is
-                                  locked to 5.75%, larger systems floor at 8%.
-      - apply_subsidy (bool)    : if true (default) use final_cost as principal,
-                                  otherwise use total_cost.
-      - principal (float)       : direct principal override; bypasses subsidy logic.
+      - size_id (int) or capacity_kw (float) : which system size to price.
+      - tenure_years (int)   : 1–10 by default; falls back to the configured default.
+      - apply_subsidy (bool) : default true. Off means the loan is sized on the
+                               gross system cost.
+      - interest_rate (float): customer adjustment. Clamped up to the band's
+                               floor, and ignored entirely on a locked band.
+      - loan_amount (float)  : overrides the computed 90%; upfront follows it.
     """
 
     permission_classes = [ApiMethodPermission]
@@ -71,147 +84,68 @@ class EMICalculatorAPIView(APIView):
         data = request.data or {}
 
         try:
-            power_capacity = _to_float(data.get("power_capacity"))
-            installation_id = _to_int(data.get("installation_id") or data.get("id"))
-            tenure_years = _to_int(data.get("tenure_years")) or DEFAULT_TENURE_YEARS
+            capacity_kw = _to_float(data.get("capacity_kw") or data.get("power_capacity"))
+            size_id = _to_int(data.get("size_id") or data.get("installation_id") or data.get("id"))
+            tenure_years = _to_int(data.get("tenure_years"))
             interest_override = _to_float(data.get("interest_rate"))
-            principal_override = _to_float(data.get("principal"))
+            loan_override = _to_float(data.get("loan_amount") or data.get("principal"))
         except (TypeError, ValueError):
             return Response(
                 {"error": "Invalid numeric value in request"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        property_type = data.get("property_type")
         apply_subsidy = _to_bool(data.get("apply_subsidy"), default=True)
 
-        if installation_id is None and power_capacity is None:
+        if size_id is None and capacity_kw is None:
             return Response(
-                {"error": "Provide either installation_id or power_capacity"},
+                {"error": "Provide either size_id or capacity_kw"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if tenure_years <= 0:
-            return Response(
-                {"error": "tenure_years must be a positive integer"},
-                status=status.HTTP_400_BAD_REQUEST,
+        try:
+            breakdown = emi_engine.calculate(
+                capacity_kw=capacity_kw,
+                size_id=size_id,
+                tenure_years=tenure_years,
+                apply_subsidy=apply_subsidy,
+                interest_rate_override=interest_override,
+                loan_amount_override=loan_override,
             )
+        except ValueError as exc:
+            return Response({"error": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
-        row = self._fetch_installation(installation_id, power_capacity, property_type)
-        # If the caller already supplied a principal AND interest_rate, the row
-        # is purely a source of display metadata. Treat a missing row as a soft
-        # miss in that case so the EMI calculator UI still works for any
-        # capacity even if its row hasn't been seeded yet.
-        row_missing = isinstance(row, Response)
-        can_self_serve = principal_override is not None and interest_override is not None
-        if row_missing and not can_self_serve:
-            return row
-        if row_missing:
-            row = None
+        return Response(_with_legacy_keys(breakdown), status=status.HTTP_200_OK)
 
-        if principal_override is not None:
-            principal = principal_override
-            principal_source = "override"
-        elif apply_subsidy and row.final_cost is not None:
-            principal = float(row.final_cost)
-            principal_source = "final_cost"
-        else:
-            principal = float(row.total_cost)
-            principal_source = "total_cost"
 
-        if interest_override is not None:
-            interest_rate = interest_override
-        elif row is not None and row.interest_rate is not None:
-            interest_rate = float(row.interest_rate)
-        else:
-            interest_rate = DEFAULT_INTEREST_RATE
+def _with_legacy_keys(breakdown):
+    """Flatten the headline numbers alongside the nested breakdown.
 
-        capacity_kw = power_capacity
-        if capacity_kw is None and row is not None:
-            capacity_kw = row.power_capacity
-        fixed_rate, min_rate = interest_rate_policy(capacity_kw)
-        requested_rate = interest_rate
-        if fixed_rate is not None:
-            interest_rate = fixed_rate
-        else:
-            interest_rate = max(interest_rate, min_rate)
+    Older callers read `emi_per_month` / `principal` / `interest_rate` off the
+    top level; keeping them costs nothing and avoids a breaking change.
+    """
+    system = breakdown["system"]
+    subsidy = breakdown["subsidy"]
+    loan = breakdown["loan"]
+    interest = breakdown["interest"]
+    tenure = breakdown["tenure"]
+    result = breakdown["result"]
 
-        if principal <= 0:
-            return Response(
-                {"error": "Resolved principal must be greater than zero"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        emi = emi_calc(
-            principal=principal,
-            interest_rate=interest_rate,
-            tenure_years=tenure_years,
-        )
-
-        if row is not None:
-            row_display = {
-                "installation_id": row.id,
-                "power_capacity_kW": row.power_capacity,
-                "property_type": row.type,
-                "total_cost": float(row.total_cost),
-                "total_subsidy": float(row.total_subsidy),
-                "final_cost": float(row.final_cost) if row.final_cost is not None else None,
-            }
-        else:
-            row_display = {
-                "installation_id": None,
-                "power_capacity_kW": power_capacity,
-                "property_type": property_type,
-                "total_cost": None,
-                "total_subsidy": None,
-                "final_cost": None,
-            }
-
-        result = {
-            **row_display,
-            "apply_subsidy": apply_subsidy,
-            "principal": round(principal, 2),
-            "principal_source": principal_source,
-            "interest_rate": interest_rate,
-            "requested_interest_rate": requested_rate,
-            "interest_rate_min": min_rate,
-            "interest_rate_locked": fixed_rate is not None,
-            "tenure_years": tenure_years,
-            "tenure_months": tenure_years * 12,
-            "emi_per_month": emi["emi_per_month"],
-            "total_payment": emi["total_payment"],
-            "total_interest": emi["total_interest"],
-        }
-        return Response(result, status=status.HTTP_200_OK)
-
-    @staticmethod
-    def _fetch_installation(installation_id, power_capacity, property_type):
-        qs = SolarInstallationNew.objects.all()
-        if installation_id is not None:
-            try:
-                return qs.get(pk=installation_id)
-            except SolarInstallationNew.DoesNotExist:
-                return Response(
-                    {"error": "Installation not found for the given id"},
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-
-        qs = qs.filter(power_capacity=power_capacity)
-        if property_type:
-            qs = qs.filter(type__iexact=property_type)
-
-        matches = list(qs[:2])
-        if not matches:
-            return Response(
-                {"error": "No installation found for the given power_capacity"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        if len(matches) > 1:
-            return Response(
-                {
-                    "error": "Multiple installations match power_capacity; "
-                             "provide property_type to disambiguate"
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return matches[0]
+    return {
+        **breakdown,
+        "power_capacity_kW": system["capacity_kw"],
+        "total_cost": system["system_cost"],
+        "total_subsidy": subsidy["amount"],
+        "final_cost": subsidy["net_cost_after_subsidy"],
+        "apply_subsidy": subsidy["applied"],
+        "principal": loan["amount"],
+        "interest_rate": interest["rate"],
+        "interest_rate_min": interest["min_rate"],
+        "interest_rate_locked": interest["is_locked"],
+        "tenure_years": tenure["years"],
+        "tenure_months": tenure["months"],
+        "emi_per_month": result["emi_per_month"],
+        "total_payment": result["total_payment"],
+        "total_interest": result["total_interest"],
+        "daily_amount": result["daily_amount"],
+    }

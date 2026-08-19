@@ -132,6 +132,15 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS256",
 }
 
+# Content Studio cross-service auth.
+#
+# The Studio's JWTs are minted by the CMS service, which has its own database
+# and its own SECRET_KEY — this backend cannot look those users up. Set this to
+# the CMS's DJANGO_SECRET_KEY so the EMI calculator's authoring endpoints can
+# verify Studio tokens. Left blank, those endpoints refuse writes with a 503
+# rather than accepting unverified ones.
+STUDIO_JWT_SIGNING_KEY = os.getenv("STUDIO_JWT_SIGNING_KEY", "")
+
 # Security Settings
 if ENVIRONMENT == "production":
     SECURE_SSL_REDIRECT = True

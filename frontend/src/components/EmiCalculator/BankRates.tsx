@@ -1,8 +1,15 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+// src/components/EmiCalculator/BankRates.tsx
+//
+// The bank comparison table. Rows come from the EMI calculator config API and
+// are managed in the Content Studio (/studio/emi-calculator → Bank Comparison),
+// so adding a lender or changing a rate needs no code change.
+
+import React, { useEffect, useMemo, useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import LinkingButton from "../ui/LinkingButton";
+import { getEMIConfig, type EMIBank } from "@/services/emiCalculator";
 
 // ─── filter options ────────────────────────────────────────────────────────────
 const LOAN_OPTIONS = [
@@ -30,131 +37,6 @@ const PRIORITY_OPTIONS = [
   { label: "Lowest rate",         value: "rate"   },
   { label: "Lowest fee",          value: "fee"    },
   { label: "Highest loan amount", value: "amount" },
-];
-
-// ─── bank data ─────────────────────────────────────────────────────────────────
-const BANKS = [
-  {
-    id: "sbi",
-    name: "State Bank of India",
-    abbr: "SBI",
-    logoBg: "#1D4ED8",
-    rate: 5.65,
-    recommended: true,
-    maxLoan: 600000,
-    cibilRequired: 0,
-    approvalMin: 5,
-    processingFee: 0,
-    features: [
-      "Up to ₹2L at 5.65% (Flarize rate)",
-      "Up to ₹6L at 7.00%",
-      "5–7 days approval",
-      "Zero processing fee",
-      "No collateral up to ₹2L",
-      "No income proof for 3kW",
-    ],
-    bestFor: "Most Kerala homeowners — 3kW, first-time solar buyers",
-  },
-  {
-    id: "federal",
-    name: "Federal Bank",
-    abbr: "FED",
-    logoBg: "#374151",
-    rate: 8.50,
-    recommended: false,
-    maxLoan: 500000,
-    cibilRequired: 700,
-    approvalMin: 3,
-    processingFee: 0.5,
-    features: [
-      "Up to ₹5L loan amount",
-      "3–5 days approval (fastest)",
-      "0.5% processing fee",
-      "CIBIL 700+ required",
-      "Tenure up to 7 years",
-    ],
-    bestFor: "Buyers who need fastest approval",
-  },
-  {
-    id: "union",
-    name: "Union Bank of India",
-    abbr: "UBI",
-    logoBg: "#7C3AED",
-    rate: 7.90,
-    recommended: false,
-    maxLoan: 600000,
-    cibilRequired: 650,
-    approvalMin: 5,
-    processingFee: 0.1,
-    features: [
-      "Up to ₹6L loan amount",
-      "5–7 days approval",
-      "₹500 flat processing fee",
-      "CIBIL 650+ required",
-      "Tenure up to 10 years",
-    ],
-    bestFor: "5kW–10kW systems needing larger loans",
-  },
-  {
-    id: "canara",
-    name: "Canara Bank",
-    abbr: "CAN",
-    logoBg: "#065F46",
-    rate: 8.25,
-    recommended: false,
-    maxLoan: 600000,
-    cibilRequired: 650,
-    approvalMin: 7,
-    processingFee: 0.25,
-    features: [
-      "Up to ₹6L loan amount",
-      "7–10 days approval",
-      "0.25% processing fee",
-      "CIBIL 650+ required",
-      "Tenure up to 7 years",
-    ],
-    bestFor: "Buyers prioritising lower upfront costs",
-  },
-  {
-    id: "kgb",
-    name: "Kerala Gramin Bank",
-    abbr: "KGB",
-    logoBg: "#B45309",
-    rate: 8.80,
-    recommended: false,
-    maxLoan: 400000,
-    cibilRequired: 0,
-    approvalMin: 5,
-    processingFee: 0.5,
-    features: [
-      "Up to ₹4L loan amount",
-      "5–7 days approval",
-      "0.50% processing fee",
-      "Local branch support",
-      "Tenure up to 7 years",
-    ],
-    bestFor: "Wayanad, Idukki, Pathanamthitta, Kasaragod",
-  },
-  {
-    id: "hdfc",
-    name: "HDFC Bank",
-    abbr: "HDFC",
-    logoBg: "#DC2626",
-    rate: 9.40,
-    recommended: false,
-    maxLoan: 500000,
-    cibilRequired: 750,
-    approvalMin: 3,
-    processingFee: 1,
-    features: [
-      "Up to ₹5L loan amount",
-      "3–5 days approval",
-      "1% processing fee",
-      "CIBIL 750+ required",
-      "Tenure up to 5 years",
-    ],
-    bestFor: "Private sector, NRIs, high CIBIL buyers",
-  },
 ];
 
 // ─── filter dropdown ────────────────────────────────────────────────────────────
@@ -193,14 +75,47 @@ function FilterSelect({
   );
 }
 
+/* -------------------------------------------------------------------------- */
+/*  Derived display helpers                                                    */
+/* -------------------------------------------------------------------------- */
+
+/** Cards fall back to generated bullets when the admin left `features` empty. */
+function bulletsFor(bank: EMIBank): string[] {
+  if (bank.features.length) return bank.features;
+
+  const lines: string[] = [];
+  if (Number(bank.max_loan) > 0) {
+    lines.push(`Up to ₹${(Number(bank.max_loan) / 100000).toFixed(0)}L loan amount`);
+  }
+  if (bank.approval_max_days) {
+    const range =
+      bank.approval_min_days && bank.approval_min_days !== bank.approval_max_days
+        ? `${bank.approval_min_days}–${bank.approval_max_days}`
+        : `${bank.approval_max_days}`;
+    lines.push(`${range} days approval`);
+  }
+  lines.push(feeLabel(bank));
+  if (bank.cibil_required) lines.push(`CIBIL ${bank.cibil_required}+ required`);
+  if (bank.max_tenure_years) lines.push(`Tenure up to ${bank.max_tenure_years} years`);
+  if (bank.upfront_requirement) lines.push(bank.upfront_requirement);
+  if (bank.eligibility) lines.push(bank.eligibility);
+  return lines;
+}
+
+function feeLabel(bank: EMIBank): string {
+  if (bank.processing_fee_note) return `${bank.processing_fee_note} processing fee`;
+  const pctFee = Number(bank.processing_fee_percent);
+  return pctFee > 0 ? `${pctFee}% processing fee` : "Zero processing fee";
+}
+
 // ─── bank card ──────────────────────────────────────────────────────────────────
-function BankCard({ bank }: { bank: (typeof BANKS)[0] }) {
+function BankCard({ bank }: { bank: EMIBank }) {
   return (
     <div
       className="relative flex flex-col rounded-2xl overflow-visible bg-white transition-shadow hover:shadow-md border border-[#074A4D]"
     >
       {/* Recommended badge */}
-      {bank.recommended && (
+      {bank.is_recommended && (
         <span className="absolute -top-3 right-4 bg-[#F7BA41] text-[#123532] text-[11px] font-medium px-4 py-2  rounded-full whitespace-nowrap">
           Flarize Recommended
         </span>
@@ -212,7 +127,7 @@ function BankCard({ bank }: { bank: (typeof BANKS)[0] }) {
         <div className="flex items-start gap-3 mb-4">
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white text-[10px] font-extrabold tracking-tight"
-            style={{ background: bank.logoBg }}
+            style={{ background: bank.logo_bg }}
           >
             {bank.abbr}
           </div>
@@ -223,14 +138,14 @@ function BankCard({ bank }: { bank: (typeof BANKS)[0] }) {
             <p
               className="text-sm leading-tight mt-0.5 text-[#F88A22]"
             >
-              {bank.rate.toFixed(2)}% p.a.
+              {Number(bank.interest_rate).toFixed(2)}% p.a.
             </p>
           </div>
         </div>
 
         {/* Features */}
         <ul className="space-y-1.5">
-          {bank.features.map((f, i) => (
+          {bulletsFor(bank).map((f, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-[#444444]">
               <Check size={13} className="shrink-0 mt-0.5" />
               <span>{f}</span>
@@ -239,14 +154,16 @@ function BankCard({ bank }: { bank: (typeof BANKS)[0] }) {
         </ul>
 
         {/* Best-for footer */}
-      <div className="bg-[#16A34A1A] rounded-lg mt-2 px-4 py-2.5">
-        <div className="flex items-start gap-1.5">
-          <Check size={12} className="text-[#15803D] shrink-0 mt-0.5" />
-          <span className="text-xs text-[#15803D]">
-            Best for: {bank.bestFor}
-          </span>
+      {bank.best_for && (
+        <div className="bg-[#16A34A1A] rounded-lg mt-2 px-4 py-2.5">
+          <div className="flex items-start gap-1.5">
+            <Check size={12} className="text-[#15803D] shrink-0 mt-0.5" />
+            <span className="text-xs text-[#15803D]">
+              Best for: {bank.best_for}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
       </div>
     </div>
   );
@@ -254,23 +171,52 @@ function BankCard({ bank }: { bank: (typeof BANKS)[0] }) {
 
 // ─── main component ─────────────────────────────────────────────────────────────
 export default function BankRates() {
+  const [banks, setBanks] = useState<EMIBank[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   const [loanFilter,  setLoanFilter]  = useState(200000);
   const [cibilFilter, setCibilFilter] = useState(690);
   const [priority,    setPriority]    = useState("speed");
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const cfg = await getEMIConfig();
+        if (!cancelled) setBanks(cfg.banks);
+      } catch (err) {
+        if (cancelled) return;
+        console.error("Failed to load bank comparison data:", err);
+        setLoadError("Could not load bank rates. Please refresh.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const filtered = useMemo(() => {
-    let result = BANKS.filter(
-      (b) => b.maxLoan >= loanFilter && b.cibilRequired <= cibilFilter
+    let result = banks.filter(
+      (b) => Number(b.max_loan) >= loanFilter && b.cibil_required <= cibilFilter
     );
 
-    if (priority === "rate")   result = [...result].sort((a, b) => a.rate - b.rate);
-    if (priority === "speed")  result = [...result].sort((a, b) => a.approvalMin - b.approvalMin);
-    if (priority === "fee")    result = [...result].sort((a, b) => a.processingFee - b.processingFee);
-    if (priority === "amount") result = [...result].sort((a, b) => b.maxLoan - a.maxLoan);
+    if (priority === "rate")
+      result = [...result].sort((a, b) => Number(a.interest_rate) - Number(b.interest_rate));
+    if (priority === "speed")
+      result = [...result].sort((a, b) => a.approval_min_days - b.approval_min_days);
+    if (priority === "fee")
+      result = [...result].sort(
+        (a, b) => Number(a.processing_fee_percent) - Number(b.processing_fee_percent)
+      );
+    if (priority === "amount")
+      result = [...result].sort((a, b) => Number(b.max_loan) - Number(a.max_loan));
 
     // Recommended always floats to top
-    return result.sort((a, b) => (b.recommended ? 1 : 0) - (a.recommended ? 1 : 0));
-  }, [loanFilter, cibilFilter, priority]);
+    return result.sort((a, b) => (b.is_recommended ? 1 : 0) - (a.is_recommended ? 1 : 0));
+  }, [banks, loanFilter, cibilFilter, priority]);
 
   return (
     <section
@@ -312,7 +258,13 @@ export default function BankRates() {
       </div>
 
       {/* Bank cards grid */}
-      {filtered.length > 0 ? (
+      {loading ? (
+        <div className="w-full text-center py-12 text-[#6B7280] text-sm animate-pulse">
+          Loading bank rates…
+        </div>
+      ) : loadError ? (
+        <div className="w-full text-center py-12 text-[#DC2626] text-sm">{loadError}</div>
+      ) : filtered.length > 0 ? (
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {filtered.map((bank) => (
             <BankCard key={bank.id} bank={bank} />
