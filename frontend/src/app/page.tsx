@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "Solar Panel Installation Kerala | KSEB Approved | Flarize",
     description:
       "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
-    url: "https://www.flarize.com",
+    url: "https://flarize.com",
     siteName: "Flarize",
     images: [
       {
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com",
+    canonical: "https://flarize.com",
   },
   robots: {
     index: true,

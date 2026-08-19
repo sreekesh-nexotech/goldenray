@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: "Privacy Policy - Flarize",
     description:
       "Learn about how Flarize protects your privacy and handles your personal information.",
-    url: "https://www.flarize.com/privacy",
+    url: "https://flarize.com/privacy",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Privacy Policy" },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/privacy",
+    canonical: "https://flarize.com/privacy",
   },
   robots: {
     index: true,
@@ -58,10 +58,10 @@ export default function privacy() {
             protects your personal information when you access or use our
             website&nbsp;
             <Link
-              href="https://www.flarize.com"
+              href="https://flarize.com"
               className="text-blue-600 hover:underline"
             >
-              www.flarize.com
+              flarize.com
             </Link>
             , services, and products.
           </p>

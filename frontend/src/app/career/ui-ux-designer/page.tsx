@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: "UI/UX Designer | Careers at Flarize",
     description:
       "Join Flarize as a UI/UX Designer and design products that power real homes across Kerala.",
-    url: "https://www.flarize.com/career/ui-ux-designer",
+    url: "https://flarize.com/career/ui-ux-designer",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "UI/UX Designer at Flarize" },
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   alternates: {
-    canonical: "https://www.flarize.com/career/ui-ux-designer",
+    canonical: "https://flarize.com/career/ui-ux-designer",
   },
   robots: {
     index: true,

@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "About Us | India's Trusted Solar Platform",
     description:
       "Flarize delivers PM Surya Ghar-compliant solar installations with 25-year platform accountability. Backed by 8+ years, 400+ projects, 4.9★ rating. Energy freedom for Kerala homes.",
-    url: "https://www.flarize.com/about",
+    url: "https://flarize.com/about",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "About Flarize" },
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/about",
+    canonical: "https://flarize.com/about",
   },
   robots: {
     index: true,

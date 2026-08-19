@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "Solar Inverter Comparison Table | Side-by-Side Analysis",
     description:
       "Compare solar inverters side-by-side with detailed specifications, efficiency, warranty, and Kerala climate ratings.",
-    url: "https://www.flarize.com/inverter-comparison-table",
+    url: "https://flarize.com/inverter-comparison-table",
     siteName: "Flarize",
     images: [
       {
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/inverter-comparison-table",
+    canonical: "https://flarize.com/inverter-comparison-table",
   },
   robots: {
     index: true,

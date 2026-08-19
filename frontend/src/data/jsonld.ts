@@ -6,8 +6,8 @@ export const localBusinessSchema = {
   '@type': 'LocalBusiness',
   name: 'Flarize Solar',
   alternateName: 'Golden Ray Renewable Energy',
-  url: 'https://www.flarize.com',
-  logo: 'https://www.flarize.com/logo_header.png', 
+  url: 'https://flarize.com',
+  logo: 'https://flarize.com/logo_header.png', 
   description: 'Kerala-based solar EPC company. KSEB-approved, MNRE-empanelled. 300+ installations across Kerala.',
   telephone: '+91-6282922988',
   address: {
@@ -36,8 +36,8 @@ export const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Flarize Technologies Private Limited',
-  url: 'https://www.flarize.com',
-  logo: 'https://www.flarize.com/logo_header.png',
+  url: 'https://flarize.com',
+  logo: 'https://flarize.com/logo_header.png',
   foundingDate: '2014',
   areaServed: { '@type': 'State', name: 'Kerala, India' },
 };
@@ -95,7 +95,7 @@ export const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.flarize.com' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://flarize.com' },
   ],
 };
 
@@ -120,9 +120,9 @@ export const getArticleSchema = (post: {
   publisher: {
     '@type': 'Organization',
     name: 'Flarize',
-    logo: { '@type': 'ImageObject', url: 'https://www.flarize.com/logo_header.png' },
+    logo: { '@type': 'ImageObject', url: 'https://flarize.com/logo_header.png' },
   },
-  mainEntityOfPage: { '@type': 'WebPage', '@id': `https://www.flarize.com/blog/${post.slug}` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': `https://flarize.com/blog/${post.slug}` },
 });
 
 // Blog breadcrumb schema generator
@@ -130,9 +130,9 @@ export const getBlogBreadcrumbSchema = (post: { title: string; slug: string }) =
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.flarize.com' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.flarize.com/blog' },
-    { '@type': 'ListItem', position: 3, name: post.title, item: `https://www.flarize.com/blog/${post.slug}` },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://flarize.com' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://flarize.com/blog' },
+    { '@type': 'ListItem', position: 3, name: post.title, item: `https://flarize.com/blog/${post.slug}` },
   ],
 });
 

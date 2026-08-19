@@ -45,7 +45,7 @@ export const metadata: Metadata = {
       "Commercial Solar Installation Company in Kerala — Flarize | Solar Company Kerala",
     description:
       "On-grid solar panel installation Kerala for factories, offices, and warehouses. Commercial solar ROI Kerala in 3–4 years. 40% depreciation, GST input tax credit, 75% project financing. KSEB net metering commercial handled end-to-end. MNRE certified, KSEB approved solar installer.",
-    url: "https://www.flarize.com/commercial",
+    url: "https://flarize.com/commercial",
     siteName: "Flarize",
     images: [
       {
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/commercial",
+    canonical: "https://flarize.com/commercial",
   },
   robots: {
     index: true,

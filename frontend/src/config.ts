@@ -23,6 +23,15 @@ const defaultAdminApiBaseUrl = isDevelopment
 	: "https://flarize.com/studio-api/admin-api/";
 export const ADMIN_API_BASE_URL: string =
 	process.env.NEXT_PUBLIC_ADMIN_API_BASE_URL || defaultAdminApiBaseUrl;
+
+// Canonical production origin. Every absolute URL the site emits — canonical
+// tags, Open Graph, JSON-LD, sitemap — must be built from this constant so the
+// www/non-www split can never reappear. flarize.com is the canonical host;
+// www.flarize.com permanently redirects to it at the edge, so emitting a www
+// URL anywhere means pointing Google at a redirect.
+export const SITE_URL: string =
+	process.env.NEXT_PUBLIC_SITE_URL || "https://flarize.com";
+
 export const GTM_ID: string = "GTM-5H47L3GM";
 export const GA_MEASUREMENT_ID: string = "G-GSXM0NLQ8W";
 

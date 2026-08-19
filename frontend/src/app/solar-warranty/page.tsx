@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: "Solar Warranty & AMC Service in Kerala | Flarize",
     description:
       "25-year protection, 48-hour response, KSEB-certified Kerala technicians and a performance guarantee that compensates you if we fall short.",
-    url: "https://www.flarize.com/solar-warranty",
+    url: "https://flarize.com/solar-warranty",
     siteName: "Flarize",
     images: [
       {
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/solar-warranty",
+    canonical: "https://flarize.com/solar-warranty",
   },
   robots: {
     index: true,

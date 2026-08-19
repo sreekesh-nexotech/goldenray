@@ -109,6 +109,9 @@ services:
         # Public delivery API the /blog pages read. Must be passed here or the
         # Dockerfile's localhost default gets baked in and the blog shows nothing.
         NEXT_PUBLIC_BLOG_API_BASE_URL: ${NEXT_PUBLIC_BLOG_API_BASE_URL:-http://localhost:8009/api}
+        # Canonical public origin for canonical tags / OG / JSON-LD / sitemap.
+        # Must stay the non-www host; www.flarize.com 301s to it.
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://flarize.com}
     environment:
       # Server-side only (no NEXT_PUBLIC_ prefix), so it is read at runtime and
       # must be in the container env — .dockerignore excludes .env* from the

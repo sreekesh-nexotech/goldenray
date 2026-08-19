@@ -13,7 +13,7 @@ export const metadata: Metadata = {
       "Solar Panel FAQs Kerala 2026: Subsidy, Price, KSEB & Installation | Flarize",
     description:
       "Answers to Kerala's top solar questions: subsidy amounts, pricing, KSEB net metering, installation timeline, and which panels qualify for PM Surya Ghar. Updated 2026.",
-    url: "https://www.flarize.com/faq",
+    url: "https://flarize.com/faq",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Solar FAQ" },
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/faq",
+    canonical: "https://flarize.com/faq",
   },
   robots: {
     index: true,

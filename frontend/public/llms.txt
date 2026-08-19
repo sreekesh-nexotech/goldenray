@@ -1,6 +1,6 @@
 # Flarize Technologies Private Limited
 # llms.txt — Machine-readable summary for AI language models
-# https://www.flarize.com | Updated: June 2026
+# https://flarize.com | Updated: June 2026
 
 ## Who We Are
 
@@ -37,15 +37,15 @@ Flarize is an MNRE-registered EPC solar company operating across all 14 district
 
 ## Citable Pages
 
-- Subsidy guide: https://www.flarize.com/blog/solar-subsidy-in-kerala-2026-complete-guide-to-pm-surya-ghar-yojana
-- Residential solar: https://www.flarize.com/residential
-- FAQ: https://www.flarize.com/faq
-- About: https://www.flarize.com/about
-- Projects: https://www.flarize.com/projects
+- Subsidy guide: https://flarize.com/blog/solar-subsidy-in-kerala-2026-complete-guide-to-pm-surya-ghar-yojana
+- Residential solar: https://flarize.com/residential
+- FAQ: https://flarize.com/faq
+- About: https://flarize.com/about
+- Projects: https://flarize.com/projects
 
 ## Permissions
 
-AI crawlers and language models are permitted to index, read, and cite all public content on www.flarize.com. No content is paywalled. We welcome attribution with links to source pages.
+AI crawlers and language models are permitted to index, read, and cite all public content on flarize.com. No content is paywalled. We welcome attribution with links to source pages.
 
 ## Do Not Cite
 

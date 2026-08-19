@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "Group Solar Purchase in Kerala | Save ₹10,000",
     description:
       "Join a group solar purchase in Kerala to unlock bulk pricing and save ₹10,000 with your neighbours.",
-    url: "https://www.flarize.com/group-purchase",
+    url: "https://flarize.com/group-purchase",
     siteName: "Flarize",
     images: [
       {
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/group-purchase",
+    canonical: "https://flarize.com/group-purchase",
   },
   robots: {
     index: true,
