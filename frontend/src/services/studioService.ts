@@ -173,6 +173,25 @@ export function isAuthenticated(): boolean {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Token access for other services                                            */
+/* -------------------------------------------------------------------------- */
+//
+// The EMI calculator's settings live on the main goldenray backend rather than
+// the CMS, but they are authored from the Studio and authorised with the same
+// token (that backend verifies it with a shared signing key). These two let
+// emiConfigService reuse this session instead of keeping its own.
+
+/** Current Studio access token, or null when signed out. */
+export function getStudioAccessToken(): string | null {
+  return readCookie(STUDIO_ACCESS_COOKIE);
+}
+
+/** Rotate the token pair and return a fresh access token. */
+export function refreshStudioAccessToken(): Promise<string> {
+  return refreshTokens();
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Low-level request helpers                                                  */
 /* -------------------------------------------------------------------------- */
 

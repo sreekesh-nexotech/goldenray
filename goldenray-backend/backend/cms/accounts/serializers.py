@@ -1,7 +1,26 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import AdminUser
+
+
+class StudioTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """Embed `role` and `username` in the access token.
+
+    The main goldenray backend authorises Studio users (e.g. for the EMI
+    calculator settings) by verifying this token with a shared signing key. It
+    has no access to this service's user table, so the role has to travel in
+    the token itself.
+    """
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token["username"] = user.username
+        # Superusers act as admins regardless of the stored role.
+        token["role"] = "admin" if user.is_superuser else user.role
+        return token
 
 
 class AdminUserSerializer(serializers.ModelSerializer):
