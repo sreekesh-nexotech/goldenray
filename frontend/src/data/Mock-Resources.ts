@@ -1,5 +1,7 @@
 export type BlogPost = {
   id: string;
+  /** Public URL segment. Ids stay for internal keys only. */
+  slug: string;
   title: string;
   description?:string;
   category: string;
@@ -11,6 +13,8 @@ export type BlogPost = {
 
 export type HeroPost = {
   id: string;
+  /** Public URL segment. Ids stay for internal keys only. */
+  slug: string;
   title: string;
   description?:string;
   category: string;
@@ -23,6 +27,7 @@ export type HeroPost = {
 export const heroPosts: HeroPost[] = [
   {
     id: "h1",
+    slug: "solar-energy-industries",
     title: "How Solar Energy Can Transform Indian Industries?",
     description:"Rooftop solar helps industries cut costs and emissions, mitigate CBAM impacts, and stay competitive in global markets.",
     category: "Industry Insights",
@@ -32,6 +37,7 @@ export const heroPosts: HeroPost[] = [
   },
   {
     id: "h2",
+    slug: "rooftop-solar-iot-benefits",
     title: "Boost Your Rooftop Solar Benefits With IoT",
     category: "Technology",
     image: "https://gym-manager-pull.b-cdn.net/golden_ray/resources/resources-2.png",
@@ -40,6 +46,7 @@ export const heroPosts: HeroPost[] = [
   },
   {
     id: "h3",
+    slug: "group-net-metering-rooftop-solar",
     title: "18 States and UTs Adopt Group Net Metering for Rooftop Solar",
     category: "Policy",
     image: "https://gym-manager-pull.b-cdn.net/golden_ray/resources/resources-4.png",
@@ -48,6 +55,7 @@ export const heroPosts: HeroPost[] = [
   },
   {
     id: "h4",
+    slug: "future-of-solar-innovations",
     title: "The Future of Solar: Innovations to Watch",
     category: "Technology",
     image: "https://gym-manager-pull.b-cdn.net/golden_ray/resources/resources-2.png",
@@ -56,6 +64,7 @@ export const heroPosts: HeroPost[] = [
   },
   {
     id: "h5",
+    slug: "solar-energy-rural-communities",
     title: "Solar Energy: A Game Changer for Rural Communities",
     category: "Community",
     image: "https://gym-manager-pull.b-cdn.net/golden_ray/resources/resources-5.png",
@@ -68,6 +77,7 @@ export const heroPosts: HeroPost[] = [
 export const mockBlogs: BlogPost[] = [
   {
     id: "1",
+    slug: "rooftop-solar-battery-storage",
     title: "The Sun's Energy is Democratic: Rooftop Solar as a Solution for...",
     description:"Battery storage boosts solar by storing excess energy, ensuring power during outages, and savings.",
     category: "Solar Lifestyle",
@@ -78,6 +88,7 @@ export const mockBlogs: BlogPost[] = [
   },
   {
     id: "2",
+    slug: "rooftop-solar-battery-storage",
     title: "The Sun's Energy is Democratic: Rooftop Solar as a Solution for...",
     description:"Battery storage boosts solar by storing excess energy, ensuring power during outages, and savings.",
     category: "Solar Lifestyle",
@@ -88,6 +99,7 @@ export const mockBlogs: BlogPost[] = [
   },
   {
     id: "3",
+    slug: "rooftop-solar-battery-storage",
     title: "The Sun's Energy is Democratic: Rooftop Solar as a Solution for...",
     description:"Battery storage boosts solar by storing excess energy, ensuring power during outages, and savings.",
     category: "Solar Lifestyle",
@@ -98,6 +110,7 @@ export const mockBlogs: BlogPost[] = [
   },
   {
     id: "4",
+    slug: "solar-panel-maintenance-tips",
     title: "Solar Panels: Maintenance Tips for Longevity",
     description:"Battery storage boosts solar by storing excess energy, ensuring power during outages, and savings.",
     category: "Technology",
@@ -108,6 +121,7 @@ export const mockBlogs: BlogPost[] = [
   },
   {
     id: "5",
+    slug: "solar-impact-urban-planning",
     title: "The Impact of Solar on Urban Planning",
     description:"Battery storage boosts solar by storing excess energy, ensuring power during outages, and savings.",
     category: "Industry Insights",
@@ -118,6 +132,7 @@ export const mockBlogs: BlogPost[] = [
   },
     {
     id: "6",
+    slug: "rooftop-solar-battery-storage",
     title: "The Sun's Energy is Democratic: Rooftop Solar as a Solution for...",
     description:"Battery storage boosts solar by storing excess energy, ensuring power during outages, and savings.",
     category: "Solar Lifestyle",
