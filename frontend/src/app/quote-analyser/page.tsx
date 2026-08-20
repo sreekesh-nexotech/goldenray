@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: "Solar Quote Analyser | AI-Powered Quote Review | Flarize",
     description:
       "Upload any solar quote from any company. Our AI checks pricing, brands, hidden costs and missing items in 30 seconds.",
-    url: "https://www.flarize.com/quote-analyser",
+    url: "https://flarize.com/quote-analyser",
     siteName: "Flarize",
     images: [
       {
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/quote-analyser",
+    canonical: "https://flarize.com/quote-analyser",
   },
   robots: {
     index: true,

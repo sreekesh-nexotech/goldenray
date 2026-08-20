@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: "Compare Solar Panels for Kerala | Find the Best Solar Panel",
     description:
       "Compare solar panels side-by-side with Kerala climate ratings. Browse monocrystalline, bifacial, and polycrystalline panels from top brands.",
-    url: "https://www.flarize.com/solar-comparison",
+    url: "https://flarize.com/solar-comparison",
     siteName: "Flarize",
     images: [
       {
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/solar-comparison",
+    canonical: "https://flarize.com/solar-comparison",
   },
   robots: {
     index: true,

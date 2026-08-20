@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "Contact Solar Experts in Kerala",
     description:
       "Speak with Kerala's solar installation experts. Contact Flarize for site visits, system design, pricing, and support.",
-    url: "https://www.flarize.com/contactus",
+    url: "https://flarize.com/contactus",
     siteName: "Flarize",
     images: [
       {
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/contactus",
+    canonical: "https://flarize.com/contactus",
   },
   robots: {
     index: true,

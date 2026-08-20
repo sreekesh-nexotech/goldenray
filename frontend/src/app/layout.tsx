@@ -10,6 +10,7 @@ import { Suspense } from "react";
 import ConditionalLayout from "@/components/common/ConditionalLayout";
 
 import PageTracker from "@/components/analytics/PageTracker";
+import { SITE_URL } from "@/config";
 import { isGtmEnabled } from "@/utils/gtm";
 import { GTM_ID, GA_MEASUREMENT_ID } from "@/config";
 
@@ -68,7 +69,7 @@ const switzer = localFont({
 /* -------------------- Metadata -------------------- */
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.flarize.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Flarize - Solar Solutions",
     template: "%s | Flarize",
@@ -78,11 +79,11 @@ export const metadata: Metadata = {
     title: "Flarize | Solar Solutions",
     description:
       "Empowering sustainable energy with innovative solar solutions.",
-    url: "https://www.flarize.com",
+    url: "https://flarize.com",
     siteName: "Flarize",
     images: [
       {
-        url: "https://www.flarize.com/ogImg.jpg",
+        url: "https://flarize.com/ogImg.jpg",
         width: 1600,
         height: 730,
         alt: "Flarize | Solar Solution",
@@ -96,13 +97,13 @@ export const metadata: Metadata = {
     title: "Flarize - Solar Solutions",
     description:
       "Empowering sustainable energy with innovative solar solutions.",
-    images: ["https://www.flarize.com/ogImg.jpg"],
+    images: ["https://flarize.com/ogImg.jpg"],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com",
+    canonical: "https://flarize.com",
   },
   robots: {
     index: true,

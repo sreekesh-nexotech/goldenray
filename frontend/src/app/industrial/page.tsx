@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "Industrial Solar Power Systems in Kerala | EPC Services",
     description:
       "Power your operations with industrial solar systems in Kerala. Flarize delivers EPC services, scalable capacity, and long-term ROI.",
-    url: "https://www.flarize.com/industrial",
+    url: "https://flarize.com/industrial",
     siteName: "Flarize",
     images: [
       {
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/industrial",
+    canonical: "https://flarize.com/industrial",
   },
   robots: {
     index: true,

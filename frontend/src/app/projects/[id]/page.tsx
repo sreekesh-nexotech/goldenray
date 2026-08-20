@@ -36,7 +36,7 @@ export async function generateMetadata({
       description:
         project.description ||
         `Explore our ${project.title} solar installation project.`,
-      url: `https://www.flarize.com/projects/${id}`,
+      url: `https://flarize.com/projects/${id}`,
       siteName: "Flarize",
       images: project.imageUrl
         ? [
@@ -66,7 +66,7 @@ export async function generateMetadata({
       images: project.imageUrl ? [project.imageUrl] : ["/heroImg.png"],
     },
     alternates: {
-      canonical: `https://www.flarize.com/projects/${id}`,
+      canonical: `https://flarize.com/projects/${id}`,
     },
   };
 }

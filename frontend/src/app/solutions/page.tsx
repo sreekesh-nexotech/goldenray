@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: "Residential & Commercial Solar Solutions in Kerala",
     description:
       "Discover custom solar solutions in Kerala for homes and businesses. Expert installation, high-efficiency panels, and trusted support.",
-    url: "https://www.flarize.com/solutions",
+    url: "https://flarize.com/solutions",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Solar Solutions" },
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/solutions",
+    canonical: "https://flarize.com/solutions",
   },
   robots: {
     index: true,
