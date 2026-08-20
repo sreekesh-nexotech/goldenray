@@ -1,7 +1,14 @@
 from django.contrib import admin, messages
 
-from .models import ContentBlock, Entry, EntryAttributeValue, EntryImage, Seo
-from .services import PublishError, duplicate_entry, publish_entry, unpublish_entry
+from .models import ContentBlock, Entry, EntryAttributeValue, EntryImage, EntrySlugHistory, Seo
+from .services import (
+    PublishError,
+    duplicate_entry,
+    publish_entry,
+    restore_entry,
+    soft_delete_entry,
+    unpublish_entry,
+)
 
 
 class ContentBlockInline(admin.StackedInline):
@@ -28,6 +35,18 @@ class SeoInline(admin.StackedInline):
     can_delete = True
 
 
+class EntrySlugHistoryInline(admin.TabularInline):
+    """Read-mostly: rows are written automatically on rename. Editing is limited
+    to retiring an alias (``is_active``) — retyping a historical slug by hand
+    would just be inventing a redirect."""
+
+    model = EntrySlugHistory
+    extra = 0
+    fields = ("slug", "is_active", "note", "created_at")
+    readonly_fields = ("slug", "note", "created_at")
+    can_delete = False
+
+
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
     list_display = ("title", "collection", "status", "is_featured", "published_on", "updated_at")
@@ -36,15 +55,21 @@ class EntryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     autocomplete_fields = ()
     filter_horizontal = ("categories", "tags", "badges")
-    readonly_fields = ("document_id", "published_at", "created_at", "updated_at")
-    inlines = [ContentBlockInline, EntryImageInline, EntryAttributeValueInline, SeoInline]
-    actions = ("action_publish", "action_unpublish", "action_duplicate")
+    readonly_fields = ("document_id", "published_at", "deleted_at", "created_at", "updated_at")
+    inlines = [
+        ContentBlockInline,
+        EntryImageInline,
+        EntryAttributeValueInline,
+        SeoInline,
+        EntrySlugHistoryInline,
+    ]
+    actions = ("action_publish", "action_unpublish", "action_delete", "action_restore", "action_duplicate")
     fieldsets = (
         (None, {"fields": ("collection", "template", "title", "slug", "excerpt")}),
         ("Body", {"fields": ("summary", "introduction", "warning", "insights")}),
         ("Card / meta", {"fields": ("read_time", "is_featured", "sort_order", "published_on")}),
         ("Relations", {"fields": ("author", "categories", "tags", "badges", "cover_image")}),
-        ("Publish", {"fields": ("status", "published_at")}),
+        ("Publish", {"fields": ("status", "published_at", "deleted_at")}),
         ("Audit", {"fields": ("document_id", "created_by", "updated_by", "created_at", "updated_at")}),
     )
 
@@ -74,8 +99,35 @@ class EntryAdmin(admin.ModelAdmin):
             except PublishError as exc:
                 self.message_user(request, f"{entry.title}: {exc}", level=messages.ERROR)
 
+    @admin.action(description="Delete selected entries (reversible take-down)")
+    def action_delete(self, request, queryset):
+        for entry in queryset:
+            try:
+                soft_delete_entry(entry, user=request.user)
+            except PublishError as exc:
+                self.message_user(request, f"{entry.title}: {exc}", level=messages.ERROR)
+
+    @admin.action(description="Restore selected deleted entries (as drafts)")
+    def action_restore(self, request, queryset):
+        for entry in queryset.filter(status=Entry.Status.DELETED):
+            try:
+                restore_entry(entry, user=request.user)
+            except PublishError as exc:
+                self.message_user(request, f"{entry.title}: {exc}", level=messages.ERROR)
+
     @admin.action(description="Duplicate selected entries (as drafts)")
     def action_duplicate(self, request, queryset):
         for entry in queryset:
             duplicate_entry(entry, user=request.user)
         self.message_user(request, f"Duplicated {queryset.count()} entr{'y' if queryset.count() == 1 else 'ies'}.")
+
+
+@admin.register(EntrySlugHistory)
+class EntrySlugHistoryAdmin(admin.ModelAdmin):
+    """Standalone view of every URL the site has promised, so an operator can
+    audit or retire an alias without opening its entry."""
+
+    list_display = ("slug", "entry", "collection", "is_active", "created_at")
+    list_filter = ("collection", "is_active")
+    search_fields = ("slug", "entry__title", "entry__slug")
+    readonly_fields = ("created_at",)

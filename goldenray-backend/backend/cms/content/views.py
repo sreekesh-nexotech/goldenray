@@ -12,7 +12,16 @@ from media.models import MediaAsset
 from .models import Entry
 from .selectors import admin_entry_queryset
 from .serializers import EntryListSerializer, EntryReadSerializer, EntryWriteSerializer
-from .services import PublishError, duplicate_entry, publish_entry, unpublish_entry
+from .services import (
+    PublishError,
+    duplicate_entry,
+    publish_entry,
+    restore_entry,
+    slug_taken,
+    soft_delete_entry,
+    unpublish_entry,
+)
+from .validators import slug_error
 
 # Whitelisted ?ordering= values for the entries list screen.
 ORDERING_FIELDS = {
@@ -27,8 +36,15 @@ class EntryViewSet(viewsets.ModelViewSet):
     permission_classes = [CanAuthorEntries]
 
     def get_queryset(self):
-        qs = admin_entry_queryset()
         params = self.request.query_params
+        # Deleted entries stay out of the working set unless asked for — but a
+        # detail/publish/restore call must still be able to reach one.
+        include_deleted = (
+            params.get("include_deleted", "").lower() in ("1", "true", "yes")
+            or params.get("status") == Entry.Status.DELETED
+            or self.action not in ("list",)
+        )
+        qs = admin_entry_queryset(include_deleted=include_deleted)
         if (col := params.get("collection")):
             qs = qs.filter(collection__api_uid=col) if not col.isdigit() else qs.filter(collection_id=col)
         if (st := params.get("status")):
@@ -63,6 +79,11 @@ class EntryViewSet(viewsets.ModelViewSet):
         Returns whether the slug is free in that collection and, when taken,
         the next free ``<slug>-N`` suggestion. Backs the ↻ regenerate button
         and inline availability feedback.
+
+        "Taken" includes retired slugs still aliased to another entry, and the
+        response carries ``valid``/``error`` so the editor can show *why* a
+        placeholder or malformed slug will be rejected rather than waiting for
+        the save to fail.
         """
         col, raw = request.query_params.get("collection"), request.query_params.get("slug", "")
         slug = slugify(raw)
@@ -78,17 +99,23 @@ class EntryViewSet(viewsets.ModelViewSet):
         if collection is None:
             return Response({"detail": "Unknown collection."}, status=status.HTTP_400_BAD_REQUEST)
 
-        qs = Entry.objects.filter(collection=collection)
-        if (exclude := request.query_params.get("exclude")):
-            qs = qs.exclude(pk=exclude)
-
-        available = not qs.filter(slug=slug).exists()
+        exclude = request.query_params.get("exclude") or None
+        available = not slug_taken(collection.pk, slug, exclude_entry_pk=exclude)
         suggestion = slug
         i = 2
-        while not available and qs.filter(slug=suggestion).exists():
+        while slug_taken(collection.pk, suggestion, exclude_entry_pk=exclude):
             suggestion = f"{slug}-{i}"
             i += 1
-        return Response({"slug": slug, "available": available, "suggestion": suggestion})
+        error = slug_error(slug)
+        return Response(
+            {
+                "slug": slug,
+                "available": available,
+                "suggestion": suggestion,
+                "valid": error is None,
+                "error": error,
+            }
+        )
 
     # ── Publish workflow actions ──────────────────────────────────────────────
     @action(detail=True, methods=["post"])
@@ -121,6 +148,36 @@ class EntryViewSet(viewsets.ModelViewSet):
             EntryReadSerializer(copy, context={"request": request}).data,
             status=status.HTTP_201_CREATED,
         )
+
+    @action(detail=True, methods=["post"])
+    def restore(self, request, pk=None):
+        """Bring a deleted entry back as a draft."""
+        entry = self.get_object()
+        try:
+            restore_entry(entry, user=request.user)
+        except PublishError as exc:
+            return Response(
+                {"detail": str(exc), "errors": exc.errors}, status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response(EntryReadSerializer(entry, context={"request": request}).data)
+
+    # ── Deletion ──────────────────────────────────────────────────────────────
+    def destroy(self, request, *args, **kwargs):
+        """Soft-delete: same 204 contract as before, but the record survives.
+
+        Callers see no difference; what changes is that the entry keeps its
+        slug, its body and its alias rows, so a deliberate takedown stays
+        distinguishable from a URL that never existed and stays reversible via
+        ``POST /entries/{id}/restore/``. Purging for real is an admin action.
+        """
+        entry = self.get_object()
+        try:
+            soft_delete_entry(entry, user=request.user)
+        except PublishError as exc:
+            return Response(
+                {"detail": str(exc), "errors": exc.errors}, status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # ── Admin-shell endpoints (dashboard + site config) ───────────────────────────

@@ -13,9 +13,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from catalog.models import Collection
-from content.selectors import published_entries
+from content.selectors import published_entries, resolve_published_alias
 
-from .query import parse_fields, parse_filters, parse_pagination, parse_sort
+from .query import parse_fields, parse_filters, parse_pagination, parse_sort, single_slug_lookup
 from .serializers import build_entry_fields_only, build_entry_payload
 
 
@@ -43,6 +43,27 @@ class CollectionDeliveryView(APIView):
 
         total = qs.count()
 
+        # Retired-slug fallback. A lookup for exactly one slug that matches
+        # nothing is the shape a renamed article takes: the frontend asked for
+        # the URL a visitor arrived on, and the entry now lives elsewhere.
+        # Resolving it here (only on an otherwise-empty result, only from a
+        # recorded alias for that same entry — never a guess) is what keeps the
+        # old URL alive. `meta.redirect` tells the caller the canonical slug so
+        # it can answer with a permanent redirect instead of the article.
+        redirect_meta = None
+        if total == 0 and not excludes:
+            requested_slug = single_slug_lookup(request.query_params)
+            if requested_slug:
+                aliased = resolve_published_alias(api_uid, requested_slug)
+                if aliased is not None:
+                    qs = published_entries(api_uid).filter(pk=aliased.pk)
+                    total = 1
+                    redirect_meta = {
+                        "from": requested_slug,
+                        "to": aliased.slug,
+                        "reason": "slug_changed",
+                    }
+
         # pagination[...]
         page, page_size = parse_pagination(request.query_params)
         start = (page - 1) * page_size
@@ -67,6 +88,8 @@ class CollectionDeliveryView(APIView):
                 }
             },
         }
+        if redirect_meta is not None:
+            body["meta"]["redirect"] = redirect_meta
         resp = Response(body)
         # Published content is highly cacheable.
         resp["Cache-Control"] = "public, max-age=60, stale-while-revalidate=600"

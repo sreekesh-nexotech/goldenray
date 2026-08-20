@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from rest_framework import serializers
 
@@ -10,7 +11,9 @@ from catalog.serializers import (
 )
 from media.serializers import MediaAssetSerializer
 
-from .models import ContentBlock, Entry, EntryAttributeValue, EntryImage, Seo
+from .models import ContentBlock, Entry, EntryAttributeValue, EntryImage, EntrySlugHistory, Seo
+from .services import slug_taken
+from .validators import validate_entry_slug
 
 
 class ContentBlockSerializer(serializers.ModelSerializer):
@@ -43,6 +46,12 @@ class SeoSerializer(serializers.ModelSerializer):
         fields = ("meta_title", "meta_description", "canonical_url", "keywords")
 
 
+class EntrySlugHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EntrySlugHistory
+        fields = ("id", "slug", "is_active", "note", "created_at")
+
+
 class EntryReadSerializer(serializers.ModelSerializer):
     """Rich read shape for the authoring UI (not the public delivery shape)."""
 
@@ -55,6 +64,7 @@ class EntryReadSerializer(serializers.ModelSerializer):
     images = EntryImageSerializer(many=True, read_only=True)
     attribute_values = EntryAttributeValueSerializer(many=True, read_only=True)
     seo = SeoSerializer(read_only=True)
+    slug_history = EntrySlugHistorySerializer(many=True, read_only=True)
     collection_uid = serializers.CharField(source="collection.api_uid", read_only=True)
     template_slug = serializers.CharField(source="template.slug", read_only=True, default=None)
 
@@ -65,8 +75,8 @@ class EntryReadSerializer(serializers.ModelSerializer):
             "title", "slug", "excerpt", "summary", "introduction", "read_time",
             "is_featured", "sort_order", "published_on", "warning", "insights",
             "author", "categories", "tags", "badges", "cover_image",
-            "content_blocks", "images", "attribute_values", "seo",
-            "status", "published_at", "created_at", "updated_at",
+            "content_blocks", "images", "attribute_values", "seo", "slug_history",
+            "status", "published_at", "deleted_at", "created_at", "updated_at",
         )
 
 
@@ -86,7 +96,7 @@ class EntryListSerializer(serializers.ModelSerializer):
             "id", "document_id", "collection", "collection_uid", "collection_name",
             "template", "template_slug", "title", "slug", "excerpt", "status",
             "author_name", "cover_url", "is_featured", "sort_order",
-            "published_on", "published_at", "created_at", "updated_at",
+            "published_on", "published_at", "deleted_at", "created_at", "updated_at",
         )
 
     def get_cover_url(self, obj):
@@ -135,17 +145,38 @@ class EntryWriteSerializer(serializers.ModelSerializer):
             "warning", "insights", "author", "categories", "tags", "badges",
             "cover_image", "content_blocks", "images", "attribute_values", "seo",
         )
+        # DRF would auto-add a UniqueTogetherValidator for (collection, slug) and
+        # report a clash under `non_field_errors`. `validate()` below covers the
+        # same constraint *plus* retired aliases, and reports it under `slug` —
+        # which is the field the editor has to change.
+        validators = []
+
+    def validate_slug(self, value):
+        """Shape / placeholder / reserved checks.
+
+        The same validator is on the model field, so this mostly duplicates what
+        DRF already inherits — it is spelled out because rejecting junk slugs is
+        the point of the field, not an incidental side effect of field mapping.
+        """
+        try:
+            validate_entry_slug(value)
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError(exc.messages) from exc
+        return value
 
     def validate(self, attrs):
         collection = attrs.get("collection") or getattr(self.instance, "collection", None)
         slug = attrs.get("slug") or getattr(self.instance, "slug", None)
         if collection and slug:
-            qs = Entry.objects.filter(collection=collection, slug=slug)
-            if self.instance:
-                qs = qs.exclude(pk=self.instance.pk)
-            if qs.exists():
+            exclude_pk = self.instance.pk if self.instance else None
+            if slug_taken(collection.pk, slug, exclude_entry_pk=exclude_pk):
                 raise serializers.ValidationError(
-                    {"slug": "An entry with this slug already exists in this collection."}
+                    {
+                        "slug": (
+                            "This slug is already in use in this collection — by an "
+                            "entry or by a retired slug still pointing at one."
+                        )
+                    }
                 )
         return attrs
 
