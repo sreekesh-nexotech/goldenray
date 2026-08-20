@@ -7,6 +7,7 @@ import { Metadata } from "next";
 //importing mock data
 import { mockProjects } from "@/data/Mock-projects";
 import SolarAdvantageMain from "@/components/SolarCalculator/SolarAdvantageMain";
+import { SITE_URL } from "@/config";
 
 type ProjectPageProps = {
   params: Promise<{ id: string }>;
@@ -16,8 +17,8 @@ type ProjectPageProps = {
 export async function generateMetadata({
   params,
 }: ProjectPageProps): Promise<Metadata> {
-  const { id } = await params;
-  const project = mockProjects.find((p) => p.id === id);
+  const { id: slug } = await params;
+  const project = mockProjects.find((p) => p.slug === slug);
 
   if (!project) {
     return {
@@ -36,7 +37,7 @@ export async function generateMetadata({
       description:
         project.description ||
         `Explore our ${project.title} solar installation project.`,
-      url: `https://www.flarize.com/projects/${id}`,
+      url: `${SITE_URL}/projects/${project.slug}`,
       siteName: "Flarize",
       images: project.imageUrl
         ? [
@@ -66,14 +67,24 @@ export async function generateMetadata({
       images: project.imageUrl ? [project.imageUrl] : ["/heroImg.png"],
     },
     alternates: {
-      canonical: `https://www.flarize.com/projects/${id}`,
+      canonical: `${SITE_URL}/projects/${project.slug}`,
     },
   };
 }
 
+// Prerender the descriptive project URLs so they are static pages that
+// next-sitemap can discover. Legacy /projects/<number> URLs are redirected to
+// these by next.config.ts.
+export async function generateStaticParams() {
+  return mockProjects.map((project) => ({ id: project.slug }));
+}
+
+// Only real project slugs render; anything else is a genuine 404.
+export const dynamicParams = false;
+
 export default async function ProjectPage({ params }: ProjectPageProps) {
-  const { id } = await params;
-  const project = mockProjects.find((p) => p.id === id);
+  const { id: slug } = await params;
+  const project = mockProjects.find((p) => p.slug === slug);
 
   if (!project) {
     notFound();

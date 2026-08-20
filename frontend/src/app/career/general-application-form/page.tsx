@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: "Application Form | Careers at Flarize",
     description:
       "Apply for a position at Flarize. Join our team and help build the future of clean energy.",
-    url: "https://www.flarize.com/career/general-application-form",
+    url: "https://flarize.com/career/general-application-form",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Careers at Flarize" },
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/career/general-application-form",
+    canonical: "https://flarize.com/career/general-application-form",
   },
   robots: {
     index: true,

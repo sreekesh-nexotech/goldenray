@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: "Careers | Join Kerala's Fastest Growing Solar Platform",
     description:
       "Build the future of clean energy with Flarize. Explore open positions across engineering, design, sales, and operations.",
-    url: "https://www.flarize.com/career",
+    url: "https://flarize.com/career",
     siteName: "Flarize",
     images: [
       { url: "/heroImg.png", width: 1200, height: 630, alt: "Careers at Flarize" },
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/career",
+    canonical: "https://flarize.com/career",
   },
   robots: {
     index: true,

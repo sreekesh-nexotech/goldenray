@@ -29,7 +29,7 @@ export const metadata: Metadata = {
       "PM Surya Ghar Subsidy Kerala 2025 | Get ₹78,000 Back ",
     description:
       "Claim up to ₹78,000 PM Surya Ghar solar subsidy in Kerala. Flarize handles KSEB paperwork, portal filing & 2–3 day installation. 300+ families served, 8+ years in Kerala.",
-    url: "https://www.flarize.com/subsidy",
+    url: "https://flarize.com/subsidy",
     siteName: "Flarize",
     images: [
       {
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/subsidy",
+    canonical: "https://flarize.com/subsidy",
   },
   robots: {
     index: true,

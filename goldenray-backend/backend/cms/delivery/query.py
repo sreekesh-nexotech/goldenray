@@ -63,6 +63,31 @@ def parse_filters(params):
     return filters, excludes
 
 
+def single_slug_lookup(params):
+    """The slug when the query is a lookup for exactly one — otherwise None.
+
+    Used to decide whether an empty result should be retried against the slug
+    alias table. Deliberately narrow: only an equality match on ``slug`` and no
+    other filter, so a list query that legitimately returns nothing (a category
+    with no published entries, say) never triggers alias resolution.
+    """
+    slug = None
+    for raw_key in params.keys():
+        m = _filter_re.match(raw_key)
+        if not m:
+            continue
+        field, op = m.group("field"), m.group("op")
+        if field != "slug" or op not in ("$eq", "$eqi"):
+            return None  # some other filter is in play — not a single lookup
+        if slug is not None:
+            return None  # more than one slug filter
+        values = params.getlist(raw_key)
+        if len(values) != 1:
+            return None
+        slug = values[0]
+    return slug or None
+
+
 def parse_fields(params):
     """Return the list of requested scalar fields, or None if unrestricted."""
     fields = []

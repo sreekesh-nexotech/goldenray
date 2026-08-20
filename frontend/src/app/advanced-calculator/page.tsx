@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "Solar Savings Calculator for Kerala Homes",
     description:
       "Estimate your solar power cost and savings in Kerala. Use our solar calculator to plan the right system for your home or business.",
-    url: "https://www.flarize.com/advanced-calculator",
+    url: "https://flarize.com/advanced-calculator",
     siteName: "Flarize",
     images: [
       {
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.flarize.com/advanced-calculator",
+    canonical: "https://flarize.com/advanced-calculator",
   },
   robots: {
     index: true,

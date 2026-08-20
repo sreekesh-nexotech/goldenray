@@ -3,6 +3,7 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /admin/
+Disallow: /studio/
 Disallow: /manifest.json
 
 # Googlebot
@@ -50,7 +51,7 @@ User-agent: Applebot
 Allow: /
 
 # Host
-Host: https://www.flarize.com
+Host: https://flarize.com
 
 # Sitemaps
-Sitemap: https://www.flarize.com/sitemap.xml
+Sitemap: https://flarize.com/sitemap.xml

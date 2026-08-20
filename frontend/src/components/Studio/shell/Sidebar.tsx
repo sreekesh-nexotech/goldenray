@@ -107,6 +107,18 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
           </svg>
         ),
       },
+      {
+        key: "career",
+        label: "Career",
+        href: "/studio/careers",
+        icon: (
+          <svg {...iconProps}>
+            <rect x="2.5" y="7" width="19" height="13.5" rx="2.5" />
+            <path d="M8.5 7V5.5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2V7" />
+            <path d="M2.5 12.5h19" />
+          </svg>
+        ),
+      },
     ],
   },
   {

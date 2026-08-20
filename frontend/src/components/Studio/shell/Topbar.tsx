@@ -34,6 +34,7 @@ function crumbsFor(pathname: string): Crumb[] {
     "/studio/collections": "Collections",
     "/studio/entries": "Entries",
     "/studio/enquiries": "Enquiries",
+    "/studio/careers": "Career",
     "/studio/templates": "Templates",
     "/studio/media": "Media library",
     "/studio/taxonomy": "Authors & taxonomy",
