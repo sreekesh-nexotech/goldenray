@@ -106,3 +106,52 @@ export async function submitJobApplication(
     throw error;
   }
 }
+
+/** A stored career application as returned by GET job-applications/. */
+export interface CareerApplication {
+  id: number;
+  position: string;
+
+  full_name: string;
+  email: string;
+  phone: string;
+  location: string;
+  linkedin: string;
+  portfolio_website: string;
+
+  current_company: string;
+  current_role: string;
+  total_experience: string;
+  relevant_experience: string;
+  current_salary: string;
+  expected_salary: string;
+  notice_period: string;
+  heard_about_us: string;
+
+  /** Absolute URL of the uploaded resume (the API serializes with request context). */
+  resume: string | null;
+  /** Absolute URL of the optional portfolio upload. */
+  portfolio_file: string | null;
+
+  declaration_accepted: boolean;
+  /** ISO-8601 UTC timestamp of when the application was submitted. */
+  created_at: string;
+}
+
+/**
+ * Every application submitted through the Careers forms, newest first (the
+ * model orders by `-created_at`). Feeds the Content Studio → Career screen.
+ */
+export async function getCareerApplications(): Promise<CareerApplication[]> {
+  const response = await fetch(`${API_BASE_URL}job-applications/`, {
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  const json = (await response.json()) as CareerApplication[];
+  return Array.isArray(json) ? json : [];
+}

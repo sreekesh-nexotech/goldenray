@@ -112,6 +112,11 @@ urlpatterns = [
     path(
         "job-applications/",
         JobApplicationAPIView.as_view(),
-        name="job-application-create",
+        name="job-application-list-create",
+    ),
+    path(
+        "job-applications/<int:pk>/",
+        JobApplicationAPIView.as_view(),
+        name="job-application-detail",
     ),
 ]
