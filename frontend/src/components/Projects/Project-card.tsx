@@ -13,7 +13,7 @@ type ProjectCardProps = {
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     // Link to the dynamic project detail page
-    <Link href={`projects/${project.id}`} className="block h-full">
+    <Link href={`/projects/${project.slug}`} className="block h-full">
       <div className="rounded-2xl bg-[#F3F3F3] shadow-sm p-4 lg:p-6 overflow-hidden flex flex-col h-full">
         {/* Project Image */}
         <div className="relative w-full h-48 sm:h-64 overflow-hidden">
