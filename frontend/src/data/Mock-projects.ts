@@ -3,6 +3,8 @@
 // mock data for project page
 export type Project = {
   id: string;
+  /** Public URL segment. Ids stay for internal keys only. */
+  slug: string;
   category: 'Residential' | 'Commercial' | 'Industrial';
   title: string;
   cardDescription:string;
@@ -41,6 +43,7 @@ export const mockProjects: Project[] = [
   //1st project
   {
     id: '1',
+    slug: 'jose-vp-vadackkal-alappuzha',
     category: 'Residential',
     title: 'Jose V P -Vadackkal, Alapuzha',
     cardDescription:"For Jose, sustainability was a way of life. Solar was about the future, not just savings.",
@@ -89,6 +92,7 @@ export const mockProjects: Project[] = [
   //2nd project
   {
     id: '2',
+    slug: 'siraj-kp-cherthala-alappuzha',
     category: 'Residential',
     title: 'Siraj K P- Cherthala, Alapuzha',
     cardDescription:"Unpredictable electricity expenses were becoming a constant concern. Solar helped Siraj regain control, month after month.",
@@ -139,6 +143,7 @@ export const mockProjects: Project[] = [
   //3rd project
   {
     id: '3',
+    slug: 'stephen-vc-vattayal-alappuzha',
     category: 'Residential',
     title: 'Stephen V C- Vattayal, Alapuzha',
     cardDescription:"For Stephen and his family, comfort came from consistency. Solar brought that calm back into everyday living.",
@@ -190,6 +195,7 @@ export const mockProjects: Project[] = [
   //4th project
   {
     id: '4',
+    slug: 'usha-viswanathan-thiruvambady-alappuzha',
     category: 'Residential',
     title: 'Ushaviswanathan - Thiruvambady, Alappuzha',
     cardDescription:"A rooftop that offers shade, comfort, and reliable power—without overspending. Solar that quietly improved life, one evening at a time.",

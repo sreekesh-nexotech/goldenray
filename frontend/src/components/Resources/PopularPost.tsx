@@ -20,7 +20,7 @@ export default function PopularPosts({ posts }: PopularPostsProps) {
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         {sortedPosts.map((post) => (
-          <Link href={`/resources/${post.id}`} key={post.id} className="block">
+          <Link href={`/resources/${post.slug}`} key={post.id} className="block">
             <div className="relative h-48">
               <Image
                 src={post.image}

@@ -14,7 +14,7 @@ export default function ResourceHero({ posts }: HeroSectionProps) {
     <section className="container mx-auto px-4 pb-16 xl:px-36">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Main Post */}
-        <Link href={`/resources/${mainPost.id}`} className="block">
+        <Link href={`/resources/${mainPost.slug}`} className="block">
           {/* main image hidden in mobile */}
           <div className="relative h-0 lg:h-96 hidden lg:block ">
             <Image
@@ -49,7 +49,7 @@ export default function ResourceHero({ posts }: HeroSectionProps) {
         <div className="space-y-4">
           {sidePosts.map((post) => (
             <Link
-              href={`/resources/${post.id}`}
+              href={`/resources/${post.slug}`}
               key={post.id}
               className="block"
             >
