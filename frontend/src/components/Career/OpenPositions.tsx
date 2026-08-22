@@ -2,43 +2,10 @@
 
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import { Briefcase, ChevronDown, MapPin, PenTool, Search, Tag, Truck } from "lucide-react";
+import { ChevronDown, MapPin, Search } from "lucide-react";
+import { careerPositions } from "@/data/career-positions";
 
-type Job = {
-  title: string;
-  department: string;
-  location: string;
-  icon: React.ComponentType<{ className?: string }>;
-  href?: string;
-};
-
-const jobs: Job[] = [
-  {
-    title: "Senior Full-Stack Engineer",
-    department: "Engineering",
-    location: "Kochi / Remote",
-    icon: Briefcase,
-  },
-  {
-    title: "UI/UX Designer",
-    department: "Design",
-    location: "Alappuzha",
-    icon: PenTool,
-    href: "/career/ui-ux-designer",
-  },
-  {
-    title: "Field Sales Lead",
-    department: "Sales",
-    location: "Alappuzha",
-    icon: Tag,
-  },
-  {
-    title: "Logistics Coordinator",
-    department: "Operations",
-    location: "Kochi",
-    icon: Truck,
-  },
-];
+const jobs = careerPositions;
 
 const departments = ["All Department", ...Array.from(new Set(jobs.map((j) => j.department)))];
 
@@ -121,11 +88,11 @@ export default function OpenPositions() {
               No positions match your search.
             </p>
           ) : (
-            filteredJobs.map((job, index) => {
+            filteredJobs.map((job) => {
               const Icon = job.icon;
               return (
                 <div
-                  key={index}
+                  key={job.slug}
                   className="bg-[#F4F5F6] rounded-xl px-6 py-5 flex items-center justify-between gap-4"
                 >
                   <div>
@@ -143,21 +110,12 @@ export default function OpenPositions() {
                       </span>
                     </div>
                   </div>
-                  {job.href ? (
-                    <Link
-                      href={job.href}
-                      className="flex-shrink-0 bg-[#F7BA41] hover:bg-yellow-500 transition-colors rounded-lg px-5 py-2.5 text-sm font-semibold text-[#272218] cursor-pointer"
-                    >
-                      View Details
-                    </Link>
-                  ) : (
-                    <button
-                      type="button"
-                      className="flex-shrink-0 bg-[#F7BA41] hover:bg-yellow-500 transition-colors rounded-lg px-5 py-2.5 text-sm font-semibold text-[#272218] cursor-pointer"
-                    >
-                      View Details
-                    </button>
-                  )}
+                  <Link
+                    href={`/career/${job.slug}`}
+                    className="flex-shrink-0 bg-[#F7BA41] hover:bg-yellow-500 transition-colors rounded-lg px-5 py-2.5 text-sm font-semibold text-[#272218] cursor-pointer"
+                  >
+                    View Details
+                  </Link>
                 </div>
               );
             })

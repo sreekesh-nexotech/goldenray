@@ -278,7 +278,14 @@ const INITIAL: FormState = {
   heard_about_us: "",
 };
 
-export default function ApplicationForm() {
+type ApplicationFormProps = {
+  /** Job title sent along with the application. */
+  position?: string;
+};
+
+export default function ApplicationForm({
+  position = "UI/UX Designer",
+}: ApplicationFormProps) {
   const [form, setForm] = useState<FormState>(INITIAL);
   const [resume, setResume] = useState<File | null>(null);
   const [portfolioFile, setPortfolioFile] = useState<File | null>(null);
@@ -389,7 +396,7 @@ export default function ApplicationForm() {
     setSubmitting(true);
     try {
       await submitJobApplication({
-        position: "UI/UX Designer",
+        position,
         full_name: form.full_name.trim(),
         email: form.email.trim().toLowerCase(),
         phone: form.phone.trim().replace(/\s+/g, ""),

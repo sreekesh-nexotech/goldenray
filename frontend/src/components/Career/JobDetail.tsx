@@ -1,9 +1,5 @@
 import React from "react";
-
-type BulletGroup = {
-  left: string[];
-  right: string[];
-};
+import type { BulletGroup, CareerPosition } from "@/data/career-positions";
 
 function BulletList({ items }: { items: string[] }) {
   return (
@@ -47,96 +43,52 @@ function TwoColBullets({ left, right }: BulletGroup) {
   );
 }
 
-const responsibilities: BulletGroup = {
-  left: [
-    "Create user flows, wireframes, and prototypes",
-    "Conduct UX research and competitor analysis",
-    "Collaborate with developers during implementation",
-    "Present design solutions and rationale to stakeholders",
-  ],
-  right: [
-    "Design responsive web and mobile experiences",
-    "Maintain and improve design systems",
-    "Translate business requirements into intuitive user experiences",
-  ],
-};
-
-const requirements: BulletGroup = {
-  left: [
-    "1–3 years of UI/UX or Product Design experience",
-    "Understanding of UX principles and user-centered design",
-    "Basic understanding of front-end technologies is a plus",
-  ],
-  right: [
-    "Strong proficiency in Figma",
-    "Experience designing responsive web and mobile interfaces",
-    "Strong communication and problem-solving skills",
-  ],
-};
-
-const niceToHave: BulletGroup = {
-  left: ["Experience with Design Systems", "Basic HTML/CSS understanding"],
-  right: ["Framer knowledge", "SaaS, Dashboard, or Marketplace experience"],
-};
-
-const whatYoullGet: BulletGroup = {
-  left: [
-    "Work directly with decision-makers",
-    "Fast learning environment",
-    "Career growth as the company expands",
-  ],
-  right: [
-    "Ownership of real products",
-    "SaaS, Dashboard, or Marketplace experience",
-  ],
-};
-
-export default function JobDetail() {
+export default function JobDetail({ position }: { position: CareerPosition }) {
   return (
     <section className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl md:text-5xl font-semibold leading-tight text-[#123532] mb-10">
-          UI/UX Designer
+          {position.title}
         </h1>
 
         <Section title="Role Overview">
-          <p className="text-sm md:text-base font-normal leading-relaxed text-[#444444] mb-4 max-w-4xl">
-            We are looking for a UI/UX Designer who enjoys solving real user
-            problems and designing products that balance customer needs with
-            business goals.
-          </p>
-          <p className="text-sm md:text-base font-normal leading-relaxed text-[#444444] max-w-4xl">
-            You will work closely with founders, developers, and stakeholders to
-            create user-friendly experiences across websites, mobile
-            applications, dashboards, and internal platforms.
-          </p>
+          {position.overview.map((paragraph, index) => (
+            <p
+              key={index}
+              className={`text-sm md:text-base font-normal leading-relaxed text-[#444444] max-w-4xl ${
+                index < position.overview.length - 1 ? "mb-4" : ""
+              }`}
+            >
+              {paragraph}
+            </p>
+          ))}
         </Section>
 
         <Section title="Responsibilities">
-          <TwoColBullets {...responsibilities} />
+          <TwoColBullets {...position.responsibilities} />
         </Section>
 
         <Section title="Requirements">
-          <TwoColBullets {...requirements} />
+          <TwoColBullets {...position.requirements} />
         </Section>
 
         <Section title="Nice to Have">
-          <TwoColBullets {...niceToHave} />
+          <TwoColBullets {...position.niceToHave} />
         </Section>
 
         <Section title="What You'll Get">
-          <TwoColBullets {...whatYoullGet} />
+          <TwoColBullets {...position.whatYoullGet} />
         </Section>
 
         <Section title="Location">
           <p className="text-sm md:text-base font-normal leading-relaxed text-[#444444]">
-            Kochi, Kerala / Hybrid (based on role)
+            {position.locationDetail}
           </p>
         </Section>
 
         <Section title="Employment Type">
           <p className="text-sm md:text-base font-normal leading-relaxed text-[#444444]">
-            Full Time
+            {position.employmentType}
           </p>
         </Section>
       </div>
