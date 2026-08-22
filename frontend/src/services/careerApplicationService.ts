@@ -1,5 +1,6 @@
 // src/services/careerApplicationService.ts
 import { API_BASE_URL } from "../config";
+import { getStudioAccessToken, refreshStudioAccessToken } from "./studioService";
 
 export interface JobApplicationData {
   // Which opening this application is for. Defaults to "UI/UX Designer".
@@ -128,10 +129,19 @@ export interface CareerApplication {
   notice_period: string;
   heard_about_us: string;
 
-  /** Absolute URL of the uploaded resume (the API serializes with request context). */
+  /**
+   * Raw MEDIA_URL location of the upload. Only reachable while Django runs with
+   * DEBUG on — in production /media/ is not proxied to the backend, so this
+   * 404s. Prefer `resume_download_url`.
+   */
   resume: string | null;
-  /** Absolute URL of the optional portfolio upload. */
+  /** Raw MEDIA_URL location of the optional portfolio upload. See `resume`. */
   portfolio_file: string | null;
+
+  /** /api/ download route that streams the resume as an attachment. */
+  resume_download_url: string | null;
+  /** /api/ download route for the optional portfolio file. */
+  portfolio_download_url: string | null;
 
   declaration_accepted: boolean;
   /** ISO-8601 UTC timestamp of when the application was submitted. */
@@ -154,4 +164,37 @@ export async function getCareerApplications(): Promise<CareerApplication[]> {
 
   const json = (await response.json()) as CareerApplication[];
   return Array.isArray(json) ? json : [];
+}
+
+/**
+ * Permanently remove an application and its uploaded files.
+ *
+ * The backend gates DELETE on a Content Studio admin/editor token (verified
+ * with the key shared with the CMS), so the same sign-in that opened the Studio
+ * authorises this. A 401 gets one refresh-and-retry, matching emiConfigService.
+ */
+export async function deleteCareerApplication(id: number): Promise<void> {
+  const send = (token: string | null) =>
+    fetch(`${API_BASE_URL}job-applications/${id}/`, {
+      method: "DELETE",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    });
+
+  let response = await send(getStudioAccessToken());
+  if (response.status === 401) {
+    const fresh = await refreshStudioAccessToken();
+    response = await send(fresh);
+  }
+
+  if (response.ok || response.status === 404) return; // 404 = already gone
+
+  let detail = `Request failed (${response.status})`;
+  try {
+    const data = await response.json();
+    if (typeof data?.detail === "string") detail = data.detail;
+    else if (typeof data?.error === "string") detail = data.error;
+  } catch {
+    /* non-JSON body — keep the generic message */
+  }
+  throw new Error(detail);
 }

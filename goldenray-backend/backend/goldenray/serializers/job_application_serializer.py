@@ -1,5 +1,6 @@
 import os
 import re
+from django.urls import reverse
 from rest_framework import serializers
 from ..models.job_application import JobApplication
 
@@ -38,6 +39,13 @@ class JobApplicationSerializer(serializers.ModelSerializer):
     resume = serializers.FileField(required=True)
     portfolio_file = serializers.FileField(required=False, allow_null=True)
 
+    # The raw `resume` / `portfolio_file` URLs point at MEDIA_URL, which is only
+    # served while DEBUG is on — in production /media/ hits the Next.js app and
+    # 404s. These go through /api/, which the edge does proxy to Django, and
+    # arrive as a proper attachment. The Studio links to these.
+    resume_download_url = serializers.SerializerMethodField()
+    portfolio_download_url = serializers.SerializerMethodField()
+
     declaration_accepted = serializers.BooleanField(required=True)
 
     # Honeypot: must stay empty. Bots tend to autofill any visible-looking field.
@@ -66,11 +74,18 @@ class JobApplicationSerializer(serializers.ModelSerializer):
             "heard_about_us",
             "resume",
             "portfolio_file",
+            "resume_download_url",
+            "portfolio_download_url",
             "declaration_accepted",
             "created_at",
             "website",
         ]
-        read_only_fields = ["id", "created_at"]
+        read_only_fields = [
+            "id",
+            "created_at",
+            "resume_download_url",
+            "portfolio_download_url",
+        ]
         extra_kwargs = {
             "position": {"required": False},
             "current_company": {"required": False, "allow_blank": True},
@@ -82,6 +97,25 @@ class JobApplicationSerializer(serializers.ModelSerializer):
             "notice_period": {"required": False, "allow_blank": True},
             "heard_about_us": {"required": False, "allow_blank": True},
         }
+
+    def _download_url(self, instance, kind):
+        """Absolute /api/ download URL, or None when there is no file."""
+        if not instance.pk:
+            return None
+        field = instance.resume if kind == "resume" else instance.portfolio_file
+        if not field:
+            return None
+        path = reverse(
+            "job-application-download", kwargs={"pk": instance.pk, "kind": kind}
+        )
+        request = self.context.get("request")
+        return request.build_absolute_uri(path) if request else path
+
+    def get_resume_download_url(self, obj):
+        return self._download_url(obj, "resume")
+
+    def get_portfolio_download_url(self, obj):
+        return self._download_url(obj, "portfolio")
 
     def validate_full_name(self, value):
         value = value.strip()

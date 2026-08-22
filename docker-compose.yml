@@ -37,6 +37,10 @@ services:
     # at the containerised DB while everything else comes from the mounted file.
     volumes:
       - ./goldenray-backend/.env:/app/.env:ro
+      # Uploaded career resumes / portfolios (MEDIA_ROOT = /app/media). Without
+      # this they live only in the container layer and every `up --build` throws
+      # away every resume already submitted.
+      - backend_media:/app/media
     environment:
       DB_HOST: db
       DB_PORT: "5432"
@@ -129,3 +133,4 @@ services:
 volumes:
   pgdata:
   cms_uploads:
+  backend_media:

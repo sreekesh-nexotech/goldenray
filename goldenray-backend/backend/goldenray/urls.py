@@ -30,7 +30,10 @@ from .views.emicalculator import (
     EmiSystemSizeViewSet,
 )
 from .views.warranty_service_request_views import WarrantyServiceRequestAPIView
-from .views.job_application_views import JobApplicationAPIView
+from .views.job_application_views import (
+    JobApplicationAPIView,
+    JobApplicationFileDownloadView,
+)
 
 # Authoring routes for the EMI calculator config (Content Studio → /studio/emi-calculator).
 emi_admin_router = DefaultRouter()
@@ -118,5 +121,12 @@ urlpatterns = [
         "job-applications/<int:pk>/",
         JobApplicationAPIView.as_view(),
         name="job-application-detail",
+    ),
+    # Resume / portfolio downloads. MEDIA_URL isn't served in production, so
+    # the files come back through the API instead — see the view's docstring.
+    path(
+        "job-applications/<int:pk>/download/<str:kind>/",
+        JobApplicationFileDownloadView.as_view(),
+        name="job-application-download",
     ),
 ]

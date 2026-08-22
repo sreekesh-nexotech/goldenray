@@ -104,3 +104,15 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return f"{self.full_name} - {self.position} ({self.phone})"
+
+    def delete(self, *args, **kwargs):
+        """Drop the uploaded files along with the row.
+
+        Django deliberately leaves files behind on delete; for applications the
+        Studio removes on purpose that just leaves unreachable resumes sitting
+        in media. `save=False` because the row is about to disappear anyway.
+        """
+        for field in (self.resume, self.portfolio_file):
+            if field:
+                field.delete(save=False)
+        return super().delete(*args, **kwargs)

@@ -10,10 +10,14 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useStudio } from "../shared/StudioContext";
-import { PageHeader, TipBanner } from "../shared/primitives";
-import { DropdownMenu, Modal, ModalTitle, type MenuItem } from "../shared/overlays";
+import { DangerButton, PageHeader, TipBanner } from "../shared/primitives";
+import { ConfirmDialog, DropdownMenu, Modal, ModalTitle, type MenuItem } from "../shared/overlays";
 import { humanTime, studioColors, studioFonts } from "../shared/format";
-import { getCareerApplications, type CareerApplication } from "@/services/careerApplicationService";
+import {
+  deleteCareerApplication,
+  getCareerApplications,
+  type CareerApplication,
+} from "@/services/careerApplicationService";
 
 /* -------------------------------------------------------------------------- */
 /*  Sorting + date helpers                                                     */
@@ -56,6 +60,20 @@ function startOfToday(): number {
 
 type Row = CareerApplication & { ts: number };
 
+/**
+ * Where the resume / portfolio actually download from.
+ *
+ * `resume_download_url` is an /api/ route that streams the file as an
+ * attachment; the plain `resume` field is a MEDIA_URL path that only resolves
+ * while the backend runs with DEBUG on. Prefer the former, fall back to the
+ * latter so a backend that predates the download route still works locally.
+ */
+function fileHref(row: Row, kind: "resume" | "portfolio"): string | null {
+  return kind === "resume"
+    ? row.resume_download_url || row.resume
+    : row.portfolio_download_url || row.portfolio_file;
+}
+
 export default function CareerScreen() {
   const { tips, toast } = useStudio();
 
@@ -71,6 +89,8 @@ export default function CareerScreen() {
   const [page, setPage] = useState(1);
   const [menuAt, setMenuAt] = useState<{ top: number; left: number } | null>(null);
   const [open, setOpen] = useState<Row | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<Row | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const sortBtn = useRef<HTMLButtonElement>(null);
 
@@ -122,6 +142,25 @@ export default function CareerScreen() {
     setRefreshing(false);
     if (fresh) toast(`${fresh.length} ${fresh.length === 1 ? "application" : "applications"} loaded`);
     else toast("Couldn’t refresh applications", "error");
+  };
+
+  const doDelete = async () => {
+    const target = confirmDelete;
+    if (!target) return;
+    setDeleting(true);
+    try {
+      await deleteCareerApplication(target.id);
+      // Drop it locally rather than refetching — the list is unpaginated and a
+      // full reload would flash the whole table for a single-row change.
+      setRows((prev) => (prev ? prev.filter((r) => r.id !== target.id) : prev));
+      setOpen((prev) => (prev?.id === target.id ? null : prev));
+      setConfirmDelete(null);
+      toast(`Application from ${target.full_name?.trim() || `#${target.id}`} deleted`);
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Couldn’t delete the application", "error");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   /* --- derived data -------------------------------------------------------- */
@@ -350,6 +389,9 @@ export default function CareerScreen() {
                       {h}
                     </th>
                   ))}
+                  <th style={{ ...headStyle, textAlign: "right" }}>
+                    <span className="sr-only">Actions</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -396,19 +438,42 @@ export default function CareerScreen() {
                         {valid ? humanTime(r.ts, now) : "—"}
                       </td>
                       <td style={{ ...cellStyle, whiteSpace: "nowrap" }}>
-                        {r.resume ? (
+                        {fileHref(r, "resume") ? (
                           <a
-                            href={r.resume}
+                            href={fileHref(r, "resume")!}
+                            // The API sends Content-Disposition: attachment, so this
+                            // downloads rather than navigating. _blank keeps the old
+                            // MEDIA_URL fallback from replacing the Studio page.
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
                             style={{ fontSize: 12.5, fontWeight: 600, color: studioColors.teal, textDecoration: "none" }}
                           >
-                            Download ↗
+                            Download ↓
                           </a>
                         ) : (
                           <span style={{ fontSize: 12.5, color: studioColors.faintGray }}>—</span>
                         )}
+                      </td>
+                      <td style={{ ...cellStyle, whiteSpace: "nowrap", textAlign: "right" }}>
+                        <button
+                          type="button"
+                          aria-label={`Delete application from ${r.full_name?.trim() || `#${r.id}`}`}
+                          title="Delete application"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setConfirmDelete(r);
+                          }}
+                          className="inline-flex items-center justify-center hover:bg-[rgba(185,28,28,0.08)]"
+                          style={rowDeleteStyle}
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4.5a1.5 1.5 0 0 1 1.5-1.5h5A1.5 1.5 0 0 1 16 4.5V6" />
+                            <path d="M6 6v13.5A1.5 1.5 0 0 0 7.5 21h9a1.5 1.5 0 0 0 1.5-1.5V6" />
+                            <path d="M10 11v6M14 11v6" />
+                          </svg>
+                        </button>
                       </td>
                     </tr>
                   );
@@ -484,7 +549,31 @@ export default function CareerScreen() {
         items={menuItems}
       />
 
-      <ApplicationDetail row={open} onClose={() => setOpen(null)} />
+      <ApplicationDetail
+        row={open}
+        onClose={() => setOpen(null)}
+        onDelete={(row) => setConfirmDelete(row)}
+      />
+
+      <ConfirmDialog
+        open={confirmDelete !== null}
+        title="Delete application?"
+        busy={deleting}
+        busyLabel="Deleting…"
+        onCancel={() => !deleting && setConfirmDelete(null)}
+        onConfirm={() => void doDelete()}
+      >
+        {confirmDelete && (
+          <>
+            The application from{" "}
+            <b style={{ color: studioColors.tealDeep }}>
+              {confirmDelete.full_name?.trim() || `#${confirmDelete.id}`}
+            </b>{" "}
+            for {confirmDelete.position} will be removed permanently, along with the uploaded resume
+            and portfolio. This can&#8217;t be undone.
+          </>
+        )}
+      </ConfirmDialog>
     </section>
   );
 }
@@ -493,7 +582,15 @@ export default function CareerScreen() {
 /*  Detail modal                                                               */
 /* -------------------------------------------------------------------------- */
 
-function ApplicationDetail({ row, onClose }: { row: Row | null; onClose: () => void }) {
+function ApplicationDetail({
+  row,
+  onClose,
+  onDelete,
+}: {
+  row: Row | null;
+  onClose: () => void;
+  onDelete: (row: Row) => void;
+}) {
   const valid = row !== null && !Number.isNaN(row.ts);
   const d = valid ? new Date(row!.ts) : null;
 
@@ -561,16 +658,16 @@ function ApplicationDetail({ row, onClose }: { row: Row | null; onClose: () => v
 
             <DetailSection title="Attachments">
               <DetailRow label="Resume">
-                {row.resume ? (
-                  <a href={row.resume} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                    Open / download ↗
+                {fileHref(row, "resume") ? (
+                  <a href={fileHref(row, "resume")!} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                    Download ↓
                   </a>
                 ) : null}
               </DetailRow>
               <DetailRow label="Portfolio file">
-                {row.portfolio_file ? (
-                  <a href={row.portfolio_file} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                    Open / download ↗
+                {fileHref(row, "portfolio") ? (
+                  <a href={fileHref(row, "portfolio")!} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                    Download ↓
                   </a>
                 ) : null}
               </DetailRow>
@@ -578,6 +675,13 @@ function ApplicationDetail({ row, onClose }: { row: Row | null; onClose: () => v
                 {row.declaration_accepted ? "Accepted" : "Not accepted"}
               </DetailRow>
             </DetailSection>
+          </div>
+
+          <div
+            className="flex justify-end"
+            style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${studioColors.ring}` }}
+          >
+            <DangerButton onClick={() => onDelete(row)}>Delete application</DangerButton>
           </div>
         </>
       )}
@@ -740,6 +844,18 @@ const closeButtonStyle: CSSProperties = {
   fontSize: 12,
   cursor: "pointer",
   lineHeight: 1,
+};
+
+const rowDeleteStyle: CSSProperties = {
+  height: 30,
+  width: 30,
+  borderRadius: 9,
+  border: "none",
+  background: "transparent",
+  boxShadow: `inset 0 0 0 1px ${studioColors.ring}`,
+  color: studioColors.danger,
+  cursor: "pointer",
+  transition: "background .12s",
 };
 
 const pagerStyle: CSSProperties = {
