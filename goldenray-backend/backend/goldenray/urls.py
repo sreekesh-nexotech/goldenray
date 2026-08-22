@@ -1,4 +1,5 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from .views.battery_views import BatteryAPIView
 from .views.device_type_views import DeviceTypeAPIView
 from .views.wattage_views import WattageAPIView
@@ -19,9 +20,24 @@ from .views.metadata_views import MetadataAPIView
 from .views.room_size_views import RoomSizeAPIView
 from .views.customer_installation_views import CustomerInstallationAPIView, InstallationStatsByPincodeAPIView
 from .views.affiliate_application_views import AffiliateApplicationAPIView
-from .views.emicalculator import EMICalculatorAPIView
+from .views.emicalculator import (
+    EMICalculatorAPIView,
+    EMICalculatorConfigAPIView,
+    EmiBankViewSet,
+    EmiCalculatorSettingsAPIView,
+    EmiInterestRateRuleViewSet,
+    EmiSubsidyRuleViewSet,
+    EmiSystemSizeViewSet,
+)
 from .views.warranty_service_request_views import WarrantyServiceRequestAPIView
 from .views.job_application_views import JobApplicationAPIView
+
+# Authoring routes for the EMI calculator config (Content Studio → /studio/emi-calculator).
+emi_admin_router = DefaultRouter()
+emi_admin_router.register("system-sizes", EmiSystemSizeViewSet, basename="emi-system-size")
+emi_admin_router.register("subsidies", EmiSubsidyRuleViewSet, basename="emi-subsidy-rule")
+emi_admin_router.register("interest-rates", EmiInterestRateRuleViewSet, basename="emi-interest-rate-rule")
+emi_admin_router.register("banks", EmiBankViewSet, basename="emi-bank")
 
 urlpatterns = [
     # Batteries
@@ -80,8 +96,12 @@ urlpatterns = [
     path("installation-stats/", InstallationStatsByPincodeAPIView.as_view(), name="installation-stats-by-pincode"),
     # Affiliate Applications
     path("affiliate-applications/", AffiliateApplicationAPIView.as_view(), name="affiliate-application-create"),
-    # EMI Calculator
+    # EMI Calculator (public)
     path("emi-calculator/", EMICalculatorAPIView.as_view(), name="emi-calculator"),
+    path("emi-calculator/config/", EMICalculatorConfigAPIView.as_view(), name="emi-calculator-config"),
+    # EMI Calculator configuration (Content Studio authoring)
+    path("emi-admin/settings/", EmiCalculatorSettingsAPIView.as_view(), name="emi-admin-settings"),
+    path("emi-admin/", include(emi_admin_router.urls)),
     # Warranty / Support Service Requests
     path(
         "warranty-service-requests/",
@@ -92,6 +112,11 @@ urlpatterns = [
     path(
         "job-applications/",
         JobApplicationAPIView.as_view(),
-        name="job-application-create",
+        name="job-application-list-create",
+    ),
+    path(
+        "job-applications/<int:pk>/",
+        JobApplicationAPIView.as_view(),
+        name="job-application-detail",
     ),
 ]

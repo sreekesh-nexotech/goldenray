@@ -94,6 +94,53 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
     ],
   },
   {
+    title: "Leads",
+    items: [
+      {
+        key: "enq",
+        label: "Enquiries",
+        href: "/studio/enquiries",
+        icon: (
+          <svg {...iconProps}>
+            <rect x="2.5" y="4.5" width="19" height="15" rx="2.5" />
+            <path d="m3 7 9 6 9-6" />
+          </svg>
+        ),
+      },
+      {
+        key: "career",
+        label: "Career",
+        href: "/studio/careers",
+        icon: (
+          <svg {...iconProps}>
+            <rect x="2.5" y="7" width="19" height="13.5" rx="2.5" />
+            <path d="M8.5 7V5.5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2V7" />
+            <path d="M2.5 12.5h19" />
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
+    title: "Calculators",
+    items: [
+      {
+        key: "emi",
+        label: "EMI Calculator",
+        href: "/studio/emi-calculator",
+        icon: (
+          <svg {...iconProps}>
+            <rect x="4.5" y="2.5" width="15" height="19" rx="2.5" />
+            <path d="M8 6.5h8" />
+            <path d="M8.5 11h.01M12 11h.01M15.5 11h.01" />
+            <path d="M8.5 14.5h.01M12 14.5h.01M15.5 14.5h3.5" />
+            <path d="M8.5 18h.01M12 18h.01" />
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
     title: "Structure",
     items: [
       {

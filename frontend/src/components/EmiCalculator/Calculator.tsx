@@ -1,110 +1,209 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { TrendingUp,  Minus, Plus, Clock, PiggyBank,  Zap,  Award, ArrowRight, Check } from "lucide-react";
+// src/components/EmiCalculator/Calculator.tsx
+//
+// The public EMI calculator. Every number shown here — system prices, subsidy,
+// the 90% loan, interest-rate policy, EMI and the daily amount — is computed by
+// the backend from Content Studio settings (/studio/emi-calculator). This
+// component holds only the customer's selections; it never does the arithmetic
+// itself, which is what used to let the UI and the API disagree.
+
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { TrendingUp, Minus, Plus, Clock, PiggyBank, Zap, Award, ArrowRight, Check } from "lucide-react";
 import LinkingButton from "../ui/LinkingButton";
-import { calculateEMI, EMICalculatorResponse } from "@/services/emiCalculator";
-
-const SUBSIDY = 78000;
-const PANEL_LIFE = 25;
-
-const SYSTEM_SIZES = [
-  { label: "3kW", displayPrice: 80000, loanDefault: 107000, monthlyBill: 3000 },
-  { label: "5kW", displayPrice: 150000, loanDefault: 150000, monthlyBill: 5000 },
-  { label: "7kW", displayPrice: 280000, loanDefault: 280000, monthlyBill: 7000 },
-  { label: "10kW", displayPrice: 500000, loanDefault: 422000, monthlyBill: 10000 },
-];
-
-const LOAN_MIN = 50000;
-const LOAN_MAX = 600000;
-const RATE_MIN = 5.65;
-const RATE_MAX = 18;
-const TENURE_MIN = 1;
-const TENURE_MAX = 10;
-
+import {
+  calculateEMI,
+  getEMIConfig,
+  type EMIBank,
+  type EMICalculatorResponse,
+  type EMIConfigResponse,
+} from "@/services/emiCalculator";
 
 function fmt(n: number) {
   return Math.round(Math.abs(n)).toLocaleString("en-IN");
 }
 
 function pct(val: number, min: number, max: number) {
+  if (max <= min) return 0;
   return Math.min(100, Math.max(0, ((val - min) / (max - min)) * 100));
 }
 
 function fmtPrice(p: number) {
   if (p >= 100000) return `₹${(p / 100000).toFixed(p % 100000 === 0 ? 0 : 1)}L`;
-  return `₹${p / 1000}k`;
+  return `₹${Math.round(p / 1000)}k`;
+}
+
+/** The bank shown as "Best Match" — the flagged one, else the cheapest. */
+function bestMatch(banks: EMIBank[]): EMIBank | null {
+  if (!banks.length) return null;
+  return (
+    banks.find((b) => b.is_recommended) ??
+    [...banks].sort((a, b) => Number(a.interest_rate) - Number(b.interest_rate))[0]
+  );
+}
+
+function approvalText(bank: EMIBank): string {
+  if (!bank.approval_max_days) return "";
+  const range =
+    bank.approval_min_days && bank.approval_min_days !== bank.approval_max_days
+      ? `${bank.approval_min_days}–${bank.approval_max_days}`
+      : `${bank.approval_max_days}`;
+  return ` · Approval in ${range} days`;
 }
 
 export default function Calculator() {
-  const [sizeIdx, setSizeIdx] = useState(0);
-  const [loanAmount, setLoanAmount] = useState(107000);
-  const [rate, setRate] = useState(7);
+  const [config, setConfig] = useState<EMIConfigResponse | null>(null);
+  const [configError, setConfigError] = useState<string | null>(null);
+
+  // Customer selections. `null` overrides mean "use whatever the backend
+  // computes" — that is how the loan resets to 90% when the size or the
+  // subsidy toggle changes, instead of being nudged by hand.
+  const [sizeId, setSizeId] = useState<number | null>(null);
   const [tenure, setTenure] = useState(5);
   const [subsidyOn, setSubsidyOn] = useState(true);
-  const [apiData, setApiData] = useState<EMICalculatorResponse | null>(null);
+  const [loanOverride, setLoanOverride] = useState<number | null>(null);
+  const [rateOverride, setRateOverride] = useState<number | null>(null);
+
+  const [data, setData] = useState<EMICalculatorResponse | null>(null);
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
-  const { monthlyBill } = SYSTEM_SIZES[sizeIdx];
-
-  // Fetch EMI calculation from API
+  /* ---- config: sizes, sliders bounds and the bank list ---- */
   useEffect(() => {
-    const fetchEMIData = async () => {
-      setApiLoading(true);
-      setApiError(null);
+    let cancelled = false;
+    (async () => {
       try {
-        const systemSize = SYSTEM_SIZES[sizeIdx];
-        const response = await calculateEMI({
-          power_capacity: parseFloat(systemSize.label.replace('kW', '')),
-          property_type: 'Residential',
-          tenure_years: tenure,
-          interest_rate: rate,
-          principal: loanAmount,
-          apply_subsidy: subsidyOn,
-        });
-        setApiData(response);
-      } catch (error) {
-        console.error('Failed to fetch EMI calculation:', error);
-        setApiError(error instanceof Error ? error.message : 'Failed to calculate EMI');
-      } finally {
-        setApiLoading(false);
+        const cfg = await getEMIConfig();
+        if (cancelled) return;
+        setConfig(cfg);
+        setSizeId(cfg.system_sizes[0]?.id ?? null);
+        setTenure(cfg.settings.tenure_default_years);
+      } catch (err) {
+        if (cancelled) return;
+        console.error("Failed to load EMI calculator config:", err);
+        setConfigError("Could not load calculator settings. Please refresh.");
       }
+    })();
+    return () => {
+      cancelled = true;
     };
+  }, []);
 
-    fetchEMIData();
-  }, [sizeIdx, loanAmount, rate, tenure, subsidyOn]);
+  const settings = config?.settings ?? null;
+  const sizes = useMemo(() => config?.system_sizes ?? [], [config]);
+  const selectedSize = useMemo(
+    () => sizes.find((s) => s.id === sizeId) ?? null,
+    [sizes, sizeId]
+  );
 
-  const emi = apiData?.emi_per_month ?? 0;
-  const totalPaid = apiData?.total_payment ?? 0;
-  const totalInterest = apiData?.total_interest ?? 0;
+  /* ---- calculation: re-run on every selection change ---- */
+  // Slider drags fire continuously, so the request is debounced. A request id
+  // guards against a slow earlier response landing after a newer one.
+  const requestSeq = useRef(0);
+
+  useEffect(() => {
+    if (sizeId === null) return;
+    const seq = ++requestSeq.current;
+    const timer = setTimeout(async () => {
+      setApiLoading(true);
+      try {
+        const response = await calculateEMI({
+          size_id: sizeId,
+          tenure_years: tenure,
+          apply_subsidy: subsidyOn,
+          ...(loanOverride !== null ? { loan_amount: loanOverride } : {}),
+          ...(rateOverride !== null ? { interest_rate: rateOverride } : {}),
+        });
+        if (seq !== requestSeq.current) return; // superseded
+        setData(response);
+        setApiError(null);
+      } catch (err) {
+        if (seq !== requestSeq.current) return;
+        console.error("Failed to calculate EMI:", err);
+        setApiError(err instanceof Error ? err.message : "Failed to calculate EMI");
+      } finally {
+        if (seq === requestSeq.current) setApiLoading(false);
+      }
+    }, 220);
+    return () => clearTimeout(timer);
+  }, [sizeId, tenure, subsidyOn, loanOverride, rateOverride]);
+
+  /* ---- values shown: backend result first, selection as fallback ---- */
+  const emi = data?.result.emi_per_month ?? 0;
+  const dailyAmount = data?.result.daily_amount ?? 0;
+  const totalPaid = data?.result.total_payment ?? 0;
+  const totalInterest = data?.result.total_interest ?? 0;
+  const subsidyAmount = data?.subsidy.amount ?? 0;
+  const systemCost = data?.system.system_cost ?? Number(selectedSize?.system_cost ?? 0);
+  const upfront = data?.loan.upfront_amount ?? 0;
+
+  // While a debounced call is in flight the slider must still track the
+  // customer's thumb, so the override wins over the last server value.
+  const loanAmount = loanOverride ?? data?.loan.amount ?? 0;
+  const rate = rateOverride ?? data?.interest.rate ?? 0;
+  const rateLocked = data?.interest.is_locked ?? false;
+  const rateMin = data?.interest.min_rate ?? 0;
+
+  const loanMin = Number(settings?.loan_amount_min ?? 50000);
+  const loanMax = Number(settings?.loan_amount_max ?? 600000);
+  const loanStep = Number(settings?.loan_step ?? 5000);
+  const rateMax = Number(settings?.rate_max ?? 18);
+  const tenureMin = settings?.tenure_min_years ?? 1;
+  const tenureMax = settings?.tenure_max_years ?? 10;
+  const panelLife = settings?.panel_life_years ?? 25;
+
+  const monthlyBill = data?.system.monthly_bill_reference ?? 0;
+  const monthlySavings = monthlyBill - emi;
 
   const breakEvenMonths = monthlyBill > 0 ? loanAmount / monthlyBill : null;
   const breakEvenYears = breakEvenMonths ? (breakEvenMonths / 12).toFixed(1) : null;
   const remainingYears = breakEvenMonths
-    ? Math.max(0, PANEL_LIFE - breakEvenMonths / 12)
-    : PANEL_LIFE;
+    ? Math.max(0, panelLife - breakEvenMonths / 12)
+    : panelLife;
   const savingsAfterBreakEven = monthlyBill * 12 * Math.round(remainingYears);
 
-  const monthlySavings = monthlyBill - emi;
+  // The electricity bill bar is the fixed reference for the selected system
+  // size; only the EMI bar moves as the EMI changes.
+  const emiBarWidth = monthlyBill > 0 ? Math.min(100, (emi / monthlyBill) * 100) : 0;
 
-  const maxBar = Math.max(emi, monthlyBill) * 1.05;
+  const topBank = useMemo(() => bestMatch(config?.banks ?? []), [config]);
 
-  function handleSizeChange(i: number) {
-    setSizeIdx(i);
-    const base = SYSTEM_SIZES[i].loanDefault;
-    setLoanAmount(subsidyOn ? base : Math.min(LOAN_MAX, base + SUBSIDY));
+  /* ---- handlers ---- */
+  // Changing the system size or the subsidy re-derives the loan and the rate
+  // from policy rather than carrying the previous selection across.
+  const handleSizeChange = useCallback((id: number) => {
+    setSizeId(id);
+    setLoanOverride(null);
+    setRateOverride(null);
+  }, []);
+
+  const handleSubsidyToggle = useCallback(() => {
+    setSubsidyOn((prev) => !prev);
+    setLoanOverride(null);
+  }, []);
+
+  const nudgeLoan = (delta: number) =>
+    setLoanOverride(Math.min(loanMax, Math.max(loanMin, loanAmount + delta)));
+
+  const nudgeRate = (delta: number) =>
+    setRateOverride(
+      Math.min(rateMax, Math.max(rateMin, Math.round((rate + delta) * 100) / 100))
+    );
+
+  if (configError) {
+    return (
+      <section id="calculator" className="container mx-auto px-4 py-20 max-w-7xl text-center">
+        <p className="text-base text-[#DC2626]">{configError}</p>
+      </section>
+    );
   }
 
-  function handleSubsidyToggle() {
-    setSubsidyOn((prev) => {
-      if (!prev) {
-        setLoanAmount((a) => Math.max(LOAN_MIN, a - SUBSIDY));
-      } else {
-        setLoanAmount((a) => Math.min(LOAN_MAX, a + SUBSIDY));
-      }
-      return !prev;
-    });
+  if (!config || !selectedSize) {
+    return (
+      <section id="calculator" className="container mx-auto px-4 py-20 max-w-7xl text-center">
+        <p className="text-base text-[#4B5563] animate-pulse">Loading calculator…</p>
+      </section>
+    );
   }
 
   return (
@@ -119,8 +218,8 @@ export default function Calculator() {
         </h2>
         <p className="text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
           Adjust system size, tenure, and rate. Toggle the PM Surya Ghar
-          subsidy to see how ₹78,000 government support reduces your EMI from
-          day one.
+          subsidy to see how ₹{fmt(subsidyAmount || 78000)} government support
+          reduces your EMI from day one.
         </p>
       </div>
 
@@ -136,128 +235,152 @@ export default function Calculator() {
             <p className="text-[11px] sm:text-sm font-semibold text-[#444444]  tracking-wide mb-3">
               System Size
             </p>
-            <div className="grid grid-cols-4 gap-4">
-              {SYSTEM_SIZES.map((s, i) => (
+            <div
+              className="grid gap-4"
+              style={{ gridTemplateColumns: `repeat(${Math.min(sizes.length, 4)}, minmax(0, 1fr))` }}
+            >
+              {sizes.map((s) => (
                 <button
-                  key={s.label}
-                  onClick={() => handleSizeChange(i)}
+                  key={s.id}
+                  onClick={() => handleSizeChange(s.id)}
                   className={`flex flex-col items-center py-2 px-1 rounded-lg border-2 transition-all ${
-                    sizeIdx === i
+                    sizeId === s.id
                       ? "border-[#F7BA41]"
                       : "border-[#E5E7EB] hover:border-[#F7BA41]/60"
                   }`}
                 >
                   <span
-                    className={`text-sm sm:text-xl font-bold ${sizeIdx === i ? "text-[#F7BA41]" : "text-[#111827]"}`}
+                    className={`text-sm sm:text-xl font-bold ${sizeId === s.id ? "text-[#F7BA41]" : "text-[#111827]"}`}
                   >
                     {s.label}
                   </span>
                   <span
-                    className={`text-[9px] sm:text-sm  ${sizeIdx === i ? "text-[#F7BA41]" : "text-[#111827]"}`}
+                    className={`text-[9px] sm:text-sm  ${sizeId === s.id ? "text-[#F7BA41]" : "text-[#111827]"}`}
                   >
-                    {fmtPrice(s.displayPrice)}
+                    {fmtPrice(s.system_cost)}
                   </span>
                 </button>
               ))}
             </div>
           </div>
 
+          {/* Cost breakdown — makes the corrected order of operations visible */}
+          <div className="rounded-lg bg-[#F9FAFB] px-4 py-3 flex flex-col gap-1.5">
+            <div className="flex justify-between text-[11px] sm:text-sm">
+              <span className="text-[#4B5563]">System cost</span>
+              <span className="font-semibold text-[#123532]">₹{fmt(systemCost)}</span>
+            </div>
+            {subsidyOn && (
+              <div className="flex justify-between text-[11px] sm:text-sm">
+                <span className="text-[#4B5563]">Less PM Surya Ghar subsidy</span>
+                <span className="font-semibold text-[#16A34A]">− ₹{fmt(subsidyAmount)}</span>
+              </div>
+            )}
+            <div className="flex justify-between text-[11px] sm:text-sm">
+              <span className="text-[#4B5563]">Your upfront ({fmt(100 - (data?.loan.percentage ?? 90))}%)</span>
+              <span className="font-semibold text-[#123532]">₹{fmt(upfront)}</span>
+            </div>
+          </div>
 
           {/* Loan Amount */}
           <div className="flex flex-col gap-2">
-            <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">Loan Amount</p>
+            <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">
+              Loan Amount ({fmt(data?.loan.percentage ?? 90)}% financed)
+            </p>
             <div className="flex items-center gap-3">
-              <button
-                onClick={() =>
-                  setLoanAmount((v) => Math.max(LOAN_MIN, v - 5000))
-                }
-                className="cursor-pointer"
-              >
+              <button onClick={() => nudgeLoan(-loanStep)} className="cursor-pointer">
                 <Minus size={16} className="text-black" />
               </button>
               <span className="flex-1 text-center text-base sm:text-xl md:text-2xl font-bold text-[#123532]">
                 ₹{fmt(loanAmount)}
               </span>
-              <button
-                onClick={() =>
-                  setLoanAmount((v) => Math.min(LOAN_MAX, v + 5000))
-                }
-                className="cursor-pointer"
-              >
+              <button onClick={() => nudgeLoan(loanStep)} className="cursor-pointer">
                 <Plus size={16} className="text-black" />
               </button>
             </div>
             <input
               type="range"
               className="calc-slider w-full"
-              min={LOAN_MIN}
-              max={LOAN_MAX}
-              step={5000}
-              value={loanAmount}
-              style={
-                {
-                  "--progress": `${pct(loanAmount, LOAN_MIN, LOAN_MAX)}%`,
-                } as React.CSSProperties
-              }
-              onChange={(e) => setLoanAmount(Number(e.target.value))}
+              min={loanMin}
+              max={loanMax}
+              step={loanStep}
+              value={Math.min(loanMax, Math.max(loanMin, loanAmount))}
+              style={{ "--progress": `${pct(loanAmount, loanMin, loanMax)}%` } as React.CSSProperties}
+              onChange={(e) => setLoanOverride(Number(e.target.value))}
             />
             <div className="flex justify-between text-[11px] sm:text-sm text-[#6B7280]">
-              <span>₹50k</span>
-              <span>₹6L</span>
+              <span>{fmtPrice(loanMin)}</span>
+              <span>{fmtPrice(loanMax)}</span>
             </div>
+            {loanOverride !== null && data && (
+              <button
+                onClick={() => setLoanOverride(null)}
+                className="cursor-pointer self-start text-[10px] sm:text-xs font-semibold text-[#123532] underline"
+              >
+                Reset to ₹{fmt(data.loan.suggested_amount)}
+              </button>
+            )}
           </div>
 
           <hr className="border-[#F3F4F6]" />
 
           {/* Interest Rate */}
           <div className="flex flex-col gap-2">
-            <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">Interest Rate</p>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() =>
-                  setRate((v) =>
-                    Math.max(RATE_MIN, Math.round((v - 0.25) * 100) / 100)
-                  )
-                }
-                className="cursor-pointer"
-              >
+            <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">
+              {rateLocked ? "Applicable Interest Rate" : "Interest Rate"}
+            </p>
+            {rateLocked ? (
+              <div className="bg-[#F7F5EC] rounded-lg px-4 py-3">
+                <span className="text-base sm:text-xl md:text-2xl font-bold text-[#123532]">
+                  {rate.toFixed(2)}%
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <button onClick={() => nudgeRate(-0.25)} className="cursor-pointer">
                   <Minus size={16} className="text-black" />
-              </button>
-              <span className="flex-1 text-center text-base sm:text-xl md:text-2xl font-bold text-[#123532]">
-                {rate.toFixed(2)}%
-              </span>
-              <button
-                onClick={() =>
-                  setRate((v) =>
-                    Math.min(RATE_MAX, Math.round((v + 0.25) * 100) / 100)
-                  )
-                }
-                className="cursor-pointer"
-              >
-                <Plus size={16} className="text-black" />
-              </button>
-            </div>
+                </button>
+                <span className="flex-1 text-center text-base sm:text-xl md:text-2xl font-bold text-[#123532]">
+                  {rate.toFixed(2)}%
+                </span>
+                <button onClick={() => nudgeRate(0.25)} className="cursor-pointer">
+                  <Plus size={16} className="text-black" />
+                </button>
+              </div>
+            )}
             <input
               type="range"
-              className="calc-slider w-full"
-              min={RATE_MIN}
-              max={RATE_MAX}
+              className={`calc-slider w-full ${rateLocked ? "calc-slider--locked" : ""}`}
+              min={rateMin}
+              max={rateMax}
               step={0.25}
-              value={rate}
-              style={
-                {
-                  "--progress": `${pct(rate, RATE_MIN, RATE_MAX)}%`,
-                } as React.CSSProperties
-              }
-              onChange={(e) => setRate(Number(e.target.value))}
+              value={Math.min(rateMax, Math.max(rateMin, rate))}
+              disabled={rateLocked}
+              aria-label="Interest rate"
+              style={{ "--progress": `${pct(rate, rateMin, rateMax)}%` } as React.CSSProperties}
+              onChange={(e) => setRateOverride(Math.max(rateMin, Number(e.target.value)))}
             />
-            <div className="flex justify-between text-[11px] sm:text-sm text-[#6B7280]">
-              <span>{RATE_MIN}%</span>
-              <span>{RATE_MAX}%</span>
-            </div>
-            <span className="flex-1 text-start text-[9px] sm:text-xs text-[#444444]">
-                Most Kerala banks offer 7–9%
+            {!rateLocked && (
+              <div className="flex justify-between text-[11px] sm:text-sm text-[#6B7280]">
+                <span>{rateMin}%</span>
+                <span>{rateMax}%</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-start text-[9px] sm:text-xs text-[#444444]">
+                {rateLocked
+                  ? `Fixed ${rate.toFixed(2)}% Flarize–SBI rate for ${selectedSize.label} systems`
+                  : `Rates start at ${rateMin}% for this system size`}
               </span>
+              {!rateLocked && rate > rateMin && (
+                <button
+                  onClick={() => setRateOverride(null)}
+                  className="cursor-pointer shrink-0 text-[10px] sm:text-xs font-semibold text-[#123532] underline"
+                >
+                  Reset to {rateMin}%
+                </button>
+              )}
+            </div>
           </div>
 
           <hr className="border-[#F3F4F6]" />
@@ -267,7 +390,7 @@ export default function Calculator() {
             <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">Loan Tenure</p>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setTenure((v) => Math.max(TENURE_MIN, v - 1))}
+                onClick={() => setTenure((v) => Math.max(tenureMin, v - 1))}
                 className="cursor-pointer"
               >
                 <Minus size={16} className="text-black" />
@@ -276,7 +399,7 @@ export default function Calculator() {
                 {tenure} {tenure === 1 ? "Year" : "Years"}
               </span>
               <button
-                onClick={() => setTenure((v) => Math.min(TENURE_MAX, v + 1))}
+                onClick={() => setTenure((v) => Math.min(tenureMax, v + 1))}
                 className="cursor-pointer"
               >
                 <Plus size={16} className="text-black" />
@@ -285,20 +408,16 @@ export default function Calculator() {
             <input
               type="range"
               className="calc-slider w-full"
-              min={TENURE_MIN}
-              max={TENURE_MAX}
+              min={tenureMin}
+              max={tenureMax}
               step={1}
               value={tenure}
-              style={
-                {
-                  "--progress": `${pct(tenure, TENURE_MIN, TENURE_MAX)}%`,
-                } as React.CSSProperties
-              }
+              style={{ "--progress": `${pct(tenure, tenureMin, tenureMax)}%` } as React.CSSProperties}
               onChange={(e) => setTenure(Number(e.target.value))}
             />
             <div className="flex justify-between text-[11px] sm:text-sm text-[#6B7280]">
-              <span>1 Year</span>
-              <span>{TENURE_MAX} Years</span>
+              <span>{tenureMin} Year</span>
+              <span>{tenureMax} Years</span>
             </div>
             <span className="flex-1 text-start text-[9px] sm:text-xs text-[#444444]">
                 Longer Tenure = lower EMI
@@ -316,12 +435,12 @@ export default function Calculator() {
                   className={`text-[9px] sm:text-xs transition-colors ${subsidyOn ? "font-bold text-[#F7BA41]" : "text-[#374151]"}`}
                 >
                   {subsidyOn
-                    ? `₹${fmt(SUBSIDY)} `
-                    : "Subsidy not applied "} 
+                    ? `₹${fmt(subsidyAmount)} `
+                    : "Subsidy not applied "}
                     <span className="font-normal text-[#374151]">{subsidyOn ? "subsidy applied" : " "}</span>
                 </span>
                 <span className="text-xs text-[#4B5563]">
-                  Subsidy saves up to ₹{fmt(SUBSIDY)}
+                  Deducted before the {fmt(data?.loan.percentage ?? 90)}% loan is calculated
                 </span>
               </div>
               <button
@@ -362,7 +481,7 @@ export default function Calculator() {
               )}
             </div>
             {apiError && (
-              <p className="text-xs text-[#FCA5A5] mb-2">Note: Using estimated calculation</p>
+              <p className="text-xs text-[#FCA5A5] mb-2">{apiError}</p>
             )}
 
             <div className="flex items-baseline gap-2 mb-0.5">
@@ -370,17 +489,25 @@ export default function Calculator() {
                 ₹{fmt(emi)}
               </span>
             </div>
-            <p className="text-xs mb-4">
+            <p className="text-xs mb-2">
               {tenure} {tenure === 1 ? "year" : "years"} · {rate.toFixed(2)}% interest
             </p>
+
+            {/* Daily amount — EMI ÷ 30 */}
+            <div className="inline-flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1.5 mb-4">
+              <span className="text-sm font-semibold">₹{fmt(dailyAmount)}/day</span>
+              <span className="text-[11px] text-white/80">
+                · just ₹{fmt(dailyAmount)} a day
+              </span>
+            </div>
 
             <div className=" pt-4 space-y-2">
               <div className="flex justify-between items-center text-sm font-semibold">
                 <span>{subsidyOn ? "Your Loan amount after subsidy" : "Your Loan amount"}</span>
                 <span className="flex items-center gap-1.5">
-                  {subsidyOn && (
+                  {subsidyOn && subsidyAmount > 0 && (
                     <span className="text-xs text-[#A7C4C5] line-through font-normal">
-                      ₹{fmt(loanAmount + SUBSIDY)}
+                      ₹{fmt(systemCost * ((data?.loan.percentage ?? 90) / 100))}
                     </span>
                   )}
                   <span className="text-base">₹{fmt(loanAmount)}</span>
@@ -433,7 +560,7 @@ export default function Calculator() {
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{
-                  width: `${Math.min(100, ((breakEvenMonths ?? 0) / (PANEL_LIFE * 12)) * 100)}%`,
+                  width: `${Math.min(100, ((breakEvenMonths ?? 0) / (panelLife * 12)) * 100)}%`,
                   background: "linear-gradient(to right, #F59E0B, #16A34A)",
                 }}
               />
@@ -460,9 +587,7 @@ export default function Calculator() {
                 <div className="w-full h-4 bg-[#F3F4F6] rounded-full overflow-hidden">
                   <div
                     className="h-full bg-[#16A34A] rounded-full transition-all duration-500"
-                    style={{
-                      width: `${Math.min(100, (emi / maxBar) * 100)}%`,
-                    }}
+                    style={{ width: `${emiBarWidth}%` }}
                   />
                 </div>
               </div>
@@ -475,10 +600,7 @@ export default function Calculator() {
                 </div>
                 <div className="w-full h-4 bg-[#F3F4F6] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#DC2626] rounded-full transition-all duration-500"
-                    style={{
-                      width: `${Math.min(100, (monthlyBill / maxBar) * 100)}%`,
-                    }}
+                    className="h-full w-full bg-[#DC2626] rounded-full"
                   />
                 </div>
               </div>
@@ -525,14 +647,19 @@ export default function Calculator() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xl font-bold text-[#123532]">
-                State Bank of India
+                {topBank?.name ?? "—"}
               </p>
               <p className="text-sm text-[#123532] mt-0.5">
-                {rate.toFixed(2)}% Interest · Approval in 5–7 days
+                {topBank
+                  ? `${Number(topBank.interest_rate).toFixed(2)}% Interest${approvalText(topBank)}`
+                  : ""}
               </p>
-              <button className="cursor-pointer mt-1.5 flex items-center gap-0.5 text-sm font-semibold text-[#F88A22] hover:underline">
+              <a
+                href="#bank-rates"
+                className="cursor-pointer mt-1.5 flex items-center gap-0.5 text-sm font-semibold text-[#F88A22] hover:underline"
+              >
                 See All Bank Options <ArrowRight size={14} />
-              </button>
+              </a>
             </div>
           </div>
       </div>
@@ -590,6 +717,18 @@ export default function Calculator() {
           background: #f7ba41;
           cursor: pointer;
           box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+        .calc-slider--locked {
+          background: #e5e7eb;
+          cursor: not-allowed;
+        }
+        .calc-slider--locked::-webkit-slider-thumb {
+          background: #c7c9cc;
+          cursor: not-allowed;
+        }
+        .calc-slider--locked::-moz-range-thumb {
+          background: #c7c9cc;
+          cursor: not-allowed;
         }
       `}</style>
     </section>

@@ -6,6 +6,8 @@ from django.db import models
 from catalog.models import Author, Badge, Category, Collection, Tag, Template
 from media.models import MediaAsset
 
+from .validators import validate_entry_slug
+
 
 class Entry(models.Model):
     """One blog entry, any collection. This is what the client reads as
@@ -15,6 +17,11 @@ class Entry(models.Model):
     class Status(models.TextChoices):
         DRAFT = "draft", "Draft"
         PUBLISHED = "published", "Published"
+        # Deliberately taken down, record retained. Distinct from "row absent"
+        # (never existed) and from DRAFT (not public *yet*): a deleted entry is
+        # a URL that intentionally stopped being public, and keeping the row is
+        # what lets its slug stay claimed and its history stay auditable.
+        DELETED = "deleted", "Deleted"
 
     document_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT, related_name="entries")
@@ -23,7 +30,7 @@ class Entry(models.Model):
     )
 
     title = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, db_index=True)
+    slug = models.SlugField(max_length=255, db_index=True, validators=[validate_entry_slug])
     excerpt = models.TextField(blank=True)
     summary = models.JSONField(default=list, blank=True, help_text="Strapi-blocks array")
     introduction = models.JSONField(default=list, blank=True, help_text="Strapi-blocks array")
@@ -44,6 +51,9 @@ class Entry(models.Model):
 
     status = models.CharField(max_length=12, choices=Status.choices, default=Status.DRAFT)
     published_at = models.DateTimeField(null=True, blank=True)
+    deleted_at = models.DateTimeField(
+        null=True, blank=True, help_text="set when status becomes 'deleted'"
+    )
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
@@ -68,6 +78,57 @@ class Entry(models.Model):
 
     def __str__(self):
         return f"{self.title} [{self.status}]"
+
+    @property
+    def is_deleted(self) -> bool:
+        return self.status == self.Status.DELETED
+
+
+class EntrySlugHistory(models.Model):
+    """A slug an entry used to be published under.
+
+    Editors rename articles; without this table the old URL simply stops
+    existing and every inbound link to it dies. A row is written automatically
+    whenever an entry's slug changes (see ``content.signals``), so the mapping
+    ``old slug → same entry → current slug`` survives the rename and the
+    delivery API can resolve the old URL to the article that replaced it.
+
+    ``collection`` is denormalised because it is the uniqueness scope: entry
+    slugs are unique per collection, so aliases must be too, or a stale alias
+    could shadow a live entry's slug. ``is_active`` is how an alias is retired
+    (an entry reclaiming its old slug, an operator disowning a bad one) without
+    losing the audit trail — the partial unique index only binds active rows.
+    """
+
+    entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name="slug_history")
+    collection = models.ForeignKey(
+        Collection, on_delete=models.CASCADE, related_name="entry_slug_aliases"
+    )
+    slug = models.SlugField(max_length=255, db_index=True)
+    is_active = models.BooleanField(
+        default=True, help_text="inactive aliases are kept for audit but never resolved"
+    )
+    note = models.CharField(max_length=255, blank=True, help_text="why this alias exists")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "content_entry_slug_history"
+        verbose_name_plural = "entry slug history"
+        ordering = ["-created_at", "-id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["collection", "slug"],
+                condition=models.Q(is_active=True),
+                name="uniq_active_slug_alias_per_collection",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["collection", "slug", "is_active"]),
+        ]
+
+    def __str__(self):
+        state = "active" if self.is_active else "retired"
+        return f"{self.slug} → entry #{self.entry_id} ({state})"
 
 
 class ContentBlock(models.Model):
