@@ -136,6 +136,8 @@ export default function Calculator() {
   const subsidyAmount = data?.subsidy.amount ?? 0;
   const systemCost = data?.system.system_cost ?? Number(selectedSize?.system_cost ?? 0);
   const upfront = data?.loan.upfront_amount ?? 0;
+  // The financed share before the subsidy comes off it.
+  const grossLoan = data?.loan.gross_amount ?? 0;
 
   // While a debounced call is in flight the slider must still track the
   // customer's thumb, so the override wins over the last server value.
@@ -243,7 +245,7 @@ export default function Calculator() {
                 <button
                   key={s.id}
                   onClick={() => handleSizeChange(s.id)}
-                  className={`flex flex-col items-center py-2 px-1 rounded-lg border-2 transition-all ${
+                  className={`flex flex-col items-center py-3 sm:py-4 px-1 rounded-lg border-2 transition-all ${
                     sizeId === s.id
                       ? "border-[#F7BA41]"
                       : "border-[#E5E7EB] hover:border-[#F7BA41]/60"
@@ -253,11 +255,6 @@ export default function Calculator() {
                     className={`text-sm sm:text-xl font-bold ${sizeId === s.id ? "text-[#F7BA41]" : "text-[#111827]"}`}
                   >
                     {s.label}
-                  </span>
-                  <span
-                    className={`text-[9px] sm:text-sm  ${sizeId === s.id ? "text-[#F7BA41]" : "text-[#111827]"}`}
-                  >
-                    {fmtPrice(s.system_cost)}
                   </span>
                 </button>
               ))}
@@ -270,22 +267,27 @@ export default function Calculator() {
               <span className="text-[#4B5563]">System cost</span>
               <span className="font-semibold text-[#123532]">₹{fmt(systemCost)}</span>
             </div>
+            <div className="flex justify-between text-[11px] sm:text-sm">
+              <span className="text-[#4B5563]">Your upfront ({fmt(100 - (data?.loan.percentage ?? 90))}%)</span>
+              <span className="font-semibold text-[#123532]">− ₹{fmt(upfront)}</span>
+            </div>
+            <div className="flex justify-between text-[11px] sm:text-sm">
+              <span className="text-[#4B5563]">Financed ({fmt(data?.loan.percentage ?? 90)}%)</span>
+              <span className="font-semibold text-[#123532]">₹{fmt(grossLoan)}</span>
+            </div>
             {subsidyOn && (
               <div className="flex justify-between text-[11px] sm:text-sm">
                 <span className="text-[#4B5563]">Less PM Surya Ghar subsidy</span>
                 <span className="font-semibold text-[#16A34A]">− ₹{fmt(subsidyAmount)}</span>
               </div>
             )}
-            <div className="flex justify-between text-[11px] sm:text-sm">
-              <span className="text-[#4B5563]">Your upfront ({fmt(100 - (data?.loan.percentage ?? 90))}%)</span>
-              <span className="font-semibold text-[#123532]">₹{fmt(upfront)}</span>
-            </div>
           </div>
 
           {/* Loan Amount */}
           <div className="flex flex-col gap-2">
             <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">
-              Loan Amount ({fmt(data?.loan.percentage ?? 90)}% financed)
+              Loan Amount ({fmt(data?.loan.percentage ?? 90)}% financed
+              {subsidyOn && subsidyAmount > 0 ? ", less subsidy" : ""})
             </p>
             <div className="flex items-center gap-3">
               <button onClick={() => nudgeLoan(-loanStep)} className="cursor-pointer">
@@ -440,7 +442,7 @@ export default function Calculator() {
                     <span className="font-normal text-[#374151]">{subsidyOn ? "subsidy applied" : " "}</span>
                 </span>
                 <span className="text-xs text-[#4B5563]">
-                  Deducted before the {fmt(data?.loan.percentage ?? 90)}% loan is calculated
+                  Deducted from the {fmt(data?.loan.percentage ?? 90)}% loan amount
                 </span>
               </div>
               <button
@@ -507,7 +509,7 @@ export default function Calculator() {
                 <span className="flex items-center gap-1.5">
                   {subsidyOn && subsidyAmount > 0 && (
                     <span className="text-xs text-[#A7C4C5] line-through font-normal">
-                      ₹{fmt(systemCost * ((data?.loan.percentage ?? 90) / 100))}
+                      ₹{fmt(grossLoan)}
                     </span>
                   )}
                   <span className="text-base">₹{fmt(loanAmount)}</span>

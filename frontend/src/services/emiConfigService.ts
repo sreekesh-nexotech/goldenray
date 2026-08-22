@@ -37,6 +37,9 @@ export interface EMIInterestRateRule {
   label: string;
   min_kw: string | null;
   max_kw: string | null;
+  /** System-cost band — how the 3kW ₹2L/₹3L policy is expressed. */
+  min_cost: string | null;
+  max_cost: string | null;
   min_loan: string | null;
   max_loan: string | null;
   /** Starting rate offered for the band. */

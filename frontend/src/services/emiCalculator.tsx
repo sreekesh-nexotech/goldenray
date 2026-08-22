@@ -9,7 +9,7 @@ import { apiCall } from './apiService';
 // and the bank table without a frontend deploy.
 
 export interface EMISettings {
-  /** Share of the post-subsidy cost that is financed. 90 by policy. */
+  /** Share of the system cost that is financed. 90 by policy. */
   loan_percentage: string;
   /** True: subsidy comes off first, then the loan % applies to the remainder. */
   subsidy_before_loan: boolean;
@@ -34,6 +34,8 @@ export interface EMISystemSize {
   price_per_kw: string;
   /** Derived server-side as price_per_kw × capacity_kw. */
   system_cost: number;
+  /** ₹ ceiling for this size (3kW is capped at 3,00,000). Null = no cap. */
+  max_system_cost: string | null;
   monthly_bill_reference: string;
   sort_order: number;
   is_active: boolean;
@@ -92,6 +94,7 @@ export interface EMICalculatorResponse {
     capacity_kw: number;
     price_per_kw: number;
     system_cost: number;
+    max_system_cost: number | null;
     monthly_bill_reference: number;
   };
   subsidy: {
@@ -103,6 +106,7 @@ export interface EMICalculatorResponse {
   loan: {
     percentage: number;
     financeable_base: number;
+    gross_amount: number;
     suggested_amount: number;
     amount: number;
     amount_source: 'computed' | 'customer';

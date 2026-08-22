@@ -160,15 +160,15 @@ export default function PreviewPanel({
               <>
                 <Line label="System cost" value={inr(data.system.system_cost)} />
                 <Line
+                  label={`Financed (${data.loan.percentage}%)`}
+                  value={inr(data.loan.gross_amount)}
+                />
+                <Line
                   label={`Subsidy${data.subsidy.applied ? "" : " (not applied)"}`}
                   value={`− ${inr(data.subsidy.amount)}`}
                 />
+                <Line label="Loan amount" value={inr(data.loan.amount)} accent />
                 <Line label="Cost after subsidy" value={inr(data.subsidy.net_cost_after_subsidy)} />
-                <Line
-                  label={`Loan (${data.loan.percentage}%)`}
-                  value={inr(data.loan.amount)}
-                  accent
-                />
                 <Line label="Customer upfront" value={inr(data.loan.upfront_amount)} />
                 <Line
                   label={`Interest rate${data.interest.is_locked ? " (locked)" : ""}`}

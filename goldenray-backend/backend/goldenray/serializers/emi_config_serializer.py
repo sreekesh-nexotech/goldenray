@@ -9,6 +9,7 @@ from ..models import (
     EmiSubsidyRule,
     EmiSystemSize,
 )
+from ..utils.emi import format_inr as inr
 
 
 class EmiSystemSizeSerializer(serializers.ModelSerializer):
@@ -18,8 +19,8 @@ class EmiSystemSizeSerializer(serializers.ModelSerializer):
         model = EmiSystemSize
         fields = (
             "id", "label", "capacity_kw", "price_per_kw", "system_cost",
-            "monthly_bill_reference", "sort_order", "is_active",
-            "created_at", "updated_at",
+            "max_system_cost", "monthly_bill_reference", "sort_order",
+            "is_active", "created_at", "updated_at",
         )
         read_only_fields = ("id", "system_cost", "created_at", "updated_at")
 
@@ -35,6 +36,27 @@ class EmiSystemSizeSerializer(serializers.ModelSerializer):
         if value <= 0:
             raise serializers.ValidationError("Capacity must be greater than zero.")
         return value
+
+    def validate(self, attrs):
+        # The ceiling is on the derived cost, so it can only be checked once
+        # price and capacity are both resolved.
+        def resolved(name):
+            return attrs.get(name, getattr(self.instance, name, None))
+
+        price, capacity = resolved("price_per_kw"), resolved("capacity_kw")
+        ceiling = resolved("max_system_cost")
+        if ceiling is not None and price is not None and capacity is not None:
+            cost = price * capacity
+            if cost > ceiling:
+                raise serializers.ValidationError(
+                    {
+                        "price_per_kw": (
+                            f"{inr(price)}/kW puts this system at {inr(cost)}, "
+                            f"above the {inr(ceiling)} ceiling set for the size."
+                        )
+                    }
+                )
+        return attrs
 
 
 class EmiSubsidyRuleSerializer(serializers.ModelSerializer):
@@ -60,9 +82,9 @@ class EmiInterestRateRuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmiInterestRateRule
         fields = (
-            "id", "label", "min_kw", "max_kw", "min_loan", "max_loan",
-            "rate", "min_rate", "is_locked", "priority", "is_active",
-            "created_at", "updated_at",
+            "id", "label", "min_kw", "max_kw", "min_cost", "max_cost",
+            "min_loan", "max_loan", "rate", "min_rate", "is_locked",
+            "priority", "is_active", "created_at", "updated_at",
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
@@ -74,6 +96,12 @@ class EmiInterestRateRuleSerializer(serializers.ModelSerializer):
         if min_kw is not None and max_kw is not None and min_kw > max_kw:
             raise serializers.ValidationError(
                 {"max_kw": "Upper bound must be greater than or equal to the lower bound."}
+            )
+
+        min_cost, max_cost = resolved("min_cost"), resolved("max_cost")
+        if min_cost is not None and max_cost is not None and min_cost > max_cost:
+            raise serializers.ValidationError(
+                {"max_cost": "Upper bound must be greater than or equal to the lower bound."}
             )
 
         min_loan, max_loan = resolved("min_loan"), resolved("max_loan")

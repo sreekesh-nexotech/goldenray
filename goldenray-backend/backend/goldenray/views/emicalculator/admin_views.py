@@ -54,7 +54,7 @@ class EmiSubsidyRuleViewSet(_StudioViewSet):
 
 
 class EmiInterestRateRuleViewSet(_StudioViewSet):
-    """Interest-rate policy per capacity and/or loan-amount band."""
+    """Interest-rate policy per capacity, system-cost and/or loan band."""
 
     queryset = EmiInterestRateRule.objects.all()
     serializer_class = EmiInterestRateRuleSerializer

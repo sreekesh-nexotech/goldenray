@@ -4,10 +4,11 @@ Order of operations (this is the whole point of the module — the previous
 implementation applied these in a different order and disagreed with the UI):
 
     system_cost  = price_per_kW × capacity_kW
-    net_cost     = system_cost − subsidy          ← subsidy comes off FIRST
-    loan_amount  = net_cost × loan_percentage     ← then 90% of the remainder
-    upfront      = net_cost − loan_amount
-    rate         = interest rule for this capacity / loan band
+    gross_loan   = system_cost × loan_percentage  ← the 90% comes off FIRST
+    loan_amount  = gross_loan − subsidy           ← then the subsidy
+    net_cost     = system_cost − subsidy
+    upfront      = net_cost − loan_amount         (= the customer's 10%)
+    rate         = interest rule for this capacity / system-cost / loan band
     emi          = standard reducing-balance formula
     daily        = emi ÷ daily_saving_divisor
 
@@ -31,6 +32,22 @@ def _money(value):
     return Decimal(value).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
+def format_inr(value):
+    """₹ with Indian digit grouping — these strings reach the customer."""
+    whole = int(Decimal(value).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+    digits = str(abs(whole))
+    if len(digits) > 3:
+        head, tail = digits[:-3], digits[-3:]
+        groups = []
+        while len(head) > 2:
+            groups.insert(0, head[-2:])
+            head = head[:-2]
+        if head:
+            groups.insert(0, head)
+        digits = ",".join(groups + [tail])
+    return f"₹{'-' if whole < 0 else ''}{digits}"
+
+
 def _dec(value, default=None):
     if value is None or value == "":
         return default
@@ -52,16 +69,17 @@ def resolve_subsidy(capacity_kw):
     return Decimal(rules[0].amount)
 
 
-def resolve_interest_rule(capacity_kw, loan_amount):
+def resolve_interest_rule(capacity_kw, loan_amount, system_cost=None):
     """Best-matching active rate rule, or None.
 
-    Priority decides first; the more specific rule wins ties, so a 3kW-scoped
-    rule beats the catch-all even when both are priority 0.
+    Priority decides first; the more specific rule wins ties, so a rule scoped
+    to 3kW *and* a system-cost band beats a capacity-only rule even when both
+    are priority 0.
     """
     candidates = [
         rule
         for rule in EmiInterestRateRule.objects.filter(is_active=True)
-        if rule.matches(capacity_kw, loan_amount)
+        if rule.matches(capacity_kw, loan_amount, system_cost)
     ]
     if not candidates:
         return None
@@ -120,6 +138,14 @@ def calculate(
     if size is not None:
         system_cost = _money(Decimal(size.price_per_kw) * resolved_capacity)
         price_per_kw = Decimal(size.price_per_kw)
+        # Per-size price ceiling — a 3kW system above ₹3,00,000 is not a deal
+        # we finance, so refuse to quote rather than quote something wrong.
+        max_cost = _dec(size.max_system_cost)
+        if max_cost is not None and system_cost > max_cost:
+            raise ValueError(
+                f"A {size.label} system cannot be priced above "
+                f"{format_inr(max_cost)} (this one is {format_inr(system_cost)})"
+            )
     else:
         # Capacity with no configured tile — no price to work from.
         raise ValueError(
@@ -129,14 +155,21 @@ def calculate(
     subsidy = resolve_subsidy(resolved_capacity) if apply_subsidy else Decimal("0")
     subsidy = min(subsidy, system_cost)
 
-    # Subsidy first, then the loan percentage — the corrected order.
+    # The loan percentage is taken off the gross system cost first; only then
+    # does the subsidy come off the financed amount — the corrected order.
+    # `financeable` is what the customer still has to cover in total, so the
+    # loan and the upfront always add back up to it.
     if settings.subsidy_before_loan:
         financeable = system_cost - subsidy
     else:
         financeable = system_cost
 
     loan_pct = Decimal(settings.loan_percentage) / Decimal("100")
-    suggested_loan = _money(financeable * loan_pct)
+    gross_loan = _money(system_cost * loan_pct)
+    if settings.subsidy_before_loan:
+        suggested_loan = _money(max(Decimal("0"), gross_loan - subsidy))
+    else:
+        suggested_loan = gross_loan
 
     if loan_amount_override is not None:
         loan_amount = _money(_dec(loan_amount_override))
@@ -149,7 +182,7 @@ def calculate(
 
     upfront = _money(max(Decimal("0"), financeable - loan_amount))
 
-    rule = resolve_interest_rule(resolved_capacity, loan_amount)
+    rule = resolve_interest_rule(resolved_capacity, loan_amount, system_cost)
     requested_rate = _dec(interest_rate_override)
 
     if rule is None:
@@ -170,9 +203,9 @@ def calculate(
     else:
         interest_rate = max(base_rate, floor_rate)
 
-    if loan_amount <= 0:
-        raise ValueError("Loan amount must be greater than zero")
-
+    # A computed loan of zero is legitimate now — a subsidy can cover the whole
+    # financed share — and emi_calc returns zeros for it. Only a customer
+    # override of zero is an error, and that is caught above.
     emi = emi_calc(
         principal=float(loan_amount),
         interest_rate=float(interest_rate),
@@ -192,6 +225,11 @@ def calculate(
             "capacity_kw": float(resolved_capacity),
             "price_per_kw": float(price_per_kw),
             "system_cost": float(system_cost),
+            "max_system_cost": (
+                float(size.max_system_cost)
+                if size is not None and size.max_system_cost is not None
+                else None
+            ),
             "monthly_bill_reference": float(monthly_bill),
         },
         "subsidy": {
@@ -203,6 +241,7 @@ def calculate(
         "loan": {
             "percentage": float(settings.loan_percentage),
             "financeable_base": float(financeable),
+            "gross_amount": float(gross_loan),
             "suggested_amount": float(suggested_loan),
             "amount": float(loan_amount),
             "amount_source": loan_source,

@@ -76,8 +76,8 @@ export default function SubsidyPanel({
           )
         }
       >
-        The subsidy for a capacity band. It is subtracted from the system cost
-        first, and only then is the loan percentage applied to what remains.
+        The subsidy for a capacity band. The loan percentage is applied to the
+        system cost first, and the subsidy is then deducted from that loan.
         Leave a bound blank for an open-ended band; if two bands overlap, the
         higher priority wins.
       </PanelIntro>
@@ -133,6 +133,7 @@ export default function SubsidyPanel({
                 onChange={(v) => patch(row.id, { amount: v })}
                 prefix="₹"
                 disabled={readOnly}
+                hint="Comes off the loan after the loan % is applied."
               />
               <NumberField
                 label="Priority"

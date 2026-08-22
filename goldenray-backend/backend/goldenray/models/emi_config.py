@@ -9,6 +9,7 @@ The calculation itself is in goldenray/utils/emi.py; these models are pure
 configuration.
 """
 
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -37,6 +38,17 @@ class EmiSystemSize(models.Model):
         validators=[MinValueValidator(0)],
         help_text="₹ per kW. System cost = this × capacity.",
     )
+    max_system_cost = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        help_text=(
+            "₹ ceiling for this size, e.g. 300000 for 3kW. A price that puts "
+            "the system cost above this is rejected. Blank = no ceiling."
+        ),
+    )
     monthly_bill_reference = models.DecimalField(
         max_digits=12,
         decimal_places=2,
@@ -64,6 +76,28 @@ class EmiSystemSize(models.Model):
     def system_cost(self):
         return self.price_per_kw * self.capacity_kw
 
+    @property
+    def exceeds_max_cost(self):
+        """True when the derived cost breaks this size's ceiling."""
+        if self.max_system_cost is None:
+            return False
+        return self.system_cost > self.max_system_cost
+
+    def clean(self):
+        # Keeps the admin from saving a price the calculator would then refuse
+        # to quote. The serializer enforces the same rule for the Studio.
+        super().clean()
+        if self.exceeds_max_cost:
+            raise ValidationError(
+                {
+                    "price_per_kw": (
+                        f"₹{self.price_per_kw}/kW puts a {self.label} system at "
+                        f"₹{self.system_cost}, above the ₹{self.max_system_cost} "
+                        "ceiling for this size."
+                    )
+                }
+            )
+
 
 class EmiSubsidyRule(models.Model):
     """Subsidy payable for a capacity band.
@@ -88,7 +122,7 @@ class EmiSubsidyRule(models.Model):
         max_digits=12,
         decimal_places=2,
         validators=[MinValueValidator(0)],
-        help_text="₹ deducted from system cost before the loan is sized.",
+        help_text="₹ deducted from the loan once the loan % has been applied.",
     )
     priority = models.IntegerField(
         default=0,
@@ -116,12 +150,12 @@ class EmiSubsidyRule(models.Model):
 
 
 class EmiInterestRateRule(models.Model):
-    """Interest-rate policy for a capacity band and/or a loan-amount band.
+    """Interest-rate policy for a capacity, system-cost and/or loan band.
 
-    Both bands are optional, which is what lets one table express today's
-    size-keyed policy (3kW is locked at 5.75%, larger systems floor at 8%) and
-    loan-range slabs later on, without a schema change. A rule with neither
-    band set is the catch-all default.
+    Every band is optional, which is what lets one table express today's
+    policy (a 3kW system is 5.75% up to ₹2L of system cost and 8% above it,
+    larger systems floor at 8%) and loan-range slabs later on, without a schema
+    change. A rule with no band set is the catch-all default.
     """
 
     label = models.CharField(max_length=120)
@@ -133,6 +167,14 @@ class EmiInterestRateRule(models.Model):
     max_kw = models.DecimalField(
         max_digits=6, decimal_places=2, null=True, blank=True,
         help_text="Inclusive. Blank = applies to any capacity.",
+    )
+    min_cost = models.DecimalField(
+        max_digits=12, decimal_places=2, null=True, blank=True,
+        help_text="Inclusive ₹ system-cost lower bound. Blank = any cost.",
+    )
+    max_cost = models.DecimalField(
+        max_digits=12, decimal_places=2, null=True, blank=True,
+        help_text="Inclusive ₹ system-cost upper bound. Blank = any cost.",
     )
     min_loan = models.DecimalField(
         max_digits=12, decimal_places=2, null=True, blank=True,
@@ -169,7 +211,7 @@ class EmiInterestRateRule(models.Model):
 
     class Meta:
         db_table = "emi_interest_rate_rule"
-        ordering = ["-priority", "min_kw", "min_loan"]
+        ordering = ["-priority", "min_kw", "min_cost", "min_loan"]
         verbose_name = "EMI interest rate rule"
         verbose_name_plural = "EMI interest rate rules"
 
@@ -177,29 +219,27 @@ class EmiInterestRateRule(models.Model):
         lock = " (locked)" if self.is_locked else ""
         return f"{self.label} — {self.rate}%{lock}"
 
-    def matches(self, capacity_kw, loan_amount):
-        """True when both configured bands admit these values.
+    def matches(self, capacity_kw, loan_amount, system_cost=None):
+        """True when every configured band admits these values.
 
-        An unset band never rejects, so a size-only rule ignores the loan and a
-        loan-only slab ignores the capacity.
+        An unset band never rejects, so a size-only rule ignores the cost and
+        the loan, and a cost slab ignores the capacity.
         """
-        if capacity_kw is not None:
-            if self.min_kw is not None and capacity_kw < self.min_kw:
+        bands = (
+            (capacity_kw, self.min_kw, self.max_kw),
+            (system_cost, self.min_cost, self.max_cost),
+            (loan_amount, self.min_loan, self.max_loan),
+        )
+        for value, lower, upper in bands:
+            if value is None:
+                # The rule is scoped on a dimension we have no value for.
+                if lower is not None or upper is not None:
+                    return False
+                continue
+            if lower is not None and value < lower:
                 return False
-            if self.max_kw is not None and capacity_kw > self.max_kw:
+            if upper is not None and value > upper:
                 return False
-        elif self.min_kw is not None or self.max_kw is not None:
-            # Rule is capacity-scoped but we have no capacity to test.
-            return False
-
-        if loan_amount is not None:
-            if self.min_loan is not None and loan_amount < self.min_loan:
-                return False
-            if self.max_loan is not None and loan_amount > self.max_loan:
-                return False
-        elif self.min_loan is not None or self.max_loan is not None:
-            return False
-
         return True
 
     @property
@@ -207,7 +247,11 @@ class EmiInterestRateRule(models.Model):
         """How many bounds the rule pins down — the tie-breaker after priority."""
         return sum(
             1
-            for bound in (self.min_kw, self.max_kw, self.min_loan, self.max_loan)
+            for bound in (
+                self.min_kw, self.max_kw,
+                self.min_cost, self.max_cost,
+                self.min_loan, self.max_loan,
+            )
             if bound is not None
         )
 
@@ -225,13 +269,13 @@ class EmiCalculatorSettings(models.Model):
         max_digits=5,
         decimal_places=2,
         default=90,
-        help_text="% of the post-subsidy cost that is financed. The rest is upfront.",
+        help_text="% of the system cost that is financed. The rest is upfront.",
     )
     subsidy_before_loan = models.BooleanField(
         default=True,
         help_text=(
-            "On: subsidy is deducted first, then the loan %% is applied to the "
-            "remainder. Off: the loan %% applies to the gross system cost."
+            "On: the loan % is applied to the system cost, then the subsidy is "
+            "deducted from that loan. Off: the subsidy does not reduce the loan."
         ),
     )
     tenure_min_years = models.PositiveIntegerField(default=1)

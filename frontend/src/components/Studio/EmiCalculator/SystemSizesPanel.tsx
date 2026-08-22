@@ -17,6 +17,7 @@ import {
   TextField,
   ToggleField,
   inr,
+  nullableNum,
   str,
 } from "./shared";
 import { useEditableRows } from "./useEditableRows";
@@ -25,6 +26,7 @@ const toInput = (row: EMISystemSize): EMISystemSizeInput => ({
   label: row.label,
   capacity_kw: row.capacity_kw,
   price_per_kw: row.price_per_kw,
+  max_system_cost: row.max_system_cost,
   monthly_bill_reference: row.monthly_bill_reference,
   sort_order: Number(row.sort_order) || 0,
   is_active: row.is_active,
@@ -59,6 +61,7 @@ export default function SystemSizesPanel({
                   capacity_kw: "",
                   price_per_kw: "",
                   system_cost: 0,
+                  max_system_cost: null,
                   monthly_bill_reference: "0",
                   sort_order: rows.length + 1,
                   is_active: true,
@@ -80,6 +83,8 @@ export default function SystemSizesPanel({
 
         {rows.map((row) => {
           const cost = Number(row.capacity_kw) * Number(row.price_per_kw);
+          const cap = row.max_system_cost === null ? null : Number(row.max_system_cost);
+          const overCap = cap !== null && Number.isFinite(cost) && cost > cap;
           return (
             <RowCard
               key={row.id}
@@ -88,7 +93,15 @@ export default function SystemSizesPanel({
                 Number.isFinite(cost) && cost > 0 ? (
                   <>
                     System cost{" "}
-                    <strong style={{ color: studioColors.tealDeep }}>{inr(cost)}</strong>
+                    <strong style={{ color: overCap ? studioColors.danger : studioColors.tealDeep }}>
+                      {inr(cost)}
+                    </strong>
+                    {overCap && (
+                      <span style={{ color: studioColors.danger }}>
+                        {" "}
+                        · above the {inr(cap)} cap — this size cannot be quoted
+                      </span>
+                    )}
                   </>
                 ) : undefined
               }
@@ -123,6 +136,15 @@ export default function SystemSizesPanel({
                   prefix="₹"
                   disabled={readOnly}
                   hint="System cost = this × capacity."
+                />
+                <NumberField
+                  label="Maximum system cost"
+                  value={str(row.max_system_cost)}
+                  onChange={(v) => patch(row.id, { max_system_cost: nullableNum(v) })}
+                  prefix="₹"
+                  placeholder="no cap"
+                  disabled={readOnly}
+                  hint="Above this the calculator refuses to quote. 3kW is capped at ₹3,00,000."
                 />
                 <NumberField
                   label="Reference monthly bill"

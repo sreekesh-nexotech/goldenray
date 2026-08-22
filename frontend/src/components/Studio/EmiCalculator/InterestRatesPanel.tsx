@@ -1,8 +1,9 @@
 "use client";
 
-// Interest-rate policy. Each rule can be scoped by capacity, by loan amount,
-// or both — which is how the current size-based policy (3kW locked at 5.75%,
-// larger systems floored at 8%) and loan-range slabs live in one table.
+// Interest-rate policy. Each rule can be scoped by capacity, by system cost,
+// by loan amount, or any combination — which is how today's policy (3kW is
+// 5.75% up to ₹2L of system cost and 8% from ₹2L to ₹3L, larger systems
+// floored at 8%) and loan-range slabs live in one table.
 
 import { GhostButton } from "../shared/primitives";
 import { studioColors } from "../shared/format";
@@ -28,6 +29,8 @@ const toInput = (row: EMIInterestRateRule): EMIInterestRateRuleInput => ({
   label: row.label,
   min_kw: row.min_kw,
   max_kw: row.max_kw,
+  min_cost: row.min_cost,
+  max_cost: row.max_cost,
   min_loan: row.min_loan,
   max_loan: row.max_loan,
   rate: row.rate,
@@ -45,10 +48,16 @@ function scopeLabel(row: EMIInterestRateRule): string {
     const hi = row.max_kw ? `${Number(row.max_kw)}kW` : "up";
     parts.push(row.max_kw ? `${lo}–${hi}` : `${lo}+`);
   }
+  const rupees = (v: string) => `₹${Number(v).toLocaleString("en-IN")}`;
+  if (row.min_cost || row.max_cost) {
+    const lo = row.min_cost ? rupees(row.min_cost) : "any";
+    const hi = row.max_cost ? rupees(row.max_cost) : "up";
+    parts.push(`cost ${row.max_cost ? `${lo}–${hi}` : `${lo}+`}`);
+  }
   if (row.min_loan || row.max_loan) {
-    const lo = row.min_loan ? `₹${Number(row.min_loan).toLocaleString("en-IN")}` : "any";
-    const hi = row.max_loan ? `₹${Number(row.max_loan).toLocaleString("en-IN")}` : "up";
-    parts.push(row.max_loan ? `${lo}–${hi}` : `${lo}+`);
+    const lo = row.min_loan ? rupees(row.min_loan) : "any";
+    const hi = row.max_loan ? rupees(row.max_loan) : "up";
+    parts.push(`loan ${row.max_loan ? `${lo}–${hi}` : `${lo}+`}`);
   }
   return parts.length ? parts.join(" · ") : "All systems (catch-all)";
 }
@@ -81,6 +90,8 @@ export default function InterestRatesPanel({
                   label: "",
                   min_kw: null,
                   max_kw: null,
+                  min_cost: null,
+                  max_cost: null,
                   min_loan: null,
                   max_loan: null,
                   rate: "8.00",
@@ -96,9 +107,10 @@ export default function InterestRatesPanel({
           )
         }
       >
-        Scope a rule by system size, by loan amount, or both — leave a pair
-        blank to ignore it. A locked rule fixes the rate outright and the
-        customer&apos;s slider is disabled; an unlocked one lets them raise the
+        Scope a rule by system size, by system cost, by loan amount, or any
+        combination — leave a pair blank to ignore it. A locked rule fixes the
+        rate outright and the customer&apos;s slider is disabled; an unlocked
+        one lets them raise the
         rate but never below the floor. When two rules match, the higher
         priority wins, then the more specific one.
       </PanelIntro>
@@ -179,6 +191,23 @@ export default function InterestRatesPanel({
                 value={str(row.max_kw)}
                 onChange={(v) => patch(row.id, { max_kw: nullableNum(v) })}
                 suffix="kW"
+                placeholder="any"
+                disabled={readOnly}
+              />
+              <NumberField
+                label="From system cost"
+                value={str(row.min_cost)}
+                onChange={(v) => patch(row.id, { min_cost: nullableNum(v) })}
+                prefix="₹"
+                placeholder="any"
+                disabled={readOnly}
+                hint="Bands the rate on the system cost, e.g. up to ₹2,00,000."
+              />
+              <NumberField
+                label="Up to system cost"
+                value={str(row.max_cost)}
+                onChange={(v) => patch(row.id, { max_cost: nullableNum(v) })}
+                prefix="₹"
                 placeholder="any"
                 disabled={readOnly}
               />

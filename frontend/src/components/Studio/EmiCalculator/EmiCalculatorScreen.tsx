@@ -95,10 +95,10 @@ export default function EmiCalculatorScreen() {
 
       <TipBanner>
         Changes go live as soon as a row is saved — the public page reads these
-        values on every visit. The calculation itself runs on the server:
-        subsidy is deducted first, then {data ? Number(data.settings.loan_percentage) : 90}% of
-        what remains is financed, and the daily figure is the monthly EMI ÷{" "}
-        {data ? data.settings.daily_saving_divisor : 30}.
+        values on every visit. The calculation itself runs on the server:{" "}
+        {data ? Number(data.settings.loan_percentage) : 90}% of the system cost
+        is financed, the subsidy comes off that loan, and the daily figure is
+        the monthly EMI ÷ {data ? data.settings.daily_saving_divisor : 30}.
       </TipBanner>
 
       {readOnly && me && (

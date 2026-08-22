@@ -172,11 +172,11 @@ export default function SettingsPanel({
             hint="Used for the lifetime-savings projection."
           />
           <ToggleField
-            label="Deduct subsidy before the loan"
+            label="Deduct subsidy from the loan"
             checked={draft.subsidy_before_loan}
             onChange={() => set({ subsidy_before_loan: !draft.subsidy_before_loan })}
             disabled={readOnly}
-            hint="On: subsidy first, then the loan %. This is the agreed flow — turning it off sizes the loan on the gross cost."
+            hint="On: the loan % is taken off the system cost first, then the subsidy comes off that loan. This is the agreed flow — turning it off leaves the loan at the full %."
           />
         </FieldGrid>
       </div>
