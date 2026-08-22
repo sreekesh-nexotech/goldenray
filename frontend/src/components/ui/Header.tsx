@@ -156,6 +156,8 @@ export default function Header() {
               </div>
             </li>
 
+            
+            {/*
             <li>
               <Link
                 href="/about"
@@ -176,6 +178,7 @@ export default function Header() {
                 ButtonHover="hover:bg-[#eeeeee]"
               />
             </li>
+            */}
 
             <li>
               <LinkingButton
@@ -298,6 +301,7 @@ export default function Header() {
           </div>
         </li>
 
+        {/*
         <li>
           <Link
             href="/about"
@@ -309,6 +313,7 @@ export default function Header() {
             About Us
           </Link>
         </li>
+        */}
         <li>
           <Link
             href="/contactus"

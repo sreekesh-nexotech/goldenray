@@ -15,7 +15,7 @@ const companyLinks = [
   { label: "How Flarize Works", href: "/how-flarize-works" },
   { label: "Our Projects", href: "/projects" },
   { label: "Contact Us", href: "/contactus" },
-  { label: "About Us", href: "/about" },
+  //{ label: "About Us", href: "/about" },
   { label: "Careers", href: "/career" },
 ];
 
