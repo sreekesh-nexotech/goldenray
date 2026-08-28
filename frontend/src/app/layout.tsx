@@ -14,6 +14,9 @@ import { SITE_URL } from "@/config";
 import { isGtmEnabled } from "@/utils/gtm";
 import { GTM_ID, GA_MEASUREMENT_ID } from "@/config";
 
+import JsonLD from "@/components/JsonLD"; 
+import { organizationSchema } from "@/data/jsonld"; 
+
 /* -------------------- Fonts -------------------- */
 
 const dmSans = DM_Sans({
@@ -127,6 +130,7 @@ export default function RootLayout({
         />
         <meta name="apple-mobile-web-app-title" content="Flarize" />
 
+        <JsonLD data={organizationSchema} />
         {/* Google tag (gtag.js) — GA4 */}
         {GA_MEASUREMENT_ID.length > 0 && (
           <>

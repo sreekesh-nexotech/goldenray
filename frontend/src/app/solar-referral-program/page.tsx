@@ -1,7 +1,8 @@
 import AffiliateMainPage from '@/components/AffiliatePrograms/AffiliateMainPage'
 import { Metadata } from 'next';
 import React from 'react'
-
+import JsonLD from '@/components/JsonLD';
+import { solarReferralServiceSchema,  solarReferralBreadcrumbSchema, solarReferralFaqSchema,} from '@/data/jsonld';
 
 
 const ogImage = "https://golden-ray.b-cdn.net/images/affiliate-hero.png";
@@ -56,7 +57,12 @@ export const metadata: Metadata = {
 
 const page = () => {
   return (
-    <AffiliateMainPage/>
+    <>
+      <JsonLD data={solarReferralServiceSchema} />
+      <JsonLD data={solarReferralBreadcrumbSchema} />
+      <JsonLD data={solarReferralFaqSchema} />
+      <AffiliateMainPage/>
+    </>
   )
 }
 
