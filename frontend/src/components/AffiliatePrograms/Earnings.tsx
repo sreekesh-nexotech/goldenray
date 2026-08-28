@@ -88,9 +88,9 @@ const Earnings = () => {
                 Estimated Monthly Earnings
               </p>
 
-              <h1 className="text-4xl md:text-7xl text-[#FEF3E8] leading-tight font-semibold mt-5">
+              <h2 className="text-4xl md:text-7xl text-[#FEF3E8] leading-tight font-semibold mt-5">
                 ₹{monthlyEarnings.toLocaleString()}
-              </h1>
+              </h2>
 
               <p className="text-xs md:text-base font-normal leading-normal text-[#D1D5DB] mt-5">
                 Based on {installations} installations at average 5kW commission

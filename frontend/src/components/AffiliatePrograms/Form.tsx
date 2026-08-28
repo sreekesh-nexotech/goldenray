@@ -318,7 +318,7 @@ const Form = () => {
 
             {/* WhatsApp */}
             <a
-              href="https://wa.me/6282922988?text=Hi, I'd like to know more about Flarize solar solutions."
+              href="https://wa.me/+916282922988?text=Hi, I'd like to know more about Flarize solar solutions."
               target="_blank"
               rel="noopener noreferrer"
               className="w-full border border-[#074A4D] text-[#074A4D] hover:bg-[#F3F4F6] transition-colors duration-200 font-semibold text-base md:text-xl leading-snug py-3 rounded-xl flex items-center justify-center gap-2"

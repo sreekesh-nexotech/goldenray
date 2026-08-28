@@ -11,7 +11,7 @@ import { allLocations } from "@/data/locations";
 import FlarizeLogo from "../../../public/logoFooter.png";
 
 const companyLinks = [
-  { label: "Affiliate Program", href: "/affiliate-programs" },
+  { label: "Flarize Solar Refferal Program", href: "/solar-referral-program" },
   { label: "How Flarize Works", href: "/how-flarize-works" },
   { label: "Our Projects", href: "/projects" },
   { label: "Contact Us", href: "/contactus" },
@@ -310,7 +310,7 @@ export default function Footer() {
         {/* ---------- Copyright ---------- */}
         <div className="mx-auto mt-8 max-w-7xl">
           <p className="text-center text-sm text-white/60">
-            &copy; 2025 Flarize All rights reserved
+            &copy; {new Date().getFullYear()} Flarize All rights reserved
           </p>
         </div>
       </footer>

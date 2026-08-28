@@ -7,21 +7,21 @@ import React from 'react'
 const ogImage = "https://golden-ray.b-cdn.net/images/affiliate-hero.png";
 
 export const metadata: Metadata = {
-  title: "Flarize Affiliate Program ",
+  title: "Flarize Solae Referral Program",
   description:
     "Earn a structured commission for every successful solar installation you refer — with zero investment, no solar expertise required, and a dedicated partner manager handling every lead you send.",
   keywords: [
-    "flarize affiliate program",
-    "flarize referral program",
-    "flarize partner program",
-    "earn money flarize",
-    "flarize solar affiliate",
+    "Flarize Solar Referral Program",
+    "Flarize Solar Affiliate Program",
+    "Flarize Solar Commission Structure",
+    "Flarize Solar Earnings Potential",
+    "Flarize Solar Testimonials",
   ],
   openGraph: {
-    title: "Flarize Affiliate Program ",
+    title: "Flarize Solar Referral Program",
     description:
       "Earn a structured commission for every successful solar installation you refer — with zero investment, no solar expertise required, and a dedicated partner manager handling every lead you send.",
-    url: "https://flarize.com/affiliate-programs",
+    url: "https://flarize.com/solar-referral-program",
     siteName: "Flarize",
     images: [
       {
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Flarize Affiliate Program ",
+    title: "Flarize Solar Referral Program",
     description:
       "Earn a structured commission for every successful solar installation you refer — with zero investment, no solar expertise required, and a dedicated partner manager handling every lead you send.",
     images: [ogImage],
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://flarize.com/affiliate-programs",
+    canonical: "https://flarize.com/solar-referral-program",
   },
   robots: {
     index: true,

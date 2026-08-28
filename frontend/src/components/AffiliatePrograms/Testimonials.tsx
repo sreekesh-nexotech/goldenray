@@ -20,7 +20,7 @@ const testimonials: Testimonial[] = [
     role: "Social Media Influencer, Kochi | Active Partner since 2025",
     earned: "₹72,000 earned",
     quote:
-      "I mention solar as a natural upgrade conversation with homebuyers — it fits perfectly into discussions about running costs and long-term value. The Golden Sun team handles everything after I make the introduction. I've had 9 installations in 4 months without it feeling like sales work at all.",
+      "I started sharing solar content on my Instagram and YouTube channels, and the audience response was overwhelming. Flarize's team provides me with ready-to-share content and handles all the technical queries. The commissions are credited promptly, making this a reliable income stream.",
     referrals: 9,
     installations: 9,
     conversion: "100% conversion",

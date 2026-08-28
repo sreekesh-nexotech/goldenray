@@ -5,11 +5,11 @@ import LinkingButton from "../ui/LinkingButton";
 const visibleRow = {
   size: "3 kW – 10 kW+",
   use: "Homes & Commercial",
-  commission: "₹8,000",
+  commission: "₹6,000",
 };
 
 const lockedRows = [
-  { size: "5 kW – 8 kW", use: "Homes & Commercial", commission: "₹6,000" },
+  { size: "5 kW – 8 kW", use: "Homes & Commercial", commission: "₹8,000" },
   { size: "8 kW – 10 kW", use: "Commercial", commission: "₹10,000" },
 ];
 

@@ -17,6 +17,7 @@ export default function Header() {
     { name: "Commercial", href: "/commercial" },
     { name: "Group Purchase", href: "/group-purchase" },
     { name: "Our Projects", href: "/projects" },
+    { name: "Flarize Solar Referral Program", href: "/solar-referral-program" },
   ];
 
   const tools = [
@@ -70,7 +71,8 @@ export default function Header() {
                   isActive("/commercial") ||
                   isActive("/projects") ||
                   isActive("/blog") ||
-                  isActive("/group-purchase")
+                  isActive("/group-purchase") ||
+                  isActive("/solar-referral-program")
                     ? "font-bold before:w-1/2"
                     : ""
                 } hover:font-bold transition-all duration-200 before:content-[''] before:absolute before:bottom-[-0.25rem] before:left-0 before:h-[0.1875rem] before:rounded-lg before:bg-[#FBC207] before:w-0 before:transition-all before:duration-500 before:ease-in-out hover:before:w-1/2`}
@@ -211,7 +213,7 @@ export default function Header() {
         }`}
       >
         {/* Mobile Solutions Dropdown */}
-        <li className="flex flex-col items-center">
+        <li className="flex flex-col items-start">
           <button
             onClick={() => setSolutionsDropdownOpen(!solutionsDropdownOpen)}
             className={`relative text-gray-700 font-medium text-xl flex items-center gap-1 ${
