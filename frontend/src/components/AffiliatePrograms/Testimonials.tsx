@@ -86,7 +86,7 @@ const Testimonials = () => {
       {/* Heading */}
       <div className="w-full max-w-7xl mx-auto text-center mb-8">
         <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
-          Real Affiliates. Real Earnings.
+          Real Solar Referral Partners. Real Earnings.
         </h2>
         <p className="text-sm md:text-xl font-normal leading-relaxed text-[#4B5563]">
           People across Kerala earning ₹10,000 to ₹40,000+ per month through

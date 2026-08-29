@@ -38,7 +38,7 @@ export default function Working() {
       <div className="mx-auto max-w-7xl px-4 sm:px-2 space-y-15">
         {/* Heading */}
         <h2 className="text-center text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
-          How the Flarize Solar Affiliate Program Works
+          How the Flarize Solar Referral Partner Program Works
         </h2>
 
         {/* Three Column Grid */}

@@ -37,7 +37,7 @@ const WhyFlarize = () => {
       {/* Heading */}
       <div className="w-full max-w-7xl mx-auto text-center mb-10">
         <h2 className="text-3xl md:text-5xl font-semibold leading-tight text-[#123532]">
-          Why Affiliates Choose Flarize Over Other Programs
+          Why Solar Referral partners Choose Flarize Over Other Programs
         </h2>
       </div>
 

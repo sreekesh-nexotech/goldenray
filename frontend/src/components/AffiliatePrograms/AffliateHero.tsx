@@ -37,7 +37,7 @@ const AffliateHero = () => {
         <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start px-4 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-10 md:py-16 gap-3 sm:gap-4">
           <div className="mb-2">
             <span className="flex items-center gap-1 bg-[#074A4D1A] text-[#074A4D] text-xs md:text-base font-normal leading-normal rounded px-3 py-1">
-              <Award color="#0B4740" /> Solar Affiliate Program Kerala | Earn
+              <Award color="#0B4740" /> Flarize Solar Referral Program Kerala | Earn
               Rs.8,000+ Per Installation
             </span>
           </div>
@@ -53,7 +53,7 @@ from consultation to after-sales support—so you can refer with confidence.
           </p>
           <div className="flex flex-row justify-center md:justify-start text-xs lg:text-lg lg:gap-4 gap-2 mt-2 w-full sm:w-auto">
             <LinkingButton
-              content="Apply as Affiliate Partner "
+              content="Apply as Referral Partner "
               ButtonLink="#form"
               ButtonBg="bg-[#F7BA41]"
               Buttontext="text-[#272218]"
@@ -72,7 +72,7 @@ from consultation to after-sales support—so you can refer with confidence.
           </div>
 
           <p className="hidden md:block mt-2 text-sm md:text-xl font-medium leading-relaxed text-[#123532]">
-            A Flarize Partner Program · Powered by Golden Ray Energy · Flarize
+            Flarize Solar Referral Program · Powered by Golden Ray Energy · Flarize
             Technologies Pvt Ltd · Founder-led by Harikrishnan K.R
           </p>
 
@@ -88,7 +88,7 @@ from consultation to after-sales support—so you can refer with confidence.
           </div>
 
           <p className="block md:hidden mt-2 text-sm md:text-xl font-medium leading-relaxed text-[#123532]">
-            A Flarize Partner Program · Powered by Golden Ray Energy · Flarize
+            Flarize Solar Referral Program · Powered by Golden Ray Energy · Flarize
             Technologies Pvt Ltd · Founder-led by Harikrishnan K.R
           </p>
         </div>

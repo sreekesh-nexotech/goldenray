@@ -24,7 +24,7 @@ const PartnersChooseFlarize = () => {
       {/* Heading */}
       <div className="w-full max-w-7xl mx-auto text-center mb-4">
         <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
-          Why Partners Choose Flarize
+          Why Referral Partners Choose Flarize
         </h2>
         <p className="text-sm md:text-lg font-normal leading-relaxed text-[#4B5563]">
           Not because the commission is the biggest — because your reputation is

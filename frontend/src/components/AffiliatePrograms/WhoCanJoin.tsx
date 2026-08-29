@@ -46,7 +46,7 @@ export const WhoCanJoin = () => {
       {/* Heading */}
       <div className="w-full max-w-7xl mx-auto text-center mb-8">
         <h2 className="text-4xl md:text-5xl font-bold leading-tight text-[#0A453D]">
-          Who Can Join the Flarize Partner Program?
+          Who Can Join the Flarize Solar Referral Program?
         </h2>
       </div>
 

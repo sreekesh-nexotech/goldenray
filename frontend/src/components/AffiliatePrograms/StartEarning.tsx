@@ -17,7 +17,7 @@ const StartEarning = () => {
 
       <div className="flex flex-col sm:flex-row w-full justify-center gap-5">
         <LinkingButton
-          content="Apply as Affiliate Partner"
+          content="Apply as Referral Partner"
           ButtonLink="#form"
           ButtonBg="bg-[#F7BA41]"
           ButtonHover="hover:bg-[#e6a73a]"
