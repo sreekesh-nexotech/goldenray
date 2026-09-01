@@ -2,8 +2,8 @@
 
 // Interest-rate policy. Each rule can be scoped by capacity, by system cost,
 // by loan amount, or any combination — which is how today's policy (3kW is
-// 5.75% up to ₹2L of system cost and 8% from ₹2L to ₹3L, larger systems
-// floored at 8%) and loan-range slabs live in one table.
+// locked at 5.75% whatever it costs, larger systems floored at 8%) and
+// cost- or loan-range slabs live in one table.
 
 import { GhostButton } from "../shared/primitives";
 import { studioColors } from "../shared/format";

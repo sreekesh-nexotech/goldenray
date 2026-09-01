@@ -153,8 +153,8 @@ class EmiInterestRateRule(models.Model):
     """Interest-rate policy for a capacity, system-cost and/or loan band.
 
     Every band is optional, which is what lets one table express today's
-    policy (a 3kW system is 5.75% up to ₹2L of system cost and 8% above it,
-    larger systems floor at 8%) and loan-range slabs later on, without a schema
+    policy (a 3kW system is fixed at 5.75% whatever it costs, larger systems
+    floor at 8%) and cost- or loan-range slabs later on, without a schema
     change. A rule with no band set is the catch-all default.
     """
 
