@@ -1,20 +1,11 @@
 // src/app/residential/page.tsx
 import { Metadata } from "next";
 import { residentialPageData } from "@/data/solutions-page-data";
-import {
-  SolutionHero,
-  InfoSection,
-  WorkSection,
-  PanelTypesSection,
-  SolarTypes,
-  MilestonesSection,
-  BenefitsApplicationsSection,
-  FinalThoughtsSection,
-  SolutionFaqSection,
-} from "@/components/SolutionsPage";
+
 
 import JsonLD from "@/components/JsonLD";
 import { residentialServiceSchema } from "@/data/jsonld";
+import ResidentialMain from "@/components/Residential/ResidentialMain";
 
 export const metadata: Metadata = {
   title:
@@ -60,63 +51,11 @@ export const metadata: Metadata = {
 };
 
 export default function ResidentialPage() {
-  const data = residentialPageData;
 
   return (
     <>
       <JsonLD data={residentialServiceSchema} />
-      {/* Hero Section */}
-      <SolutionHero data={data.hero} />
-
-      {/* Citable Answer Block — first substantive paragraph below the H1 */}
-      <section className="px-4 md:px-6 lg:px-8 pt-8 md:pt-10">
-        <p className="max-w-7xl mx-auto text-base md:text-lg leading-relaxed text-[#444444]">
-          Residential solar panel installation in Kerala costs
-          ₹1,85,000–₹2,15,000 for a 3 kW on-grid system before subsidy. After
-          the ₹78,000 PM Surya Ghar central subsidy, the net cost drops to
-          ₹1,07,000–₹1,37,000. Most Kerala homes consuming 300–500 KSEB units
-          per month need a 3–5 kW system, which generates 12–20 units per day
-          and can reduce the electricity bill to near-zero via KSEB net
-          metering. Flarize is an MNRE-empanelled EPC company operating across
-          all 14 Kerala districts including Alappuzha, Ernakulam,
-          Thiruvananthapuram, Kozhikode, and Thrissur. Installation takes 2–3
-          days for a typical residential system. The process includes site
-          assessment, KSEB feasibility approval, panel installation, electrical
-          inspector sign-off, and net meter activation. Flarize handles every
-          step end-to-end with a 25-year platform accountability guarantee.
-        </p>
-      </section>
-
-      {/* What Are Residential Solar Panels */}
-      <InfoSection data={data.whatSection} variant="boxed" />
-
-      {/* How Do Residential Solar Panels Work */}
-      <InfoSection data={data.howSection} variant="boxed" />
-
-      {/* Work Section */}
-      <WorkSection data={data.workSection} />
-
-      {/* Types of Solar Panels - Light */}
-      <PanelTypesSection panels={data.panelTypes} variant="light" />
-
-      {/* Our Milestones */}
-      <MilestonesSection milestones={data.milestones} />
-
-      {/* Benefits & Applications */}
-      <BenefitsApplicationsSection data={data.benefitsApplications} />
-
-      {/* Final Thoughts */}
-      <FinalThoughtsSection data={data.finalThoughts} />
-
-      {/* Solar Types with Background */}
-      <SolarTypes solarTypes={data.solarTypes} />
-
-      {/* FAQ Section */}
-      <SolutionFaqSection
-        title={data.faqTitle}
-        description={data.faqDescription}
-        faqs={data.faqs}
-      />
+      <ResidentialMain/>
     </>
   );
 }
