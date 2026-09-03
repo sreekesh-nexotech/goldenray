@@ -44,8 +44,8 @@ export default function ResidentialHero() {
               ButtonHover="hover:bg-[#eeeeee]"
             />
             </div>
-            <ul className="mt-6 flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-3 text-xs md:text-sm font-medium text-[#171717]">
-              <li className="flex items-center gap-2">
+            <ul className="no-scrollbar mt-6 flex flex-nowrap items-center justify-start gap-4 md:gap-6 overflow-x-auto text-[11px] md:text-sm font-medium text-[#171717]">
+              <li className="flex shrink-0 items-center gap-2 whitespace-nowrap">
                 <CircleCheck
                   className="h-4 w-4 md:h-5 md:w-5 shrink-0 text-[#074A4D]"
                   strokeWidth={1.75}
@@ -53,7 +53,7 @@ export default function ResidentialHero() {
                 />
                 8+ years on Kerala roofs
               </li>
-              <li className="flex items-center gap-2">
+              <li className="flex shrink-0 items-center gap-2 whitespace-nowrap">
                 <Award
                   className="h-4 w-4 md:h-5 md:w-5 shrink-0 text-[#074A4D]"
                   strokeWidth={1.75}
@@ -61,7 +61,7 @@ export default function ResidentialHero() {
                 />
                 Kerala Energy Excellence Awards 2026
               </li>
-              <li className="flex items-center gap-2">
+              <li className="flex shrink-0 items-center gap-2 whitespace-nowrap">
                 <MapPin
                   className="h-4 w-4 md:h-5 md:w-5 shrink-0 text-[#074A4D]"
                   strokeWidth={1.75}
