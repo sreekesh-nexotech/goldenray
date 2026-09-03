@@ -2,6 +2,7 @@ import React from 'react'
 import ResidentialHero from './ResidentialHero'
 import FlarizeTrust from './FlarizeTrust'
 import HomeReadyForSolar from './HomeReadyForSolar'
+import UnderstandingSolarPanels from './UnderstandingSolarPanels'
 import WhichSolarSystem from './WhichSolarSystem'
 import QuoteAnalyserCTA from './QuoteAnalyserCTA'
 
@@ -13,6 +14,7 @@ const ResidentialMain = () => {
       <HomeReadyForSolar />
       <QuoteAnalyserCTA />
       <WhichSolarSystem />
+      <UnderstandingSolarPanels />
 
     </section>
   )
