@@ -151,7 +151,7 @@ const Form = () => {
           className="max-w-2xl mx-auto bg-[#074A4D] rounded-2xl p-5 sm:p-6 "
         >
           <h3 className="hidden sm:block text-4xl md:text-5xl font-semibold leading-tight text-white text-center mb-1">
-            Affiliate Application
+            Referral Program Application
           </h3>
           <p className="hidden sm:block text-sm md:text-xl font-normal leading-relaxed text-[#D4D4D4] text-center mb-5">
             Takes 2 minutes. Our partner team reviews and responds within 48
