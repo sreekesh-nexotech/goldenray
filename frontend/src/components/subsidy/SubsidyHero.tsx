@@ -1,7 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import PageIllustration from "@/components/ui/page-illustration";
 import LinkingButton from "../ui/LinkingButton";
+
+const heroImage =
+  "https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/e4f23c9bff9a796d256d7beb9e60ddd7b5a416e7.png";
+const heroImageAlt =
+  "Rooftop solar panel array under a clear blue sky in Kerala";
 
 export default function SubsidyHero() {
   return (
@@ -9,48 +15,57 @@ export default function SubsidyHero() {
       className="relative w-full overflow-hidden"
       style={{
         background:
-          "radial-gradient(217.09% 47.87% at 103.46% 47.87%, #F8F2E1 0%, rgba(255, 255, 255, 0) 100%)",
+          "radial-gradient(120% 90% at 0% 30%, #F8F2E1 0%, rgba(255, 255, 255, 0) 70%)",
       }}
     >
       <PageIllustration isGradient={false} />
 
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-15 sm:py-18 md:py-20 lg:py-24 xl:py-28 2xl:py-32 max-w-7xl flex items-center justify-center h-full">
-        {/* Centered Text */}
-        <div className="w-full text-center mt-16 sm:mt-18 md:mt-20 lg:mt-12 xl:mt-14 2xl:mt-16">
-          <p className="text-base md:text-xl font-semibold leading-snug text-[#ED8723] mb-2 sm:mb-3 lg:mb-3 xl:mb-4 2xl:mb-4">
-            🎉 Congratulations!
-          </p>
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-semibold leading-tight text-[#123532] mb-4 sm:mb-5 lg:mb-6 xl:mb-6 2xl:mb-8">
-            Get up to <span className="text-[#ED8723]">₹78,000</span> Back on
-            Solar
-          </h1>
-          <p className="text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-4 sm:mb-5 lg:mb-5 xl:mb-6 2xl:mb-6 max-w-3xl xl:max-w-4xl 2xl:max-w-4xl mx-auto">
-            Join 300+ Kerala families who&apos;ve gone solar with Flarize — 8+
-            years operating in Kerala, saving ₹5,000+ every month on electricity
-            bills. We handle all KSEB paperwork &amp; PM Surya Ghar portal
-            filing.
-          </p>
-          <p className="text-xs md:text-base font-normal leading-normal text-[#666666] mb-6 sm:mb-7 lg:mb-8 xl:mb-8 2xl:mb-10">
-            Government Registered · MNRE Approved · KSEB Compliant
-          </p>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 pt-8 pb-14  md:pb-20 lg:pt-18 lg:pb-24">
+        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-14 xl:gap-16">
+          {/* Copy */}
+          <div className="w-full lg:w-[52%] text-center lg:text-left">
+            <span className="inline-flex items-center rounded-full bg-[#DDEFE3] px-3.5 py-1.5 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.12em] text-[#0E7A55]">
+              Government Subsidy Update 2026
+            </span>
 
-          <div className="flex flex-row justify-center text-xs sm:text-sm md:text-base lg:text-lg xl:text-lg 2xl:text-xl gap-2 sm:gap-3 lg:gap-4 xl:gap-4 2xl:gap-5">
-            <LinkingButton
-              content="Calculate My Subsidy"
-              ButtonLink="#solar-advantage"
-              ButtonBg="bg-[#F7BA41]"
-              Buttontext="text-[#272218]"
-              ButtonHover="hover:bg-yellow-500"
-            />
-            <LinkingButton
-              content="Talk to Solar Expert"
-              ButtonLink="#footer"
-              ButtonBorder="border border-[#074A4D]"
-              ButtonBg="bg-[#FFFFFF]"
-              Buttontext="text-[#074A4D]"
-              ButtonHover="hover:bg-[#eeeeee]"
-            />
+            <h1 className="mt-5 text-3xl sm:text-4xl md:text-5xl xl:text-[3.25rem] font-semibold leading-[1.15] tracking-tight text-[#123532]">
+              Solar Subsidy Kerala 2026: See Your Government Support in Under a
+              Minute
+            </h1>
+
+            <p className="mt-5 max-w-xl mx-auto lg:mx-0 text-sm md:text-base lg:text-lg font-normal leading-relaxed text-[#444444]">
+              Rooftop solar subsidy under the PM Surya Ghar scheme now covers up
+              to ₹78,000 for a typical Kerala home. Check your eligibility and
+              exact subsidy amount — no site visit needed.
+            </p>
+
+            <div className="mt-7 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
+              <LinkingButton
+                content="Check Your Solar Subsidy Eligibility →"
+                ButtonLink="#subsidy-calculator"
+                ButtonBg="bg-[#F7BA41]"
+                Buttontext="text-[#272218]"
+                ButtonHover="hover:bg-yellow-500"
+                className="w-full sm:w-auto text-sm md:text-base"
+              />
+              <span className="text-xs md:text-sm font-normal text-[#8A8A8A]">
+                Takes less than 30 seconds.
+              </span>
+            </div>
+          </div>
+
+          {/* Image */}
+          <div className="w-full lg:w-[48%]">
+            <div className="relative w-full h-[240px] sm:h-[300px] md:h-[360px] lg:h-[400px] xl:h-[440px]">
+              <Image
+                src={heroImage}
+                alt={heroImageAlt}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover rounded-3xl shadow-[0_20px_60px_rgba(18,53,50,0.15)]"
+              />
+            </div>
           </div>
         </div>
       </div>

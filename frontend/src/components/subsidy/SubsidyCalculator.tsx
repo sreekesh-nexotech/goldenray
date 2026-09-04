@@ -58,6 +58,7 @@ export default function SubsidyCalculator({
 
   return (
     <section
+      id="subsidy-calculator"
       className="relative py-16 sm:py-18 md:py-20 lg:py-24 xl:py-28 2xl:py-32 overflow-hidden"
       style={{
         background:
