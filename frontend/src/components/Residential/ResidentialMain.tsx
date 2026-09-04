@@ -5,8 +5,11 @@ import HomeReadyForSolar from './HomeReadyForSolar'
 import UnderstandingSolarPanels from './UnderstandingSolarPanels'
 import WhatsIncluded from './WhatsIncluded'
 import SafetyAndCompliance from './SafetyAndCompliance'
+import SolarPriceInKerala from './SolarPriceInKerala'
 import WhichSolarSystem from './WhichSolarSystem'
 import QuoteAnalyserCTA from './QuoteAnalyserCTA'
+import Certified from '../certified-by'
+import HomeTestimonial from '../Home/Testimomial'
 
 const ResidentialMain = () => {
   return (
@@ -19,6 +22,10 @@ const ResidentialMain = () => {
       <UnderstandingSolarPanels />
       <WhatsIncluded />
       <SafetyAndCompliance />
+      <SolarPriceInKerala />
+      
+      <Certified/>
+      <HomeTestimonial/>
 
     </section>
   )
