@@ -12,6 +12,7 @@ import QuoteAnalyserCTA from './QuoteAnalyserCTA'
 import Certified from '../certified-by'
 import HomeTestimonial from '../Home/Testimomial'
 import ExploreBeforeYouDecide from './ExploreBeforeYouDecide'
+import Faq from './ResidentialFAQ'
 
 const ResidentialMain = () => {
   return (
@@ -29,7 +30,7 @@ const ResidentialMain = () => {
       <Certified/>
       <HomeTestimonial/>
       <ExploreBeforeYouDecide />
-
+      <Faq/>
     </section>
   )
 }
