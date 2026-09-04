@@ -11,6 +11,7 @@ import WhichSolarSystem from './WhichSolarSystem'
 import QuoteAnalyserCTA from './QuoteAnalyserCTA'
 import Certified from '../certified-by'
 import HomeTestimonial from '../Home/Testimomial'
+import ExploreBeforeYouDecide from './ExploreBeforeYouDecide'
 
 const ResidentialMain = () => {
   return (
@@ -27,6 +28,7 @@ const ResidentialMain = () => {
       <FinancingYourFuture />
       <Certified/>
       <HomeTestimonial/>
+      <ExploreBeforeYouDecide />
 
     </section>
   )
