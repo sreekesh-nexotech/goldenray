@@ -6,8 +6,10 @@ import SubsidyDeadline from "./SubsidyDeadline";
 import SubsidyAmountTable from "./SubsidyAmountTable";
 // import SubsidyCalculator from "./SubsidyCalculator";
 // import SubsidyResults from "./SubsidyResults";
-import SubsidySteps from "./subsidy-steps";
+import SubsidySteps from "./SubsidySteps";
 import SubsidyEligibility from "./SubsidyEligibility";
+import Activate from "../GroupPurchase/Activate";
+import SubsidyMistakes from "./SubsidyMistakes";
 
 
 export default function SubsidyMain() {
@@ -48,8 +50,9 @@ export default function SubsidyMain() {
       )} */}
       <SubsidySteps />
 
+      <SubsidyMistakes/>
       
-
+      <Activate/>
     </section>
   );
 }

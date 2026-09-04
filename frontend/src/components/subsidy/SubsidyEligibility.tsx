@@ -25,8 +25,9 @@ const ELIGIBILITY_CRITERIA = [
 
 const SubsidyEligibility = () => {
   return (
-    <div className="w-full py-12 sm:py-14 md:py-16 lg:py-20 xl:py-24 2xl:py-28 px-4 sm:px-6 lg:px-8 xl:px-36 2xl:px-40">
-      <div className="max-w-full mx-auto">
+    <section className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 pb-12 sm:pb-14 lg:pb-16 pt-10">
+
+      <div className="max-w-7xl mx-auto">
         <div
           className="rounded-2xl lg:rounded-3xl 2xl:rounded-4xl p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 2xl:p-16 flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 lg:gap-12 2xl:gap-16"
           style={{ backgroundColor: "#f7ba41" }}
@@ -74,7 +75,7 @@ const SubsidyEligibility = () => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
