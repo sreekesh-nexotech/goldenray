@@ -6,6 +6,7 @@ import UnderstandingSolarPanels from './UnderstandingSolarPanels'
 import WhatsIncluded from './WhatsIncluded'
 import SafetyAndCompliance from './SafetyAndCompliance'
 import SolarPriceInKerala from './SolarPriceInKerala'
+import FinancingYourFuture from './FinancingYourFuture'
 import WhichSolarSystem from './WhichSolarSystem'
 import QuoteAnalyserCTA from './QuoteAnalyserCTA'
 import Certified from '../certified-by'
@@ -23,7 +24,7 @@ const ResidentialMain = () => {
       <WhatsIncluded />
       <SafetyAndCompliance />
       <SolarPriceInKerala />
-      
+      <FinancingYourFuture />
       <Certified/>
       <HomeTestimonial/>
 
