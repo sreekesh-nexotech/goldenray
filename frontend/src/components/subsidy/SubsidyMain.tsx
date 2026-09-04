@@ -11,6 +11,7 @@ import SubsidyEligibility from "./SubsidyEligibility";
 import Activate from "../GroupPurchase/Activate";
 import SubsidyMistakes from "./SubsidyMistakes";
 import KeralaSubsidyInfo from "./KeralaSubsidyInfo";
+import SubsidyResources from "./SubsidyResources";
 
 
 export default function SubsidyMain() {
@@ -53,6 +54,7 @@ export default function SubsidyMain() {
 
       <SubsidyMistakes/>
       <KeralaSubsidyInfo />
+      <SubsidyResources />
       
       <Activate/>
     </section>
