@@ -13,6 +13,7 @@ import Certified from '../certified-by'
 import HomeTestimonial from '../Home/Testimomial'
 import ExploreBeforeYouDecide from './ExploreBeforeYouDecide'
 import Faq from './ResidentialFAQ'
+import HomeEnergyIndependentCTA from './HomeEnergyIndependentCTA'
 
 const ResidentialMain = () => {
   return (
@@ -31,6 +32,7 @@ const ResidentialMain = () => {
       <HomeTestimonial/>
       <ExploreBeforeYouDecide />
       <Faq/>
+      <HomeEnergyIndependentCTA />
     </section>
   )
 }
