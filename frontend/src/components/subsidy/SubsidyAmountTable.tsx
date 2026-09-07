@@ -21,7 +21,10 @@ const SUBSIDY_SLABS = [
 
 export default function SubsidyAmountTable() {
   return (
-    <section className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-12 sm:py-14 lg:py-16">
+    <section
+      id="subsidy-amounts"
+      className="w-full scroll-mt-24 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-12 sm:py-14 lg:py-16"
+    >
       <div className="w-full max-w-4xl mx-auto text-center">
         <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532]">
           How much solar subsidy can you get in Kerala?

@@ -1,11 +1,11 @@
 "use client";
 
-// import React, { useState } from "react";
+import { useCallback, useState } from "react";
 import SubsidyHero from "./SubsidyHero";
 import SubsidyDeadline from "./SubsidyDeadline";
 import SubsidyAmountTable from "./SubsidyAmountTable";
-// import SubsidyCalculator from "./SubsidyCalculator";
-// import SubsidyResults from "./SubsidyResults";
+import SubsidyQuizModal from "./SubsidyQuizModal";
+import SubsidyOutcome from "./SubsidyOutcome";
 import SubsidySteps from "./SubsidySteps";
 import SubsidyEligibility from "./SubsidyEligibility";
 import Activate from "../GroupPurchase/Activate";
@@ -13,51 +13,55 @@ import SubsidyMistakes from "./SubsidyMistakes";
 import KeralaSubsidyInfo from "./KeralaSubsidyInfo";
 import SubsidyResources from "./SubsidyResources";
 import Faq from "./SubsidyFaq";
-
+import { estimateSubsidy, type SubsidyEstimate } from "./eligibility";
 
 export default function SubsidyMain() {
-  // const [showResults, setShowResults] = useState(false);
-  // const [calculatorData, setCalculatorData] = useState({
-  //   electricityBill: "",
-  //   propertyType: "",
-  // });
-  // const [isLoading, setIsLoading] = useState(false);
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [estimate, setEstimate] = useState<SubsidyEstimate | null>(null);
 
-  // const handleCalculate = (electricityBill: string, propertyType: string) => {
-  //   setIsLoading(true);
-  //   // Simulate API call
-  //   setTimeout(() => {
-  //     setCalculatorData({ electricityBill, propertyType });
-  //     setShowResults(true);
-  //     setIsLoading(false);
-  //   }, 500);
-  // };
+  const openQuiz = useCallback(() => {
+    setEstimate(null);
+    setQuizOpen(true);
+  }, []);
+
+  const closeQuiz = useCallback(() => setQuizOpen(false), []);
+
+  const handleComplete = useCallback<
+    React.ComponentProps<typeof SubsidyQuizModal>["onComplete"]
+  >((answers) => {
+    setEstimate(estimateSubsidy(answers));
+    setQuizOpen(false);
+    // The result renders under the hero, so bring it into view once painted.
+    requestAnimationFrame(() => {
+      document
+        .getElementById("subsidy-result")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, []);
 
   return (
     <section className="font-switzer">
-      <SubsidyHero />
+      <SubsidyHero onCheckEligibility={openQuiz} />
+
+      {estimate && (
+        <SubsidyOutcome estimate={estimate} onRestart={openQuiz} />
+      )}
+
       <SubsidyDeadline />
       <SubsidyAmountTable />
-
       <SubsidyEligibility />
-      {/* {showResults ? (
-        <SubsidyResults
-          electricityBill={calculatorData.electricityBill}
-          propertyType={calculatorData.propertyType}
-        />
-      ) : (
-        <SubsidyCalculator
-          onCalculate={handleCalculate}
-          isLoading={isLoading}
-        />
-      )} */}
       <SubsidySteps />
-
-      <SubsidyMistakes/>
+      <SubsidyMistakes />
       <KeralaSubsidyInfo />
       <SubsidyResources />
-      <Faq/>
-      <Activate/>
+      <Faq />
+      <Activate />
+
+      <SubsidyQuizModal
+        open={quizOpen}
+        onClose={closeQuiz}
+        onComplete={handleComplete}
+      />
     </section>
   );
 }

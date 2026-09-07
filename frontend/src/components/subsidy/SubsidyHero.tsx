@@ -2,14 +2,18 @@
 
 import Image from "next/image";
 import PageIllustration from "@/components/ui/page-illustration";
-import LinkingButton from "../ui/LinkingButton";
+
+interface SubsidyHeroProps {
+  /** Opens the four-question eligibility check. */
+  onCheckEligibility: () => void;
+}
 
 const heroImage =
   "https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/e4f23c9bff9a796d256d7beb9e60ddd7b5a416e7.png";
 const heroImageAlt =
   "Rooftop solar panel array under a clear blue sky in Kerala";
 
-export default function SubsidyHero() {
+export default function SubsidyHero({ onCheckEligibility }: SubsidyHeroProps) {
   return (
     <section
       className="relative w-full overflow-hidden"
@@ -40,14 +44,13 @@ export default function SubsidyHero() {
             </p>
 
             <div className="mt-7 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
-              <LinkingButton
-                content="Check Your Solar Subsidy Eligibility →"
-                ButtonLink="#subsidy-calculator"
-                ButtonBg="bg-[#F7BA41]"
-                Buttontext="text-[#272218]"
-                ButtonHover="hover:bg-yellow-500"
-                className="w-full sm:w-auto text-sm md:text-base"
-              />
+              <button
+                type="button"
+                onClick={onCheckEligibility}
+                className="btn w-full bg-[#F7BA41] text-[#272218] hover:bg-yellow-500 text-sm md:text-base sm:w-auto"
+              >
+                Check Your Solar Subsidy Eligibility →
+              </button>
               <span className="text-xs md:text-sm font-normal text-[#8A8A8A]">
                 Takes less than 30 seconds.
               </span>
