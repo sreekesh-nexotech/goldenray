@@ -22,7 +22,6 @@ import PanelFinderBanner from "./PanelFinderBanner";
 import PanelFinderModal from "./PanelFinderModal";
 import RecommendedPanelCard from "./RecommendedPanelCard";
 import { recommendPanel, type PanelFinderAnswers } from "./panelFinder";
-import PageIllustration from "@/components/ui/page-illustration";
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 
 type SortOption = "topRated" | "efficiency" | "price" | "warranty";
@@ -264,46 +263,11 @@ export default function SolarComparisonMain() {
   }, [recommendedPanel, selectedPanelIds, handleToggleCompare]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section - Compact Version */}
-      <section className="relative w-full overflow-hidden">
-        <PageIllustration />
-
-        {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 pt-20 pb-6 md:pt-24 md:pb-8 max-w-7xl">
-          {/* Title and description */}
-          <div className="w-full text-center">
-            <h1 className="text-3xl sm:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-semibold text-[#123532] mb-3">
-              Compare Solar Panels for Your Home in Kerala
-            </h1>
-            <p className="text-base w-full md:w-2/3 mx-auto sm:text-lg md:text-xl text-[#444444] mb-4">
-              Browse, filter, and compare panels rated for Kerala&apos;s climate
-              — humidity, monsoon season, and high ambient temperatures all
-              considered in every rating.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Kerala conditions note */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-3">
-        <div
-          className="bg-[#FBF2EA] border border-[#F1E3D8] rounded-2xl shadow-sm px-5 py-4 sm:px-6 sm:py-5"
-          style={{ borderLeft: "3px solid var(--text, #444444)" }}
-        >
-          <h2 className="text-xl sm:text-2xl font-semibold text-[#3D3D3D] mb-2">
-            All panels rated for Kerala conditions
-          </h2>
-          <p className="text-sm sm:text-md 2xl:text-lg leading-6 text-[#4C4C4C]">
-            Humidity resistance, monsoon performance, and temperature
-            coefficient are weighted heavily in our Kerala Climate Score. Panels
-            that degrade badly above 35°C are flagged accordingly. Every score
-            is based on manufacturer datasheets, third-party test data, and real
-            installations across Alappuzha, Kottayam, and Ernakulam.
-          </p>
-        </div>
-      </section>
-
+    // The hero and the Kerala positioning copy live in SolarComparisonHero, a
+    // server component rendered by the page above this island — this subtree
+    // renders client-side only (useSearchParams), so anything left in here is
+    // missing from the server HTML.
+    <>
       {/* Panel finder: the prompt, replaced by the pick once the quiz is done */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
         {recommendedPanel ? (
@@ -323,6 +287,12 @@ export default function SolarComparisonMain() {
         ref={gridRef}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8"
       >
+        {/* The grid is the largest content block on the page; without a heading
+            of its own a crawler sees an unlabelled list. */}
+        <h2 className="text-2xl sm:text-3xl font-semibold text-[#123532] mb-4">
+          Solar Panels Rated for Kerala Homes
+        </h2>
+
         {/* Toolbar */}
         <div className="mb-6">
           {/* Top Row: Filter Button and Sort Dropdown */}
@@ -535,6 +505,6 @@ export default function SolarComparisonMain() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

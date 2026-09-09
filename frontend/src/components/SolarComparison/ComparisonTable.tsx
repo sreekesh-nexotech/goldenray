@@ -424,9 +424,11 @@ function VisualSummarySection({ selectedPanels }: { selectedPanels: SolarPanel[]
   return (
     <section className="mt-6 sm:mt-7 md:mt-8 lg:mt-9 xl:mt-10 2xl:mt-12">
       <div className="mb-4 text-center sm:mb-5 md:mb-5 lg:mb-6 xl:mb-7 2xl:mb-8">
-        <h3 className="text-2xl font-semibold leading-tight text-[#183C39] sm:text-3xl md:text-4xl lg:text-[44px] xl:text-[48px] 2xl:text-[52px]">
+        {/* A top-level section of the page, so it sits at h2 alongside
+            "Side-by-Side Comparison" rather than dangling at h3. */}
+        <h2 className="text-2xl font-semibold leading-tight text-[#183C39] sm:text-3xl md:text-4xl lg:text-[44px] xl:text-[48px] 2xl:text-[52px]">
           Visual Summary
-        </h3>
+        </h2>
       </div>
 
       {/* Mobile: horizontal scroll, Desktop: grid */}
@@ -778,7 +780,7 @@ export default function ComparisonTable({
 
               {/* Technical specs */}
               <SectionHeader
-                title="Technology & Standards"
+                title="Performance Specifications"
                 gridStyle={tableGridStyle}
               />
               <Row

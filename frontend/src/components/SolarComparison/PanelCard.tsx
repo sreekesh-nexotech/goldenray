@@ -71,7 +71,7 @@ export default function PanelCard({
       <div className="relative bg-white h-44 sm:h-48 flex items-center justify-center">
         <Image
           src={panel.imageUrl || "https://golden-ray.b-cdn.net/images/frame%20(5).png"}
-          alt={panel.name}
+          alt={`${panel.brand} ${panel.name} ${panel.wattage}W ${panel.type.toLowerCase()} solar panel`}
           fill
           className="object-contain px-6"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

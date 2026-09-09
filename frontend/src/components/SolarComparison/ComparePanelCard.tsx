@@ -18,7 +18,7 @@ export default function ComparePanelCard({ panel }: { panel: SolarPanel }) {
       <div className="relative h-[150px] sm:h-[180px]">
         <Image
           src={panel.imageUrl || FALLBACK_IMAGE}
-          alt={panel.name}
+          alt={`${panel.brand} ${panel.name} ${panel.wattage}W ${panel.type.toLowerCase()} solar panel`}
           fill
           className="object-contain p-4"
           sizes="(max-width: 640px) 80vw, 33vw"

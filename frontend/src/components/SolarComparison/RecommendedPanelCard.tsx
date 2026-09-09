@@ -169,8 +169,9 @@ export default function RecommendedPanelCard({
               panel.imageUrl ||
               "https://golden-ray.b-cdn.net/images/frame%20(5).png"
             }
-            alt={panel.name}
+            alt={`${panel.brand} ${panel.name} ${panel.wattage}W ${panel.type.toLowerCase()} solar panel`}
             fill
+            priority
             className="object-contain"
             sizes="(max-width: 1024px) 100vw, 40vw"
           />

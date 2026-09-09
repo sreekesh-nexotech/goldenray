@@ -2,60 +2,81 @@
 import { Metadata } from "next";
 import { residentialPageData } from "@/data/solutions-page-data";
 
-
 import JsonLD from "@/components/JsonLD";
-import { residentialServiceSchema } from "@/data/jsonld";
+import { residentialPageSchema } from "@/data/jsonld";
 import ResidentialMain from "@/components/Residential/ResidentialMain";
+import { SITE_URL } from "@/config";
+
+// The page owns one head term — "solar panel price in Kerala" — and leads with
+// it. `absolute` opts out of the root layout's "%s | Flarize" template: the
+// brand has no search volume yet, so appending it would push the title past
+// Google's ~60-character cut for no gain.
+const TITLE = "Solar Panel Price in Kerala 2026 | ₹78,000 Subsidy & EMI";
+const DESCRIPTION =
+  "Real solar prices for Kerala homes: 3kW from ₹2 lakh before the ₹78,000 subsidy. Get 3 reviewed quotes, KSEB paperwork done, and a free site survey.";
 
 export const metadata: Metadata = {
-  title:
-    "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering",
-  description:
-    "Install solar panels for your Kerala home from ₹1.1 lakh after ₹78,000 PM Surya Ghar subsidy. MNRE-approved, KSEB net metering, 25-year warranty. Free quote from Flarize — Kerala's solar EPC.",
+  title: { absolute: TITLE },
+  description: DESCRIPTION,
+  keywords: [
+    "solar panel price in Kerala",
+    "3kW solar system price Kerala",
+    "5kW solar panel cost Kerala",
+    "10kW solar price Kerala",
+    "solar subsidy Kerala 2026",
+    "PM Surya Ghar Muft Bijli Yojana Kerala",
+    "home solar Kerala",
+    "residential solar installation Kerala",
+    "KSEB net metering",
+    "solar EMI Kerala",
+  ],
   openGraph: {
-    title:
-      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering | Flarize",
-    description:
-      "Solar panels for Kerala homes from ₹1.1 lakh after subsidy. MNRE-approved installer. KSEB net metering. 25-year warranty. Free quote from Flarize.",
-    url: "https://flarize.com/residential",
+    title: TITLE,
+    description: DESCRIPTION,
+    url: `${SITE_URL}/residential`,
     siteName: "Flarize",
     images: [
       {
         url: residentialPageData.hero.image,
         width: 1200,
         height: 630,
-        alt: "Residential Solar Installation",
+        alt: "Rooftop solar panels on a Kerala home",
       },
     ],
-    locale: "en_US",
+    locale: "en_IN",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title:
-      "Solar Panels for Home in Kerala | ₹78,000 Subsidy + KSEB Net Metering | Flarize",
+    title: TITLE,
     description:
-      "Solar panels for Kerala homes from ₹1.1 lakh after subsidy. MNRE-approved installer. KSEB net metering. 25-year warranty. Free quote from Flarize.",
+      "3kW from ₹2 lakh before subsidy. Three reviewed quotes, fixed price, KSEB paperwork handled.",
     images: [residentialPageData.hero.image],
   },
   icons: {
     icon: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://flarize.com/residential",
+    canonical: `${SITE_URL}/residential`,
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
 export default function ResidentialPage() {
-
   return (
     <>
-      <JsonLD data={residentialServiceSchema} />
-      <ResidentialMain/>
+      <JsonLD data={residentialPageSchema} />
+      <ResidentialMain />
     </>
   );
 }

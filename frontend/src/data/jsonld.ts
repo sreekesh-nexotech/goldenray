@@ -1,11 +1,42 @@
+import { SITE_URL } from "@/config";
+import type { SolarPanel } from "@/types/solarPanel";
+import { residentialFaqs } from "./residential-faq";
+import {
+  residentialSystems,
+  PM_SURYA_GHAR_SUBSIDY,
+} from "./residential-pricing";
+import { solarComparisonFaqs, type FaqItem } from "./solar-comparison-faq";
+
+// Every absolute URL below is built from SITE_URL (see src/config) so the
+// www/non-www split can never reappear in structured data.
+const ORG_ID = `${SITE_URL}/#organization`;
+const LOCAL_BUSINESS_ID = `${SITE_URL}/#localbusiness`;
+const WEBSITE_ID = `${SITE_URL}/#website`;
+const LOGO_ID = `${SITE_URL}/#logo`;
+
+/** Turn a shared FAQ array into schema.org Question entities. */
+const faqEntities = (faqs: FaqItem[]) =>
+  faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  }));
+
 // LocalBusiness schema
 export const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
+  "@id": LOCAL_BUSINESS_ID,
+  parentOrganization: { "@id": ORG_ID },
   name: "Flarize Solar",
   alternateName: "Golden Ray Renewable Energy",
-  url: "https://flarize.com",
-  logo: "https://flarize.com/logo_header.png",
+  url: `${SITE_URL}/`,
+  logo: `${SITE_URL}/logo_header.png`,
+  priceRange: "₹₹",
+  currenciesAccepted: "INR",
   description:
     "Kerala-based solar EPC company. KSEB-approved, MNRE-empanelled. 300+ installations across Kerala.",
   telephone: "+91-6282922988",
@@ -39,14 +70,19 @@ export const localBusinessSchema = {
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "@id": "https://flarize.com/#organization",
+  "@id": ORG_ID,
 
   name: "Flarize",
   legalName: "Flarize Technologies Pvt Ltd",
 
-  url: "https://flarize.com/",
+  url: `${SITE_URL}/`,
 
-  logo: "https://flarize.com/logo_header.png",
+  logo: {
+    "@type": "ImageObject",
+    "@id": LOGO_ID,
+    url: `${SITE_URL}/logo_header.png`,
+    caption: "Flarize",
+  },
 
   description:
     "Solar installation company serving all 14 districts of Kerala. MNRE and KSEB registered vendor.",
@@ -249,6 +285,406 @@ export const residentialServiceSchema = {
   },
   description:
     "End-to-end residential solar installation in Kerala. KSEB approved, PM Surya Ghar subsidy processing, net metering setup.",
+};
+
+
+/* ------------------------------------------------------------------ */
+/* Page-level @graph blocks                                            */
+/*                                                                     */
+/* One block per page, server-rendered into <head> by the page's JsonLD */
+/* component. They reference the site-wide Organization node emitted in */
+/* app/layout.tsx by @id rather than restating it.                      */
+/* ------------------------------------------------------------------ */
+
+/** Bump when the page's visible copy changes materially. */
+const RESIDENTIAL_UPDATED = "2026-09-09";
+const COMPARISON_UPDATED = "2026-09-09";
+
+const KERALA_DISTRICTS = [
+  "Thiruvananthapuram",
+  "Kollam",
+  "Pathanamthitta",
+  "Alappuzha",
+  "Kottayam",
+  "Idukki",
+  "Ernakulam",
+  "Thrissur",
+  "Palakkad",
+  "Malappuram",
+  "Kozhikode",
+  "Wayanad",
+  "Kannur",
+  "Kasaragod",
+];
+
+const websiteNode = {
+  "@type": "WebSite",
+  "@id": WEBSITE_ID,
+  url: `${SITE_URL}/`,
+  name: "Flarize",
+  publisher: { "@id": ORG_ID },
+  inLanguage: "en-IN",
+};
+
+const keralaState = {
+  "@type": "State",
+  name: "Kerala",
+  containedInPlace: { "@type": "Country", name: "India" },
+};
+
+// --- /residential ---------------------------------------------------
+
+const RESIDENTIAL_URL = `${SITE_URL}/residential`;
+const RESIDENTIAL_SERVICE_ID = `${RESIDENTIAL_URL}/#service`;
+
+export const residentialPageSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    websiteNode,
+    {
+      "@type": "LocalBusiness",
+      "@id": LOCAL_BUSINESS_ID,
+      parentOrganization: { "@id": ORG_ID },
+      name: "Flarize Solar",
+      url: `${SITE_URL}/`,
+      image: { "@id": LOGO_ID },
+      telephone: "+91-6282922988",
+      priceRange: "₹₹",
+      currenciesAccepted: "INR",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "1st Floor, Tharath Building, Kalappura",
+        addressLocality: "Alappuzha",
+        addressRegion: "Kerala",
+        postalCode: "688007",
+        addressCountry: "IN",
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: 9.4981,
+        longitude: 76.3388,
+      },
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ],
+          opens: "09:00",
+          closes: "18:00",
+        },
+      ],
+      areaServed: KERALA_DISTRICTS.map((name) => ({ "@type": "City", name })),
+      makesOffer: { "@id": RESIDENTIAL_SERVICE_ID },
+    },
+    {
+      "@type": ["WebPage", "FAQPage"],
+      "@id": `${RESIDENTIAL_URL}#webpage`,
+      url: RESIDENTIAL_URL,
+      name: "Solar Panel Price in Kerala 2026 | Home Solar with ₹78,000 Subsidy",
+      description:
+        "Real Kerala solar prices for 3kW, 5kW and 10kW home systems, including the ₹78,000 PM Surya Ghar subsidy, EMI options, KSEB net metering and a free site assessment.",
+      isPartOf: { "@id": WEBSITE_ID },
+      about: { "@id": RESIDENTIAL_SERVICE_ID },
+      inLanguage: "en-IN",
+      dateModified: RESIDENTIAL_UPDATED,
+      breadcrumb: { "@id": `${RESIDENTIAL_URL}#breadcrumb` },
+      mainEntity: faqEntities(residentialFaqs),
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${RESIDENTIAL_URL}#breadcrumb`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: `${SITE_URL}/`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Solutions",
+          item: `${SITE_URL}/solutions`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "Residential Solar",
+        },
+      ],
+    },
+    {
+      "@type": "Service",
+      "@id": RESIDENTIAL_SERVICE_ID,
+      name: "Residential Solar Panel Installation in Kerala",
+      serviceType: "Residential rooftop solar installation",
+      description:
+        "Turnkey rooftop solar for Kerala homes: free site assessment, three reviewed proposals from pre-qualified installers, Tier 1 N-type panels, hot-dip GI mounting, KSEB net metering, PM Surya Ghar subsidy filing, milestone-based payment and a final engineer inspection.",
+      provider: { "@id": ORG_ID },
+      areaServed: keralaState,
+      audience: {
+        "@type": "Audience",
+        audienceType: "Homeowners in Kerala",
+      },
+      termsOfService: `${SITE_URL}/terms`,
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Residential solar system sizes",
+        itemListElement: residentialSystems.map((system) => ({
+          "@type": "Offer",
+          // "3kW On-Grid" → "3kW On-Grid Solar System"; "5kW System" stays as
+          // it is rather than becoming "5kW System Solar System".
+          name: /system$/i.test(system.title)
+            ? system.title
+            : `${system.title} Solar System`,
+          description: `${system.summary}. Price shown before the ₹${PM_SURYA_GHAR_SUBSIDY.toLocaleString("en-IN")} PM Surya Ghar subsidy.`,
+          priceCurrency: "INR",
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            priceCurrency: "INR",
+            minPrice: system.priceMin,
+            maxPrice: system.priceMax,
+            valueAddedTaxIncluded: true,
+          },
+          availability: "https://schema.org/InStock",
+          areaServed: { "@type": "State", name: "Kerala" },
+          seller: { "@id": ORG_ID },
+        })),
+      },
+      potentialAction: {
+        "@type": "ReserveAction",
+        name: "Book a free site assessment",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${SITE_URL}/contactus`,
+          actionPlatform: [
+            "https://schema.org/DesktopWebPlatform",
+            "https://schema.org/MobileWebPlatform",
+          ],
+        },
+      },
+    },
+  ],
+};
+
+// --- /solar-comparison (comparison hub) -----------------------------
+
+const COMPARISON_HUB_URL = `${SITE_URL}/solar-comparison`;
+const COMPARISON_TABLE_URL = `${SITE_URL}/comparison-table`;
+
+/** Stable @id for a panel, so the hub's ItemList and the table's Product
+ *  nodes describe the same entity. */
+const panelId = (panel: SolarPanel) =>
+  `${COMPARISON_TABLE_URL}#panel-${panel.id}`;
+
+export const solarComparisonPageSchema = (panels: SolarPanel[]) => ({
+  "@context": "https://schema.org",
+  "@graph": [
+    websiteNode,
+    {
+      "@type": ["CollectionPage", "FAQPage"],
+      "@id": `${COMPARISON_HUB_URL}#webpage`,
+      url: COMPARISON_HUB_URL,
+      name: "Best Solar Panels for Kerala 2026 | Compare Specs & Ratings",
+      description:
+        "Compare solar panels rated for Kerala's heat, humidity and monsoon. Filter by efficiency, warranty and brand, or answer 3 questions for a personal pick.",
+      isPartOf: { "@id": WEBSITE_ID },
+      inLanguage: "en-IN",
+      dateModified: COMPARISON_UPDATED,
+      breadcrumb: { "@id": `${COMPARISON_HUB_URL}#breadcrumb` },
+      mainEntity: faqEntities(solarComparisonFaqs),
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${COMPARISON_HUB_URL}#breadcrumb`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: `${SITE_URL}/`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Compare Solar Panels",
+        },
+      ],
+    },
+    // Built from the same API response the grid renders, so the list can never
+    // claim panels the page doesn't show.
+    ...(panels.length
+      ? [
+          {
+            "@type": "ItemList",
+            "@id": `${COMPARISON_HUB_URL}#panellist`,
+            name: "Solar panels rated for Kerala conditions",
+            numberOfItems: panels.length,
+            itemListElement: panels.map((panel, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              name: panel.name || `${panel.brand} ${panel.wattage}W`,
+              item: panelId(panel),
+            })),
+          },
+        ]
+      : []),
+  ],
+});
+
+// --- /comparison-table ----------------------------------------------
+
+/** Product node for one panel, built entirely from the values the comparison
+ *  table renders — never hand-written, so markup and table cannot disagree. */
+const panelProductNode = (panel: SolarPanel) => ({
+  "@type": "Product",
+  "@id": panelId(panel),
+  name: panel.name || `${panel.brand} ${panel.type} ${panel.wattage}W`,
+  ...(panel.imageUrl ? { image: panel.imageUrl } : {}),
+  description: panel.description,
+  brand: { "@type": "Brand", name: panel.brand },
+  category: "Photovoltaic solar panel",
+  additionalProperty: [
+    {
+      "@type": "PropertyValue",
+      name: "Rated power",
+      value: String(panel.wattage),
+      unitCode: "WTT",
+    },
+    {
+      "@type": "PropertyValue",
+      name: "Module efficiency",
+      value: String(panel.efficiency),
+      unitCode: "P1",
+    },
+    {
+      "@type": "PropertyValue",
+      name: "Temperature coefficient of Pmax",
+      value: `${panel.temperatureCoefficient} %/°C`,
+    },
+    {
+      "@type": "PropertyValue",
+      name: "Cell technology",
+      value: panel.technology,
+    },
+    { "@type": "PropertyValue", name: "Panel type", value: panel.type },
+    ...(panel.bifacialGain
+      ? [
+          {
+            "@type": "PropertyValue",
+            name: "Bifacial gain",
+            value: `Up to ${panel.bifacialGain}%`,
+          },
+        ]
+      : []),
+    {
+      "@type": "PropertyValue",
+      name: "Product warranty",
+      value: `${panel.productWarranty} years`,
+    },
+    {
+      "@type": "PropertyValue",
+      name: "Performance warranty",
+      value: `${panel.performanceWarranty} years`,
+    },
+    {
+      "@type": "PropertyValue",
+      name: "First-year degradation",
+      value: `≤${panel.firstYearPowerDrop}%`,
+    },
+    {
+      "@type": "PropertyValue",
+      name: "Annual degradation",
+      value: `≤${panel.annualDegradation}%`,
+    },
+    {
+      "@type": "PropertyValue",
+      name: "Ingress protection",
+      value: panel.ipRating,
+    },
+    ...(panel.certifications.length
+      ? [
+          {
+            "@type": "PropertyValue",
+            name: "Certifications",
+            value: panel.certifications.join(", "),
+          },
+        ]
+      : []),
+    {
+      "@type": "PropertyValue",
+      name: "Kerala Climate Score",
+      value: `${panel.keralaClimateScore}/100`,
+    },
+  ],
+});
+
+export const comparisonTablePageSchema = (selectedPanels: SolarPanel[]) => {
+  const isComparing = selectedPanels.length >= 2;
+  const headline = isComparing
+    ? `${selectedPanels.map((p) => p.brand).join(" vs ")}: Solar Panel Spec Comparison`
+    : "Solar Panel Comparison Table for Kerala Homes";
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        // FAQPage only when the table is actually rendering the FAQ block —
+        // it is hidden until two panels are selected.
+        "@type": isComparing ? ["WebPage", "FAQPage"] : "WebPage",
+        "@id": `${COMPARISON_TABLE_URL}#webpage`,
+        url: COMPARISON_TABLE_URL,
+        name: headline,
+        description:
+          "Compare solar panels side by side on efficiency, heat performance, warranty depth, certifications and Kerala Climate Score, from manufacturer datasheet figures.",
+        isPartOf: { "@id": WEBSITE_ID },
+        inLanguage: "en-IN",
+        dateModified: COMPARISON_UPDATED,
+        breadcrumb: { "@id": `${COMPARISON_TABLE_URL}#breadcrumb` },
+        ...(isComparing
+          ? { mainEntity: faqEntities(solarComparisonFaqs) }
+          : {}),
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${COMPARISON_TABLE_URL}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: `${SITE_URL}/`,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Compare Solar Panels",
+            item: COMPARISON_HUB_URL,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: "Comparison Table",
+          },
+        ],
+      },
+      ...selectedPanels.map((panel) => {
+        const others = selectedPanels.filter((other) => other.id !== panel.id);
+        return {
+          ...panelProductNode(panel),
+          ...(others.length
+            ? { isSimilarTo: others.map((other) => ({ "@id": panelId(other) })) }
+            : {}),
+        };
+      }),
+    ],
+  };
 };
 
 

@@ -4,7 +4,7 @@ import PageIllustration from "@/components/ui/page-illustration";
 import LinkingButton from "../ui/LinkingButton";
 
 const heroImage = "https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions/39f5234048cf5e13aa97b67fd5a3fb7bb7c188ff.png";
-const heroImageAlt = "Aerial view of a neighborhood with solar panels";
+const heroImageAlt = "Kerala homes with rooftop solar panels installed by Flarize";
 
 export default function ResidentialHero() {
   return (
@@ -14,15 +14,17 @@ export default function ResidentialHero() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-12 md:pt-20 md:pb-16  lg:pb-20">
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           <div className="w-full lg:w-[55%] text-center lg:text-left">
+            {/* The head term this page ranks for lives in the H1 — the highest
+                weighted on-page signal. The old "Power Your Home with Smarter
+                Solar Decisions" carried no keyword at all. */}
             <h1 className="text-4xl md:text-5xl font-semibold  leading-tight text-[#171717]">
-              Power Your Home with {" "}
+              Solar Panels for Your Kerala Home —{" "}
                 <span className="text-[#F18627]">
-                  Smarter Solar Decisions
+                  Priced Honestly
                 </span>
             </h1>
             <p
               className="mt-5 text-base md:text-xl font-normal  leading-snug text-[#444444]"
-              lang="ml"
             >
               Thinking about solar but not sure who to trust? Get connected with certified residential solar experts across Kerala. Receive three tailored proposals, complete subsidy assistance, KSEB documentation, and one accountable team managing your project from start to finish.
             </p>

@@ -160,10 +160,10 @@ function RecommendationCard({
     <div
       className={`${theme.bg} rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-7 border-l-4 ${theme.border} h-full`}
     >
-      <h4 className="text-lg sm:text-xl md:text-[22px] font-semibold text-[#1F2937] mb-3 sm:mb-4">
+      <h3 className="text-lg sm:text-xl md:text-[22px] font-semibold text-[#1F2937] mb-3 sm:mb-4">
         Pick{" "}
         <span className="text-[#074A4D]">{panel.name}</span> if...
-      </h4>
+      </h3>
       <p className="text-sm sm:text-base md:text-[15px] text-[#4B5563] leading-relaxed whitespace-normal break-words">
         {recommendation}
       </p>
@@ -183,9 +183,11 @@ export default function RecommendationSection({
     <section className="mt-10 sm:mt-12 md:mt-14 lg:mt-16 xl:mt-20">
       {/* Section Header */}
       <div className="text-center mb-8 sm:mb-10 md:mb-12">
-        <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-[44px] xl:text-[48px] font-semibold text-[#183C39] leading-tight mb-3 sm:mb-4">
+        {/* A top-level section of the page — h2, with the per-panel verdicts
+            below it as h3, so the outline reads as one flat hierarchy. */}
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[44px] xl:text-[48px] font-semibold text-[#183C39] leading-tight mb-3 sm:mb-4">
           So Which One Should You Pick?
-        </h3>
+        </h2>
         <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[#4B5563]">
           There&apos;s no single &quot;better&quot; panel. It depends on what
           matters for your home.
@@ -211,9 +213,9 @@ export default function RecommendationSection({
 
       {/* Overall Recommendation */}
       <div className="bg-[#0A4A4D] rounded-xl sm:rounded-2xl p-8 sm:p-8 md:p-10 lg:p-12 text-white">
-        <h4 className="text-xl sm:text-2xl md:text-[26px] font-semibold mb-4 sm:mb-5 md:mb-6">
+        <h3 className="text-xl sm:text-2xl md:text-[26px] font-semibold mb-4 sm:mb-5 md:mb-6">
           Our recommendation:
-        </h4>
+        </h3>
         <p className="text-sm sm:text-base md:text-lg leading-relaxed text-white/95">
           Between these {selectedPanels.length === 2 ? "two" : "three"} panels,{" "}
           <span className="font-semibold">{topPanel.name}</span> wins more

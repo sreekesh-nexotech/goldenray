@@ -10,9 +10,9 @@ export default function ComparisonCTA() {
   return (
     <section className="mt-12 sm:mt-14 md:mt-16 lg:mt-20 py-10 sm:py-12 md:py-14 lg:py-16">
       <div className="text-center">
-        <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-bold text-[#183C39] leading-tight mb-4 sm:mb-5">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-bold text-[#183C39] leading-tight mb-4 sm:mb-5">
           Still not sure? Let&apos;s figure it out.
-        </h3>
+        </h2>
         <p className="text-sm sm:text-base md:text-lg text-[#4B5563] mb-6 sm:mb-8 leading-relaxed">
           Send your KSEB bill and rooftop photo on WhatsApp — we&apos;ll
           recommend the right panel for your specific roof, location, and

@@ -1,64 +1,17 @@
 "use client";
 import { useState } from "react";
+import { residentialFaqs as faqs } from "@/data/residential-faq";
 
 // Main App component for the FAQ section
+//
+// The questions live in @/data/residential-faq so this accordion and the page's
+// FAQPage structured data render the same text. Previously this component held
+// the /group-purchase questions verbatim — duplicate content on a page about
+// home solar pricing, and unmarkable as FAQ schema because the answers didn't
+// match what the rest of the page is about.
 export default function Faq() {
   // State to manage the currently open FAQ item.
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  // Array of FAQ data (questions and answers)
-  const faqs = [
-    {
-      question: "What is a group solar purchase?",
-      answer:
-        "A group solar purchase allows nearby homeowners to install solar together. By combining multiple installations in the same area, costs are reduced and installation becomes more efficient.",
-    },
-    {
-      question: "How many families are required to form a group?",
-      answer:
-        "A group is confirmed when at least 5 families in the same area complete their booking. Once confirmed, installations are scheduled together.",
-    },
-    {
-      question: "What happens to my ₹1,000 booking amount?",
-      answer:
-        "Your ₹1,000 booking amount reserves your spot in the group and is fully adjusted against your final solar system cost.",
-    },
-    {
-      question: "What if the group does not form?",
-      answer:
-        "If the required number of families is not reached within the specified period, you can either receive a full refund, or continue with an individual installation while retaining your locked pricing (if applicable).",
-    },
-    {
-      question: "Is the solar system quality different from individual bookings?",
-      answer:
-        "No. Group purchase customers receive the same panels, inverter brands, installation standards, warranty coverage, and service support as individual customers.",
-    },
-    {
-      question: "How much can I save through a group purchase?",
-      answer:
-        "Savings vary based on system size and location, but most homeowners can save up to ₹10,000 compared to standard individual pricing.",
-    },
-    {
-      question: "How long does installation take after a group is confirmed?",
-      answer:
-        "Once a group is confirmed, installations are typically completed within the scheduled group installation week, usually faster than individual installations.",
-    },
-    {
-      question: "Can I join if I already have a solar quotation?",
-      answer:
-        "Yes. You can still join the group purchase program. Our team can review your existing quotation and help you compare costs, specifications, and potential savings.",
-    },
-    {
-      question: "How do I know the status of my group?",
-      answer:
-        "After booking, you'll receive updates via WhatsApp, SMS, or phone regarding the number of families joined, group formation progress, installation schedule, and next steps.",
-    },
-    {
-      question: "Why is group solar cheaper?",
-      answer:
-        "Group installations reduce logistics, survey, transportation, and crew mobilization costs by serving multiple nearby homes during the same installation period. These savings are passed directly to homeowners without compromising quality.",
-    },
-  ];
 
   // Function to toggle the open state of an FAQ item
   const toggleFaq = (index: number) => {
@@ -72,10 +25,11 @@ export default function Faq() {
           {/* Left: Heading and Description */}
           <div className="lg:pt-6">
             <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532] mb-4">
-              Frequently Asked Questions About Group Solar Purchase
+              Frequently Asked Questions About Home Solar in Kerala
             </h2>
             <p className="text-base md:text-lg font-normal leading-relaxed text-[#444444] max-w-md">
-              Solar + group purchase — the full picture.
+              Price, subsidy, KSEB net metering and monsoon output — the full
+              picture.
             </p>
           </div>
 
