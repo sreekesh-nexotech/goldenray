@@ -38,6 +38,18 @@ export default function ComparisonTableClient({
     updateURL(newSelected.map((p) => p.id));
   };
 
+  // Picking a different panel from a filled dropdown swaps that column,
+  // rather than trying (and failing, at 3) to append another one.
+  const handleReplacePanel = (slotIndex: number, panelId: string) => {
+    const panelToAdd = allPanels.find((p) => p.id === panelId);
+    if (!panelToAdd || selectedPanels.some((p) => p.id === panelId)) return;
+    const newSelected = selectedPanels.map((panel, index) =>
+      index === slotIndex ? panelToAdd : panel,
+    );
+    setSelectedPanels(newSelected);
+    updateURL(newSelected.map((p) => p.id));
+  };
+
   const handleAddPanel = (panelId: string) => {
     if (selectedPanels.length >= 3) return;
     const panelToAdd = allPanels.find((p) => p.id === panelId);
@@ -58,6 +70,7 @@ export default function ComparisonTableClient({
       allPanels={allPanels}
       onRemovePanel={handleRemovePanel}
       onAddPanel={handleAddPanel}
+      onReplacePanel={handleReplacePanel}
       onClose={handleBackToComparison}
     />
   );

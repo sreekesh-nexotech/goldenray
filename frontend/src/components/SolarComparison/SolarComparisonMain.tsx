@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import {
   SolarPanel,
@@ -18,6 +18,10 @@ import PanelCard from "./PanelCard";
 import HowToChoose from "./HowToChoose";
 import CTASection from "./CTASection";
 import FAQSection from "./FAQSection";
+import PanelFinderBanner from "./PanelFinderBanner";
+import PanelFinderModal from "./PanelFinderModal";
+import RecommendedPanelCard from "./RecommendedPanelCard";
+import { recommendPanel, type PanelFinderAnswers } from "./panelFinder";
 import PageIllustration from "@/components/ui/page-illustration";
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 
@@ -140,6 +144,11 @@ export default function SolarComparisonMain() {
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [availableBrands, setAvailableBrands] = useState<string[]>([]);
+  const [finderOpen, setFinderOpen] = useState(false);
+  const [finderAnswers, setFinderAnswers] = useState<PanelFinderAnswers | null>(
+    null,
+  );
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const replaceUrl = useCallback(
     (next: URLSearchParams) => {
@@ -223,6 +232,37 @@ export default function SolarComparisonMain() {
     }
   };
 
+  // Derived, not snapshotted: the pick resolves as soon as the panels land, so
+  // finishing the quiz before that fetch returns still shows a result.
+  // It scores against every panel, not the currently filtered set — filters
+  // narrow what you browse, they shouldn't narrow our recommendation.
+  const recommendedPanel = useMemo(
+    () => (finderAnswers ? recommendPanel(allPanels, finderAnswers) : null),
+    [allPanels, finderAnswers],
+  );
+
+  const handleFinderComplete = useCallback((answers: PanelFinderAnswers) => {
+    setFinderAnswers(answers);
+    setFinderOpen(false);
+  }, []);
+
+  // Placeholder destination: stays on this page, carrying the current filters
+  // and selection, rather than leaving for /contact.
+  const handleRecommendedQuote = useCallback(() => {
+    const qs = searchParams.toString();
+    router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  }, [router, pathname, searchParams]);
+
+  // Preselect the pick for comparison, then drop the user at the grid to add
+  // the panels they want to weigh it against.
+  const handleCompareRecommended = useCallback(() => {
+    if (!recommendedPanel) return;
+    if (!selectedPanelIds.includes(recommendedPanel.id)) {
+      handleToggleCompare(recommendedPanel.id);
+    }
+    gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [recommendedPanel, selectedPanelIds, handleToggleCompare]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section - Compact Version */}
@@ -264,8 +304,25 @@ export default function SolarComparisonMain() {
         </div>
       </section>
 
+      {/* Panel finder: the prompt, replaced by the pick once the quiz is done */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        {recommendedPanel ? (
+          <RecommendedPanelCard
+            panel={recommendedPanel}
+            onGetQuote={handleRecommendedQuote}
+            onCompare={handleCompareRecommended}
+            onRetake={() => setFinderOpen(true)}
+          />
+        ) : (
+          <PanelFinderBanner onStart={() => setFinderOpen(true)} />
+        )}
+      </section>
+
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div
+        ref={gridRef}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8"
+      >
         {/* Toolbar */}
         <div className="mb-6">
           {/* Top Row: Filter Button and Sort Dropdown */}
@@ -427,6 +484,12 @@ export default function SolarComparisonMain() {
 
       {/* FAQ Section */}
       <FAQSection />
+
+      <PanelFinderModal
+        open={finderOpen}
+        onClose={() => setFinderOpen(false)}
+        onComplete={handleFinderComplete}
+      />
 
       {/* Floating Compare Bar */}
       {selectedPanelIds.length > 0 && (

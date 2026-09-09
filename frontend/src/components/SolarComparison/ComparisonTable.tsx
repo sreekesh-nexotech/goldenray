@@ -1,145 +1,222 @@
 "use client";
 
 import { SolarPanel } from "@/types/solarPanel";
-import Image from "next/image";
-import { X, ChevronDown, Check, X as XIcon, Plus } from "lucide-react";
-import { useMemo, useState, type CSSProperties } from "react";
+import { ChevronDown, Star, X } from "lucide-react";
+import { Fragment, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import RecommendationSection from "./RecommendationSection";
 import ComparisonCTA from "./ComparisonCTA";
 import FAQSection from "./FAQSection";
+import ComparePanelCard from "./ComparePanelCard";
+import {
+  MAX_SYSTEM_VOLTAGE,
+  STARS_BY_GRADE,
+  buildQualityGrade,
+  certificationList,
+  claimExperienceGrade,
+  coastalGrade,
+  companyStrengthGrade,
+  computeBestFor,
+  dualSidedGeneration,
+  gradeFromScore,
+  humidityGrade,
+  isBestAvailableTech,
+  lowLightGrade,
+  monsoonGrade,
+  panelConstruction,
+  productWarrantyStars,
+  shortTechnology,
+  warrantyStars,
+  type Grade,
+} from "./panelInsights";
 
 interface ComparisonTableProps {
   selectedPanels: SolarPanel[];
   allPanels: SolarPanel[];
   onRemovePanel: (panelId: string) => void;
   onAddPanel: (panelId: string) => void;
+  onReplacePanel?: (slotIndex: number, panelId: string) => void;
   onClose: () => void;
 }
 
-// Section header row spanning the table grid
-function SectionHeader({
-  title,
-  columns,
-  gridStyle,
-}: {
-  title: string;
-  columns: number;
-  gridStyle: CSSProperties;
-}) {
+/* ---------------------------------------------------------------- atoms -- */
+
+function Stars({ count }: { count: number }) {
   return (
-    <div
-      className="grid bg-[#F1F3F6] text-[#3F454D] text-sm sm:text-base"
-      style={gridStyle}
-    >
-      <div className="min-w-0 px-4 py-3 font-semibold sticky left-0 bg-[#F1F3F6] z-20 border-y border-[#DFE3E8] shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
-        {title}
-      </div>
-      {Array.from({ length: columns }).map((_, idx) => (
-        <div
-          key={idx}
-          className="min-w-0 border-l border-y border-[#DFE3E8] bg-[#F1F3F6]"
+    <span className="flex items-center gap-0.5" aria-label={`${count} out of 5`}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star
+          key={i}
+          className={`h-3 w-3 ${
+            i < count
+              ? "fill-[#FFCE31] text-[#FFCE31]"
+              : "fill-[#E5E5EA] text-[#E5E5EA]"
+          }`}
         />
       ))}
+    </span>
+  );
+}
+
+function GreenPill({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full bg-[#E8F6ED] px-2.5 py-1 text-[13px] text-[#1D8F47]">
+      {children}
+    </span>
+  );
+}
+
+/** Green headline with the star row stacked beneath it — the "top pick" look. */
+function StackedVerdict({ label, stars }: { label: string; stars: number }) {
+  return (
+    <div className="flex flex-col items-start gap-1">
+      <span className="font-medium text-[#008130]">{label}</span>
+      <Stars count={stars} />
     </div>
   );
 }
 
-// Comparison row component
-function ComparisonRow({
+/**
+ * A qualitative grade. "Excellent" is called out in green with stars; the
+ * lower grades stay plain so the winner reads at a glance.
+ */
+function GradeCell({ grade }: { grade: Grade }) {
+  if (grade !== "Excellent") {
+    return <span>{grade}</span>;
+  }
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span className="font-medium text-[#008130]">Excellent</span>
+      <Stars count={STARS_BY_GRADE.Excellent} />
+    </span>
+  );
+}
+
+/** An "Expert's Choice" verdict for Excellent, plain text otherwise. */
+function VerdictCell({ grade }: { grade: Grade }) {
+  if (grade !== "Excellent") {
+    return <span>{grade}</span>;
+  }
+  return (
+    <StackedVerdict label="Expert's Choice" stars={STARS_BY_GRADE.Excellent} />
+  );
+}
+
+function YearsCell({ years, stars }: { years: number; stars: number }) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span>{years} years</span>
+      <Stars count={stars} />
+    </span>
+  );
+}
+
+function CheckCell({ ok, yes, no }: { ok: boolean; yes: string; no: string }) {
+  return ok ? (
+    <span className="font-medium text-[#008130]">✓ {yes}</span>
+  ) : (
+    <span>{no}</span>
+  );
+}
+
+/* ----------------------------------------------------------- table rows -- */
+
+function SectionHeader({ title, gridStyle }: { title: string; gridStyle: CSSProperties }) {
+  return (
+    <div className="grid border-b border-[#E5E5EA] bg-[#F3F4F6]" style={gridStyle}>
+      <div className="sticky left-0 z-20 col-span-full min-w-0 bg-[#F3F4F6] px-4 py-3.5 text-[14px] font-normal text-[#1A1A1A] sm:px-6 sm:text-[15px] lg:px-10">
+        {title}
+      </div>
+    </div>
+  );
+}
+
+function Row({
   label,
   values,
   gridStyle,
-  highlight = false,
+  expandable = false,
+  isExpanded = false,
+  onToggle,
 }: {
   label: string;
-  values: (string | number | boolean | null)[];
+  values: ReactNode[];
   gridStyle: CSSProperties;
-  highlight?: boolean;
+  expandable?: boolean;
+  isExpanded?: boolean;
+  onToggle?: () => void;
 }) {
-  const formatValue = (value: string | number | boolean | null) => {
-    if (value === null || value === undefined) return "—";
-    if (typeof value === "boolean") {
-      return value ? (
-        <span className="inline-flex items-center gap-1 bg-[#D9F3E2] text-[#1E8D4E] px-2 py-0.5 rounded-full text-[12px]">
-          <Check className="w-3.5 h-3.5" />
-          Yes
-        </span>
-      ) : (
-        <XIcon className="w-4 h-4 text-red-400 mx-auto" />
-      );
-    }
-
-    if (typeof value === "string") {
-      if (value.includes("__K_BEST__")) {
-        return (
-          <div className="inline-flex items-center gap-2">
-            <span>{value.replace("__K_BEST__", "")}</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#D9F3E2] text-[#1E8D4E]">
-              Best for Kerala
-            </span>
-          </div>
-        );
-      }
-
-      if (value.includes("__GOOD__")) {
-        return (
-          <div className="inline-flex items-center gap-2">
-            <span>{value.replace("__GOOD__", "")}</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#FFECCF] text-[#C98013]">
-              Good
-            </span>
-          </div>
-        );
-      }
-
-      if (value.includes("__BEST__")) {
-        return (
-          <div className="inline-flex items-center gap-2">
-            <span>{value.replace("__BEST__", "")}</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#D9F3E2] text-[#1E8D4E]">
-              Best
-            </span>
-          </div>
-        );
-      }
-
-      if (value.includes("__BELOW_AVG__")) {
-        return (
-          <div className="inline-flex items-center gap-2">
-            <span>{value.replace("__BELOW_AVG__", "")}</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#FFE0E0] text-[#D95050]">
-              Below Avg
-            </span>
-          </div>
-        );
-      }
-    }
-
-    return value;
-  };
+  const labelContent = (
+    <>
+      <span>{label}</span>
+      {expandable && (
+        <ChevronDown
+          className={`h-4 w-4 flex-shrink-0 text-[#1A1A1A] transition-transform ${
+            isExpanded ? "rotate-180" : ""
+          }`}
+        />
+      )}
+    </>
+  );
 
   return (
-    <div
-      className={`grid ${highlight ? "bg-[#FFFFFF]" : "bg-white"}`}
-      style={gridStyle}
-    >
-      <div className="min-w-0 px-3 sm:px-4 py-3 text-[13px] text-[#616770] font-medium border-r border-b border-[#E1E5EA] flex items-center justify-between gap-2 sticky left-0 bg-white z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
-        <span>{label}</span>
-        <span className="text-[#8D8D8D] text-xs hidden sm:inline">ⓘ</span>
+    <div className="grid border-b border-[#E5E5EA] bg-white" style={gridStyle}>
+      <div className="sticky left-0 z-20 min-w-0 border-r border-[#E5E5EA] bg-white px-4 py-4 text-[13px] text-[#1A1A1A] shadow-[2px_0_4px_rgba(0,0,0,0.03)] sm:px-6 sm:text-[15px] lg:px-10">
+        {expandable ? (
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={isExpanded}
+            className="flex w-full items-center justify-between gap-3 text-left"
+          >
+            {labelContent}
+          </button>
+        ) : (
+          <span className="flex items-center justify-between gap-3">
+            {labelContent}
+          </span>
+        )}
       </div>
       {values.map((value, index) => (
         <div
           key={index}
-          className="min-w-0 px-3 sm:px-4 py-3 text-[11px] sm:text-[13px] text-[#3C4147] font-medium text-left border-r border-b border-[#E1E5EA] last:border-r-0 break-words"
+          className="min-w-0 break-words border-r border-[#E5E5EA] px-4 py-4 text-[12px] text-[#444444] last:border-r-0 sm:px-6 sm:text-[15px] lg:px-10"
         >
-          {formatValue(value)}
+          {value}
         </div>
       ))}
     </div>
   );
 }
 
-// Panel selector dropdown
+/** Full-width explainer that drops in under an expandable row. */
+function ExplainerRow({
+  title,
+  paragraphs,
+  gridStyle,
+}: {
+  title: string;
+  paragraphs: string[];
+  gridStyle: CSSProperties;
+}) {
+  return (
+    <div className="grid border-b border-[#E5E5EA] bg-white" style={gridStyle}>
+      <div className="sticky left-0 z-20 col-span-full min-w-0 space-y-4 bg-white px-4 py-5 sm:px-6 lg:px-10">
+        <p className="text-[14px] text-[#444444] sm:text-[15px]">{title}</p>
+        {paragraphs.map((paragraph) => (
+          <p
+            key={paragraph}
+            className="text-[13px] leading-relaxed text-[#757575] sm:text-[15px]"
+          >
+            {paragraph}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------- panel selector -- */
+
 function PanelSelector({
   selectedPanel,
   allPanels,
@@ -159,56 +236,48 @@ function PanelSelector({
     (p) => !selectedPanelIds.includes(p.id) || p.id === selectedPanel?.id,
   );
 
-  const pillSummary = useMemo(() => {
+  const summary = useMemo(() => {
     if (!selectedPanel) return "";
-    return `${selectedPanel.type} • ${selectedPanel.wattage}W • ${selectedPanel.productWarranty} Yr + ${selectedPanel.performanceWarranty} Yr Warranty`;
+    return `${selectedPanel.type}  •  ${selectedPanel.wattage} Wp  •  ${selectedPanel.productWarranty} Yr – ${selectedPanel.performanceWarranty} Yr Warranty`;
   }, [selectedPanel]);
 
   return (
-    <div className="relative w-[220px] sm:w-[230px]">
+    <div className="group relative w-[240px] flex-shrink-0 sm:w-[270px]">
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full rounded-[6px] border border-[#D8D8D8] bg-[#FAFAFA] px-3 py-2 text-left hover:border-[#074A4D] transition-colors ${selectedPanel ? "" : ""}`}
+        className="w-full rounded-lg border border-[#E5E5EA] bg-white px-4 py-3 text-left transition-colors hover:border-[#074A4D]"
       >
         <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
-            <p className="text-[11px] text-[#2F2F2F] font-semibold truncate flex items-center gap-1.5">
-              {!selectedPanel && <Plus className="w-3.5 h-3.5" />}
-              {selectedPanel ? selectedPanel.name : "Add panel"}
-            </p>
-            {selectedPanel && (
-              <p className="text-[10px] text-[#6B6B6B] truncate">
-                {pillSummary}
-              </p>
-            )}
-          </div>
-          {selectedPanel && (
-            <ChevronDown className="w-3.5 h-3.5 text-[#6B6B6B]" />
-          )}
+          <p className="min-w-0 flex-1 truncate text-[15px] text-[#1A1A1A]">
+            {selectedPanel ? selectedPanel.name : "Add panel"}
+          </p>
+          <ChevronDown className="h-4 w-4 flex-shrink-0 text-[#1A1A1A]" />
         </div>
+        {selectedPanel && (
+          <p className="mt-1 truncate text-[11px] text-[#757575]">• {summary}</p>
+        )}
       </button>
 
       {isOpen && (
         <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 z-20 max-h-64 overflow-y-auto">
+          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+          <div className="absolute left-0 right-0 top-full z-20 mt-2 max-h-64 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg">
             {availablePanels.map((panel) => (
               <button
                 key={panel.id}
+                type="button"
                 onClick={() => {
                   onSelect(panel.id);
                   setIsOpen(false);
                 }}
-                className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                className="w-full border-b border-gray-100 px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-gray-50"
               >
-                <p className="text-[11px] text-[#074A4D] font-semibold truncate">
+                <p className="truncate text-[13px] font-medium text-[#074A4D]">
                   {panel.name}
                 </p>
-                <p className="text-[10px] text-gray-500 truncate">
-                  {panel.type} • {panel.wattage}W • {panel.productWarranty} Yr +{" "}
+                <p className="truncate text-[11px] text-gray-500">
+                  {panel.type} • {panel.wattage} Wp • {panel.productWarranty} Yr –{" "}
                   {panel.performanceWarranty} Yr Warranty
                 </p>
               </button>
@@ -219,15 +288,19 @@ function PanelSelector({
 
       {selectedPanel && (
         <button
+          type="button"
           onClick={onRemove}
-          className="absolute -right-2 -top-2 w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-800"
+          aria-label={`Remove ${selectedPanel.name}`}
+          className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 opacity-0 shadow-sm transition-opacity hover:text-gray-800 focus-visible:opacity-100 group-hover:opacity-100"
         >
-          <X className="w-3.5 h-3.5" />
+          <X className="h-3.5 w-3.5" />
         </button>
       )}
     </div>
   );
 }
+
+/* ------------------------------------------------------ visual summary --- */
 
 function SummaryProgressBar({
   label,
@@ -245,9 +318,9 @@ function SummaryProgressBar({
     <div className="space-y-1 sm:space-y-1.5">
       <div className="flex items-center justify-between gap-2 text-[10px] sm:text-[11px] md:text-xs xl:text-[13px] 2xl:text-sm">
         <span className="text-[#4B5563]">{label}</span>
-        <span className="text-[#2F2F2F] font-medium">{rightText}</span>
+        <span className="font-medium text-[#2F2F2F]">{rightText}</span>
       </div>
-      <div className="h-1.5 sm:h-2 bg-[#E5E7EB] rounded-full overflow-hidden">
+      <div className="h-1.5 overflow-hidden rounded-full bg-[#E5E7EB] sm:h-2">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{ width: `${safeValue}%`, backgroundColor: barColor }}
@@ -324,11 +397,11 @@ function VisualSummaryCard({ panel }: { panel: SolarPanel }) {
   ];
 
   return (
-    <article className="rounded-xl sm:rounded-2xl bg-[#ECEDEF] p-2.5 sm:p-3 md:p-4 lg:p-4 xl:p-4.5 2xl:p-5">
-      <p className="text-[9px] sm:text-[10px] md:text-[11px] 2xl:text-xs font-medium text-[#F97316] uppercase tracking-wide mb-1.5 sm:mb-2">
+    <article className="rounded-xl bg-[#ECEDEF] p-2.5 sm:rounded-2xl sm:p-3 md:p-4 lg:p-4 xl:p-4.5 2xl:p-5">
+      <p className="mb-1.5 text-[9px] font-medium uppercase tracking-wide text-[#F97316] sm:mb-2 sm:text-[10px] md:text-[11px] 2xl:text-xs">
         {panel.brand}
       </p>
-      <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[26px] 2xl:text-[28px] font-medium text-[#1F2937] leading-tight mb-3 sm:mb-3.5 md:mb-4">
+      <h3 className="mb-3 text-base font-medium leading-tight text-[#1F2937] sm:mb-3.5 sm:text-lg md:mb-4 md:text-xl lg:text-2xl xl:text-[26px] 2xl:text-[28px]">
         {panel.name}
       </h3>
 
@@ -346,22 +419,18 @@ function VisualSummaryCard({ panel }: { panel: SolarPanel }) {
   );
 }
 
-function VisualSummarySection({
-  selectedPanels,
-}: {
-  selectedPanels: SolarPanel[];
-}) {
+function VisualSummarySection({ selectedPanels }: { selectedPanels: SolarPanel[] }) {
   const isTwoPanelLayout = selectedPanels.length === 2;
   return (
     <section className="mt-6 sm:mt-7 md:mt-8 lg:mt-9 xl:mt-10 2xl:mt-12">
-      <div className="text-center mb-4 sm:mb-5 md:mb-5 lg:mb-6 xl:mb-7 2xl:mb-8">
-        <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-[44px] xl:text-[48px] 2xl:text-[52px] font-semibold text-[#183C39] leading-tight">
+      <div className="mb-4 text-center sm:mb-5 md:mb-5 lg:mb-6 xl:mb-7 2xl:mb-8">
+        <h3 className="text-2xl font-semibold leading-tight text-[#183C39] sm:text-3xl md:text-4xl lg:text-[44px] xl:text-[48px] 2xl:text-[52px]">
           Visual Summary
         </h3>
       </div>
 
       {/* Mobile: horizontal scroll, Desktop: grid */}
-      <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
+      <div className="-mx-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:overflow-visible sm:px-0">
         <div
           className={`flex gap-3 sm:grid sm:gap-4 md:gap-4 lg:gap-5 xl:gap-5 2xl:gap-6 ${
             isTwoPanelLayout ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"
@@ -370,7 +439,7 @@ function VisualSummarySection({
           {selectedPanels.map((panel) => (
             <div
               key={panel.id}
-              className="min-w-[280px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+              className="min-w-[280px] flex-shrink-0 sm:min-w-0 sm:flex-shrink"
             >
               <VisualSummaryCard panel={panel} />
             </div>
@@ -381,326 +450,380 @@ function VisualSummarySection({
   );
 }
 
+/* ------------------------------------------------------------- content --- */
+
+const PVEL_EXPLAINER = {
+  title: "What is PVEL testing?",
+  paragraphs: [
+    'PVEL is the world\'s leading independent solar testing lab — think of it like NCAP crash testing, but for solar panels. "Top Performer" means a panel survived extreme stress tests simulating 25+ years of real-world wear — heat cycling, humidity, UV exposure, and heavy loads.',
+    "Why it matters: The manufacturer didn't test itself — an independent lab did. A panel can look great on paper but fail in the real world. This test catches that gap. It's the first thing knowledgeable buyers check.",
+  ],
+};
+
 export default function ComparisonTable({
   selectedPanels,
   allPanels,
   onRemovePanel,
   onAddPanel,
+  onReplacePanel,
 }: ComparisonTableProps) {
+  const [isLabTestingOpen, setIsLabTestingOpen] = useState(true);
+
   const selectedPanelIds = selectedPanels.map((p) => p.id);
+  const columnCount = selectedPanels.length;
+
   const tableGridStyle = useMemo<CSSProperties>(
     () => ({
-      gridTemplateColumns: `var(--comparison-label-col) repeat(${selectedPanels.length}, minmax(0, 1fr))`,
-      minWidth: `calc(var(--comparison-label-col) + ${selectedPanels.length * 180}px)`,
+      gridTemplateColumns: `var(--comparison-label-col) repeat(${columnCount}, minmax(0, 1fr))`,
+      minWidth: `calc(var(--comparison-label-col) + ${columnCount * 180}px)`,
     }),
-    [selectedPanels.length],
+    [columnCount],
   );
 
-  // Create slots for up to 3 panels
+  // Slots for up to 3 panels
   const panelSlots = [0, 1, 2].map((index) => selectedPanels[index] || null);
 
   const handleSelectPanel = (slotIndex: number, panelId: string) => {
-    onAddPanel(panelId);
+    if (panelSlots[slotIndex] && onReplacePanel) {
+      onReplacePanel(slotIndex, panelId);
+    } else {
+      onAddPanel(panelId);
+    }
   };
 
   const handleRemovePanel = (slotIndex: number) => {
     const panel = panelSlots[slotIndex];
-    if (panel) {
-      onRemovePanel(panel.id);
-    }
+    if (panel) onRemovePanel(panel.id);
   };
 
-  // Helper to get values for a row
-  const getValues = (
-    key:
-      | keyof SolarPanel
-      | ((panel: SolarPanel) => string | number | boolean | null),
-  ) => {
-    return panelSlots.slice(0, selectedPanels.length).map((panel) => {
-      if (!panel) return null;
-      if (typeof key === "function") {
-        return key(panel);
-      }
-      return panel[key] as string | number | boolean | null;
-    });
-  };
+  const bestFor = useMemo(() => computeBestFor(selectedPanels), [selectedPanels]);
+
+  /** Render one cell per selected panel. */
+  const cells = (render: (panel: SolarPanel, index: number) => ReactNode) =>
+    selectedPanels.map(render);
 
   return (
-    <div className="bg-[#F7F8FA] min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Panel Selectors row - horizontally scrollable on mobile */}
-        <div className="overflow-x-auto sm:overflow-visible pb-2 mb-8 sm:mb-10 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-3 bg-[#F3F3F3] border border-[#E4E4E4] rounded-lg px-3 sm:px-4 py-3 min-w-max sm:min-w-0">
-            <PanelSelector
-              selectedPanel={panelSlots[0]}
-              allPanels={allPanels}
-              selectedPanelIds={selectedPanelIds}
-              onSelect={(panelId) => handleSelectPanel(0, panelId)}
-              onRemove={() => handleRemovePanel(0)}
-            />
-            <span className="text-xs sm:text-sm text-[#6B6B6B]">VS</span>
-            <PanelSelector
-              selectedPanel={panelSlots[1]}
-              allPanels={allPanels}
-              selectedPanelIds={selectedPanelIds}
-              onSelect={(panelId) => handleSelectPanel(1, panelId)}
-              onRemove={() => handleRemovePanel(1)}
-            />
-            <span className="text-xs sm:text-sm text-[#6B6B6B]">VS</span>
-            <PanelSelector
-              selectedPanel={panelSlots[2]}
-              allPanels={allPanels}
-              selectedPanelIds={selectedPanelIds}
-              onSelect={(panelId) => handleSelectPanel(2, panelId)}
-              onRemove={() => handleRemovePanel(2)}
-            />
-          </div>
-        </div>
-
-        <div className="mb-4 text-center">
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#183C39]">
+    <div className="min-h-screen bg-[#F7F8FA]">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mb-5 text-center sm:mb-6">
+          <h2 className="text-2xl font-bold text-[#183C39] sm:text-4xl">
             Side-by-Side Comparison
           </h2>
         </div>
 
-        {/* Comparison Table - horizontally scrollable */}
-        {selectedPanels.length >= 2 && (
-          <div className="bg-white border border-[#DFE3E8] overflow-x-auto [--comparison-label-col:120px] sm:[--comparison-label-col:128px] md:[--comparison-label-col:112px] lg:[--comparison-label-col:128px] xl:[--comparison-label-col:144px] 2xl:[--comparison-label-col:220px]">
-            <div className="min-w-full" style={tableGridStyle}>
-              {/* Column headers */}
-              <div className="grid" style={tableGridStyle}>
-                <div className="min-w-0 border-r border-b border-[#DFE3E8] bg-white sticky left-0 z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]" />
-                {panelSlots
-                  .slice(0, selectedPanels.length)
-                  .map((panel, idx) => (
-                    <div
-                      key={panel?.id || idx}
-                      className="min-w-0 bg-[#F4F1E6] border-r border-b border-[#DFE3E8] flex items-center justify-between gap-2 px-3 sm:px-4 py-2 text-[10px] sm:text-[13px] font-semibold text-[#355659]"
-                    >
-                      <span className="truncate min-w-0">{panel?.name}</span>
-                      <button
-                        onClick={() => handleRemovePanel(idx)}
-                        className="p-1 text-gray-500 hover:text-gray-800 flex-shrink-0"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-              </div>
-
-              {/* Image row */}
-              <div className="grid" style={tableGridStyle}>
-                <div className="min-w-0 border-r border-b border-[#DFE3E8] bg-white sticky left-0 z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]" />
-                {panelSlots
-                  .slice(0, selectedPanels.length)
-                  .map((panel, idx) => (
-                    <div
-                      key={panel?.id || idx}
-                      className="min-w-0 border-r border-b border-[#DFE3E8] bg-white flex items-center justify-center h-[180px] sm:h-[300px]"
-                    >
-                      {panel && (
-                        <div className="relative w-[92%] h-[90%] overflow-hidden">
-                          <Image
-                            src={panel.imageUrl}
-                            alt={panel.name}
-                            fill
-                            className="object-contain scale-[1.35]"
-                            sizes="(max-width: 640px) 60vw, (max-width: 1024px) 45vw, 32vw"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-              </div>
-
-              {/* The Basics */}
-              <SectionHeader
-                title="The Basics"
-                columns={selectedPanels.length}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Technology"
-                values={getValues("technology")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Power Output"
-                values={getValues((p) => `${p.wattage}W`)}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Construction"
-                values={getValues((p) =>
-                  p.moistureProtection.includes("Glass-to-Glass")
-                    ? `${p.moistureProtection}__K_BEST__`
-                    : p.moistureProtection,
+        {/* Panel selectors */}
+        <div className="-mx-4 mb-6 overflow-x-auto px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0">
+          <div className="flex min-w-max items-center justify-start gap-3 rounded-xl bg-[#F1F3F5] px-4 py-4 sm:min-w-0 sm:justify-center sm:gap-4 sm:px-6">
+            {[0, 1, 2].map((slotIndex) => (
+              <Fragment key={slotIndex}>
+                {slotIndex > 0 && (
+                  <span className="text-[15px] font-medium text-[#444444]">
+                    VS
+                  </span>
                 )}
+                <PanelSelector
+                  selectedPanel={panelSlots[slotIndex]}
+                  allPanels={allPanels}
+                  selectedPanelIds={selectedPanelIds}
+                  onSelect={(panelId) => handleSelectPanel(slotIndex, panelId)}
+                  onRemove={() => handleRemovePanel(slotIndex)}
+                />
+              </Fragment>
+            ))}
+          </div>
+        </div>
+
+        {/* Panel cards */}
+        {columnCount >= 2 && (
+          <div className="-mx-4 mb-8 overflow-x-auto px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0">
+            <div
+              className={`grid gap-4 sm:gap-5 ${
+                columnCount === 2 ? "grid-cols-2" : "grid-cols-3"
+              } min-w-max sm:min-w-0`}
+            >
+              {selectedPanels.map((panel) => (
+                <div key={panel.id} className="w-[260px] sm:w-auto">
+                  <ComparePanelCard panel={panel} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Comparison table */}
+        {columnCount >= 2 && (
+          <div className="overflow-x-auto rounded-xl border border-[#E5E5EA] bg-white [--comparison-label-col:150px] sm:[--comparison-label-col:220px] lg:[--comparison-label-col:280px] xl:[--comparison-label-col:340px]">
+            <div className="min-w-full">
+              {/* The Verdict */}
+              <SectionHeader title="The Verdict" gridStyle={tableGridStyle} />
+              <Row
+                label="Overall Rating"
+                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <VerdictCell key={panel.id} grade={panel.overallRating} />
+                ))}
+              />
+              <Row
+                label="Best For"
+                gridStyle={tableGridStyle}
+                values={cells((panel, index) => (
+                  <GreenPill key={panel.id}>{bestFor[index]}</GreenPill>
+                ))}
+              />
+
+              {/* Trust & Certifications */}
+              <SectionHeader
+                title="Trust & Certifications"
                 gridStyle={tableGridStyle}
               />
-              <ComparisonRow
-                label="Subsidy Eligible (DCR)"
-                values={getValues("subsidyEligible")}
+              <Row
+                label="Independent Lab Testing"
                 gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Bifacial Gain"
-                values={getValues((p) =>
-                  p.bifacialGain ? `+${p.bifacialGain}%` : "N/A",
+                expandable
+                isExpanded={isLabTestingOpen}
+                onToggle={() => setIsLabTestingOpen((open) => !open)}
+                values={cells((panel) =>
+                  panel.pvelTopPerformer ? (
+                    "Top Performer"
+                  ) : (
+                    <>
+                      Tested ·<br />
+                      Not Top Performer
+                    </>
+                  ),
                 )}
-                gridStyle={tableGridStyle}
               />
-              <ComparisonRow
-                label="Weight"
-                values={getValues((p) => `${p.weight} kg`)}
+              {isLabTestingOpen && (
+                <ExplainerRow
+                  title={PVEL_EXPLAINER.title}
+                  paragraphs={PVEL_EXPLAINER.paragraphs}
+                  gridStyle={tableGridStyle}
+                />
+              )}
+              <Row
+                label="Bank-Trusted Manufacturer"
                 gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <CheckCell
+                    key={panel.id}
+                    ok={panel.bloombergTier1}
+                    yes="Tier 1"
+                    no="Not listed"
+                  />
+                ))}
               />
-
-              {/* Heat Performance */}
-              <SectionHeader
-                title="Heat Performance — The Kerala Test"
-                columns={selectedPanels.length}
+              <Row
+                label="Government Approved"
                 gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Temperature Coefficient"
-                values={getValues((p) => {
-                  const badge =
-                    p.temperatureCoefficient <= -0.35 ? "__BEST__" : "__GOOD__";
-                  return `${p.temperatureCoefficient}%/°C${badge}`;
-                })}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Efficiency (STC)"
-                values={getValues((p) => `${p.efficiency}%`)}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="NOCT"
-                values={getValues((p) => `${p.noct}°C`)}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Real Output at 60°C"
-                values={getValues((p) => `~${p.realOutputAt60C}W`)}
-                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <CheckCell
+                    key={panel.id}
+                    ok={panel.bisCertified}
+                    yes="Approved"
+                    no="Not approved"
+                  />
+                ))}
               />
 
-              {/* Durability */}
-              <SectionHeader
-                title="Durability — Kerala Monsoons"
-                columns={selectedPanels.length}
+              {/* Build Quality */}
+              <SectionHeader title="Build Quality" gridStyle={tableGridStyle} />
+              <Row
+                label="Build Quality"
                 gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <VerdictCell key={panel.id} grade={buildQualityGrade(panel)} />
+                ))}
               />
-              <ComparisonRow
-                label="Moisture Protection"
-                values={getValues("moistureProtection")}
+              <Row
+                label="Company Strength"
                 gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="IP Rating"
-                values={getValues("ipRating")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Wind Load"
-                values={getValues((p) => `${p.windLoad} Pa`)}
-                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <VerdictCell
+                    key={panel.id}
+                    grade={companyStrengthGrade(panel)}
+                  />
+                ))}
               />
 
-              {/* Warranty & Degradation */}
+              {/* Kerala Performance */}
               <SectionHeader
-                title="Warranty & Degradation"
-                columns={selectedPanels.length}
+                title="Kerala Performance"
                 gridStyle={tableGridStyle}
               />
-              <ComparisonRow
+              <Row
+                label="Kerala Weather Fit"
+                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <GradeCell
+                    key={panel.id}
+                    grade={gradeFromScore(panel.ratings.keralaClimate)}
+                  />
+                ))}
+              />
+              <Row
+                label="Heat Tolerance"
+                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <GradeCell
+                    key={panel.id}
+                    grade={gradeFromScore(panel.ratings.heatPerformance)}
+                  />
+                ))}
+              />
+              <Row
+                label="Humidity"
+                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <GradeCell key={panel.id} grade={humidityGrade(panel)} />
+                ))}
+              />
+              <Row
+                label="Monsoon"
+                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <GradeCell key={panel.id} grade={monsoonGrade(panel)} />
+                ))}
+              />
+              <Row
+                label="Low Light"
+                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <GradeCell key={panel.id} grade={lowLightGrade(panel)} />
+                ))}
+              />
+              <Row
+                label="Coastal"
+                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <GradeCell key={panel.id} grade={coastalGrade(panel)} />
+                ))}
+              />
+
+              {/* Warranty Reliability */}
+              <SectionHeader
+                title="Warranty Reliability"
+                gridStyle={tableGridStyle}
+              />
+              <Row
                 label="Product Warranty"
-                values={getValues((p) => `${p.productWarranty} years`)}
                 gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <YearsCell
+                    key={panel.id}
+                    years={panel.productWarranty}
+                    stars={productWarrantyStars(panel.productWarranty)}
+                  />
+                ))}
               />
-              <ComparisonRow
+              <Row
                 label="Performance Warranty"
-                values={getValues((p) => `${p.performanceWarranty} years`)}
                 gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <YearsCell
+                    key={panel.id}
+                    years={panel.performanceWarranty}
+                    stars={warrantyStars(panel.performanceWarranty)}
+                  />
+                ))}
               />
-              <ComparisonRow
-                label="First‑Year Power Drop"
-                values={getValues((p) => `${p.firstYearPowerDrop}%`)}
+              <Row
+                label="Guarantee"
                 gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <YearsCell
+                    key={panel.id}
+                    years={panel.performanceWarranty}
+                    stars={warrantyStars(panel.performanceWarranty)}
+                  />
+                ))}
               />
-              <ComparisonRow
-                label="Annual Degradation"
-                values={getValues((p) =>
-                  p.annualDegradation >= 0.5
-                    ? `${p.annualDegradation}%/year__BELOW_AVG__`
-                    : `${p.annualDegradation}%/year`,
-                )}
+              <Row
+                label="Claim Experience"
                 gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Output at Year 25"
-                values={getValues((p) => `${p.outputAtYear25}%`)}
-                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <GradeCell key={panel.id} grade={claimExperienceGrade(panel)} />
+                ))}
               />
 
-              {/* Brand Trust */}
+              {/* Technology & Standards */}
               <SectionHeader
-                title="Brand Trust"
-                columns={selectedPanels.length}
+                title="Technology & Standards"
                 gridStyle={tableGridStyle}
               />
-              <ComparisonRow
-                label="Manufacturing Capacity"
-                values={getValues("manufacturingCapacity")}
+              <Row
+                label="Technology"
                 gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <div key={panel.id} className="space-y-1.5">
+                    <p>{shortTechnology(panel)}</p>
+                    {isBestAvailableTech(panel) && (
+                      <span className="inline-flex items-center rounded bg-[#E8F6ED] px-1.5 py-0.5 text-[11px] text-[#1D8F47]">
+                        Best Available
+                      </span>
+                    )}
+                  </div>
+                ))}
               />
-              <ComparisonRow
-                label="Bloomberg Tier 1"
-                values={getValues((p) =>
-                  p.bloombergTier1 ? "✓ Tier 1" : "Check",
-                )}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="PVEL Top Performer"
-                values={getValues((p) =>
-                  p.pvelTopPerformer ? "✓ Yes" : "Check",
-                )}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="BIS Certified"
-                values={getValues("bisCertified")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Independent Audit"
-                values={getValues("independentAudit")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
+              <Row
                 label="Certifications"
-                values={getValues((p) => p.certifications.join(", "))}
+                gridStyle={tableGridStyle}
+                values={cells((panel) => (
+                  <div key={panel.id} className="space-y-1">
+                    {certificationList(panel).map((cert) => (
+                      <p key={cert}>{cert}</p>
+                    ))}
+                  </div>
+                ))}
+              />
+
+              {/* Technical specs */}
+              <SectionHeader
+                title="Technology & Standards"
                 gridStyle={tableGridStyle}
               />
-              <ComparisonRow
-                label="Price Range"
-                values={getValues("priceRange")}
+              <Row
+                label="Efficiency (higher = more power)"
                 gridStyle={tableGridStyle}
-                highlight
+                values={cells((panel) => `${panel.efficiency}%`)}
+              />
+              <Row
+                label="Heat Performance (lower = better)"
+                gridStyle={tableGridStyle}
+                values={cells((panel) => `${panel.temperatureCoefficient}%/°C`)}
+              />
+              <Row
+                label="Yearly Output Loss (lower = better)"
+                gridStyle={tableGridStyle}
+                values={cells(
+                  (panel) =>
+                    `Yr1 ≤${panel.firstYearPowerDrop}%  ·  ≤${panel.annualDegradation}%/yr`,
+                )}
+              />
+              <Row
+                label="Panel Construction"
+                gridStyle={tableGridStyle}
+                values={cells((panel) => panelConstruction(panel))}
+              />
+              <Row
+                label="Dual-Sided Generation"
+                gridStyle={tableGridStyle}
+                values={cells((panel) => dualSidedGeneration(panel))}
+              />
+              <Row
+                label="Max Voltage"
+                gridStyle={tableGridStyle}
+                values={cells(() => MAX_SYSTEM_VOLTAGE)}
               />
             </div>
           </div>
         )}
 
         {/* Empty state */}
-        {selectedPanels.length < 2 && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 sm:p-12 text-center">
-            <div className="text-gray-400 mb-4">
+        {columnCount < 2 && (
+          <div className="rounded-2xl border border-gray-100 bg-white p-8 text-center shadow-sm sm:p-12">
+            <div className="mb-4 text-gray-400">
               <svg
-                className="w-16 h-16 mx-auto"
+                className="mx-auto h-16 w-16"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -713,7 +836,7 @@ export default function ComparisonTable({
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="mb-2 text-lg font-semibold text-gray-900">
               Select at least 2 panels to compare
             </h3>
             <p className="text-sm text-gray-500">
@@ -722,12 +845,14 @@ export default function ComparisonTable({
           </div>
         )}
 
-        {/* Get Quote Button */}
-        {selectedPanels.length >= 2 && (
+        {columnCount >= 2 && (
           <>
             <div className="mt-6 text-center">
-              <button className="bg-[#F7BA41] hover:bg-[#E5A930] text-[#272218] px-5 py-2 rounded-lg font-medium text-[12px] transition-colors duration-200">
-                Get Free Quote for These Panels
+              <button
+                type="button"
+                className="rounded-lg bg-[#F7BA41] px-5 py-2.5 text-[13px] font-medium text-[#272218] transition-colors duration-200 hover:bg-[#E5A930]"
+              >
+                Get free Quote for these Panels
               </button>
             </div>
 
@@ -739,7 +864,7 @@ export default function ComparisonTable({
       </div>
 
       {/* FAQ Section - outside the container since it has its own */}
-      {selectedPanels.length >= 2 && <FAQSection />}
+      {columnCount >= 2 && <FAQSection />}
     </div>
   );
 }
