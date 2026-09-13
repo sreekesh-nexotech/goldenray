@@ -32,6 +32,7 @@ from .views.emicalculator import (
 from .views.warranty_service_request_views import WarrantyServiceRequestAPIView
 from .views.job_application_views import (
     JobApplicationAPIView,
+    JobApplicationWorkflowView,
     JobApplicationFileDownloadView,
 )
 
@@ -121,6 +122,12 @@ urlpatterns = [
         "job-applications/<int:pk>/",
         JobApplicationAPIView.as_view(),
         name="job-application-detail",
+    ),
+    # Studio workflow actions (§6.13/§6.14): status, assign, notes, restore.
+    path(
+        "job-applications/<int:pk>/<str:action>/",
+        JobApplicationWorkflowView.as_view(),
+        name="job-application-action",
     ),
     # Resume / portfolio downloads. MEDIA_URL isn't served in production, so
     # the files come back through the API instead — see the view's docstring.

@@ -1,7 +1,8 @@
 from rest_framework import mixins, viewsets
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 
-from accounts.permissions import CanAuthorEntries
+from accounts.modules import Module
+from accounts.permissions import HasModulePermission
 
 from .models import MediaAsset
 from .serializers import MediaAssetSerializer
@@ -23,7 +24,10 @@ class MediaAssetViewSet(
 
     queryset = MediaAsset.objects.all()
     serializer_class = MediaAssetSerializer
-    permission_classes = [CanAuthorEntries]
+    # The shared Media mechanism (§6.6, §7): every role that replaces images
+    # holds this module, and nobody else reaches the library.
+    permission_classes = [HasModulePermission]
+    permission_module = Module.MEDIA
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get_queryset(self):

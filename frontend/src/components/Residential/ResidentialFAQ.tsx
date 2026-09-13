@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
-import { residentialFaqs as faqs } from "@/data/residential-faq";
+import { residentialFaqs } from "@/data/residential-faq";
+import { usePublicFaqs } from "@/hooks/usePublicFaqs";
+import FaqAnswer from "@/components/ui/FaqAnswer";
 
 // Main App component for the FAQ section
 //
@@ -10,6 +12,8 @@ import { residentialFaqs as faqs } from "@/data/residential-faq";
 // home solar pricing, and unmarkable as FAQ schema because the answers didn't
 // match what the rest of the page is about.
 export default function Faq() {
+  // Shipped copy; replaced by the Studio's published FAQs for /residential.
+  const faqs = usePublicFaqs(residentialFaqs);
   // State to manage the currently open FAQ item.
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -65,7 +69,7 @@ export default function Faq() {
                 >
                   <div className="overflow-hidden">
                     <p className="text-sm md:text-base font-normal leading-relaxed text-[#555555] pr-8">
-                      {faq.answer}
+                      <FaqAnswer answer={faq.answer} />
                     </p>
                   </div>
                 </div>

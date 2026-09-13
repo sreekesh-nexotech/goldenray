@@ -3,7 +3,8 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from accounts.permissions import CanAuthorEntries, IsSchemaEditor
+from accounts.modules import Module
+from accounts.permissions import HasModulePermission, IsSchemaEditor
 
 from .models import (
     Author,
@@ -92,26 +93,30 @@ class TemplateAttributeSlotViewSet(viewsets.ModelViewSet):
         return qs.filter(template_id=template_id) if template_id else qs
 
 
-# ── Lookup viewsets (any authenticated author may create) ─────────────────────
-class AuthorViewSet(viewsets.ModelViewSet):
+# ── Lookup viewsets (blog taxonomy) ───────────────────────────────────────────
+#
+# Authors, categories, tags and badges only mean anything on blog entries, so
+# they carry the ``blogs`` grant: an editor who can write a post can file it.
+class _BlogLookupViewSet(viewsets.ModelViewSet):
+    permission_classes = [HasModulePermission]
+    permission_module = Module.BLOGS
+
+
+class AuthorViewSet(_BlogLookupViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
-    permission_classes = [CanAuthorEntries]
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(_BlogLookupViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [CanAuthorEntries]
 
 
-class TagViewSet(viewsets.ModelViewSet):
+class TagViewSet(_BlogLookupViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [CanAuthorEntries]
 
 
-class BadgeViewSet(viewsets.ModelViewSet):
+class BadgeViewSet(_BlogLookupViewSet):
     queryset = Badge.objects.all()
     serializer_class = BadgeSerializer
-    permission_classes = [CanAuthorEntries]

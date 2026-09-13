@@ -4,11 +4,35 @@ from rest_framework import status
 from ..models.lead_collection_home import LeadCollectionHome
 from ..serializers.lead_collection_home_serializer import LeadCollectionHomeSerializer
 from ..permissions import ApiMethodPermission, non_authenticated_view
+from ..utils.studio_auth import HasStudioModule
+
+# §6.8 / §7: the Leads module joins the unified permission model. Reads need
+# `leads: view`, edits `leads: edit`, and DELETE — which really deletes here,
+# as the existing module always did — needs `leads: archive`.
+LeadsModule = HasStudioModule.for_("leads", delete_action="archive")
+
+
+class LeadCollectionHomePermission(ApiMethodPermission):
+    """POST is the public capture form; everything else is the Studio's Leads screen.
+
+    Before Phase 1 the list was readable by anyone — every lead's name and
+    phone number to whoever asked. Now only a Studio token granting ``leads``
+    reaches it, and the public form keeps working exactly as before.
+    """
+
+    def has_permission(self, request, view):
+        if request.method == "POST":
+            return super().has_permission(request, view)
+        return LeadsModule().has_permission(request, view)
+
 
 class LeadCollectionHomeAPIView(APIView):
-    permission_classes = [ApiMethodPermission]
+    # Studio tokens are minted by the CMS with a different signing key, so
+    # DRF's JWTAuthentication would reject them before the permission ran.
+    # Authorisation happens entirely in the permission class.
+    authentication_classes = []
+    permission_classes = [LeadCollectionHomePermission]
 
-    @non_authenticated_view
     def get(self, request, pk=None):
         if pk:
             try:
@@ -32,7 +56,7 @@ class LeadCollectionHomeAPIView(APIView):
                     'message': 'Phone number already exists',
                     'phone_number': phone_number
                 }, status=status.HTTP_200_OK)
-            
+
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -54,4 +78,4 @@ class LeadCollectionHomeAPIView(APIView):
         except LeadCollectionHome.DoesNotExist:
             return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
         lead.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT) 
+        return Response(status=status.HTTP_204_NO_CONTENT)

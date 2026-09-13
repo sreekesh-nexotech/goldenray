@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { usePublicFaqs } from "@/hooks/usePublicFaqs";
+import FaqAnswer from "@/components/ui/FaqAnswer";
 
 // FAQ section for the "How Flarize Works" page
 export default function Faq() {
@@ -7,7 +9,8 @@ export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   // Array of FAQ data (questions and answers)
-  const faqs = [
+  // Shipped copy; replaced by the Studio's published FAQs for this page.
+  const defaultFaqs = [
     {
       question: "How does solar installation work in Kerala?",
       answer:
@@ -39,6 +42,7 @@ export default function Faq() {
         "For most Kerala homes with a high bill, the monthly saving beats FD interest, and it lasts for decades. We'll show you the real numbers for your home.",
     },
   ];
+  const faqs = usePublicFaqs(defaultFaqs);
 
   // Function to toggle the open state of an FAQ item
   const toggleFaq = (index: number) => {
@@ -92,7 +96,7 @@ export default function Faq() {
                 >
                   <div className="overflow-hidden">
                     <p className="text-sm md:text-base font-normal leading-relaxed text-[#555555] pr-8">
-                      {faq.answer}
+                      <FaqAnswer answer={faq.answer} />
                     </p>
                   </div>
                 </div>

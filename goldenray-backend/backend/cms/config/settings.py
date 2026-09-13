@@ -43,12 +43,19 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
-    # Local (order matters: accounts first — it owns the user model)
+    # Local (order matters: accounts first — it owns the user model; seo next —
+    # it owns the abstract SEO fields the Phase 1 modules mix in)
     "accounts",
+    "seo",
     "media",
     "catalog",
     "content",
     "delivery",
+    # Phase 1 admin modules
+    "sitepages",
+    "faqs",
+    "careers",
+    "siteconfig",
 ]
 
 MIDDLEWARE = [

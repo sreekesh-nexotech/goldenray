@@ -28,9 +28,11 @@ import {
   getMe,
   isAuthError,
   logout,
+  type StudioAction,
   type StudioConfig,
   type StudioDashboard,
   type StudioMe,
+  type StudioModule,
 } from "@/services/studioService";
 
 export type ToastKind = "success" | "error";
@@ -59,6 +61,14 @@ interface StudioContextValue {
   shellLoading: boolean;
   /** Non-auth load failure message, if any. */
   shellError: string | null;
+  /**
+   * Phase 1 permission check (§6.17): does the signed-in user hold `action` on
+   * `module`? Resolved from `me.permissions`, which the API has already reduced
+   * through superuser override and legacy fallback — so this is a lookup, not
+   * a re-encoding of role rules. False while `me` is still loading, which
+   * keeps action buttons hidden rather than briefly visible.
+   */
+  can: (module: StudioModule, action?: StudioAction) => boolean;
 }
 
 const StudioCtx = createContext<StudioContextValue | null>(null);
@@ -123,9 +133,15 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), kind === "error" ? 4600 : 2800);
   }, []);
 
+  const can = useCallback(
+    (module: StudioModule, action: StudioAction = "view") =>
+      Boolean(me?.permissions?.[module]?.includes(action)),
+    [me]
+  );
+
   const value = useMemo(
-    () => ({ role, setRole, tips, setTips, toasts, toast, me, config, dashboard, shellLoading, shellError }),
-    [role, tips, toasts, toast, me, config, dashboard, shellLoading, shellError]
+    () => ({ role, setRole, tips, setTips, toasts, toast, me, config, dashboard, shellLoading, shellError, can }),
+    [role, tips, toasts, toast, me, config, dashboard, shellLoading, shellError, can]
   );
 
   return <StudioCtx.Provider value={value}>{children}</StudioCtx.Provider>;

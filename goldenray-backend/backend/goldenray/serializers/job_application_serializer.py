@@ -2,7 +2,7 @@ import os
 import re
 from django.urls import reverse
 from rest_framework import serializers
-from ..models.job_application import JobApplication
+from ..models.job_application import JobApplication, JobApplicationEvent, JobApplicationNote
 
 
 INDIA_PHONE_PATTERN = re.compile(r"^[6-9][0-9]{9}$")
@@ -47,6 +47,7 @@ class JobApplicationSerializer(serializers.ModelSerializer):
     portfolio_download_url = serializers.SerializerMethodField()
 
     declaration_accepted = serializers.BooleanField(required=True)
+    display_position = serializers.CharField(read_only=True)
 
     # Honeypot: must stay empty. Bots tend to autofill any visible-looking field.
     website = serializers.CharField(
@@ -58,6 +59,13 @@ class JobApplicationSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "position",
+            "position_id",
+            "position_title",
+            "department_name",
+            "display_position",
+            "status",
+            "status_changed_at",
+            "archived_at",
             "full_name",
             "email",
             "phone",
@@ -85,9 +93,17 @@ class JobApplicationSerializer(serializers.ModelSerializer):
             "created_at",
             "resume_download_url",
             "portfolio_download_url",
+            # Workflow fields change through their own endpoints, never the form.
+            "status",
+            "status_changed_at",
+            "archived_at",
+            "display_position",
         ]
         extra_kwargs = {
             "position": {"required": False},
+            "position_id": {"required": False, "allow_null": True},
+            "position_title": {"required": False, "allow_blank": True},
+            "department_name": {"required": False, "allow_blank": True},
             "current_company": {"required": False, "allow_blank": True},
             "current_role": {"required": False, "allow_blank": True},
             "total_experience": {"required": False, "allow_blank": True},
@@ -181,3 +197,54 @@ class JobApplicationSerializer(serializers.ModelSerializer):
         if attrs.pop("website", ""):
             raise serializers.ValidationError("Invalid submission.")
         return attrs
+
+
+# ── Studio-side shapes (§6.14) ────────────────────────────────────────────────
+
+
+class JobApplicationNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobApplicationNote
+        fields = ["id", "author", "body", "created_at"]
+        read_only_fields = ["id", "author", "created_at"]
+
+    def validate_body(self, value):
+        value = (value or "").strip()
+        if not value:
+            raise serializers.ValidationError("Write something first.")
+        return value
+
+
+class JobApplicationEventSerializer(serializers.ModelSerializer):
+    kind_label = serializers.CharField(source="get_kind_display", read_only=True)
+
+    class Meta:
+        model = JobApplicationEvent
+        fields = ["id", "kind", "kind_label", "from_status", "to_status", "detail", "actor", "created_at"]
+
+
+class JobApplicationDetailSerializer(JobApplicationSerializer):
+    """Detail view: the application plus its notes and timeline."""
+
+    notes = JobApplicationNoteSerializer(many=True, read_only=True)
+    events = JobApplicationEventSerializer(many=True, read_only=True)
+    allowed_transitions = serializers.SerializerMethodField()
+
+    class Meta(JobApplicationSerializer.Meta):
+        fields = JobApplicationSerializer.Meta.fields + ["notes", "events", "allowed_transitions"]
+
+    def get_allowed_transitions(self, obj):
+        return list(JobApplication.TRANSITIONS.get(obj.status, ()))
+
+
+class JobApplicationStatusSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=JobApplication.Status.choices)
+    note = serializers.CharField(required=False, allow_blank=True, max_length=255)
+
+
+class JobApplicationAssignSerializer(serializers.Serializer):
+    """Link a general application to a posting, keeping the original intact."""
+
+    position_id = serializers.IntegerField()
+    position_title = serializers.CharField(max_length=200)
+    department_name = serializers.CharField(max_length=120, required=False, allow_blank=True)

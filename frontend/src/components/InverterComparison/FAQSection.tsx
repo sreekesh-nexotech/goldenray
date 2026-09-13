@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { usePublicFaqs } from "@/hooks/usePublicFaqs";
+import FaqAnswer from "@/components/ui/FaqAnswer";
 
 interface FAQItem {
   question: string;
   answer: string;
 }
 
-const faqs: FAQItem[] = [
+// Shipped copy; replaced by the Studio's published FAQs for this page.
+const defaultFaqs: FAQItem[] = [
   {
     question: "What is the best solar inverter for Kerala?",
     answer:
@@ -36,6 +39,7 @@ const faqs: FAQItem[] = [
 ];
 
 export default function FAQSection() {
+  const faqs = usePublicFaqs(defaultFaqs);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleFAQ = (index: number) => {
@@ -81,7 +85,7 @@ export default function FAQSection() {
                   {openIndex === index && (
                     <div className="pb-5 sm:pb-6">
                       <p className="text-sm sm:text-base md:text-lg text-[#444444] leading-relaxed whitespace-pre-line">
-                        {faq.answer}
+                        <FaqAnswer answer={faq.answer} />
                       </p>
                     </div>
                   )}

@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { usePublicFaqs } from "@/hooks/usePublicFaqs";
+import FaqAnswer from "@/components/ui/FaqAnswer";
 
 // FAQ section for the Affiliate / Partner program page
 export default function AffiliateFaq() {
@@ -7,7 +9,8 @@ export default function AffiliateFaq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   // Array of FAQ data (questions and answers)
-  const faqs = [
+  // Shipped copy; replaced by the Studio's published FAQs for this page.
+  const defaultFaqs = [
     {
       question: "I already installed solar with Flarize — can I earn?",
       answer:
@@ -64,6 +67,7 @@ export default function AffiliateFaq() {
         "Every partner gets a dedicated relationship manager, a live tracking dashboard, ready-made referral content, and full handling of consultation, paperwork, KSEB, warranty and after-sales — so the customer experience reflects well on you.",
     },
   ];
+  const faqs = usePublicFaqs(defaultFaqs);
 
   // Function to toggle the open state of an FAQ item
   const toggleFaq = (index: number) => {
@@ -117,7 +121,7 @@ export default function AffiliateFaq() {
                 >
                   <div className="overflow-hidden">
                     <p className="text-sm md:text-base font-normal leading-relaxed text-[#555555] pr-8">
-                      {faq.answer}
+                      <FaqAnswer answer={faq.answer} />
                     </p>
                   </div>
                 </div>

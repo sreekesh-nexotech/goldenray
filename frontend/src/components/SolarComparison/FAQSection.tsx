@@ -5,9 +5,13 @@ import { useState } from "react";
 // Questions live in @/data/solar-comparison-faq so this accordion and the
 // FAQPage structured data on /solar-comparison and /comparison-table stay
 // word-for-word identical.
-import { solarComparisonFaqs as faqs } from "@/data/solar-comparison-faq";
+import { solarComparisonFaqs } from "@/data/solar-comparison-faq";
+import { usePublicFaqs } from "@/hooks/usePublicFaqs";
+import FaqAnswer from "@/components/ui/FaqAnswer";
 
 export default function FAQSection() {
+  // Shipped copy; replaced by the Studio's published FAQs for this page.
+  const faqs = usePublicFaqs(solarComparisonFaqs);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleFAQ = (index: number) => {
@@ -53,7 +57,7 @@ export default function FAQSection() {
                   {openIndex === index && (
                     <div className="pb-5 sm:pb-6">
                       <p className="text-sm sm:text-base md:text-lg text-[#444444] leading-relaxed whitespace-pre-line">
-                        {faq.answer}
+                        <FaqAnswer answer={faq.answer} />
                       </p>
                     </div>
                   )}

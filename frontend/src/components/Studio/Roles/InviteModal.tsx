@@ -10,13 +10,7 @@ import { useState } from "react";
 import { Modal, ModalTitle, ModalActions } from "../shared/overlays";
 import { FieldLabel, TextInput, GhostButton, GoldButton } from "../shared/primitives";
 import { studioColors, studioFonts } from "../shared/format";
-import type { StudioApiRole } from "@/services/studioService";
-
-const roleChoices: { value: StudioApiRole; label: string }[] = [
-  { value: "admin", label: "Admin — full access" },
-  { value: "editor", label: "Editor — content & publishing" },
-  { value: "author", label: "Author — writes drafts" },
-];
+import type { StudioRole } from "@/services/adminService";
 
 const fieldRing = `inset 0 0 0 1px ${studioColors.inputRing},0 1px 2px rgba(10,13,18,.05)`;
 const fieldRingFocus = "inset 0 0 0 1.5px #074A4D,0 1px 2px rgba(10,13,18,.05)";
@@ -24,7 +18,8 @@ const fieldRingFocus = "inset 0 0 0 1.5px #074A4D,0 1px 2px rgba(10,13,18,.05)";
 export interface NewUserPayload {
   username: string;
   password: string;
-  role: StudioApiRole;
+  /** Phase 1 role id (§6.17); the server derives the legacy role from it. */
+  access_role: number;
   email?: string;
 }
 
@@ -32,16 +27,18 @@ export function InviteModal({
   open,
   onClose,
   onCreate,
+  roles,
 }: {
   open: boolean;
   onClose: () => void;
   /** POST the user; resolve on success (parent closes), throw with a message to show. */
   onCreate: (payload: NewUserPayload) => Promise<void>;
+  roles: StudioRole[];
 }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<StudioApiRole>("author");
+  const [role, setRole] = useState<string>("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -49,7 +46,7 @@ export function InviteModal({
     setUsername("");
     setEmail("");
     setPassword("");
-    setRole("author");
+    setRole("");
     setError("");
   };
 
@@ -67,13 +64,17 @@ export function InviteModal({
       setError("Enter a password");
       return;
     }
+    if (!role) {
+      setError("Choose a role");
+      return;
+    }
     setError("");
     setBusy(true);
     try {
       await onCreate({
         username: username.trim(),
         password,
-        role,
+        access_role: Number(role),
         email: email.trim() || undefined,
       });
       reset();
@@ -120,7 +121,7 @@ export function InviteModal({
           <select
             value={role}
             aria-label="Role"
-            onChange={(e) => setRole(e.target.value as StudioApiRole)}
+            onChange={(e) => setRole(e.target.value)}
             onFocus={(e) => (e.currentTarget.style.boxShadow = fieldRingFocus)}
             onBlur={(e) => (e.currentTarget.style.boxShadow = fieldRing)}
             style={{
@@ -139,9 +140,11 @@ export function InviteModal({
               cursor: "pointer",
             }}
           >
-            {roleChoices.map((c) => (
-              <option key={c.value} value={c.value}>
-                {c.label}
+            <option value="">Choose a role…</option>
+            {roles.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.name}
+                {r.description ? ` — ${r.description.slice(0, 48)}${r.description.length > 48 ? "…" : ""}` : ""}
               </option>
             ))}
           </select>

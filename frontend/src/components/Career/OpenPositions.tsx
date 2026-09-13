@@ -1,17 +1,59 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, MapPin, Search } from "lucide-react";
+import { Briefcase, ChevronDown, MapPin, Search } from "lucide-react";
 import { careerPositions } from "@/data/career-positions";
+import { fetchPublicJobPositions } from "@/services/publicCmsService";
 
-const jobs = careerPositions;
+/** The card's shape, whichever source it came from. */
+interface JobCard {
+  slug: string;
+  title: string;
+  department: string;
+  location: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
 
-const departments = ["All Department", ...Array.from(new Set(jobs.map((j) => j.department)))];
+// The shipped list, used only while the CMS is unreachable. Once the request
+// answers — even with zero jobs — the Studio's Job Positions module is the
+// source of truth (§6.11: only published positions appear here).
+const FALLBACK: JobCard[] = careerPositions
+  .filter((p) => p.isHiring)
+  .map((p) => ({ slug: p.slug, title: p.title, department: p.department, location: p.location, icon: p.icon }));
 
 export default function OpenPositions() {
   const [search, setSearch] = useState("");
   const [department, setDepartment] = useState("All Department");
+  const [jobs, setJobs] = useState<JobCard[]>(FALLBACK);
+  const [loaded, setLoaded] = useState(false);
+  const [intro, setIntro] = useState<string>("");
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchPublicJobPositions().then((res) => {
+      if (cancelled || !res) return;
+      setJobs(
+        res.data.map((p) => ({
+          slug: p.slug,
+          title: p.title,
+          department: p.department ?? "General",
+          location: p.location,
+          icon: Briefcase,
+        }))
+      );
+      setIntro(res.meta.intro || "");
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const departments = useMemo(
+    () => ["All Department", ...Array.from(new Set(jobs.map((j) => j.department)))],
+    [jobs]
+  );
 
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
@@ -20,7 +62,7 @@ export default function OpenPositions() {
         department === "All Department" || job.department === department;
       return matchesSearch && matchesDepartment;
     });
-  }, [search, department]);
+  }, [jobs, search, department]);
 
   return (
     <section id="open-positions" className="py-16 px-4 sm:px-6 lg:px-8">
@@ -31,7 +73,7 @@ export default function OpenPositions() {
             Open Positions
           </h2>
           <p className="text-sm md:text-lg font-normal leading-relaxed text-[#444444]">
-            Find your next challenge and join our mission.
+            {intro || "Find your next challenge and join our mission."}
           </p>
         </div>
 
@@ -85,7 +127,9 @@ export default function OpenPositions() {
         <div className="flex flex-col gap-4">
           {filteredJobs.length === 0 ? (
             <p className="text-center text-gray-500 py-10">
-              No positions match your search.
+              {loaded && jobs.length === 0
+                ? "We have no open positions right now — send us your resume below and we'll keep it on file."
+                : "No positions match your search."}
             </p>
           ) : (
             filteredJobs.map((job) => {

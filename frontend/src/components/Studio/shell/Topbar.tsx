@@ -29,17 +29,38 @@ function crumbsFor(pathname: string): Crumb[] {
       { label: entry?.title || "Entry" },
     ];
   }
+  // Phase 1 module editors: list → record.
+  const nested: [RegExp, string, string][] = [
+    [/^\/studio\/faqs\/([^/]+)$/, "FAQs", "/studio/faqs"],
+    [/^\/studio\/pages\/([^/]+)$/, "Pages", "/studio/pages"],
+    [/^\/studio\/careers\/positions\/([^/]+)$/, "Job Positions", "/studio/careers/positions"],
+  ];
+  for (const [re, parent, href] of nested) {
+    const m = pathname.match(re);
+    if (m) return [{ label: parent, href }, { label: m[1] === "new" ? "New" : "Edit" }];
+  }
+
   const map: Record<string, string> = {
     "/studio/dashboard": "Dashboard",
+    "/studio/pages": "Pages",
     "/studio/collections": "Collections",
-    "/studio/entries": "Entries",
-    "/studio/enquiries": "Enquiries",
-    "/studio/careers": "Career",
+    "/studio/entries": "Blogs",
+    "/studio/faqs": "FAQs",
+    "/studio/seo": "SEO",
+    "/studio/enquiries": "Leads / Entries",
+    "/studio/emi-calculator": "EMI Calculator",
+    "/studio/careers": "Careers overview",
+    "/studio/careers/positions": "Job Positions",
+    "/studio/careers/applications": "Applications",
+    "/studio/careers/departments": "Departments",
+    "/studio/careers/page": "Career Page",
     "/studio/templates": "Templates",
-    "/studio/media": "Media library",
+    "/studio/media": "Media",
     "/studio/taxonomy": "Authors & taxonomy",
     "/studio/delivery-api": "Delivery API",
-    "/studio/roles": "Roles & access",
+    "/studio/users": "Users",
+    "/studio/roles": "Roles & Permissions",
+    "/studio/settings": "Settings",
   };
   return [{ label: map[pathname] || "Dashboard" }];
 }

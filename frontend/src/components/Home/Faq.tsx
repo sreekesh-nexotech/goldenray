@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { usePublicFaqs } from "@/hooks/usePublicFaqs";
+import FaqAnswer from "@/components/ui/FaqAnswer";
 
 // Main App component for the FAQ section
 export default function Faq() {
@@ -7,7 +9,8 @@ export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   // Array of FAQ data (questions and answers)
-  const faqs = [
+  // Shipped copy; replaced by the Studio's published FAQs for this page.
+  const defaultFaqs = [
     {
       question: "What maintenance is required for solar panels?",
       answer:
@@ -49,6 +52,7 @@ export default function Faq() {
         "No. The PM Surya Ghar Yojana subsidy applies to on-grid residential systems only. Commercial and industrial installations don't qualify. However, businesses benefit from accelerated depreciation (40% in year one) and tax deductions that often deliver faster ROI than the residential subsidy.",
     },
   ];
+  const faqs = usePublicFaqs(defaultFaqs);
 
   // Function to toggle the open state of an FAQ item
   const toggleFaq = (index: number) => {
@@ -94,7 +98,7 @@ export default function Faq() {
               </button>
               {openIndex === index && (
                 <div className="mt-3 text-[#444444] text-xs md:text-base font-normal leading-normal">
-                  {faq.answer}
+                  <FaqAnswer answer={faq.answer} />
                 </div>
               )}
             </div>

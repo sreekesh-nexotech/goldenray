@@ -1,9 +1,9 @@
 // src/app/studio/(app)/careers/page.tsx
 import type { Metadata } from "next";
-import CareerScreen from "@/components/Studio/Careers/CareerScreen";
+import CareersOverviewScreen from "@/components/Studio/Careers/CareersOverviewScreen";
 
-export const metadata: Metadata = { title: "Career" };
+export const metadata: Metadata = { title: "Careers" };
 
-export default function CareerPage() {
-  return <CareerScreen />;
+export default function CareersPage() {
+  return <CareersOverviewScreen />;
 }

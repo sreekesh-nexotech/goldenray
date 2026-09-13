@@ -149,6 +149,8 @@ class DeleteSemanticsTests(AuthoringApiTestCase):
         )
         resp = self.client.delete(f"/admin-api/entries/{self.entry.pk}/")
 
-        self.assertEqual(resp.status_code, 400)
+        # Since Phase 1 the module matrix refuses this before the service layer
+        # gets a look: an author holds blogs view/create/edit, not archive.
+        self.assertEqual(resp.status_code, 403)
         self.entry.refresh_from_db()
         self.assertEqual(self.entry.status, Entry.Status.DRAFT)

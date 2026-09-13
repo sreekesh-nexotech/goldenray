@@ -24,6 +24,7 @@ import {
   type StudioUser,
   type StudioApiRole,
 } from "@/services/studioService";
+import { getRoles, type StudioRole } from "@/services/adminService";
 
 // The design uses tighter row paddings than the shared tdStyle (12px): member
 // rows are 11px, permission-matrix rows are 13px.
@@ -36,11 +37,6 @@ const matrixTd = { ...tdStyle, padding: "13px 16px" } as const;
 
 const roleOptions: Role[] = ["Admin", "Editor", "Author"];
 
-const apiRoleOptions: { value: StudioApiRole; label: string }[] = [
-  { value: "admin", label: "Admin" },
-  { value: "editor", label: "Editor" },
-  { value: "author", label: "Author" },
-];
 
 const apiRoleLabel: Record<StudioApiRole, string> = { admin: "Admin", editor: "Editor", author: "Author" };
 
@@ -111,6 +107,7 @@ function MemberRow({
   self,
   editable,
   busy,
+  roles,
   onRoleChange,
   onDeactivate,
   onReactivate,
@@ -119,7 +116,9 @@ function MemberRow({
   self: boolean;
   editable: boolean;
   busy: boolean;
-  onRoleChange: (v: StudioApiRole) => void;
+  /** Phase 1 roles (§6.17); the select assigns one of these. */
+  roles: StudioRole[];
+  onRoleChange: (accessRoleId: number) => void;
   onDeactivate: () => void;
   onReactivate: () => void;
 }) {
@@ -170,20 +169,23 @@ function MemberRow({
         {editable ? (
           <div style={{ maxWidth: 150 }}>
             <SelectField
-              value={user.role}
+              value={user.access_role ? String(user.access_role) : ""}
               ariaLabel={`Role for ${name}`}
-              onChange={(v) => onRoleChange(v as StudioApiRole)}
+              onChange={(v) => v && onRoleChange(Number(v))}
               style={{ fontSize: 13, padding: "8px 30px 8px 11px", borderRadius: 10 }}
             >
-              {apiRoleOptions.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
+              {!user.access_role && <option value="">Legacy: {apiRoleLabel[user.role]}</option>}
+              {roles.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.name}
                 </option>
               ))}
             </SelectField>
           </div>
         ) : (
-          <span style={{ fontSize: 13, color: studioColors.bodyGray, fontWeight: 500 }}>{apiRoleLabel[user.role]}</span>
+          <span style={{ fontSize: 13, color: studioColors.bodyGray, fontWeight: 500 }}>
+            {user.access_role_name ?? `Legacy: ${apiRoleLabel[user.role]}`}
+          </span>
         )}
       </td>
       <td style={memberTd}>
@@ -257,6 +259,7 @@ export default function RolesScreen() {
   const { isAdmin } = useCapabilities();
 
   const [users, setUsers] = useState<StudioUser[] | null>(null);
+  const [roles, setRoles] = useState<StudioRole[]>([]);
   const [forbidden, setForbidden] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
@@ -280,12 +283,18 @@ export default function RolesScreen() {
 
   const replaceUser = (u: StudioUser) => setUsers((prev) => prev?.map((x) => (x.id === u.id ? u : x)) ?? prev);
 
-  const changeRole = async (u: StudioUser, next: StudioApiRole) => {
+  useEffect(() => {
+    getRoles().then((p) => setRoles(p.results)).catch(() => {});
+  }, []);
+
+  const changeRole = async (u: StudioUser, accessRoleId: number) => {
     setBusyId(u.id);
     try {
-      const updated = await patchUser(u.id, { role: next });
+      // The server derives the legacy `role` claim from the granted role, so
+      // the token the other service reads stays in step automatically.
+      const updated = await patchUser(u.id, { access_role: accessRoleId });
       replaceUser(updated);
-      toast(`Role updated to ${apiRoleLabel[next]}`);
+      toast(`Role updated to ${updated.access_role_name ?? apiRoleLabel[updated.role]}`);
     } catch (err) {
       toast(err instanceof StudioApiError ? `Update failed: ${err.message}` : "Update failed", "error");
     } finally {
@@ -453,6 +462,7 @@ export default function RolesScreen() {
                       self={self}
                       editable={isAdmin && !self}
                       busy={busyId === u.id}
+                      roles={roles}
                       onRoleChange={(v) => changeRole(u, v)}
                       onDeactivate={() => setConfirmUser(u)}
                       onReactivate={() => reactivate(u)}
@@ -523,7 +533,8 @@ export default function RolesScreen() {
         )}
       </ConfirmDialog>
 
-      <InviteModal open={inviteOpen} onClose={() => setInviteOpen(false)} onCreate={handleCreate} />
+      <InviteModal
+        roles={roles} open={inviteOpen} onClose={() => setInviteOpen(false)} onCreate={handleCreate} />
     </section>
   );
 }

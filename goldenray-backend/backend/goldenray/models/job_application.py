@@ -12,13 +12,36 @@ def portfolio_upload_path(instance, filename):
 class JobApplication(models.Model):
     """A candidate application submitted from the public Careers page.
 
-    Currently only the "UI/UX Designer" position is open, but the model keeps a
-    `position` field so the same endpoint can serve future openings.
+    Job postings live in the CMS service (``careers.JobPosition``), which has
+    its own database — so there is no foreign key to the posting. Instead the
+    application carries ``position_id`` plus a snapshot of the title and
+    department it was submitted against. That is also what §6.14 asks for in
+    its own words: the original submission is preserved even if the posting is
+    later renamed, closed or archived. ``position`` (the free-text title) stays
+    for the general-application form, which has no posting to point at.
+
+    Status follows the §6.13 workflow. Records are never hard-deleted from the
+    Studio: ``archived_at`` retires them (§6.13 — "records should not be
+    silently deleted"), and every status change lands in the timeline.
     """
 
-    POSITION_CHOICES = [
-        ("UI/UX Designer", "UI/UX Designer"),
-    ]
+    class Status(models.TextChoices):
+        NEW = "new", "New"
+        REVIEWING = "reviewing", "Reviewing"
+        INTERVIEW = "interview", "Interview"
+        SELECTED = "selected", "Selected"
+        REJECTED = "rejected", "Rejected"
+
+    #: Which transitions the workflow allows. Anything not listed is refused,
+    #: so a rejected candidate cannot silently become "new" again — reopening
+    #: is deliberate: reject → reviewing.
+    TRANSITIONS = {
+        Status.NEW: (Status.REVIEWING, Status.REJECTED),
+        Status.REVIEWING: (Status.INTERVIEW, Status.REJECTED, Status.NEW),
+        Status.INTERVIEW: (Status.SELECTED, Status.REJECTED, Status.REVIEWING),
+        Status.SELECTED: (Status.REJECTED,),
+        Status.REJECTED: (Status.REVIEWING,),
+    }
 
     EXPERIENCE_CHOICES = [
         ("0–1 years", "0–1 years"),
@@ -52,10 +75,21 @@ class JobApplication(models.Model):
         ("Other", "Other"),
     ]
 
-    # Which opening this application is for.
-    position = models.CharField(
-        max_length=64, choices=POSITION_CHOICES, default="UI/UX Designer"
+    # Which opening this application is for. Free text so the general form can
+    # submit "General application"; the CMS posting, when there is one, is
+    # snapshotted alongside.
+    position = models.CharField(max_length=200, default="General application")
+    position_id = models.IntegerField(
+        null=True, blank=True, db_index=True,
+        help_text="careers.JobPosition id on the CMS service (no FK: different database)",
     )
+    position_title = models.CharField(max_length=200, blank=True, default="", help_text="snapshot at submission")
+    department_name = models.CharField(max_length=120, blank=True, default="", help_text="snapshot at submission")
+
+    # ── Workflow (§6.13) ────────────────────────────────────────────────────
+    status = models.CharField(max_length=12, choices=Status.choices, default=Status.NEW, db_index=True)
+    status_changed_at = models.DateTimeField(null=True, blank=True)
+    archived_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     # Personal information
     full_name = models.CharField(max_length=255)
@@ -105,6 +139,18 @@ class JobApplication(models.Model):
     def __str__(self):
         return f"{self.full_name} - {self.position} ({self.phone})"
 
+    @property
+    def is_archived(self) -> bool:
+        return self.archived_at is not None
+
+    def can_transition(self, to_status: str) -> bool:
+        return to_status in self.TRANSITIONS.get(self.status, ())
+
+    @property
+    def display_position(self) -> str:
+        """The posting title if this answered one, else the free-text position."""
+        return self.position_title or self.position
+
     def delete(self, *args, **kwargs):
         """Drop the uploaded files along with the row.
 
@@ -116,3 +162,57 @@ class JobApplication(models.Model):
             if field:
                 field.delete(save=False)
         return super().delete(*args, **kwargs)
+
+
+class JobApplicationNote(models.Model):
+    """An internal note from the hiring team (§6.14). Never shown to candidates.
+
+    ``author`` is a username rather than a user FK: Studio users live in the
+    CMS database and cannot be referenced from here, so the name travels in
+    from the verified token and is stored as text.
+    """
+
+    application = models.ForeignKey(JobApplication, on_delete=models.CASCADE, related_name="notes")
+    author = models.CharField(max_length=150, blank=True, default="")
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "job_application_note"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"note on #{self.application_id} by {self.author or 'unknown'}"
+
+
+class JobApplicationEvent(models.Model):
+    """One line of an application's timeline (§6.14).
+
+    Written by the system on every meaningful change — received, status moved,
+    assigned to a posting, archived, restored — so the detail view can show
+    what happened to a candidate and when, without reconstructing it from
+    updated_at fields.
+    """
+
+    class Kind(models.TextChoices):
+        RECEIVED = "received", "Application received"
+        STATUS = "status", "Status changed"
+        ASSIGNED = "assigned", "Assigned to a position"
+        ARCHIVED = "archived", "Archived"
+        RESTORED = "restored", "Restored"
+        NOTE = "note", "Note added"
+
+    application = models.ForeignKey(JobApplication, on_delete=models.CASCADE, related_name="events")
+    kind = models.CharField(max_length=12, choices=Kind.choices)
+    from_status = models.CharField(max_length=12, blank=True, default="")
+    to_status = models.CharField(max_length=12, blank=True, default="")
+    detail = models.CharField(max_length=255, blank=True, default="")
+    actor = models.CharField(max_length=150, blank=True, default="", help_text="Studio username, or blank for the system")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "job_application_event"
+        ordering = ["-created_at", "-id"]
+
+    def __str__(self):
+        return f"{self.kind} on #{self.application_id}"

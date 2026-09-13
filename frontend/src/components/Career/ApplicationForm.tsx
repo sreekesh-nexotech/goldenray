@@ -281,10 +281,20 @@ const INITIAL: FormState = {
 type ApplicationFormProps = {
   /** Job title sent along with the application. */
   position?: string;
+  /**
+   * The Studio posting this form belongs to. Sent as `position_id` plus a
+   * title/department snapshot so the application is linked to the job in the
+   * Applications queue (§6.13) and survives the posting being renamed (§6.14).
+   * Absent for shipped (static) positions and the general form.
+   */
+  positionId?: number | null;
+  departmentName?: string;
 };
 
 export default function ApplicationForm({
-  position = "UI/UX Designer",
+  position = "General application",
+  positionId = null,
+  departmentName = "",
 }: ApplicationFormProps) {
   const [form, setForm] = useState<FormState>(INITIAL);
   const [resume, setResume] = useState<File | null>(null);
@@ -397,6 +407,9 @@ export default function ApplicationForm({
     try {
       await submitJobApplication({
         position,
+        position_id: positionId,
+        position_title: positionId ? position : "",
+        department_name: positionId ? departmentName : "",
         full_name: form.full_name.trim(),
         email: form.email.trim().toLowerCase(),
         phone: form.phone.trim().replace(/\s+/g, ""),

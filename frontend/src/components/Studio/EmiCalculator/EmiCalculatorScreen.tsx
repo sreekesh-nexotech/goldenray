@@ -46,17 +46,15 @@ interface AdminData {
 }
 
 export default function EmiCalculatorScreen() {
-  const { toast, me } = useStudio();
+  const { toast, me, can } = useStudio();
   const [tab, setTab] = useState<TabKey>("sizes");
   const [data, setData] = useState<AdminData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Authors may look but not touch — pricing changes are admin/editor only.
-  // `can_publish` is the CMS's own "admin, editor, or superuser" flag, which is
-  // exactly what the backend authorises against (a superuser's token carries
-  // role "admin"). Checking the raw role string instead would lock out
-  // superusers whose stored role is still the default "author".
-  const readOnly = me ? !me.can_publish : true;
+  // Pricing changes need `emi: edit` from the Roles matrix (§6.9, §6.17) —
+  // the same grant the backend reads out of the Studio token, so what the
+  // screen disables is exactly what the API would refuse.
+  const readOnly = me ? !can("emi", "edit") : true;
 
   const notify = useMemo(
     () => ({

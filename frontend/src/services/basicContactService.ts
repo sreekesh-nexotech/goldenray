@@ -1,5 +1,7 @@
 // golden-ray/frontend/src/services/basicContactService.ts
+import { API_BASE_URL } from "../config";
 import { apiCall } from "./apiService";
+import { getStudioAccessToken, refreshStudioAccessToken } from "./studioService";
 
 export interface ContactFormData {
   name: string;
@@ -37,8 +39,29 @@ export async function submitContactForm(data: ContactFormData): Promise<ContactR
  * Every enquiry captured by the footer / home contact forms, newest first
  * (the API already orders by `-created_at`). Feeds the Content Studio
  * Enquiries screen.
+ *
+ * Reading the queue needs a Studio token granting `leads` (§6.8); the backend
+ * verifies it with the key shared with the CMS. A 401 gets one refresh-and-
+ * retry, matching careerApplicationService.
  */
 export async function getContactEnquiries(): Promise<ContactEnquiry[]> {
-  const response = await apiCall<ContactEnquiry[]>("lead-collection-home/");
-  return Array.isArray(response) ? response : [];
+  const send = (token: string | null) =>
+    fetch(`${API_BASE_URL}lead-collection-home/`, {
+      cache: "no-store",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+  let response = await send(getStudioAccessToken());
+  if (response.status === 401) response = await send(await refreshStudioAccessToken());
+  if (!response.ok) {
+    let detail = `Request failed (${response.status})`;
+    try {
+      const data = await response.json();
+      if (typeof data?.detail === "string") detail = data.detail;
+    } catch {
+      /* keep the generic message */
+    }
+    throw new Error(detail);
+  }
+  const rows = (await response.json()) as ContactEnquiry[];
+  return Array.isArray(rows) ? rows : [];
 }

@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { usePublicFaqs } from "@/hooks/usePublicFaqs";
+import FaqAnswer from "@/components/ui/FaqAnswer";
 
 // Main App component for the FAQ section
 export default function Faq() {
@@ -7,7 +9,8 @@ export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   // Array of FAQ data (questions and answers)
-  const faqs = [
+  // Shipped copy; replaced by the Studio's published FAQs for this page.
+  const defaultFaqs = [
     {
       question: "Will panels work during Kerala monsoon?",
       answer:
@@ -44,6 +47,7 @@ export default function Faq() {
         "During a power outage, your solar system will automatically shut down for safety reasons. However, if you have a battery storage system installed, it can provide backup power to your home during outages, depending on the capacity of the battery.",
     },
   ];
+  const faqs = usePublicFaqs(defaultFaqs);
 
   // Function to toggle the open state of an FAQ item
   const toggleFaq = (index: number) => {
@@ -96,7 +100,7 @@ export default function Faq() {
                 >
                   <div className="overflow-hidden">
                     <p className="text-sm md:text-base font-normal leading-relaxed text-[#555555] pr-8">
-                      {faq.answer}
+                      <FaqAnswer answer={faq.answer} />
                     </p>
                   </div>
                 </div>

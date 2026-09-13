@@ -17,8 +17,8 @@ from django.conf import settings
 from rest_framework import permissions
 from rest_framework.exceptions import APIException
 
-# Roles allowed to change pricing. Authors can sign into the Studio but must
-# not be able to move interest rates or system prices.
+# Legacy fallback for tokens minted before the CMS embedded the module grant:
+# admins and editors keep write access, authors do not.
 WRITE_ROLES = {"admin", "editor"}
 
 
@@ -58,44 +58,90 @@ def studio_payload_from_request(request):
     return decode_studio_token(header.split(" ", 1)[1].strip())
 
 
-class IsStudioEditor(permissions.BasePermission):
-    """Every method needs a valid Studio token with an admin/editor role.
+class HasStudioModule(permissions.BasePermission):
+    """Every method needs a valid Studio token that grants a Phase 1 module.
 
-    Reads are gated too, not just writes: these endpoints return inactive rows
-    as well (a hidden bank, a system size staged for a price change), which the
-    public config endpoint deliberately filters out. Anonymous visitors get
-    what they need from /api/emi-calculator/config/ instead.
+    The CMS embeds the user's grant in the token (see
+    ``accounts.serializers.StudioTokenObtainPairSerializer``): ``modules`` is
+    the list of granted module keys and ``permissions`` maps each module to its
+    action verbs. Checking those claims here means the permission matrix an
+    admin edits in the Studio is honoured by this service too, without this
+    service having any user table to consult.
+
+    Safe methods need ``read_action`` (default ``view``) on the module; every
+    other method needs ``write_action`` (default ``edit``). ``DELETE`` asks for
+    ``delete_action`` when one is given, so a queue that archives rather than
+    deletes can name ``archive``.
+
+    Older tokens degrade gracefully: one with ``modules`` but no ``permissions``
+    is treated as holding every action on its modules, and one with neither
+    falls back to the coarse ``role`` check — so nobody is locked out by a
+    deploy; they simply get the pre-matrix behaviour until they sign in again.
+
+    Use as ``permission_classes = [HasStudioModule.for_("applications")]`` or
+    ``HasStudioModule.for_("leads", delete_action="archive")``.
     """
 
-    message = "A Content Studio admin or editor session is required."
+    module = None
+    read_action = "view"
+    write_action = "edit"
+    delete_action = None
+    message = "Your Studio role does not include this module."
+
+    @classmethod
+    def for_(cls, module, *, read_action="view", write_action="edit", delete_action=None):
+        return type(
+            f"HasStudioModule_{module}",
+            (cls,),
+            {
+                "module": module,
+                "read_action": read_action,
+                "write_action": write_action,
+                "delete_action": delete_action,
+            },
+        )
+
+    def _required_action(self, request):
+        if request.method in permissions.SAFE_METHODS:
+            return self.read_action
+        if request.method == "DELETE" and self.delete_action:
+            return self.delete_action
+        return self.write_action
 
     def has_permission(self, request, view):
         if not _signing_key():
-            # Better a loud 503 than silently accepting unsigned writes.
             raise StudioAuthNotConfigured()
 
         payload = studio_payload_from_request(request)
         if payload is None:
             return False
 
-        role = payload.get("role")
-        if role is None:
-            # Tokens minted before the CMS started embedding `role` cannot be
-            # authorised for pricing changes — the user just signs in again.
+        modules = payload.get("modules")
+        grants = payload.get("permissions")
+        needed = self._required_action(request)
+
+        if modules is None:
+            allowed = payload.get("role") in WRITE_ROLES
+        elif self.module not in modules:
+            allowed = False
+        elif isinstance(grants, dict):
+            allowed = needed in (grants.get(self.module) or ())
+        else:
+            allowed = True
+
+        if not allowed:
             self.message = (
-                "This Studio session predates role-aware tokens. "
-                "Please sign out and sign in again."
+                f"Your Studio role does not include '{needed}' on this module."
+                if modules is not None and self.module in modules
+                else "Your Studio role does not include this module."
             )
             return False
 
-        if role not in WRITE_ROLES:
-            self.message = "Your Studio role cannot change calculator settings."
-            return False
-
-        # Stash for audit/debugging in views that want it.
         request.studio_user = {
             "id": payload.get("user_id"),
             "username": payload.get("username"),
-            "role": role,
+            "role": payload.get("role"),
+            "modules": modules,
+            "permissions": grants,
         }
         return True

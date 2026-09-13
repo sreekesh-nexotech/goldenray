@@ -1,6 +1,21 @@
 import React from "react";
 import type { BulletGroup, CareerPosition } from "@/data/career-positions";
 
+/**
+ * What this section needs from a position. `CareerPosition` (the shipped
+ * data) satisfies it; so does a posting adapted from the CMS (§6.12), which
+ * may leave a group empty — an empty group's section is simply not rendered.
+ */
+export type JobDetailData = Pick<
+  CareerPosition,
+  "title" | "overview" | "responsibilities" | "requirements" | "niceToHave" | "whatYoullGet" | "locationDetail" | "employmentType"
+> & {
+  /** "How to apply" copy from the Studio editor; absent on the shipped data. */
+  applicationInstructions?: string;
+};
+
+const hasItems = (g: BulletGroup) => g.left.length + g.right.length > 0;
+
 function BulletList({ items }: { items: string[] }) {
   return (
     <ul className="space-y-3">
@@ -43,7 +58,7 @@ function TwoColBullets({ left, right }: BulletGroup) {
   );
 }
 
-export default function JobDetail({ position }: { position: CareerPosition }) {
+export default function JobDetail({ position }: { position: JobDetailData }) {
   return (
     <section className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -64,21 +79,29 @@ export default function JobDetail({ position }: { position: CareerPosition }) {
           ))}
         </Section>
 
-        <Section title="Responsibilities">
-          <TwoColBullets {...position.responsibilities} />
-        </Section>
+        {hasItems(position.responsibilities) && (
+          <Section title="Responsibilities">
+            <TwoColBullets {...position.responsibilities} />
+          </Section>
+        )}
 
-        <Section title="Requirements">
-          <TwoColBullets {...position.requirements} />
-        </Section>
+        {hasItems(position.requirements) && (
+          <Section title="Requirements">
+            <TwoColBullets {...position.requirements} />
+          </Section>
+        )}
 
-        <Section title="Nice to Have">
-          <TwoColBullets {...position.niceToHave} />
-        </Section>
+        {hasItems(position.niceToHave) && (
+          <Section title="Nice to Have">
+            <TwoColBullets {...position.niceToHave} />
+          </Section>
+        )}
 
-        <Section title="What You'll Get">
-          <TwoColBullets {...position.whatYoullGet} />
-        </Section>
+        {hasItems(position.whatYoullGet) && (
+          <Section title="What You'll Get">
+            <TwoColBullets {...position.whatYoullGet} />
+          </Section>
+        )}
 
         <Section title="Location">
           <p className="text-sm md:text-base font-normal leading-relaxed text-[#444444]">
@@ -91,6 +114,14 @@ export default function JobDetail({ position }: { position: CareerPosition }) {
             {position.employmentType}
           </p>
         </Section>
+
+        {position.applicationInstructions && (
+          <Section title="How to Apply">
+            <p className="text-sm md:text-base font-normal leading-relaxed text-[#444444] whitespace-pre-line max-w-4xl">
+              {position.applicationInstructions}
+            </p>
+          </Section>
+        )}
       </div>
     </section>
   );

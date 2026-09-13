@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { usePublicFaqs } from "@/hooks/usePublicFaqs";
+import FaqAnswer from "@/components/ui/FaqAnswer";
 
 // FAQ section for the Warranty & Service page
 export default function WarrantyFaq() {
@@ -7,7 +9,8 @@ export default function WarrantyFaq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   // Array of FAQ data (questions and answers)
-  const faqs = [
+  // Shipped copy; replaced by the Studio's published FAQs for this page.
+  const defaultFaqs = [
     {
       question: "What is PM Surya Ghar subsidy? How much can I get?",
       answer:
@@ -44,6 +47,7 @@ export default function WarrantyFaq() {
         "Yes. Add panels/inverter capacity. But KSEB needs new net metering (15–30 day wait). Cost varies. Contact Flarize service team post-install.",
     },
   ];
+  const faqs = usePublicFaqs(defaultFaqs);
 
   // Function to toggle the open state of an FAQ item
   const toggleFaq = (index: number) => {
@@ -97,7 +101,7 @@ export default function WarrantyFaq() {
                 >
                   <div className="overflow-hidden">
                     <p className="text-sm md:text-base font-normal leading-relaxed text-[#555555] pr-8">
-                      {faq.answer}
+                      <FaqAnswer answer={faq.answer} />
                     </p>
                   </div>
                 </div>

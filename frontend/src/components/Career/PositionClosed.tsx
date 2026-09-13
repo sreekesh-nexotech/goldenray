@@ -10,7 +10,7 @@ import type { CareerPosition } from "@/data/career-positions";
 export default function PositionClosed({
   position,
 }: {
-  position: CareerPosition;
+  position: Pick<CareerPosition, "title" | "department" | "location">;
 }) {
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8">

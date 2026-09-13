@@ -14,7 +14,7 @@ from .wattage import Wattage
 from .customer_installation import CustomerInstallation
 from .affiliate_application import AffiliateApplication
 from .warranty_service_request import WarrantyServiceRequest
-from .job_application import JobApplication
+from .job_application import JobApplication, JobApplicationEvent, JobApplicationNote
 from .emi_config import (
     EmiBank,
     EmiCalculatorSettings,

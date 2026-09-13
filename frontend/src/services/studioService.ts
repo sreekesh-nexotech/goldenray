@@ -22,6 +22,22 @@ export interface StudioTokens {
 
 export type StudioApiRole = "admin" | "editor" | "author";
 
+/**
+ * Phase 1 module keys and action verbs — mirror `accounts/modules.py`. The
+ * sidebar and every screen's action buttons are gated on `me.permissions`,
+ * which maps module → the actions this user holds.
+ */
+export type StudioModule =
+  | "dashboard"
+  | "pages" | "blogs" | "faqs" | "media" | "seo"
+  | "leads" | "emi"
+  | "careers" | "job_positions" | "applications" | "departments" | "career_page"
+  | "users" | "roles" | "settings";
+
+export type StudioAction = "view" | "create" | "edit" | "publish" | "verify" | "archive" | "manage";
+
+export type StudioPermissionMap = Partial<Record<StudioModule, StudioAction[]>>;
+
 /** GET auth/me/ */
 export interface StudioMe {
   id: number;
@@ -30,6 +46,12 @@ export interface StudioMe {
   first_name: string;
   last_name: string;
   role: StudioApiRole;
+  /** Granted Phase 1 role (null for accounts still on the legacy enum). */
+  access_role: number | null;
+  access_role_name: string | null;
+  access_role_slug: string | null;
+  /** Resolved module → actions, after superuser override and legacy fallback. */
+  permissions: StudioPermissionMap;
   can_publish: boolean;
   can_edit_schema: boolean;
   is_staff: boolean;
@@ -59,6 +81,25 @@ export interface StudioDashboardCounts {
   categories: number;
   tags: number;
   badges: number;
+  // Phase 1 (§6.1)
+  faqs: number;
+  faqs_draft: number;
+  faqs_published: number;
+  positions_active: number;
+  positions_draft: number;
+  departments: number;
+  pages: number;
+  pages_seo_issues: number;
+}
+
+/** One line of the dashboard's recent-activity feed. */
+export interface StudioActivityItem {
+  kind: "faq" | "job" | "blog";
+  label: string;
+  detail: string;
+  href: string;
+  actor: string | null;
+  at: string;
 }
 
 /** Slim entry row inside dashboard `recent_entries`. */
@@ -87,6 +128,7 @@ export interface StudioEntryListItem {
 export interface StudioDashboard {
   counts: StudioDashboardCounts;
   recent_entries: StudioEntryListItem[];
+  recent_activity: StudioActivityItem[];
 }
 
 /** DRF page envelope (PAGE_SIZE 25) wrapping every list endpoint. */
@@ -268,6 +310,24 @@ async function authRequest<T>(
     const fresh = await refreshTokens();
     return request<T>(endpoint, { ...init, token: fresh });
   }
+}
+
+/**
+ * The same authenticated call, for the per-module Phase 1 services
+ * (faqService, pagesService, careersService, …). They live in their own files
+ * so this one stops growing, but they share this session and its refresh.
+ */
+export const studioRequest = authRequest;
+
+/** Build `?a=1&b=2` from a filter object, skipping empty values. */
+export function query(params: object): string {
+  const qs = new URLSearchParams();
+  for (const [k, v] of Object.entries(params) as [string, unknown][]) {
+    if (v === undefined || v === null || v === "" || v === false) continue;
+    qs.set(k, String(v));
+  }
+  const s = qs.toString();
+  return s ? `?${s}` : "";
 }
 
 /* -------------------------------------------------------------------------- */
@@ -700,7 +760,10 @@ export function getUsers(): Promise<Paginated<StudioUser>> {
 export function createUser(body: {
   username: string;
   password: string;
-  role: StudioApiRole;
+  /** Legacy enum; derived from `access_role` on the server when that is set. */
+  role?: StudioApiRole;
+  /** Phase 1 role id (§6.17). */
+  access_role?: number | null;
   email?: string;
   first_name?: string;
   last_name?: string;
@@ -717,6 +780,7 @@ export function patchUser(
     first_name: string;
     last_name: string;
     role: StudioApiRole;
+    access_role: number | null;
     is_active: boolean;
     password: string;
   }>

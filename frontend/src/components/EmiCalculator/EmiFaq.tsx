@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { usePublicFaqs } from "@/hooks/usePublicFaqs";
+import FaqAnswer from "@/components/ui/FaqAnswer";
 
 // FAQ section for the EMI Calculator page
 export default function EmiFaq() {
@@ -7,7 +9,8 @@ export default function EmiFaq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   // Array of FAQ data (questions and answers)
-  const faqs = [
+  // Shipped copy; replaced by the Studio's published FAQs for this page.
+  const defaultFaqs = [
     {
       question: "How does the PM Surya Ghar subsidy reduce my solar loan EMI?",
       answer:
@@ -50,6 +53,7 @@ export default function EmiFaq() {
         "Your solar system transfers with the house. KSEB net metering agreements and remaining warranty transfer to the new owner. A solar-equipped Kerala home commands a premium — buyers factor in zero electricity bills as a financial asset.",
     },
   ];
+  const faqs = usePublicFaqs(defaultFaqs);
 
   // Function to toggle the open state of an FAQ item
   const toggleFaq = (index: number) => {
@@ -103,7 +107,7 @@ export default function EmiFaq() {
                 >
                   <div className="overflow-hidden">
                     <p className="text-sm md:text-base font-normal leading-relaxed text-[#555555] pr-8">
-                      {faq.answer}
+                      <FaqAnswer answer={faq.answer} />
                     </p>
                   </div>
                 </div>

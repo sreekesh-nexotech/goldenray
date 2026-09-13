@@ -2,22 +2,34 @@
 
 // src/components/Studio/Careers/CareerScreen.tsx
 //
-// Career — every application captured by the Careers page forms, read from
-// GET job-applications/ on the main Flarize API (not the CMS admin API). The
-// endpoint returns the full list newest-first with no pagination, so search,
-// sort and paging are all done client-side — same shape as the Enquiries
-// screen next door.
+// Applications (§6.13, §6.14) — the one queue for career applications, read
+// from GET job-applications/ on the main Flarize API (not the CMS admin API).
+// The endpoint returns the full list newest-first with no pagination, so
+// search, sort and paging are all done client-side — same shape as the
+// Enquiries screen next door. Status, notes, the timeline and assignment to a
+// posting live in the detail modal; rows are archived, never deleted.
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useStudio } from "../shared/StudioContext";
-import { DangerButton, PageHeader, TipBanner } from "../shared/primitives";
+import { DangerButton, FieldLabel, GhostButton, GoldButton, PageHeader, SelectField, TextArea, TipBanner } from "../shared/primitives";
 import { ConfirmDialog, DropdownMenu, Modal, ModalTitle, type MenuItem } from "../shared/overlays";
 import { humanTime, studioColors, studioFonts } from "../shared/format";
+import { Pill, fmtDate } from "../shared/listing";
 import {
-  deleteCareerApplication,
+  APPLICATION_STATUSES,
+  addApplicationNote,
+  archiveCareerApplication,
+  assignApplication,
+  downloadApplicationFile,
+  getCareerApplication,
   getCareerApplications,
+  restoreApplication,
+  setApplicationStatus,
+  type ApplicationStatus,
   type CareerApplication,
+  type CareerApplicationDetail,
 } from "@/services/careerApplicationService";
+import { getPositions, type PositionListItem } from "@/services/careersService";
 
 /* -------------------------------------------------------------------------- */
 /*  Sorting + date helpers                                                     */
@@ -60,22 +72,15 @@ function startOfToday(): number {
 
 type Row = CareerApplication & { ts: number };
 
-/**
- * Where the resume / portfolio actually download from.
- *
- * `resume_download_url` is an /api/ route that streams the file as an
- * attachment; the plain `resume` field is a MEDIA_URL path that only resolves
- * while the backend runs with DEBUG on. Prefer the former, fall back to the
- * latter so a backend that predates the download route still works locally.
- */
-function fileHref(row: Row, kind: "resume" | "portfolio"): string | null {
-  return kind === "resume"
-    ? row.resume_download_url || row.resume
-    : row.portfolio_download_url || row.portfolio_file;
+/** Whether a resume / portfolio exists to download. Bytes come via the service. */
+function hasFile(row: Row, kind: "resume" | "portfolio"): boolean {
+  return kind === "resume" ? Boolean(row.resume_download_url || row.resume) : Boolean(row.portfolio_download_url || row.portfolio_file);
 }
 
 export default function CareerScreen() {
-  const { tips, toast } = useStudio();
+  const { tips, toast, can } = useStudio();
+  const canEdit = can("applications", "edit");
+  const canArchive = can("applications", "archive");
 
   const [rows, setRows] = useState<Row[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -86,6 +91,9 @@ export default function CareerScreen() {
   const [search, setSearch] = useState(""); // debounced copy of q
   const [sortKey, setSortKey] = useState<SortKey>("newest");
   const [position, setPosition] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<ApplicationStatus | "all">("all");
+  const [department, setDepartment] = useState<string>("all");
+  const [showArchived, setShowArchived] = useState(false);
   const [page, setPage] = useState(1);
   const [menuAt, setMenuAt] = useState<{ top: number; left: number } | null>(null);
   const [open, setOpen] = useState<Row | null>(null);
@@ -96,7 +104,7 @@ export default function CareerScreen() {
 
   const load = async (): Promise<Row[] | null> => {
     try {
-      const data = await getCareerApplications();
+      const data = await getCareerApplications({ includeArchived: showArchived });
       const mapped = data.map((a) => ({ ...a, ts: Date.parse(a.created_at) }));
       setRows(mapped);
       setNow(Date.now());
@@ -110,7 +118,7 @@ export default function CareerScreen() {
 
   useEffect(() => {
     let cancelled = false;
-    getCareerApplications()
+    getCareerApplications({ includeArchived: showArchived })
       .then((data) => {
         if (cancelled) return;
         setRows(data.map((a) => ({ ...a, ts: Date.parse(a.created_at) })));
@@ -124,7 +132,7 @@ export default function CareerScreen() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [showArchived]);
 
   // Debounce the search box.
   useEffect(() => {
@@ -134,7 +142,7 @@ export default function CareerScreen() {
 
   useEffect(() => {
     setPage(1);
-  }, [search, sortKey, position]);
+  }, [search, sortKey, position, statusFilter, department]);
 
   const refresh = async () => {
     setRefreshing(true);
@@ -149,18 +157,24 @@ export default function CareerScreen() {
     if (!target) return;
     setDeleting(true);
     try {
-      await deleteCareerApplication(target.id);
+      await archiveCareerApplication(target.id);
       // Drop it locally rather than refetching — the list is unpaginated and a
       // full reload would flash the whole table for a single-row change.
       setRows((prev) => (prev ? prev.filter((r) => r.id !== target.id) : prev));
       setOpen((prev) => (prev?.id === target.id ? null : prev));
       setConfirmDelete(null);
-      toast(`Application from ${target.full_name?.trim() || `#${target.id}`} deleted`);
+      toast(`Application from ${target.full_name?.trim() || `#${target.id}`} archived`);
     } catch (err) {
-      toast(err instanceof Error ? err.message : "Couldn’t delete the application", "error");
+      toast(err instanceof Error ? err.message : "Couldn’t archive the application", "error");
     } finally {
       setDeleting(false);
     }
+  };
+
+  /** Patch one row in place after a workflow change in the detail modal. */
+  const applyUpdate = (updated: CareerApplication) => {
+    setRows((prev) => (prev ? prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r)) : prev));
+    setOpen((prev) => (prev?.id === updated.id ? { ...prev, ...updated } : prev));
   };
 
   /* --- derived data -------------------------------------------------------- */
@@ -174,6 +188,7 @@ export default function CareerScreen() {
       total: all.length,
       today: all.filter((r) => r.ts >= dayStart).length,
       week: all.filter((r) => r.ts >= weekStart).length,
+      fresh: all.filter((r) => r.status === "new").length,
     };
   }, [all]);
 
@@ -181,15 +196,23 @@ export default function CareerScreen() {
   // without this screen needing a change.
   const positions = useMemo(() => {
     const seen = new Set<string>();
-    for (const r of all) if (r.position) seen.add(r.position);
+    for (const r of all) if (r.display_position) seen.add(r.display_position);
+    return [...seen].sort((a, b) => a.localeCompare(b));
+  }, [all]);
+
+  const departments = useMemo(() => {
+    const seen = new Set<string>();
+    for (const r of all) if (r.department_name) seen.add(r.department_name);
     return [...seen].sort((a, b) => a.localeCompare(b));
   }, [all]);
 
   const filtered = useMemo(() => {
-    let list = position === "all" ? all : all.filter((r) => r.position === position);
+    let list = position === "all" ? all : all.filter((r) => r.display_position === position);
+    if (statusFilter !== "all") list = list.filter((r) => r.status === statusFilter);
+    if (department !== "all") list = list.filter((r) => r.department_name === department);
     if (search) {
       list = list.filter((r) =>
-        [r.full_name, r.email, r.phone, r.position, r.location, r.current_company]
+        [r.full_name, r.email, r.phone, r.display_position, r.department_name, r.location, r.current_company]
           .some((v) => (v || "").toLowerCase().includes(search))
       );
     }
@@ -198,7 +221,7 @@ export default function CareerScreen() {
     else if (sortKey === "oldest") sorted.sort((a, b) => a.ts - b.ts);
     else sorted.sort((a, b) => a.full_name.localeCompare(b.full_name));
     return sorted;
-  }, [all, search, sortKey, position]);
+  }, [all, search, sortKey, position, statusFilter, department]);
 
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -211,7 +234,7 @@ export default function CareerScreen() {
 
   const sortDef = SORTS.find((s) => s.key === sortKey)!;
   const loading = rows === null && loadError === null;
-  const filtering = search !== "" || position !== "all";
+  const filtering = search !== "" || position !== "all" || statusFilter !== "all" || department !== "all";
   const showing =
     total === 0
       ? "Showing 0 of 0"
@@ -236,7 +259,7 @@ export default function CareerScreen() {
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
       <PageHeader
         mb={14}
-        title="Career"
+        title="Applications"
         titleSuffix={
           rows !== null ? (
             <span style={{ fontWeight: 500, fontSize: 15, color: studioColors.faintGray }}>
@@ -245,7 +268,7 @@ export default function CareerScreen() {
             </span>
           ) : undefined
         }
-        subtitle="Every application submitted through the Careers page — candidate details, resume and time of submission."
+        subtitle="One queue for every application from the Careers page. Open a row to move it through the workflow, add notes and download the resume."
         actions={
           <>
             <button
@@ -289,6 +312,7 @@ export default function CareerScreen() {
       {/* Summary tiles */}
       <div className="mb-3.5 grid gap-2.5" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))" }}>
         <StatTile label="Total applications" value={rows === null ? "—" : String(stats.total)} />
+        <StatTile label="New" value={rows === null ? "—" : String(stats.fresh)} />
         <StatTile label="Today" value={rows === null ? "—" : String(stats.today)} />
         <StatTile label="Last 7 days" value={rows === null ? "—" : String(stats.week)} />
       </div>
@@ -364,12 +388,36 @@ export default function CareerScreen() {
                 ))}
               </select>
             )}
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as ApplicationStatus | "all")} aria-label="Filter by status" style={selectStyle}>
+              <option value="all">All statuses</option>
+              {APPLICATION_STATUSES.map((st) => (
+                <option key={st.key} value={st.key}>
+                  {st.label}
+                </option>
+              ))}
+            </select>
+            {departments.length > 0 && (
+              <select value={department} onChange={(e) => setDepartment(e.target.value)} aria-label="Filter by department" style={selectStyle}>
+                <option value="all">All departments</option>
+                {departments.map((dpt) => (
+                  <option key={dpt} value={dpt}>
+                    {dpt}
+                  </option>
+                ))}
+              </select>
+            )}
+            <label className="inline-flex items-center gap-1.5" style={{ fontSize: 12.5, color: studioColors.bodyGray, cursor: "pointer" }}>
+              <input type="checkbox" checked={showArchived} onChange={(e) => setShowArchived(e.target.checked)} />
+              Archived
+            </label>
             {filtering && (
               <button
                 type="button"
                 onClick={() => {
                   setQ("");
                   setPosition("all");
+                  setStatusFilter("all");
+                  setDepartment("all");
                 }}
                 className="inline-flex items-center hover:bg-[rgba(7,74,77,0.05)]"
                 style={clearButtonStyle}
@@ -384,7 +432,7 @@ export default function CareerScreen() {
             <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 860 }}>
               <thead>
                 <tr>
-                  {["Candidate", "Position", "Phone", "Experience", "Date", "Received", "Resume"].map((h) => (
+                  {["Candidate", "Position", "Status", "Experience", "Applied", "Received", "Resume"].map((h) => (
                     <th key={h} style={headStyle}>
                       {h}
                     </th>
@@ -417,16 +465,14 @@ export default function CareerScreen() {
                         </div>
                       </td>
                       <td style={{ ...cellStyle, fontSize: 13, color: studioColors.bodyGray }}>
-                        {r.position || "—"}
+                        <div>{r.display_position || "—"}</div>
+                        {r.department_name && <div style={{ fontSize: 11.5, color: studioColors.faintGray, marginTop: 2 }}>{r.department_name}</div>}
                       </td>
                       <td style={cellStyle}>
-                        <a
-                          href={`tel:${r.phone}`}
-                          onClick={(e) => e.stopPropagation()}
-                          style={{ fontFamily: studioFonts.mono, fontSize: 13, color: studioColors.teal, textDecoration: "none" }}
-                        >
-                          {r.phone}
-                        </a>
+                        <div className="flex items-center gap-1.5">
+                          <Pill status={r.status ?? "new"} size="sm" />
+                          {r.archived_at && <Pill status="archived" size="sm" />}
+                        </div>
                       </td>
                       <td style={{ ...cellStyle, fontSize: 13, color: studioColors.bodyGray, whiteSpace: "nowrap" }}>
                         {r.total_experience || "—"}
@@ -438,42 +484,41 @@ export default function CareerScreen() {
                         {valid ? humanTime(r.ts, now) : "—"}
                       </td>
                       <td style={{ ...cellStyle, whiteSpace: "nowrap" }}>
-                        {fileHref(r, "resume") ? (
-                          <a
-                            href={fileHref(r, "resume")!}
-                            // The API sends Content-Disposition: attachment, so this
-                            // downloads rather than navigating. _blank keeps the old
-                            // MEDIA_URL fallback from replacing the Studio page.
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            style={{ fontSize: 12.5, fontWeight: 600, color: studioColors.teal, textDecoration: "none" }}
+                        {hasFile(r, "resume") ? (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              downloadApplicationFile(r.id, "resume").catch((err) => toast(err instanceof Error ? err.message : "Download failed", "error"));
+                            }}
+                            style={{ border: "none", background: "transparent", padding: 0, fontSize: 12.5, fontWeight: 600, color: studioColors.teal, cursor: "pointer", fontFamily: "var(--font-switzer)" }}
                           >
                             Download ↓
-                          </a>
+                          </button>
                         ) : (
                           <span style={{ fontSize: 12.5, color: studioColors.faintGray }}>—</span>
                         )}
                       </td>
                       <td style={{ ...cellStyle, whiteSpace: "nowrap", textAlign: "right" }}>
-                        <button
-                          type="button"
-                          aria-label={`Delete application from ${r.full_name?.trim() || `#${r.id}`}`}
-                          title="Delete application"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setConfirmDelete(r);
-                          }}
-                          className="inline-flex items-center justify-center hover:bg-[rgba(185,28,28,0.08)]"
-                          style={rowDeleteStyle}
-                        >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M3 6h18" />
-                            <path d="M8 6V4.5a1.5 1.5 0 0 1 1.5-1.5h5A1.5 1.5 0 0 1 16 4.5V6" />
-                            <path d="M6 6v13.5A1.5 1.5 0 0 0 7.5 21h9a1.5 1.5 0 0 0 1.5-1.5V6" />
-                            <path d="M10 11v6M14 11v6" />
-                          </svg>
-                        </button>
+                        {canArchive && !r.archived_at && (
+                          <button
+                            type="button"
+                            aria-label={`Archive application from ${r.full_name?.trim() || `#${r.id}`}`}
+                            title="Archive application"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setConfirmDelete(r);
+                            }}
+                            className="inline-flex items-center justify-center hover:bg-[rgba(7,74,77,0.08)]"
+                            style={rowDeleteStyle}
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="3" y="4" width="18" height="4" rx="1" />
+                              <path d="M5 8v11a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V8" />
+                              <path d="M10 12h4" />
+                            </svg>
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );
@@ -551,15 +596,19 @@ export default function CareerScreen() {
 
       <ApplicationDetail
         row={open}
+        canEdit={canEdit}
+        canArchive={canArchive}
         onClose={() => setOpen(null)}
-        onDelete={(row) => setConfirmDelete(row)}
+        onArchive={(row) => setConfirmDelete(row)}
+        onUpdated={applyUpdate}
       />
 
       <ConfirmDialog
         open={confirmDelete !== null}
-        title="Delete application?"
+        title="Archive application?"
+        confirmLabel="Archive"
         busy={deleting}
-        busyLabel="Deleting…"
+        busyLabel="Archiving…"
         onCancel={() => !deleting && setConfirmDelete(null)}
         onConfirm={() => void doDelete()}
       >
@@ -569,8 +618,8 @@ export default function CareerScreen() {
             <b style={{ color: studioColors.tealDeep }}>
               {confirmDelete.full_name?.trim() || `#${confirmDelete.id}`}
             </b>{" "}
-            for {confirmDelete.position} will be removed permanently, along with the uploaded resume
-            and portfolio. This can&#8217;t be undone.
+            for {confirmDelete.display_position} leaves the queue. Nothing is deleted — the record, files,
+            notes and timeline are kept, and it can be restored from the archived view.
           </>
         )}
       </ConfirmDialog>
@@ -584,25 +633,89 @@ export default function CareerScreen() {
 
 function ApplicationDetail({
   row,
+  canEdit,
+  canArchive,
   onClose,
-  onDelete,
+  onArchive,
+  onUpdated,
 }: {
   row: Row | null;
+  canEdit: boolean;
+  canArchive: boolean;
   onClose: () => void;
-  onDelete: (row: Row) => void;
+  onArchive: (row: Row) => void;
+  onUpdated: (updated: CareerApplication) => void;
 }) {
+  const { toast } = useStudio();
   const valid = row !== null && !Number.isNaN(row.ts);
   const d = valid ? new Date(row!.ts) : null;
 
+  // The list row has the core fields; notes and the timeline come from the
+  // detail endpoint once the modal opens.
+  const [detail, setDetail] = useState<CareerApplicationDetail | null>(null);
+  const [detailError, setDetailError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [nextStatus, setNextStatus] = useState<ApplicationStatus | "">("");
+  const [statusNote, setStatusNote] = useState("");
+  const [noteBody, setNoteBody] = useState("");
+  const [positions, setPositions] = useState<PositionListItem[]>([]);
+  const [assignTo, setAssignTo] = useState("");
+
+  useEffect(() => {
+    if (!row) {
+      setDetail(null);
+      setNextStatus("");
+      setStatusNote("");
+      setNoteBody("");
+      setAssignTo("");
+      return;
+    }
+    let cancelled = false;
+    setDetailError(null);
+    getCareerApplication(row.id)
+      .then((dt) => !cancelled && setDetail(dt))
+      .catch((err) => !cancelled && setDetailError(err instanceof Error ? err.message : "Couldn’t load the timeline"));
+    getPositions({ include_archived: false })
+      .then((p) => !cancelled && setPositions(p.results))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [row]);
+
+  const run = async (fn: () => Promise<CareerApplicationDetail>, done: string) => {
+    setBusy(true);
+    try {
+      const dt = await fn();
+      setDetail(dt);
+      onUpdated(dt);
+      toast(done);
+      return true;
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Action failed", "error");
+      return false;
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const current = detail ?? row;
+  const transitions = detail?.allowed_transitions ?? [];
+
   return (
-    <Modal open={row !== null} onClose={onClose} ariaLabel="Application details" width={680}>
-      {row && (
+    <Modal open={row !== null} onClose={onClose} ariaLabel="Application details" width={760}>
+      {row && current && (
         <>
           <div className="flex items-start justify-between gap-3">
             <div style={{ minWidth: 0 }}>
-              <ModalTitle>{row.full_name?.trim() || "Application"}</ModalTitle>
+              <div className="flex flex-wrap items-center gap-2">
+                <ModalTitle>{row.full_name?.trim() || "Application"}</ModalTitle>
+                <Pill status={current.status ?? "new"} size="sm" />
+                {current.archived_at && <Pill status="archived" size="sm" />}
+              </div>
               <div style={{ fontSize: 12.5, color: studioColors.bodyGray, marginTop: 3 }}>
-                {row.position}
+                {current.display_position}
+                {current.department_name ? ` · ${current.department_name}` : ""}
                 {d ? ` · ${dateFmt.format(d)}, ${timeFmt.format(d)}` : ""}
                 <span style={{ fontFamily: studioFonts.mono, color: studioColors.faintGray }}> · #{row.id}</span>
               </div>
@@ -612,7 +725,81 @@ function ApplicationDetail({
             </button>
           </div>
 
-          <div style={{ maxHeight: "60vh", overflowY: "auto", marginTop: 16, paddingRight: 2 }}>
+          <div style={{ maxHeight: "64vh", overflowY: "auto", marginTop: 16, paddingRight: 2 }}>
+            {/* ── Workflow (§6.13) ─────────────────────────────────────── */}
+            {canEdit && !current.archived_at && (
+              <DetailSection title="Status">
+                <div className="flex flex-col gap-2.5" style={{ padding: "10px 0" }}>
+                  {detailError && <div style={{ fontSize: 12.5, color: studioColors.danger }}>{detailError}</div>}
+                  <div className="grid gap-2" style={{ gridTemplateColumns: "200px 1fr auto" }}>
+                    <SelectField value={nextStatus} onChange={(v) => setNextStatus(v as ApplicationStatus | "")} ariaLabel="Move to status">
+                      <option value="">Move to…</option>
+                      {APPLICATION_STATUSES.filter((st) => transitions.includes(st.key)).map((st) => (
+                        <option key={st.key} value={st.key}>
+                          {st.label}
+                        </option>
+                      ))}
+                    </SelectField>
+                    <input
+                      value={statusNote}
+                      onChange={(e) => setStatusNote(e.target.value)}
+                      placeholder="Reason or note for the timeline (optional)"
+                      aria-label="Status note"
+                      style={{ border: "none", borderRadius: 12, padding: "10px 12px", boxShadow: `inset 0 0 0 1px ${studioColors.inputRing}`, fontFamily: "var(--font-switzer)", fontSize: 13, color: studioColors.tealDeep, background: "#fff" }}
+                    />
+                    <GoldButton
+                      disabled={!nextStatus || busy}
+                      style={{ height: 40, padding: "0 14px", fontSize: 13, opacity: nextStatus ? 1 : 0.6 }}
+                      onClick={async () => {
+                        if (!nextStatus) return;
+                        const ok = await run(() => setApplicationStatus(row.id, nextStatus, statusNote), `Moved to ${APPLICATION_STATUSES.find((st) => st.key === nextStatus)?.label}`);
+                        if (ok) {
+                          setNextStatus("");
+                          setStatusNote("");
+                        }
+                      }}
+                    >
+                      Update
+                    </GoldButton>
+                  </div>
+                  {detail && transitions.length === 0 && (
+                    <div style={{ fontSize: 12, color: studioColors.faintGray }}>No further moves from {current.status}.</div>
+                  )}
+                </div>
+              </DetailSection>
+            )}
+
+            {/* ── Assign a general application to a posting (§6.14) ────── */}
+            {canEdit && !current.archived_at && !current.position_id && positions.length > 0 && (
+              <DetailSection title="Link to a position">
+                <div className="grid gap-2" style={{ gridTemplateColumns: "1fr auto", padding: "10px 0" }}>
+                  <SelectField value={assignTo} onChange={setAssignTo} ariaLabel="Assign to position">
+                    <option value="">Choose a posting…</option>
+                    {positions.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.title} — {p.department_name}
+                      </option>
+                    ))}
+                  </SelectField>
+                  <GhostButton
+                    disabled={!assignTo || busy}
+                    style={{ height: 40, padding: "0 14px", fontSize: 13 }}
+                    onClick={async () => {
+                      const p = positions.find((x) => String(x.id) === assignTo);
+                      if (!p) return;
+                      const ok = await run(() => assignApplication(row.id, { position_id: p.id, position_title: p.title, department_name: p.department_name }), `Linked to ${p.title}`);
+                      if (ok) setAssignTo("");
+                    }}
+                  >
+                    Link
+                  </GhostButton>
+                  <div style={{ gridColumn: "1 / -1", fontSize: 11.5, color: studioColors.faintGray }}>
+                    The original submission (&ldquo;{current.position}&rdquo;) is kept as sent.
+                  </div>
+                </div>
+              </DetailSection>
+            )}
+
             <DetailSection title="Contact">
               <DetailRow label="Email">
                 {row.email ? (
@@ -646,6 +833,8 @@ function ApplicationDetail({
             </DetailSection>
 
             <DetailSection title="Professional">
+              <DetailRow label="Applied for">{current.display_position}</DetailRow>
+              <DetailRow label="Department">{current.department_name}</DetailRow>
               <DetailRow label="Current company">{row.current_company}</DetailRow>
               <DetailRow label="Current role">{row.current_role}</DetailRow>
               <DetailRow label="Total experience">{row.total_experience}</DetailRow>
@@ -656,32 +845,96 @@ function ApplicationDetail({
               <DetailRow label="Heard about us">{row.heard_about_us}</DetailRow>
             </DetailSection>
 
-            <DetailSection title="Attachments">
+            <DetailSection title="Documents">
               <DetailRow label="Resume">
-                {fileHref(row, "resume") ? (
-                  <a href={fileHref(row, "resume")!} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                {hasFile(row, "resume") ? (
+                  <button type="button" onClick={() => downloadApplicationFile(row.id, "resume").catch((err) => toast(err instanceof Error ? err.message : "Download failed", "error"))} style={{ ...linkStyle, border: "none", background: "transparent", padding: 0, cursor: "pointer", fontFamily: "var(--font-switzer)", fontSize: 13 }}>
                     Download ↓
-                  </a>
+                  </button>
                 ) : null}
               </DetailRow>
               <DetailRow label="Portfolio file">
-                {fileHref(row, "portfolio") ? (
-                  <a href={fileHref(row, "portfolio")!} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                {hasFile(row, "portfolio") ? (
+                  <button type="button" onClick={() => downloadApplicationFile(row.id, "portfolio").catch((err) => toast(err instanceof Error ? err.message : "Download failed", "error"))} style={{ ...linkStyle, border: "none", background: "transparent", padding: 0, cursor: "pointer", fontFamily: "var(--font-switzer)", fontSize: 13 }}>
                     Download ↓
-                  </a>
+                  </button>
                 ) : null}
               </DetailRow>
-              <DetailRow label="Declaration">
-                {row.declaration_accepted ? "Accepted" : "Not accepted"}
-              </DetailRow>
+              <DetailRow label="Declaration">{row.declaration_accepted ? "Accepted" : "Not accepted"}</DetailRow>
+            </DetailSection>
+
+            {/* ── Internal notes (§6.14) ───────────────────────────────── */}
+            <DetailSection title="Internal notes">
+              <div style={{ padding: "8px 0" }} className="flex flex-col gap-2.5">
+                {detail?.notes.length === 0 && <div style={{ fontSize: 12.5, color: studioColors.faintGray }}>No notes yet. Only the hiring team sees these.</div>}
+                {detail?.notes.map((n) => (
+                  <div key={n.id} style={{ padding: "8px 10px", borderRadius: 10, background: "#ffffff", boxShadow: `inset 0 0 0 1px ${studioColors.ring}` }}>
+                    <div style={{ fontSize: 13, color: studioColors.tealDeep, whiteSpace: "pre-wrap", lineHeight: 1.5 }}>{n.body}</div>
+                    <div style={{ fontSize: 11, color: studioColors.faintGray, marginTop: 4 }}>
+                      {n.author || "Unknown"} · {fmtDate(n.created_at)}
+                    </div>
+                  </div>
+                ))}
+                {canEdit && (
+                  <div>
+                    <FieldLabel>Add a note</FieldLabel>
+                    <TextArea value={noteBody} onChange={setNoteBody} minHeight={56} placeholder="Interview feedback, follow-ups, anything the team should know." />
+                    <div className="flex justify-end" style={{ marginTop: 6 }}>
+                      <GhostButton
+                        disabled={!noteBody.trim() || busy}
+                        style={{ height: 34, padding: "0 12px", fontSize: 12.5 }}
+                        onClick={async () => {
+                          const ok = await run(() => addApplicationNote(row.id, noteBody), "Note added");
+                          if (ok) setNoteBody("");
+                        }}
+                      >
+                        Add note
+                      </GhostButton>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </DetailSection>
+
+            {/* ── Timeline (§6.14) ─────────────────────────────────────── */}
+            <DetailSection title="Timeline">
+              <div style={{ padding: "8px 0" }} className="flex flex-col gap-1.5">
+                {!detail && !detailError && <div style={{ fontSize: 12.5, color: studioColors.faintGray }}>Loading…</div>}
+                {detail?.events.length === 0 && <div style={{ fontSize: 12.5, color: studioColors.faintGray }}>Received before the timeline existed.</div>}
+                {detail?.events.map((ev) => (
+                  <div key={ev.id} className="flex items-start gap-2.5" style={{ fontSize: 12.5 }}>
+                    <span style={{ marginTop: 6, width: 6, height: 6, borderRadius: "50%", background: studioColors.teal, flex: "none" }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <span style={{ color: studioColors.tealDeep, fontWeight: 500 }}>{ev.kind_label}</span>
+                      {ev.kind === "status" && (
+                        <span style={{ color: studioColors.bodyGray }}>
+                          {" "}
+                          {ev.from_status} → <b>{ev.to_status}</b>
+                        </span>
+                      )}
+                      {ev.detail && ev.kind !== "status" && <span style={{ color: studioColors.bodyGray }}> · {ev.detail}</span>}
+                      {ev.detail && ev.kind === "status" && <div style={{ color: studioColors.bodyGray, fontStyle: "italic" }}>{ev.detail}</div>}
+                    </div>
+                    <span style={{ color: studioColors.faintGray, whiteSpace: "nowrap", fontSize: 11.5 }}>
+                      {ev.actor ? `${ev.actor} · ` : ""}
+                      {fmtDate(ev.created_at)}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </DetailSection>
           </div>
 
-          <div
-            className="flex justify-end"
-            style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${studioColors.ring}` }}
-          >
-            <DangerButton onClick={() => onDelete(row)}>Delete application</DangerButton>
+          <div className="flex flex-wrap justify-end gap-2" style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${studioColors.ring}` }}>
+            {current.archived_at ? (
+              canEdit && (
+                <GhostButton disabled={busy} onClick={() => void run(() => restoreApplication(row.id), "Restored to the queue")}>
+                  Restore to queue
+                </GhostButton>
+              )
+            ) : (
+              canArchive && <DangerButton onClick={() => onArchive(row)}>Archive</DangerButton>
+            )}
           </div>
         </>
       )}
@@ -853,7 +1106,7 @@ const rowDeleteStyle: CSSProperties = {
   border: "none",
   background: "transparent",
   boxShadow: `inset 0 0 0 1px ${studioColors.ring}`,
-  color: studioColors.danger,
+  color: studioColors.teal,
   cursor: "pointer",
   transition: "background .12s",
 };
