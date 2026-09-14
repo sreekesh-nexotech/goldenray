@@ -106,9 +106,9 @@ export default function EmiFaq() {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="text-sm md:text-base font-normal leading-relaxed text-[#555555] pr-8">
+                    <div className="text-sm md:text-base font-normal leading-relaxed text-[#555555] pr-8">
                       <FaqAnswer answer={faq.answer} />
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>

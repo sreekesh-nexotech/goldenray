@@ -1,6 +1,35 @@
-// Prices live in @/data/residential-pricing so the Offer markup on this page
-// quotes exactly the ranges rendered below.
-import { residentialSystems as systems } from "@/data/residential-pricing";
+const systems = [
+  {
+    title: "3kW On-Grid",
+    summary:
+      "For most homes — KSEB bill around ₹3,000–4,500 · needs ~300 sq ft of open roof",
+    price: "₹2 - 2.30 lakh",
+    subsidy: "-₹78,000",
+    emi: "₹1,500/month",
+    emiTail: "for 10 years — for many homes, less than the KSEB bill it replaces.",
+    highlighted: false,
+  },
+  {
+    title: "5kW System",
+    summary:
+      "For most homes — KSEB bill around ₹5,000–7,500 · needs ~500 sq ft of open roof",
+    price: "₹3 - 3.30 lakh",
+    subsidy: "-₹78,000",
+    emi: "₹3,000/month",
+    emiTail: "for 10 years — for many homes, less than the KSEB bill it replaces.",
+    highlighted: true,
+  },
+  {
+    title: "10kW System",
+    summary:
+      "For most homes — KSEB bill around ₹10,000–15,000 · needs ~1,000 sq ft of open roof",
+    price: "₹5 - 6 lakh",
+    subsidy: "-₹78,000",
+    emi: "₹6,000/month",
+    emiTail: "for 10 years — for many homes, less than the KSEB bill it replaces.",
+    highlighted: false,
+  },
+];
 
 const Row = ({
   label,

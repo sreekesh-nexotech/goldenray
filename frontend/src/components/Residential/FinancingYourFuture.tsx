@@ -70,9 +70,6 @@ const LoanApprovalCard = () => (
         <p className="mt-1 text-xl md:text-2xl font-bold text-[#123532]">
           ≈ ₹2,330/mo
         </p>
-        <p className="mt-1 text-[10px] md:text-[11px] uppercase tracking-wide text-[#9CA3AF]">
-          3kW after subsidy (₹1.17 lakh, 5 years at 7.15%)
-        </p>
       </div>
 
       <LinkingButton

@@ -13,50 +13,50 @@ export interface ResidentialSystem {
   /** Same range as `price`, in rupees, for structured data. */
   priceMin: number;
   priceMax: number;
-  subsidy: string;
+  /** Typical monthly KSEB bill this system size offsets. */
+  kseb: string;
+  /** Approximate rooftop area needed. */
+  rooftop: string;
+  /** Approximate EMI, including the loan term. */
   emi: string;
-  emiTail: string;
   highlighted: boolean;
 }
 
 export const residentialSystems: ResidentialSystem[] = [
   {
-    title: "3kW On-Grid",
+    title: "3 kW On-Grid",
     summary:
       "For most homes — KSEB bill around ₹3,000–4,500 · needs ~300 sq ft of open roof",
     price: "₹2 - 2.30 lakh",
     priceMin: 200000,
     priceMax: 230000,
-    subsidy: "-₹78,000",
-    emi: "₹2,330/month",
-    emiTail:
-      "for 5 years — for many homes, less than the KSEB bill it replaces.",
+    kseb: "₹3,000–₹4,500 / month",
+    rooftop: "~300 sq ft",
+    emi: "₹1,500 / month for 10 years",
     highlighted: false,
   },
   {
-    title: "5kW System",
+    title: "5 kW On-Grid",
     summary:
-      "For most homes — KSEB bill around ₹3,000–4,500 · needs ~300 sq ft of open roof",
+      "For most homes — KSEB bill around ₹5,000–7,500 · needs ~500 sq ft of open roof",
     price: "₹3 - 3.30 lakh",
     priceMin: 300000,
     priceMax: 330000,
-    subsidy: "-₹78,000",
-    emi: "₹2,330/month",
-    emiTail:
-      "for 5 years — for many homes, less than the KSEB bill it replaces.",
+    kseb: "₹5,000–₹7,500 / month",
+    rooftop: "~500 sq ft",
+    emi: "₹3,000 / month for 10 years",
     highlighted: true,
   },
   {
-    title: "10kW System",
+    title: "10 kW On-Grid",
     summary:
-      "For most homes — KSEB bill around ₹3,000–4,500 · needs ~300 sq ft of open roof",
+      "For most homes — KSEB bill around ₹10,000–15,000 · needs ~1,000 sq ft of open roof",
     price: "₹5 - 6 lakh",
     priceMin: 500000,
     priceMax: 600000,
-    subsidy: "-₹78,000",
-    emi: "₹2,330/month",
-    emiTail:
-      "for 5 years — for many homes, less than the KSEB bill it replaces.",
+    kseb: "₹10,000–₹15,000 / month",
+    rooftop: "~1,000 sq ft",
+    emi: "₹6,000 / month for 10 years",
     highlighted: false,
   },
 ];

@@ -56,9 +56,9 @@ export default function FAQSection() {
                   </button>
                   {openIndex === index && (
                     <div className="pb-5 sm:pb-6">
-                      <p className="text-sm sm:text-base md:text-lg text-[#444444] leading-relaxed whitespace-pre-line">
+                      <div className="text-sm sm:text-base md:text-lg text-[#444444] leading-relaxed whitespace-pre-line">
                         <FaqAnswer answer={faq.answer} />
-                      </p>
+                      </div>
                     </div>
                   )}
                 </div>
