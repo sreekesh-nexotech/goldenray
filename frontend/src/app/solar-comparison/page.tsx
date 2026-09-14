@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import {
   SolarComparisonHero,
   SolarComparisonMain,
@@ -20,7 +21,7 @@ const TITLE = "Best Solar Panels for Kerala 2026 | Compare Specs & Ratings";
 const DESCRIPTION =
   "Compare solar panels rated for Kerala's heat, humidity and monsoon. Filter by efficiency, warranty and brand, or answer 3 questions for a personal pick.";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
   keywords: [
@@ -82,6 +83,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /solar-comparison (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/solar-comparison", BASE_METADATA);
 export default async function SolarComparisonPage() {
   // Fetched here rather than in the client island so the ItemList is in the
   // server-rendered HTML — structured data injected client-side is processed

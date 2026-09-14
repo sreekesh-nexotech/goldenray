@@ -1,9 +1,10 @@
 import FaqMain from "@/components/Faq/FaqMain";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import JsonLD from "@/components/JsonLD";
 import { faqPageSchema } from "@/data/faq-data";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title:
     "Solar Panel FAQs Kerala 2026: Subsidy, Price, KSEB & Installation",
   description:
@@ -41,6 +42,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /faq (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/faq", BASE_METADATA);
 export default function FaqPage() {
   return (
     <>

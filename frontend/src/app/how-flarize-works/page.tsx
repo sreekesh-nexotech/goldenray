@@ -1,11 +1,12 @@
 import MainPage from '@/components/HowFlarizeWorks/MainPage'
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import { Metadata } from 'next';
 import React from 'react'
 
 
 const ogImage = "https://golden-ray.b-cdn.net/images/slide1.jpg";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "How Flarize Works",
   description:
     "Discover how Flarize simplifies solar installation in Kerala with our streamlined 7-step process. From free roof assessments to quick installations, see how we make going solar easy and efficient.",
@@ -52,6 +53,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /how-flarize-works (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/how-flarize-works", BASE_METADATA);
 const howFlarizeWorks = () => {
   return <MainPage/>
 }

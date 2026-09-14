@@ -463,7 +463,7 @@ export default function SolarComparisonMain() {
 
       {/* Floating Compare Bar */}
       {selectedPanelIds.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-[#F3F3F3] border-t border-[#D9D9D9] shadow-lg z-40">
+        <div className="fixed bottom-0 left-0 right-0 bg-[#F3F3F3] border-t border-[#D9D9D9] shadow-lg z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="grid grid-cols-[1fr_auto_minmax(140px,220px)] items-center gap-3 sm:gap-6">
               <div className="flex items-center gap-3 overflow-x-auto pr-1">

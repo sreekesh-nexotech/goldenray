@@ -1,9 +1,10 @@
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import GroupPurchaseMain from "@/components/GroupPurchase/GroupPurchaseMain";
 
 const ogImage = "https://golden-ray.b-cdn.net/images/slide1.jpg";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Group Solar Purchase in Kerala | Save ₹10,000",
   description:
     "Join a group solar purchase in Kerala to unlock bulk pricing and save ₹10,000 with your neighbours.",
@@ -50,6 +51,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /group-purchase (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/group-purchase", BASE_METADATA);
 export default function GroupPurchasePage() {
   return <GroupPurchaseMain />;
 }

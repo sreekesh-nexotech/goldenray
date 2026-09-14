@@ -1,8 +1,9 @@
 // src/app/industrial/page.tsx
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import Hero from "@/components/ui/Hero";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Industrial Solar Power Systems in Kerala | EPC Services",
   description:
     "Power your operations with industrial solar systems in Kerala. Flarize delivers EPC services, scalable capacity, and long-term ROI.",
@@ -49,6 +50,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /industrial (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/industrial", BASE_METADATA);
 export default function IndustrialSolar() {
   return (
     <>

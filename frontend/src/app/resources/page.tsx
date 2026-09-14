@@ -1,7 +1,8 @@
 import ResourceMain from "@/components/Resources/ResourceMain";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Solar Energy Blog Kerala | Tips, Guides & Updates",
   description:
     "Read expert insights on solar power in Kerala. Get updates on panels, subsidies, savings, and smart energy solutions.",
@@ -43,6 +44,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /resources (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/resources", BASE_METADATA);
 export default function Resources() {
   return (
     <section className="relative">

@@ -1,8 +1,9 @@
 import SubsidyMain from "@/components/subsidy/SubsidyMain";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 
 // Metadata
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "PM Surya Ghar Subsidy Kerala 2025 | Get ₹78,000 Back ",
   description:
     "Claim up to ₹78,000 PM Surya Ghar solar subsidy in Kerala. Flarize handles KSEB paperwork, portal filing & 2–3 day installation. 300+ families served, 8+ years in Kerala. Check your eligibility now.",
@@ -62,6 +63,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /subsidy (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/subsidy", BASE_METADATA);
 export default function SubsidyPage() {
   return <SubsidyMain />;
 }

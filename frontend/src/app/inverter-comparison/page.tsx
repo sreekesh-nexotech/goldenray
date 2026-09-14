@@ -1,8 +1,9 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import { InverterComparisonMain } from "@/components/InverterComparison";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Compare Solar Inverters for Kerala | Find the Best Solar Inverter",
   description:
     "Compare solar inverters side-by-side with Kerala climate ratings. Browse string, hybrid, and microinverters from top brands like Enphase, Fronius, SolarEdge, Sungrow, and GoodWe.",
@@ -54,6 +55,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /inverter-comparison (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/inverter-comparison", BASE_METADATA);
 export default function InverterComparisonPage() {
   return (
     <Suspense fallback={null}>

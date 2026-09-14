@@ -1,8 +1,9 @@
 import LegalHero from "@/components/LegalHero";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 
 // Metadata
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Terms and Conditions - Flarize Solar Energy Solutions",
   description:
     "Read Flarize's terms and conditions to understand the terms of service for using our solar energy solutions and services in Kerala.",
@@ -41,6 +42,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /terms (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/terms", BASE_METADATA);
 export default function terms() {
   return (
     <section>

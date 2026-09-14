@@ -1,4 +1,5 @@
 import EmiMain from '@/components/EmiCalculator/EmiMain'
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import { Metadata } from 'next';
 import React from 'react'
 
@@ -6,7 +7,7 @@ import React from 'react'
 
 const ogImage = "https://golden-ray.b-cdn.net/images/slide1.jpg";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "EMI Calculator for Solar Installations in Kerala | Flarize",
   description:
     "Calculate your monthly EMI for solar installations in Kerala with our easy-to-use calculator. See how Flarize makes going solar affordable and efficient.",
@@ -55,6 +56,10 @@ export const metadata: Metadata = {
 
 
 
+
+// The Studio's SEO block for /emi-calculator (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/emi-calculator", BASE_METADATA);
 const page = () => {
   return (
     <EmiMain/>

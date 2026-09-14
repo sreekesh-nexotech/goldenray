@@ -1,9 +1,10 @@
 import LegalHero from "@/components/LegalHero";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import Link from "next/link";
 
 // Metadata
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Privacy Policy - Flarize Solar Energy Solutions",
   description:
     "Read Flarize's privacy policy to understand how we collect, use, and protect your personal information when you use our solar energy services.",
@@ -38,6 +39,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /privacy (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/privacy", BASE_METADATA);
 export default function privacy() {
   return (
     <section>

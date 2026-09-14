@@ -2,7 +2,7 @@
 
 import CareerMain from "@/components/Career/CareerMain";
 import { Metadata } from "next";
-import { fetchPageContent } from "@/services/publicCmsService";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 
 // The shipped metadata. The Studio's Career Page screen (§6.16) can override
 // the SEO title, description and canonical; `generateMetadata` below merges
@@ -53,23 +53,7 @@ const BASE_METADATA: Metadata = {
   },
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const content = await fetchPageContent("/career");
-  const seo = content?.seo;
-  if (!seo) return BASE_METADATA;
-
-  const title = seo.title || BASE_METADATA.title;
-  const description = seo.description || BASE_METADATA.description;
-  return {
-    ...BASE_METADATA,
-    title,
-    description,
-    openGraph: { ...BASE_METADATA.openGraph, title: title as string, description: description as string },
-    twitter: { ...BASE_METADATA.twitter, title: title as string, description: description as string },
-    alternates: { canonical: seo.canonical_url || BASE_METADATA.alternates?.canonical },
-    robots: seo.noindex ? { index: false, follow: true } : BASE_METADATA.robots,
-  };
-}
+export const generateMetadata = () => withCmsSeo("/career", BASE_METADATA);
 
 export default function Career() {
   return (

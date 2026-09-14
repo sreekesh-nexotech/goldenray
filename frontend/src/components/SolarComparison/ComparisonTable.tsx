@@ -2,7 +2,16 @@
 
 import { SolarPanel } from "@/types/solarPanel";
 import { ChevronDown, Star, X } from "lucide-react";
-import { Fragment, useMemo, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  Fragment,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+  type RefObject,
+} from "react";
 import RecommendationSection from "./RecommendationSection";
 import ComparisonCTA from "./ComparisonCTA";
 import FAQSection from "./FAQSection";
@@ -123,7 +132,10 @@ function CheckCell({ ok, yes, no }: { ok: boolean; yes: string; no: string }) {
 function SectionHeader({ title, gridStyle }: { title: string; gridStyle: CSSProperties }) {
   return (
     <div className="grid border-b border-[#E5E5EA] bg-[#F3F4F6]" style={gridStyle}>
-      <div className="sticky left-0 z-20 col-span-full min-w-0 bg-[#F3F4F6] px-4 py-3.5 text-[14px] font-normal text-[#1A1A1A] sm:px-6 sm:text-[15px] lg:px-10">
+      <div
+        data-section-header={title}
+        className="sticky left-0 z-20 col-span-full min-w-0 bg-[#F3F4F6] px-4 py-3.5 text-[14px] font-normal text-[#1A1A1A] sm:px-6 sm:text-[15px] lg:px-10"
+      >
         {title}
       </div>
     </div>
@@ -198,9 +210,18 @@ function ExplainerRow({
   paragraphs: string[];
   gridStyle: CSSProperties;
 }) {
+  // Deliberately drops gridStyle's minWidth: unlike Row/SectionHeader this
+  // content isn't per-panel data needing the table's full scroll width — it's
+  // one paragraph that should wrap to the viewport, not the whole table.
   return (
-    <div className="grid border-b border-[#E5E5EA] bg-white" style={gridStyle}>
-      <div className="sticky left-0 z-20 col-span-full min-w-0 space-y-4 bg-white px-4 py-5 sm:px-6 lg:px-10">
+    <div
+      className="grid border-b border-[#E5E5EA] bg-white"
+      style={{ gridTemplateColumns: gridStyle.gridTemplateColumns }}
+    >
+      <div
+        data-section-header={title}
+        className="sticky left-0 z-20 col-span-full min-w-0 space-y-4 bg-white px-4 py-5 sm:px-6 lg:px-10"
+      >
         <p className="text-[14px] text-[#444444] sm:text-[15px]">{title}</p>
         {paragraphs.map((paragraph) => (
           <p
@@ -462,6 +483,86 @@ const PVEL_EXPLAINER = {
   ],
 };
 
+// Section headers use `sticky left-0` to track horizontal scroll, but that
+// same ancestor's `overflow-x-auto` forces its computed overflow-y to `auto`
+// (a CSS rule: a non-visible x with a visible y coerces y to auto too), which
+// makes the header's sticky containing block that inner div instead of the
+// page — and that div never scrolls vertically itself, so `position: sticky`
+// can't pin it to the viewport top. Mobile-only "current section" pin is
+// therefore done by hand: track scroll position, find the last header whose
+// top has passed the pin line, and render it as a `position: fixed` clone
+// sized to the table's (scroll-stable) bounding box.
+function usePinnedSectionHeader(
+  tableRef: RefObject<HTMLDivElement | null>,
+  enabled: boolean,
+) {
+  const [pinned, setPinned] = useState<{
+    title: string;
+    left: number;
+    width: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!enabled) {
+      setPinned(null);
+      return;
+    }
+    const PIN_OFFSET = 64; // matches the fixed site header's mobile height
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      const wrapper = tableRef.current;
+      if (!wrapper || window.innerWidth >= 640) {
+        setPinned(null);
+        return;
+      }
+      const wrapperRect = wrapper.getBoundingClientRect();
+      if (wrapperRect.top > PIN_OFFSET || wrapperRect.bottom <= PIN_OFFSET) {
+        setPinned(null);
+        return;
+      }
+      const headers = Array.from(
+        wrapper.querySelectorAll<HTMLElement>("[data-section-header]"),
+      );
+      let active: HTMLElement | null = null;
+      for (const el of headers) {
+        if (el.getBoundingClientRect().top <= PIN_OFFSET) {
+          active = el;
+        } else {
+          break;
+        }
+      }
+      setPinned(
+        active
+          ? {
+              title: active.dataset.sectionHeader || "",
+              left: wrapperRect.left,
+              width: wrapperRect.width,
+            }
+          : null,
+      );
+    };
+
+    const onScrollOrResize = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    update();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+    };
+  }, [tableRef, enabled]);
+
+  return pinned;
+}
+
 export default function ComparisonTable({
   selectedPanels,
   allPanels,
@@ -470,6 +571,7 @@ export default function ComparisonTable({
   onReplacePanel,
 }: ComparisonTableProps) {
   const [isLabTestingOpen, setIsLabTestingOpen] = useState(true);
+  const tableWrapperRef = useRef<HTMLDivElement>(null);
 
   const selectedPanelIds = selectedPanels.map((p) => p.id);
   const columnCount = selectedPanels.length;
@@ -503,6 +605,8 @@ export default function ComparisonTable({
   /** Render one cell per selected panel. */
   const cells = (render: (panel: SolarPanel, index: number) => ReactNode) =>
     selectedPanels.map(render);
+
+  const pinnedHeader = usePinnedSectionHeader(tableWrapperRef, columnCount >= 2);
 
   return (
     <div className="min-h-screen bg-[#F7F8FA]">
@@ -554,7 +658,22 @@ export default function ComparisonTable({
 
         {/* Comparison table */}
         {columnCount >= 2 && (
-          <div className="overflow-x-auto rounded-xl border border-[#E5E5EA] bg-white [--comparison-label-col:150px] sm:[--comparison-label-col:220px] lg:[--comparison-label-col:280px] xl:[--comparison-label-col:340px]">
+          <div
+            ref={tableWrapperRef}
+            className="overflow-x-auto rounded-xl border border-[#E5E5EA] bg-white [--comparison-label-col:150px] sm:[--comparison-label-col:220px] lg:[--comparison-label-col:280px] xl:[--comparison-label-col:340px]"
+          >
+            {pinnedHeader && (
+              <div
+                className="fixed z-30 border-b border-[#E5E5EA] bg-[#F3F4F6] px-4 py-3.5 text-[14px] font-normal text-[#1A1A1A] shadow-sm sm:hidden"
+                style={{
+                  top: 64,
+                  left: pinnedHeader.left,
+                  width: pinnedHeader.width,
+                }}
+              >
+                {pinnedHeader.title}
+              </div>
+            )}
             <div className="min-w-full">
               {/* The Verdict */}
               <SectionHeader title="The Verdict" gridStyle={tableGridStyle} />

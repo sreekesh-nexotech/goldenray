@@ -1,10 +1,11 @@
 import SolarWarrantyMain from "@/components/SolarWarranty/SolarWarrantyMain";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import React from "react";
 
 const ogImage = "https://golden-ray.b-cdn.net/images/slide1.jpg";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Solar Warranty & AMC Service in Kerala | Flarize",
   description:
     "Flarize Solar Warranty & AMC service in Kerala — 25-year protection, 48-hour technician dispatch, KSEB-certified support and an Energy Loss Guarantee that pays you if we fall short.",
@@ -51,6 +52,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /solar-warranty (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/solar-warranty", BASE_METADATA);
 const Page = () => {
   return <SolarWarrantyMain />;
 };

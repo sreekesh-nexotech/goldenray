@@ -1,12 +1,13 @@
 import BlogMain from "@/components/Blog/BlogMain";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import { fetchAllArticles } from "@/services/blogApiService";
 
 // Revalidate the entire page every 2 minutes (ISR). The CMS publish webhook
 // clears this instantly; this window is the fallback for when that ping fails.
 export const revalidate = 120;
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Solar Energy Blog Kerala | Tips, Guides & Updates",
   description:
     "Read expert insights on solar power in Kerala. Get updates on panels, subsidies, savings, and smart energy solutions from Flarize.",
@@ -56,6 +57,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /blog (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/blog", BASE_METADATA);
 export default async function BlogPage() {
   const { articles, categories } = await fetchAllArticles();
   return (

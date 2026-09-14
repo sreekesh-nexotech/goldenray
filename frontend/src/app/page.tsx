@@ -1,10 +1,11 @@
 import Main from "@/components/Home/home";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 
 import JsonLD from "@/components/JsonLD";
 import { localBusinessSchema, organizationSchema, faqSchema, breadcrumbSchema } from "@/data/jsonld";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Solar Panel Installation Kerala | KSEB Approved | Flarize",
   description:
     "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
@@ -52,6 +53,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for / (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/", BASE_METADATA);
 export default function Home() {
   return (
     <>

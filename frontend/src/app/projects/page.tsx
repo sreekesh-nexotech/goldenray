@@ -1,8 +1,9 @@
 import { Suspense } from "react";
 import ProjectMain from "@/components/Projects/ProjectMain";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Solar Installation Projects in Kerala",
   description:
     "Explore completed solar projects across Kerala. Trusted residential and commercial installations delivered by Flarize experts.",
@@ -43,6 +44,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /projects (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/projects", BASE_METADATA);
 export default function Projects() {
   return (
     <section className="relative">

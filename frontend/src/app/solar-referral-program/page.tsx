@@ -1,4 +1,5 @@
 import AffiliateMainPage from '@/components/AffiliatePrograms/AffiliateMainPage'
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import { Metadata } from 'next';
 import React from 'react'
 import JsonLD from '@/components/JsonLD';
@@ -7,7 +8,7 @@ import { solarReferralServiceSchema,  solarReferralBreadcrumbSchema, solarReferr
 
 const ogImage = "https://golden-ray.b-cdn.net/images/affiliate-hero.png";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Flarize Solae Referral Program",
   description:
     "Earn a structured commission for every successful solar installation you refer — with zero investment, no solar expertise required, and a dedicated partner manager handling every lead you send.",
@@ -55,6 +56,10 @@ export const metadata: Metadata = {
 };
 
 
+
+// The Studio's SEO block for /solar-referral-program (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/solar-referral-program", BASE_METADATA);
 const page = () => {
   return (
     <>

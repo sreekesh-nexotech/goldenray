@@ -1,5 +1,6 @@
 // src/app/residential/page.tsx
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import { residentialPageData } from "@/data/solutions-page-data";
 
 import JsonLD from "@/components/JsonLD";
@@ -15,7 +16,7 @@ const TITLE = "Solar Panel Price in Kerala 2026 | ₹78,000 Subsidy & EMI";
 const DESCRIPTION =
   "Real solar prices for Kerala homes: 3kW from ₹2 lakh before the ₹78,000 subsidy. Get 3 reviewed quotes, KSEB paperwork done, and a free site survey.";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
   keywords: [
@@ -72,6 +73,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /residential (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/residential", BASE_METADATA);
 export default function ResidentialPage() {
   return (
     <>

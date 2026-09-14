@@ -1,5 +1,6 @@
 // src/app/commercial/page.tsx
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import { commercialPageData } from "@/data/solutions-page-data";
 import {
   SolutionHero,
@@ -15,7 +16,7 @@ import {
 import JsonLD from "@/components/JsonLD";
 import { commercialServiceSchema } from "@/data/jsonld";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title:
     "Commercial Solar Installation Kerala | EPC Company",
   description:
@@ -77,6 +78,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /commercial (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/commercial", BASE_METADATA);
 export default function CommercialPage() {
   const data = commercialPageData;
 

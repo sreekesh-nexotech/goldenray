@@ -1,10 +1,11 @@
 import QuoteAnalyserMain from "@/components/QuoteAnalyser/QuoteAnalyserMain";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 import React from "react";
 
 const ogImage = "https://golden-ray.b-cdn.net/images/slide1.jpg";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Solar Quote Analyser | AI-Powered Quote Review | Flarize",
   description:
     "Upload any solar quote from any company. Our AI checks pricing, brands, hidden costs and missing items in 30 seconds — built for Kerala homeowners.",
@@ -51,6 +52,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /quote-analyser (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/quote-analyser", BASE_METADATA);
 const Page = () => {
   return <QuoteAnalyserMain />;
 };

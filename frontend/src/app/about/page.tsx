@@ -2,8 +2,9 @@
 
 import AboutMain from "@/components/About/AboutMain";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "About Us | India's Trusted Solar Platform",
   description:
     "Flarize delivers PM Surya Ghar-compliant solar installations with 25-year platform accountability. Backed by 8+ years, 400+ projects, 4.9★ rating. Energy freedom for Kerala homes.",
@@ -50,6 +51,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /about (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/about", BASE_METADATA);
 export default function About() {
   return (
     <section className="relative">

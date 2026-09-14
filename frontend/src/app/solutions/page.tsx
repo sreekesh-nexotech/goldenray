@@ -3,8 +3,9 @@ import Services from "@/components/Services";
 import SolutionBox from "@/components/Solutions/Solution-box";
 import Hero from "@/components/ui/Hero";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Residential & Commercial Solar Solutions in Kerala",
   description:
     "Discover custom solar solutions in Kerala for homes and businesses. Expert installation, high-efficiency panels, and trusted support.",
@@ -46,6 +47,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /solutions (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/solutions", BASE_METADATA);
 export default function Solutions() {
   return (
     <>

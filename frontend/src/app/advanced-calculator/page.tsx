@@ -1,9 +1,10 @@
 import AdvanceCalculatorMain from "@/components/AdvanceCalculator/AdvanceCalculatorMain";
 import Hero from "@/components/ui/Hero";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 
 // Metadata
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Solar Savings Calculator for Kerala Homes",
   description:
     "Estimate your solar power cost and savings in Kerala. Use our solar calculator to plan the right system for your home or business.",
@@ -50,6 +51,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /advanced-calculator (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/advanced-calculator", BASE_METADATA);
 export default function AdvancedCalculator() {
   return (
     <>

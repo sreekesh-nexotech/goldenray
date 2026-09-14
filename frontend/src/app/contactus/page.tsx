@@ -2,8 +2,9 @@
 
 import ContactMain from "@/components/ContactUs/ContactMain";
 import { Metadata } from "next";
+import { withCmsSeo } from "@/lib/cmsMetadata";
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   title: "Contact Solar Experts in Kerala",
   description:
     "Speak with Kerala's solar installation experts. Contact Flarize for site visits, system design, pricing, and support.",
@@ -49,6 +50,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+// The Studio's SEO block for /contactus (§6.2) overrides title, description,
+// canonical and indexing; anything left blank there keeps the shipped value.
+export const generateMetadata = () => withCmsSeo("/contactus", BASE_METADATA);
 export default function ContactUsPage() {
   return <ContactMain />;
 }
