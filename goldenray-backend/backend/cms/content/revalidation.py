@@ -11,17 +11,21 @@ from django.conf import settings
 logger = logging.getLogger("blog_cms")
 
 
-def trigger_revalidate(slug: str | None = None) -> None:
+def trigger_revalidate(slug: str | None = None, *, path: str | None = None) -> None:
+    """Ping the frontend to rebuild a blog article (``slug``) or any site
+    route (``path``, e.g. ``/about`` after its SEO block changes)."""
     url = getattr(settings, "FRONTEND_REVALIDATE_URL", "")
     if not url:
         return
     payload = {"secret": getattr(settings, "FRONTEND_REVALIDATE_SECRET", "")}
     if slug:
         payload["slug"] = slug
+    if path:
+        payload["path"] = path
     try:
         import requests  # local import so the dependency is optional
 
         requests.post(url, json=payload, timeout=3)
-        logger.info("Revalidation pinged for slug=%s", slug or "*")
+        logger.info("Revalidation pinged for slug=%s path=%s", slug or "*", path or "-")
     except Exception as exc:  # pragma: no cover - best effort
         logger.warning("Revalidation ping failed: %s", exc)

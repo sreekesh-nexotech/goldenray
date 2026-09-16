@@ -120,6 +120,62 @@ class PublicPageContentTests(PagesTestCase):
         self.assertIsNone(body["images"]["hero_background"])
         self.assertEqual(body["text"], {"hero_title": "Hiring now"})
 
+    def test_seo_block_is_delivered_with_og_image_and_generated_schema(self):
+        from django.core.files.base import ContentFile
+        from media.models import MediaAsset
+
+        share = MediaAsset.objects.create(
+            file=ContentFile(b"png", name="share.png"), cdn_url="https://cdn.example/share.png",
+            width=1200, height=630, alternative_text="Flarize careers",
+        )
+        PageSeo.objects.create(
+            page=self.page,
+            seo_title="Careers at Flarize",
+            meta_description="Open roles across Kerala.",
+            canonical_url="https://flarize.com/career",
+            og_image=share,
+            schema_type="WebPage",
+            noindex=True,
+        )
+        seo = self.client.get("/api/page-content?route=/career").json()["data"]["seo"]
+        self.assertEqual(seo["title"], "Careers at Flarize")
+        self.assertEqual(seo["description"], "Open roles across Kerala.")
+        self.assertEqual(seo["canonical_url"], "https://flarize.com/career")
+        self.assertTrue(seo["noindex"])
+        self.assertEqual(
+            seo["og_image"],
+            {"url": "https://cdn.example/share.png", "alt": "Flarize careers", "width": 1200, "height": 630},
+        )
+        self.assertEqual(seo["schema"]["@type"], "WebPage")
+        self.assertEqual(seo["schema"]["name"], "Careers at Flarize")
+        self.assertTrue(seo["schema"]["url"].endswith("/career"))
+
+    def test_seo_without_schema_or_image_delivers_nulls(self):
+        PageSeo.objects.create(page=self.page, seo_title="Careers")
+        seo = self.client.get("/api/page-content?route=/career").json()["data"]["seo"]
+        self.assertIsNone(seo["og_image"])
+        self.assertIsNone(seo["schema"])
+
+    def test_page_without_seo_row_delivers_null_seo(self):
+        body = self.client.get("/api/page-content?route=/career").json()["data"]
+        self.assertIsNone(body["seo"])
+
+    def test_saving_seo_through_the_studio_is_visible_on_the_delivery_api(self):
+        from unittest.mock import patch
+
+        login_as(self.client, CONTENT_MANAGER)
+        with patch("sitepages.views.trigger_revalidate") as ping:
+            resp = self.client.patch(
+                f"/admin-api/pages/{self.page.pk}/seo/",
+                {"seo_title": "Join Flarize", "meta_description": "d" * 80, "schema_type": "WebPage"},
+                content_type="application/json",
+            )
+        self.assertEqual(resp.status_code, 200, resp.content)
+        ping.assert_called_once_with(path="/career")
+        seo = self.client.get("/api/page-content?route=/career").json()["data"]["seo"]
+        self.assertEqual(seo["title"], "Join Flarize")
+        self.assertEqual(seo["schema"]["@type"], "WebPage")
+
     def test_unpublished_pages_are_not_served(self):
         self.page.status = Page.Status.DRAFT
         self.page.save()

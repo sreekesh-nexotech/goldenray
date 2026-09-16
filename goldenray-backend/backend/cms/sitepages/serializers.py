@@ -55,11 +55,12 @@ class PageTextSlotSerializer(serializers.ModelSerializer):
 class PageSeoSerializer(serializers.ModelSerializer):
     seo_status = serializers.CharField(read_only=True)
     seo_issues = serializers.SerializerMethodField()
+    og_image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = PageSeo
         fields = (
-            "id", "seo_title", "meta_description", "canonical_url", "og_image",
+            "id", "seo_title", "meta_description", "canonical_url", "og_image", "og_image_url",
             "schema_type", "schema_extra", "noindex",
             "seo_status", "seo_issues", "updated_at",
         )
@@ -67,6 +68,11 @@ class PageSeoSerializer(serializers.ModelSerializer):
 
     def get_seo_issues(self, obj) -> list:
         return obj.seo_issues()
+
+    def get_og_image_url(self, obj) -> str | None:
+        if not obj.og_image_id:
+            return None
+        return obj.og_image.cdn_url or (obj.og_image.file.url if obj.og_image.file else None)
 
 
 class PageListSerializer(serializers.ModelSerializer):

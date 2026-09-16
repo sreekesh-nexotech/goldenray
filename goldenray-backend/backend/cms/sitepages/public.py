@@ -10,12 +10,25 @@ must stay distinguishable from "this was replaced with nothing", or the page
 loses its shipped image the first time someone opens the maintenance screen.
 """
 
+from django.conf import settings
 from django.http import Http404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from seo import schema as schema_builders
+from siteconfig.models import SiteSettings
+
 from .models import Page
+
+
+def _asset_payload(asset) -> dict:
+    return {
+        "url": asset.cdn_url or asset.file.url,
+        "alt": asset.alternative_text,
+        "width": asset.width,
+        "height": asset.height,
+    }
 
 
 class PublicPageContentView(APIView):
@@ -29,7 +42,7 @@ class PublicPageContentView(APIView):
 
         page = (
             Page.objects.filter(route=route, status=Page.Status.PUBLISHED)
-            .select_related("seo")
+            .select_related("seo", "seo__og_image")
             .prefetch_related("image_slots__asset", "text_slots")
             .first()
         )
@@ -37,6 +50,15 @@ class PublicPageContentView(APIView):
             raise Http404(f"Unknown page '{route}'")
 
         seo = getattr(page, "seo", None)
+        # The JSON-LD is generated here from the record, never typed (§6.7), so
+        # the site embeds it verbatim and the Studio's preview shows the same doc.
+        schema_doc = None
+        if seo and seo.schema_type == "WebPage":
+            schema_doc = schema_builders.web_page(
+                seo,
+                site_url=getattr(settings, "FRONTEND_BASE_URL", ""),
+                organisation=SiteSettings.load().company_name,
+            )
         return Response(
             {
                 "data": {
@@ -44,14 +66,7 @@ class PublicPageContentView(APIView):
                     "name": page.name,
                     "images": {
                         slot.key: (
-                            {
-                                "url": slot.asset.cdn_url or slot.asset.file.url,
-                                "alt": slot.effective_alt,
-                                "width": slot.asset.width,
-                                "height": slot.asset.height,
-                            }
-                            if slot.asset_id
-                            else None
+                            {**_asset_payload(slot.asset), "alt": slot.effective_alt} if slot.asset_id else None
                         )
                         for slot in page.image_slots.all()
                     },
@@ -62,6 +77,8 @@ class PublicPageContentView(APIView):
                             "description": seo.meta_description,
                             "canonical_url": seo.canonical_url,
                             "noindex": seo.noindex,
+                            "og_image": _asset_payload(seo.og_image) if seo.og_image_id else None,
+                            "schema": schema_doc,
                         }
                         if seo
                         else None

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from accounts.modules import Action, Module
 from accounts.permissions import HasModulePermission, require
+from content.revalidation import trigger_revalidate
 from seo import schema as schema_builders
 
 from .models import Page, PageImageSlot, PageSeo, PageTextSlot
@@ -83,6 +84,9 @@ class PageViewSet(viewsets.ModelViewSet):
         serializer = PageSeoSerializer(row, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save(updated_by=request.user)
+        # The site ISRs page-content every 60s; the ping makes a saved title
+        # show up on the next request instead of within the minute.
+        trigger_revalidate(path=page.route)
         return Response(serializer.data)
 
     # ── Slots ────────────────────────────────────────────────────────────────
@@ -98,6 +102,7 @@ class PageViewSet(viewsets.ModelViewSet):
         serializer = PageImageSlotSerializer(slot, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save(updated_by=request.user)
+        trigger_revalidate(path=page.route)
         return Response(serializer.data)
 
     @action(detail=True, methods=["patch"], url_path="text-slots/(?P<slot_id>[^/.]+)")
@@ -112,6 +117,7 @@ class PageViewSet(viewsets.ModelViewSet):
         serializer = PageTextSlotSerializer(slot, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save(updated_by=request.user)
+        trigger_revalidate(path=page.route)
         return Response(serializer.data)
 
     # ── Preview (§6.2 — "preview changes before publishing/approval") ────────
