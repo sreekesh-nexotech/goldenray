@@ -1,6 +1,7 @@
 // src/app/residential/page.tsx
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import { residentialPageData } from "@/data/solutions-page-data";
 
 import JsonLD from "@/components/JsonLD";
@@ -80,8 +81,11 @@ export const generateMetadata = () => withCmsSeo("/residential", BASE_METADATA);
 export default function ResidentialPage() {
   return (
     <>
-      <JsonLD data={residentialPageSchema} />
-      <ResidentialMain />
+      <CmsPageSchema route="/residential" />
+      <>
+        <JsonLD data={residentialPageSchema} />
+        <ResidentialMain />
+      </>
     </>
   );
 }

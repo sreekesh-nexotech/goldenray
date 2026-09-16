@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import { InverterComparisonMain } from "@/components/InverterComparison";
 
 const BASE_METADATA: Metadata = {
@@ -61,8 +62,11 @@ const BASE_METADATA: Metadata = {
 export const generateMetadata = () => withCmsSeo("/inverter-comparison", BASE_METADATA);
 export default function InverterComparisonPage() {
   return (
-    <Suspense fallback={null}>
-      <InverterComparisonMain />
-    </Suspense>
+    <>
+      <CmsPageSchema route="/inverter-comparison" />
+      <Suspense fallback={null}>
+        <InverterComparisonMain />
+      </Suspense>
+    </>
   );
 }

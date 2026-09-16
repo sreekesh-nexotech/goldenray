@@ -1,6 +1,7 @@
 import ResourceMain from "@/components/Resources/ResourceMain";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 
 const BASE_METADATA: Metadata = {
   title: "Solar Energy Blog Kerala | Tips, Guides & Updates",
@@ -50,8 +51,11 @@ const BASE_METADATA: Metadata = {
 export const generateMetadata = () => withCmsSeo("/resources", BASE_METADATA);
 export default function Resources() {
   return (
-    <section className="relative">
-      <ResourceMain />
-    </section>
+    <>
+      <CmsPageSchema route="/resources" />
+      <section className="relative">
+        <ResourceMain />
+      </section>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import AffiliateMainPage from '@/components/AffiliatePrograms/AffiliateMainPage'
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import { Metadata } from 'next';
 import React from 'react'
 import JsonLD from '@/components/JsonLD';
@@ -63,10 +64,13 @@ export const generateMetadata = () => withCmsSeo("/solar-referral-program", BASE
 const page = () => {
   return (
     <>
-      <JsonLD data={solarReferralServiceSchema} />
-      <JsonLD data={solarReferralBreadcrumbSchema} />
-      <JsonLD data={solarReferralFaqSchema} />
-      <AffiliateMainPage/>
+      <CmsPageSchema route="/solar-referral-program" />
+      <>
+        <JsonLD data={solarReferralServiceSchema} />
+        <JsonLD data={solarReferralBreadcrumbSchema} />
+        <JsonLD data={solarReferralFaqSchema} />
+        <AffiliateMainPage/>
+      </>
     </>
   )
 }

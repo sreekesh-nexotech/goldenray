@@ -1,6 +1,7 @@
 import SolarWarrantyMain from "@/components/SolarWarranty/SolarWarrantyMain";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import React from "react";
 
 const ogImage = "https://golden-ray.b-cdn.net/images/slide1.jpg";
@@ -57,7 +58,12 @@ const BASE_METADATA: Metadata = {
 // canonical and indexing; anything left blank there keeps the shipped value.
 export const generateMetadata = () => withCmsSeo("/solar-warranty", BASE_METADATA);
 const Page = () => {
-  return <SolarWarrantyMain />;
+  return (
+    <>
+      <CmsPageSchema route="/solar-warranty" />
+      <SolarWarrantyMain />
+    </>
+  );
 };
 
 export default Page;

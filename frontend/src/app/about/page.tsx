@@ -3,6 +3,7 @@
 import AboutMain from "@/components/About/AboutMain";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 
 const BASE_METADATA: Metadata = {
   title: "About Us | India's Trusted Solar Platform",
@@ -57,8 +58,11 @@ const BASE_METADATA: Metadata = {
 export const generateMetadata = () => withCmsSeo("/about", BASE_METADATA);
 export default function About() {
   return (
-    <section className="relative">
-      <AboutMain />
-    </section>
+    <>
+      <CmsPageSchema route="/about" />
+      <section className="relative">
+        <AboutMain />
+      </section>
+    </>
   );
 }

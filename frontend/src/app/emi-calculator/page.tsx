@@ -1,5 +1,6 @@
 import EmiMain from '@/components/EmiCalculator/EmiMain'
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import { Metadata } from 'next';
 import React from 'react'
 
@@ -62,7 +63,10 @@ const BASE_METADATA: Metadata = {
 export const generateMetadata = () => withCmsSeo("/emi-calculator", BASE_METADATA);
 const page = () => {
   return (
-    <EmiMain/>
+    <>
+      <CmsPageSchema route="/emi-calculator" />
+      <EmiMain/>
+    </>
   )
 }
 

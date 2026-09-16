@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import ProjectMain from "@/components/Projects/ProjectMain";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 
 const BASE_METADATA: Metadata = {
   title: "Solar Installation Projects in Kerala",
@@ -50,10 +51,13 @@ const BASE_METADATA: Metadata = {
 export const generateMetadata = () => withCmsSeo("/projects", BASE_METADATA);
 export default function Projects() {
   return (
-    <section className="relative">
-      <Suspense fallback={null}>
-        <ProjectMain />
-      </Suspense>
-    </section>
+    <>
+      <CmsPageSchema route="/projects" />
+      <section className="relative">
+        <Suspense fallback={null}>
+          <ProjectMain />
+        </Suspense>
+      </section>
+    </>
   );
 }

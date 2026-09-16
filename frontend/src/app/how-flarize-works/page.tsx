@@ -1,5 +1,6 @@
 import MainPage from '@/components/HowFlarizeWorks/MainPage'
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import { Metadata } from 'next';
 import React from 'react'
 
@@ -58,7 +59,12 @@ const BASE_METADATA: Metadata = {
 // canonical and indexing; anything left blank there keeps the shipped value.
 export const generateMetadata = () => withCmsSeo("/how-flarize-works", BASE_METADATA);
 const howFlarizeWorks = () => {
-  return <MainPage/>
-}
+  return (
+    <>
+      <CmsPageSchema route="/how-flarize-works" />
+      <MainPage />
+    </>
+  );
+};
 
 export default howFlarizeWorks

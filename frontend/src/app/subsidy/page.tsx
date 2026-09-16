@@ -1,6 +1,7 @@
 import SubsidyMain from "@/components/subsidy/SubsidyMain";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 
 // Metadata
 const BASE_METADATA: Metadata = {
@@ -68,5 +69,10 @@ const BASE_METADATA: Metadata = {
 // canonical and indexing; anything left blank there keeps the shipped value.
 export const generateMetadata = () => withCmsSeo("/subsidy", BASE_METADATA);
 export default function SubsidyPage() {
-  return <SubsidyMain />;
+  return (
+    <>
+      <CmsPageSchema route="/subsidy" />
+      <SubsidyMain />
+    </>
+  );
 }

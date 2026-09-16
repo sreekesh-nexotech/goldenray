@@ -1,6 +1,7 @@
 import Main from "@/components/Home/home";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 
 import JsonLD from "@/components/JsonLD";
 import { localBusinessSchema, organizationSchema, faqSchema, breadcrumbSchema } from "@/data/jsonld";
@@ -60,13 +61,16 @@ export const generateMetadata = () => withCmsSeo("/", BASE_METADATA);
 export default function Home() {
   return (
     <>
-      <JsonLD data={localBusinessSchema} />
-      <JsonLD data={organizationSchema} />
-      <JsonLD data={faqSchema} />
-      <JsonLD data={breadcrumbSchema} />
-      <section>
-        <Main />
-      </section>
+      <CmsPageSchema route="/" />
+      <>
+        <JsonLD data={localBusinessSchema} />
+        <JsonLD data={organizationSchema} />
+        <JsonLD data={faqSchema} />
+        <JsonLD data={breadcrumbSchema} />
+        <section>
+          <Main />
+        </section>
+      </>
     </>
   );
 }

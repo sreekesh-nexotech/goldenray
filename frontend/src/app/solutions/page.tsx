@@ -4,6 +4,7 @@ import SolutionBox from "@/components/Solutions/Solution-box";
 import Hero from "@/components/ui/Hero";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 
 const BASE_METADATA: Metadata = {
   title: "Residential & Commercial Solar Solutions in Kerala",
@@ -54,40 +55,43 @@ export const generateMetadata = () => withCmsSeo("/solutions", BASE_METADATA);
 export default function Solutions() {
   return (
     <>
-      <Hero
-        title="Our Solar Solutions"
-        description="Custom solar solutions designed to meet the unique energy needs of homes, businesses, and industries"
-      />
+      <CmsPageSchema route="/solutions" />
+      <>
+        <Hero
+          title="Our Solar Solutions"
+          description="Custom solar solutions designed to meet the unique energy needs of homes, businesses, and industries"
+        />
 
-      {/* Solution Boxes */}
-      <SolutionBox
-        BoxBgColor="[#074A4D]"
-        TextColor="text-[#FFFFFF]"
-        showYellowBtn={true}
-        BoxTitle="Residential Solar Installation"
-        BoxDescription="For a home in Kerala, solar is more than a power choice—it’s a long-term decision for comfort 
-and savings. Our residential solar solutions are planned around your home’s electricity usage, roof space, and local conditions like sunlight and weather. Every step, from the first discussion to system activation, is explained clearly so there are no surprises. The installation is neat, safe, and built to last, helping your household reduce electricity bills while enjoying steady, dependable power for years to come. "
-        BoxImg="https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png"
-      />
+        {/* Solution Boxes */}
+        <SolutionBox
+          BoxBgColor="[#074A4D]"
+          TextColor="text-[#FFFFFF]"
+          showYellowBtn={true}
+          BoxTitle="Residential Solar Installation"
+          BoxDescription="For a home in Kerala, solar is more than a power choice—it’s a long-term decision for comfort 
+  and savings. Our residential solar solutions are planned around your home’s electricity usage, roof space, and local conditions like sunlight and weather. Every step, from the first discussion to system activation, is explained clearly so there are no surprises. The installation is neat, safe, and built to last, helping your household reduce electricity bills while enjoying steady, dependable power for years to come. "
+          BoxImg="https://gym-manager-pull.b-cdn.net/golden_ray/solution/Rectangle-12153.png"
+        />
 
-      <SolutionBox
-        BoxBgColor="[#ADD6D8]"
-        TextColor="text-[#444444]"
-        showYellowBtn={false}
-        BoxTitle="Commercial Solar Installation"
-        BoxDescription="Running a business in Kerala means managing power costs without interrupting daily 
-operations. Our commercial solar installations are designed after carefully understanding your 
-working hours, power demand, and available rooftop or open space. 
-From approvals to commissioning, the process is handled smoothly with clear communication at 
-every stage. The result is a reliable solar system that supports stable energy expenses and 
-helps businesses plan better for the future. "
-        BoxImg="https://golden-ray.b-cdn.net/images/Roof%20solar%20panel%20mounting.jpg"
-      />
+        <SolutionBox
+          BoxBgColor="[#ADD6D8]"
+          TextColor="text-[#444444]"
+          showYellowBtn={false}
+          BoxTitle="Commercial Solar Installation"
+          BoxDescription="Running a business in Kerala means managing power costs without interrupting daily 
+  operations. Our commercial solar installations are designed after carefully understanding your 
+  working hours, power demand, and available rooftop or open space. 
+  From approvals to commissioning, the process is handled smoothly with clear communication at 
+  every stage. The result is a reliable solar system that supports stable energy expenses and 
+  helps businesses plan better for the future. "
+          BoxImg="https://golden-ray.b-cdn.net/images/Roof%20solar%20panel%20mounting.jpg"
+        />
 
-      {/* Services offered */}
-      <Services serviceTitle="Why Choose Our Solar Solutions?" />
+        {/* Services offered */}
+        <Services serviceTitle="Why Choose Our Solar Solutions?" />
 
-      <Faq />
+        <Faq />
+      </>
     </>
   );
 }

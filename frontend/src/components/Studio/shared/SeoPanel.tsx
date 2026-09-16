@@ -8,11 +8,19 @@
 // generated from the record, and §6.2 says not to put JSON in front of content
 // users.
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type { SeoIssue, SeoStatus } from "@/services/faqService";
-import { Card, CardHeader, CardTitle, FieldLabel, KeyTag, SectionIcon, SelectField, Switch, TextArea, TextInput } from "./primitives";
+import { Card, CardHeader, CardTitle, FieldLabel, GhostButton, KeyTag, SectionIcon, SelectField, Switch, TextArea, TextInput } from "./primitives";
 import { countLabel, studioColors } from "./format";
 import { Pill } from "./listing";
+import ImagePickerModal from "./ImagePickerModal";
+
+/** Social share image state for records that support one (pages). */
+export interface OgImageControl {
+  url: string | null;
+  onPick: (asset: { id: number; url: string | null }) => void;
+  onClear: () => void;
+}
 
 export interface SeoValues {
   seo_title: string;
@@ -55,6 +63,7 @@ export function SeoPanel({
   fallbackTitle,
   disabled = false,
   extra,
+  ogImage,
 }: {
   value: SeoValues;
   onChange: (patch: Partial<SeoValues>) => void;
@@ -66,8 +75,11 @@ export function SeoPanel({
   disabled?: boolean;
   /** Optional extra rows (e.g. a search preview) rendered under the fields. */
   extra?: ReactNode;
+  /** When given, a social share image row is shown (§6.7 "basic social preview"). */
+  ogImage?: OgImageControl;
 }) {
   const set = (patch: Partial<SeoValues>) => !disabled && onChange(patch);
+  const [pickingImage, setPickingImage] = useState(false);
   return (
     <Card>
       <CardHeader>
@@ -110,6 +122,43 @@ export function SeoPanel({
             </div>
           </div>
         </div>
+
+        {ogImage && (
+          <div>
+            <FieldLabel>Social share image</FieldLabel>
+            <div className="flex items-center gap-3">
+              <div style={{ width: 96, aspectRatio: "1200 / 630", borderRadius: 8, overflow: "hidden", background: "#E5E7EB", display: "grid", placeItems: "center", flex: "none" }}>
+                {ogImage.url ? (
+                  <img src={ogImage.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                ) : (
+                  <span style={{ fontSize: 10, color: studioColors.faintGray }}>Built-in</span>
+                )}
+              </div>
+              {!disabled && (
+                <div className="flex flex-wrap gap-2">
+                  <GhostButton onClick={() => setPickingImage(true)} style={{ height: 32, padding: "0 12px", fontSize: 12.5 }}>
+                    {ogImage.url ? "Replace image" : "Set image"}
+                  </GhostButton>
+                  {ogImage.url && (
+                    <GhostButton onClick={ogImage.onClear} style={{ height: 32, padding: "0 12px", fontSize: 12.5 }}>
+                      Use built-in
+                    </GhostButton>
+                  )}
+                </div>
+              )}
+            </div>
+            <div style={{ fontSize: 11.5, color: studioColors.faintGray, marginTop: 6 }}>Shown when the page is shared on WhatsApp, Facebook or LinkedIn; 1200×630 works best.</div>
+            <ImagePickerModal
+              open={pickingImage}
+              guidance="Landscape, 1200×630 recommended."
+              onClose={() => setPickingImage(false)}
+              onPick={(asset) => {
+                setPickingImage(false);
+                ogImage.onPick({ id: asset.id, url: asset.cdn_url || asset.url });
+              }}
+            />
+          </div>
+        )}
 
         {extra}
 

@@ -11,6 +11,10 @@
 //
 //   const BASE_METADATA: Metadata = { ... };
 //   export const generateMetadata = () => withCmsSeo("/about", BASE_METADATA);
+//
+// The Studio's structured-data choice lands in the <body>, not <head>, so it
+// is a component: render <CmsPageSchema route="/about" /> anywhere in the
+// page. Both read the same cached fetch, so the page costs one CMS call.
 
 import type { Metadata } from "next";
 import { fetchPageContent } from "@/services/publicCmsService";
@@ -23,16 +27,21 @@ export async function withCmsSeo(route: string, base: Metadata): Promise<Metadat
   const title = seo.title || base.title;
   const description = seo.description || base.description;
   const canonical = seo.canonical_url || base.alternates?.canonical;
+  const ogImage = seo.og_image
+    ? [{ url: seo.og_image.url, alt: seo.og_image.alt, width: seo.og_image.width ?? undefined, height: seo.og_image.height ?? undefined }]
+    : undefined;
 
   return {
     ...base,
     title,
     description,
     openGraph: base.openGraph
-      ? { ...base.openGraph, title: title as string, description: description as string }
-      : base.openGraph,
+      ? { ...base.openGraph, title: title as string, description: description as string, ...(ogImage && { images: ogImage }) }
+      : ogImage
+        ? { title: title as string, description: description as string, images: ogImage }
+        : base.openGraph,
     twitter: base.twitter
-      ? { ...base.twitter, title: title as string, description: description as string }
+      ? { ...base.twitter, title: title as string, description: description as string, ...(ogImage && { images: ogImage }) }
       : base.twitter,
     alternates: canonical ? { ...base.alternates, canonical } : base.alternates,
     // "Hide from search" is the one switch that must win over the shipped

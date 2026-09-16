@@ -11,7 +11,7 @@ import { revalidatePath } from "next/cache";
  * value it has in FRONTEND_REVALIDATE_SECRET.
  */
 export async function POST(req: NextRequest) {
-  let body: { secret?: string; slug?: string } = {};
+  let body: { secret?: string; slug?: string; path?: string } = {};
   try {
     body = await req.json();
   } catch {
@@ -21,6 +21,17 @@ export async function POST(req: NextRequest) {
   const expected = process.env.BLOG_REVALIDATE_SECRET;
   if (!expected || body.secret !== expected) {
     return NextResponse.json({ revalidated: false, message: "Invalid secret" }, { status: 401 });
+  }
+
+  // A maintained site page (SEO block / slots saved in the Studio) — refresh
+  // just that route. Only site-relative paths are accepted; anything else is
+  // a malformed ping, not something to purge.
+  if (body.path) {
+    if (!body.path.startsWith("/") || body.path.startsWith("//")) {
+      return NextResponse.json({ revalidated: false, message: "Invalid path" }, { status: 400 });
+    }
+    revalidatePath(body.path);
+    return NextResponse.json({ revalidated: true, path: body.path, now: Date.now() });
   }
 
   // Always refresh the listing; refresh the specific article when provided.

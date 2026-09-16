@@ -3,6 +3,7 @@
 import ContactMain from "@/components/ContactUs/ContactMain";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 
 const BASE_METADATA: Metadata = {
   title: "Contact Solar Experts in Kerala",
@@ -55,5 +56,10 @@ const BASE_METADATA: Metadata = {
 // canonical and indexing; anything left blank there keeps the shipped value.
 export const generateMetadata = () => withCmsSeo("/contactus", BASE_METADATA);
 export default function ContactUsPage() {
-  return <ContactMain />;
+  return (
+    <>
+      <CmsPageSchema route="/contactus" />
+      <ContactMain />
+    </>
+  );
 }

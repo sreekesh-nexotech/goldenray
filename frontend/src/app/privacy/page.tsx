@@ -1,6 +1,7 @@
 import LegalHero from "@/components/LegalHero";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import Link from "next/link";
 
 // Metadata
@@ -46,6 +47,7 @@ export const generateMetadata = () => withCmsSeo("/privacy", BASE_METADATA);
 export default function privacy() {
   return (
     <section>
+      <CmsPageSchema route="/privacy" />
       {/* legal page heading  */}
       <LegalHero
         title="Privacy Policy"

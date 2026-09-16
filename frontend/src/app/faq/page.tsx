@@ -1,6 +1,7 @@
 import FaqMain from "@/components/Faq/FaqMain";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import JsonLD from "@/components/JsonLD";
 import { faqPageSchema } from "@/data/faq-data";
 
@@ -49,8 +50,11 @@ export const generateMetadata = () => withCmsSeo("/faq", BASE_METADATA);
 export default function FaqPage() {
   return (
     <>
-      <JsonLD data={faqPageSchema} />
-      <FaqMain />
+      <CmsPageSchema route="/faq" />
+      <>
+        <JsonLD data={faqPageSchema} />
+        <FaqMain />
+      </>
     </>
   );
 }

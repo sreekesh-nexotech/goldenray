@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import {
   SolarComparisonHero,
   SolarComparisonMain,
@@ -94,14 +95,17 @@ export default async function SolarComparisonPage() {
   const panels = await getAllPanels();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <JsonLD data={solarComparisonPageSchema(panels)} />
-      {/* Server-rendered, so the H1 and positioning copy are in the HTML — the
-          island below renders client-side only. */}
-      <SolarComparisonHero />
-      <Suspense fallback={null}>
-        <SolarComparisonMain />
-      </Suspense>
-    </div>
+    <>
+      <CmsPageSchema route="/solar-comparison" />
+      <div className="min-h-screen bg-gray-50">
+        <JsonLD data={solarComparisonPageSchema(panels)} />
+        {/* Server-rendered, so the H1 and positioning copy are in the HTML — the
+            island below renders client-side only. */}
+        <SolarComparisonHero />
+        <Suspense fallback={null}>
+          <SolarComparisonMain />
+        </Suspense>
+      </div>
+    </>
   );
 }

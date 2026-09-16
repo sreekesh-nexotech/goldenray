@@ -1,6 +1,7 @@
 import BlogMain from "@/components/Blog/BlogMain";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import { fetchAllArticles } from "@/services/blogApiService";
 
 // Revalidate the entire page every 2 minutes (ISR). The CMS publish webhook
@@ -64,8 +65,11 @@ export const generateMetadata = () => withCmsSeo("/blog", BASE_METADATA);
 export default async function BlogPage() {
   const { articles, categories } = await fetchAllArticles();
   return (
-    <section className="relative">
-      <BlogMain articles={articles} categories={categories} />
-    </section>
+    <>
+      <CmsPageSchema route="/blog" />
+      <section className="relative">
+        <BlogMain articles={articles} categories={categories} />
+      </section>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import GroupPurchaseMain from "@/components/GroupPurchase/GroupPurchaseMain";
 
 const ogImage = "https://golden-ray.b-cdn.net/images/slide1.jpg";
@@ -56,5 +57,10 @@ const BASE_METADATA: Metadata = {
 // canonical and indexing; anything left blank there keeps the shipped value.
 export const generateMetadata = () => withCmsSeo("/group-purchase", BASE_METADATA);
 export default function GroupPurchasePage() {
-  return <GroupPurchaseMain />;
+  return (
+    <>
+      <CmsPageSchema route="/group-purchase" />
+      <GroupPurchaseMain />
+    </>
+  );
 }

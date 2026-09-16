@@ -3,6 +3,7 @@
 import CareerMain from "@/components/Career/CareerMain";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 
 // The shipped metadata. The Studio's Career Page screen (§6.16) can override
 // the SEO title, description and canonical; `generateMetadata` below merges
@@ -57,8 +58,11 @@ export const generateMetadata = () => withCmsSeo("/career", BASE_METADATA);
 
 export default function Career() {
   return (
-    <section className="relative">
-      <CareerMain />
-    </section>
+    <>
+      <CmsPageSchema route="/career" />
+      <section className="relative">
+        <CareerMain />
+      </section>
+    </>
   );
 }

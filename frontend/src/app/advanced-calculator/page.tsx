@@ -2,6 +2,7 @@ import AdvanceCalculatorMain from "@/components/AdvanceCalculator/AdvanceCalcula
 import Hero from "@/components/ui/Hero";
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 
 // Metadata
 const BASE_METADATA: Metadata = {
@@ -58,13 +59,16 @@ export const generateMetadata = () => withCmsSeo("/advanced-calculator", BASE_ME
 export default function AdvancedCalculator() {
   return (
     <>
-      <Hero
-        title="Advanced Calculator"
-        description="Get a quick estimate of your savings, system size, and ROI with our advanced solar calculator."
-      />
+      <CmsPageSchema route="/advanced-calculator" />
+      <>
+        <Hero
+          title="Advanced Calculator"
+          description="Get a quick estimate of your savings, system size, and ROI with our advanced solar calculator."
+        />
 
-      {/* Content */}
-      <AdvanceCalculatorMain />
+        {/* Content */}
+        <AdvanceCalculatorMain />
+      </>
     </>
   );
 }

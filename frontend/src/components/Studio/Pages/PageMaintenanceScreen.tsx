@@ -357,6 +357,7 @@ function PageSeoCard({ page, mount, canEdit, siteUrl, onSaved }: { page: PageDet
     schema_type: seo?.schema_type ?? "none",
   };
   const [value, setValue] = useState<SeoValues>(initial);
+  const [ogImage, setOgImage] = useState<{ id: number | null; url: string | null }>({ id: seo?.og_image ?? null, url: seo?.og_image_url ?? null });
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const editable = canEdit || can("seo", "edit");
@@ -364,7 +365,7 @@ function PageSeoCard({ page, mount, canEdit, siteUrl, onSaved }: { page: PageDet
   const save = async () => {
     setSaving(true);
     try {
-      const next = await updatePageSeo(page.id, value, mount);
+      const next = await updatePageSeo(page.id, { ...value, og_image: ogImage.id }, mount);
       onSaved(next);
       setDirty(false);
       toast("SEO saved");
@@ -388,6 +389,17 @@ function PageSeoCard({ page, mount, canEdit, siteUrl, onSaved }: { page: PageDet
         status={seo?.seo_status ?? "error"}
         fallbackTitle={page.name}
         disabled={!editable}
+        ogImage={{
+          url: ogImage.url,
+          onPick: (asset) => {
+            setOgImage(asset);
+            setDirty(true);
+          },
+          onClear: () => {
+            setOgImage({ id: null, url: null });
+            setDirty(true);
+          },
+        }}
         extra={<SearchPreview url={`${siteUrl}${page.route}`} title={value.seo_title || page.name} description={value.meta_description} />}
       />
       {dirty && editable && (

@@ -1,6 +1,7 @@
 // src/app/commercial/page.tsx
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import { commercialPageData } from "@/data/solutions-page-data";
 import {
   SolutionHero,
@@ -87,40 +88,43 @@ export default function CommercialPage() {
 
   return (
     <>
-      <JsonLD data={commercialServiceSchema} />
-      {/* Hero Section */}
-      <SolutionHero data={data.hero} />
+      <CmsPageSchema route="/commercial" />
+      <>
+        <JsonLD data={commercialServiceSchema} />
+        {/* Hero Section */}
+        <SolutionHero data={data.hero} />
 
-      {/* What Are Commercial Solar Systems */}
-      <InfoSection data={data.whatSection} variant="boxed" />
+        {/* What Are Commercial Solar Systems */}
+        <InfoSection data={data.whatSection} variant="boxed" />
 
-      {/* How Do Commercial Solar Systems Work */}
-      <InfoSection data={data.howSection} variant="boxed" />
+        {/* How Do Commercial Solar Systems Work */}
+        <InfoSection data={data.howSection} variant="boxed" />
 
-      {/* Work Section */}
-      <WorkSection data={data.workSection} />
+        {/* Work Section */}
+        <WorkSection data={data.workSection} />
 
-      {/* Types of Solar Panels - Light */}
-      <PanelTypesSection panels={data.panelTypes} variant="light" />
+        {/* Types of Solar Panels - Light */}
+        <PanelTypesSection panels={data.panelTypes} variant="light" />
 
-      {/* Solar Types with Background */}
-      <SolarTypes solarTypes={data.solarTypes} />
+        {/* Solar Types with Background */}
+        <SolarTypes solarTypes={data.solarTypes} />
 
-      {/* Our Milestones */}
-      <MilestonesSection milestones={data.milestones} />
+        {/* Our Milestones */}
+        <MilestonesSection milestones={data.milestones} />
 
-      {/* Benefits & Applications */}
-      <BenefitsApplicationsSection data={data.benefitsApplications} />
+        {/* Benefits & Applications */}
+        <BenefitsApplicationsSection data={data.benefitsApplications} />
 
-      {/* Final Thoughts */}
-      <FinalThoughtsSection data={data.finalThoughts} />
+        {/* Final Thoughts */}
+        <FinalThoughtsSection data={data.finalThoughts} />
 
-      {/* FAQ Section */}
-      <SolutionFaqSection
-        title={data.faqTitle}
-        description={data.faqDescription}
-        faqs={data.faqs}
-      />
+        {/* FAQ Section */}
+        <SolutionFaqSection
+          title={data.faqTitle}
+          description={data.faqDescription}
+          faqs={data.faqs}
+        />
+      </>
     </>
   );
 }

@@ -1,6 +1,7 @@
 // src/app/industrial/page.tsx
 import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
+import CmsPageSchema from "@/components/CmsPageSchema";
 import Hero from "@/components/ui/Hero";
 
 const BASE_METADATA: Metadata = {
@@ -57,24 +58,27 @@ export const generateMetadata = () => withCmsSeo("/industrial", BASE_METADATA);
 export default function IndustrialSolar() {
   return (
     <>
-      <Hero
-        title="Industrial Solar Power Systems"
-        description="Power your operations with industrial solar systems in Kerala. Flarize delivers EPC services, scalable capacity, and long-term ROI."
-      />
-      <section className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">
-            Industrial Solar Solutions
-          </h2>
-          <p className="text-lg text-gray-700 mb-8">
-            Our industrial solar power systems are designed to meet the high
-            energy demands of factories, manufacturing units, and large-scale
-            operations across Kerala. With comprehensive EPC services and
-            scalable capacity options, we deliver reliable, cost-effective solar
-            solutions that maximize your long-term ROI.
-          </p>
-        </div>
-      </section>
+      <CmsPageSchema route="/industrial" />
+      <>
+        <Hero
+          title="Industrial Solar Power Systems"
+          description="Power your operations with industrial solar systems in Kerala. Flarize delivers EPC services, scalable capacity, and long-term ROI."
+        />
+        <section className="container mx-auto px-4 py-16">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-6">
+              Industrial Solar Solutions
+            </h2>
+            <p className="text-lg text-gray-700 mb-8">
+              Our industrial solar power systems are designed to meet the high
+              energy demands of factories, manufacturing units, and large-scale
+              operations across Kerala. With comprehensive EPC services and
+              scalable capacity options, we deliver reliable, cost-effective solar
+              solutions that maximize your long-term ROI.
+            </p>
+          </div>
+        </section>
+      </>
     </>
   );
 }

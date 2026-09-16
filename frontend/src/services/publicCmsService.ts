@@ -125,6 +125,17 @@ export interface PageImage {
   height: number | null;
 }
 
+export interface PublicPageSeo {
+  title: string;
+  description: string;
+  canonical_url: string;
+  noindex: boolean;
+  /** Social share image chosen in the Studio, or null to keep the shipped one. */
+  og_image: PageImage | null;
+  /** JSON-LD the CMS generated from the record (WebPage), or null. */
+  schema: Record<string, unknown> | null;
+}
+
 export interface PublicPageContent {
   route: string;
   name: string;
@@ -132,7 +143,7 @@ export interface PublicPageContent {
   images: Record<string, PageImage | null>;
   /** slot key → corrected string; absent when nobody has overridden it. */
   text: Record<string, string>;
-  seo: { title: string; description: string; canonical_url: string; noindex: boolean } | null;
+  seo: PublicPageSeo | null;
 }
 
 /** The maintained overrides for one route. Server-side; ISR'd. */

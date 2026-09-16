@@ -59,6 +59,7 @@ export interface PageSeo {
   meta_description: string;
   canonical_url: string;
   og_image: number | null;
+  og_image_url: string | null;
   schema_type: string;
   schema_extra: Record<string, unknown>;
   noindex: boolean;
