@@ -56,6 +56,10 @@ export default function PreviewPanel({
   const activeSizes = sizes.filter((s) => s.is_active);
   const [sizeId, setSizeId] = useState<string>(String(activeSizes[0]?.id ?? ""));
   const [tenure, setTenure] = useState<string>(String(settings.tenure_default_years));
+  const [downPaymentPercent, setDownPaymentPercent] = useState<string>(
+    String(settings.down_payment_min_percent)
+  );
+  const [downPayment, setDownPayment] = useState("on");
   const [subsidy, setSubsidy] = useState("on");
 
   const [data, setData] = useState<EMICalculatorResponse | null>(null);
@@ -69,6 +73,8 @@ export default function PreviewPanel({
     calculateEMI({
       size_id: Number(sizeId),
       tenure_years: Number(tenure),
+      down_payment_percent: Number(downPaymentPercent),
+      apply_down_payment: downPayment === "on",
       apply_subsidy: subsidy === "on",
     })
       .then((res) => {
@@ -86,7 +92,21 @@ export default function PreviewPanel({
     return () => {
       cancelled = true;
     };
-  }, [sizeId, tenure, subsidy]);
+  }, [sizeId, tenure, downPaymentPercent, downPayment, subsidy]);
+
+  const downPaymentOptions = Array.from(
+    {
+      length:
+        Math.max(
+          0,
+          Math.floor(
+            (Number(settings.down_payment_max_percent) - Number(settings.down_payment_min_percent)) /
+              Number(settings.down_payment_step_percent || 1)
+          )
+        ) + 1,
+    },
+    (_, i) => Number(settings.down_payment_min_percent) + i * Number(settings.down_payment_step_percent || 1)
+  );
 
   const tenureOptions = Array.from(
     { length: Math.max(1, settings.tenure_max_years - settings.tenure_min_years + 1) },
@@ -136,6 +156,25 @@ export default function PreviewPanel({
                 ))}
               </SelectField>
             </Field>
+            <Field label="Down payment">
+              <SelectField value={downPayment} onChange={setDownPayment} ariaLabel="Down payment">
+                <option value="on">Applied</option>
+                <option value="off">Not applied</option>
+              </SelectField>
+            </Field>
+            <Field label="Down payment %">
+              <SelectField
+                value={downPaymentPercent}
+                onChange={setDownPaymentPercent}
+                ariaLabel="Down payment percent"
+              >
+                {downPaymentOptions.map((p) => (
+                  <option key={p} value={p}>
+                    {p}%
+                  </option>
+                ))}
+              </SelectField>
+            </Field>
             <Field label="Subsidy">
               <SelectField value={subsidy} onChange={setSubsidy} ariaLabel="Subsidy">
                 <option value="on">Applied</option>
@@ -158,18 +197,16 @@ export default function PreviewPanel({
               <p style={{ padding: "16px 0", fontSize: 13, color: studioColors.danger }}>{error}</p>
             ) : data ? (
               <>
-                <Line label="System cost" value={inr(data.system.system_cost)} />
+                <Line label="System price" value={inr(data.system.system_cost)} />
                 <Line
-                  label={`Financed (${data.loan.percentage}%)`}
-                  value={inr(data.loan.gross_amount)}
+                  label={`Down payment (${data.down_payment.percent}%)${data.down_payment.applied ? "" : " (not applied)"}`}
+                  value={`− ${inr(data.down_payment.amount)}`}
                 />
                 <Line
                   label={`Subsidy${data.subsidy.applied ? "" : " (not applied)"}`}
                   value={`− ${inr(data.subsidy.amount)}`}
                 />
                 <Line label="Loan amount" value={inr(data.loan.amount)} accent />
-                <Line label="Cost after subsidy" value={inr(data.subsidy.net_cost_after_subsidy)} />
-                <Line label="Customer upfront" value={inr(data.loan.upfront_amount)} />
                 <Line
                   label={`Interest rate${data.interest.is_locked ? " (locked)" : ""}`}
                   value={`${data.interest.rate.toFixed(2)}%`}

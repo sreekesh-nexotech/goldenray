@@ -9,7 +9,6 @@ The calculation itself is in goldenray/utils/emi.py; these models are pure
 configuration.
 """
 
-from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -38,15 +37,26 @@ class EmiSystemSize(models.Model):
         validators=[MinValueValidator(0)],
         help_text="₹ per kW. System cost = this × capacity.",
     )
-    max_system_cost = models.DecimalField(
+    price_min = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         null=True,
         blank=True,
         validators=[MinValueValidator(0)],
         help_text=(
-            "₹ ceiling for this size, e.g. 300000 for 3kW. A price that puts "
-            "the system cost above this is rejected. Blank = no ceiling."
+            "₹ floor for the customer's price-adjustment slider. Blank = the "
+            "default price (no downward room)."
+        ),
+    )
+    price_max = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        help_text=(
+            "₹ ceiling for the customer's price-adjustment slider. Blank = the "
+            "default price (no upward room)."
         ),
     )
     monthly_bill_reference = models.DecimalField(
@@ -75,28 +85,6 @@ class EmiSystemSize(models.Model):
     @property
     def system_cost(self):
         return self.price_per_kw * self.capacity_kw
-
-    @property
-    def exceeds_max_cost(self):
-        """True when the derived cost breaks this size's ceiling."""
-        if self.max_system_cost is None:
-            return False
-        return self.system_cost > self.max_system_cost
-
-    def clean(self):
-        # Keeps the admin from saving a price the calculator would then refuse
-        # to quote. The serializer enforces the same rule for the Studio.
-        super().clean()
-        if self.exceeds_max_cost:
-            raise ValidationError(
-                {
-                    "price_per_kw": (
-                        f"₹{self.price_per_kw}/kW puts a {self.label} system at "
-                        f"₹{self.system_cost}, above the ₹{self.max_system_cost} "
-                        "ceiling for this size."
-                    )
-                }
-            )
 
 
 class EmiSubsidyRule(models.Model):
@@ -265,19 +253,6 @@ class EmiCalculatorSettings(models.Model):
 
     SINGLETON_PK = 1
 
-    loan_percentage = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        default=90,
-        help_text="% of the system cost that is financed. The rest is upfront.",
-    )
-    subsidy_before_loan = models.BooleanField(
-        default=True,
-        help_text=(
-            "On: the loan % is applied to the system cost, then the subsidy is "
-            "deducted from that loan. Off: the subsidy does not reduce the loan."
-        ),
-    )
     tenure_min_years = models.PositiveIntegerField(default=1)
     tenure_max_years = models.PositiveIntegerField(default=10)
     tenure_default_years = models.PositiveIntegerField(default=5)
@@ -285,11 +260,21 @@ class EmiCalculatorSettings(models.Model):
         default=30,
         help_text="Daily amount = monthly EMI ÷ this. 30 by policy.",
     )
-    loan_amount_min = models.DecimalField(max_digits=12, decimal_places=2, default=50000)
-    loan_amount_max = models.DecimalField(max_digits=12, decimal_places=2, default=600000)
-    loan_step = models.DecimalField(
+    price_step = models.DecimalField(
         max_digits=12, decimal_places=2, default=5000,
-        help_text="Increment for the loan amount +/- buttons and slider.",
+        help_text="Increment for the system price +/- buttons and slider.",
+    )
+    down_payment_min_percent = models.DecimalField(
+        max_digits=5, decimal_places=2, default=10,
+        help_text="Floor for the down-payment slider, as % of the system price.",
+    )
+    down_payment_max_percent = models.DecimalField(
+        max_digits=5, decimal_places=2, default=90,
+        help_text="Ceiling for the down-payment slider, as % of the system price.",
+    )
+    down_payment_step_percent = models.DecimalField(
+        max_digits=5, decimal_places=2, default=5,
+        help_text="Increment for the down-payment +/- buttons and slider.",
     )
     rate_max = models.DecimalField(
         max_digits=5, decimal_places=2, default=18,

@@ -26,7 +26,8 @@ const toInput = (row: EMISystemSize): EMISystemSizeInput => ({
   label: row.label,
   capacity_kw: row.capacity_kw,
   price_per_kw: row.price_per_kw,
-  max_system_cost: row.max_system_cost,
+  price_min: row.price_min,
+  price_max: row.price_max,
   monthly_bill_reference: row.monthly_bill_reference,
   sort_order: Number(row.sort_order) || 0,
   is_active: row.is_active,
@@ -61,7 +62,8 @@ export default function SystemSizesPanel({
                   capacity_kw: "",
                   price_per_kw: "",
                   system_cost: 0,
-                  max_system_cost: null,
+                  price_min: null,
+                  price_max: null,
                   monthly_bill_reference: "0",
                   sort_order: rows.length + 1,
                   is_active: true,
@@ -83,8 +85,6 @@ export default function SystemSizesPanel({
 
         {rows.map((row) => {
           const cost = Number(row.capacity_kw) * Number(row.price_per_kw);
-          const cap = row.max_system_cost === null ? null : Number(row.max_system_cost);
-          const overCap = cap !== null && Number.isFinite(cost) && cost > cap;
           return (
             <RowCard
               key={row.id}
@@ -92,16 +92,7 @@ export default function SystemSizesPanel({
               meta={
                 Number.isFinite(cost) && cost > 0 ? (
                   <>
-                    System cost{" "}
-                    <strong style={{ color: overCap ? studioColors.danger : studioColors.tealDeep }}>
-                      {inr(cost)}
-                    </strong>
-                    {overCap && (
-                      <span style={{ color: studioColors.danger }}>
-                        {" "}
-                        · above the {inr(cap)} cap — this size cannot be quoted
-                      </span>
-                    )}
+                    Default price <strong style={{ color: studioColors.tealDeep }}>{inr(cost)}</strong>
                   </>
                 ) : undefined
               }
@@ -127,7 +118,7 @@ export default function SystemSizesPanel({
                   onChange={(v) => patch(row.id, { capacity_kw: v })}
                   suffix="kW"
                   disabled={readOnly}
-                  hint="Drives subsidy and interest-rate bands."
+                  hint="Drives the subsidy band."
                 />
                 <NumberField
                   label="Price per kW"
@@ -135,16 +126,25 @@ export default function SystemSizesPanel({
                   onChange={(v) => patch(row.id, { price_per_kw: v })}
                   prefix="₹"
                   disabled={readOnly}
-                  hint="System cost = this × capacity."
+                  hint="Default system price = this × capacity."
                 />
                 <NumberField
-                  label="Maximum system cost"
-                  value={str(row.max_system_cost)}
-                  onChange={(v) => patch(row.id, { max_system_cost: nullableNum(v) })}
+                  label="Price slider minimum"
+                  value={str(row.price_min)}
+                  onChange={(v) => patch(row.id, { price_min: nullableNum(v) })}
                   prefix="₹"
-                  placeholder="no cap"
+                  placeholder="default price"
                   disabled={readOnly}
-                  hint="Above this the calculator refuses to quote. 3kW is capped at ₹3,00,000."
+                  hint="Floor for the customer's price slider. Blank = no downward room."
+                />
+                <NumberField
+                  label="Price slider maximum"
+                  value={str(row.price_max)}
+                  onChange={(v) => patch(row.id, { price_max: nullableNum(v) })}
+                  prefix="₹"
+                  placeholder="default price"
+                  disabled={readOnly}
+                  hint="Ceiling for the customer's price slider. Blank = no upward room."
                 />
                 <NumberField
                   label="Reference monthly bill"

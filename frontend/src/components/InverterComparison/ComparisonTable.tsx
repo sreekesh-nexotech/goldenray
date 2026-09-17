@@ -3,7 +3,14 @@
 import { SolarInverter } from "@/types/solarInverter";
 import Image from "next/image";
 import { X, ChevronDown, Check, X as XIcon, Plus } from "lucide-react";
-import { useMemo, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type RefObject,
+} from "react";
 import RecommendationSection from "./RecommendationSection";
 import ComparisonCTA from "./ComparisonCTA";
 import FAQSection from "./FAQSection";
@@ -30,7 +37,10 @@ function SectionHeader({
       className="grid bg-[#F1F3F6] text-[#3F454D] text-sm sm:text-base"
       style={gridStyle}
     >
-      <div className="min-w-0 px-4 py-3 font-semibold sticky left-0 bg-[#F1F3F6] z-20 border-y border-[#DFE3E8] shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
+      <div
+        data-section-header={title}
+        className="min-w-0 px-4 py-3 font-semibold sticky left-0 bg-[#F1F3F6] z-20 border-y border-[#DFE3E8] shadow-[2px_0_4px_rgba(0,0,0,0.05)]"
+      >
         {title}
       </div>
       {Array.from({ length: columns }).map((_, idx) => (
@@ -427,12 +437,93 @@ function badgeMaxDcInput(value: string, hasSuitable: string): string {
   return value;
 }
 
+// Section headers use `sticky left-0` to track horizontal scroll, but that
+// same ancestor's `overflow-x-auto` forces its computed overflow-y to `auto`
+// (a CSS rule: a non-visible x with a visible y coerces y to auto too), which
+// makes the header's sticky containing block that inner div instead of the
+// page — and that div never scrolls vertically itself, so `position: sticky`
+// can't pin it to the viewport top. Mobile-only "current section" pin is
+// therefore done by hand: track scroll position, find the last header whose
+// top has passed the pin line, and render it as a `position: fixed` clone
+// sized to the table's (scroll-stable) bounding box.
+function usePinnedSectionHeader(
+  tableRef: RefObject<HTMLDivElement | null>,
+  enabled: boolean,
+) {
+  const [pinned, setPinned] = useState<{
+    title: string;
+    left: number;
+    width: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!enabled) {
+      setPinned(null);
+      return;
+    }
+    const PIN_OFFSET = 64; // matches the fixed site header's mobile height
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      const wrapper = tableRef.current;
+      if (!wrapper || window.innerWidth >= 640) {
+        setPinned(null);
+        return;
+      }
+      const wrapperRect = wrapper.getBoundingClientRect();
+      if (wrapperRect.top > PIN_OFFSET || wrapperRect.bottom <= PIN_OFFSET) {
+        setPinned(null);
+        return;
+      }
+      const headers = Array.from(
+        wrapper.querySelectorAll<HTMLElement>("[data-section-header]"),
+      );
+      let active: HTMLElement | null = null;
+      for (const el of headers) {
+        if (el.getBoundingClientRect().top <= PIN_OFFSET) {
+          active = el;
+        } else {
+          break;
+        }
+      }
+      setPinned(
+        active
+          ? {
+              title: active.dataset.sectionHeader || "",
+              left: wrapperRect.left,
+              width: wrapperRect.width,
+            }
+          : null,
+      );
+    };
+
+    const onScrollOrResize = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    update();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+    };
+  }, [tableRef, enabled]);
+
+  return pinned;
+}
+
 export default function ComparisonTable({
   selectedInverters,
   allInverters,
   onRemoveInverter,
   onAddInverter,
 }: ComparisonTableProps) {
+  const tableWrapperRef = useRef<HTMLDivElement>(null);
   const selectedIds = selectedInverters.map((p) => p.id);
   const tableGridStyle = useMemo<CSSProperties>(
     () => ({
@@ -466,6 +557,11 @@ export default function ComparisonTable({
       return inverter[key] as string | number | boolean | null;
     });
   };
+
+  const pinnedHeader = usePinnedSectionHeader(
+    tableWrapperRef,
+    selectedInverters.length >= 2,
+  );
 
   return (
     <div className="bg-[#F7F8FA] min-h-screen">
@@ -506,7 +602,23 @@ export default function ComparisonTable({
         </div>
 
         {selectedInverters.length >= 2 && (
-          <div className="bg-white border border-[#DFE3E8] overflow-x-auto [--comparison-label-col:140px] sm:[--comparison-label-col:160px] md:[--comparison-label-col:170px] lg:[--comparison-label-col:190px] xl:[--comparison-label-col:220px] 2xl:[--comparison-label-col:240px]">
+          <>
+            {pinnedHeader && (
+              <div
+                className="fixed z-30 border-y border-[#DFE3E8] bg-[#F1F3F6] px-4 py-3 text-sm font-semibold text-[#3F454D] shadow-sm sm:hidden"
+                style={{
+                  top: 64,
+                  left: pinnedHeader.left,
+                  width: pinnedHeader.width,
+                }}
+              >
+                {pinnedHeader.title}
+              </div>
+            )}
+            <div
+              ref={tableWrapperRef}
+              className="bg-white border border-[#DFE3E8] overflow-x-auto [--comparison-label-col:140px] sm:[--comparison-label-col:160px] md:[--comparison-label-col:170px] lg:[--comparison-label-col:190px] xl:[--comparison-label-col:220px] 2xl:[--comparison-label-col:240px]"
+            >
             <div className="min-w-full" style={tableGridStyle}>
               {/* Column headers */}
               <div className="grid" style={tableGridStyle}>
@@ -797,7 +909,8 @@ export default function ComparisonTable({
                 highlight
               />
             </div>
-          </div>
+            </div>
+          </>
         )}
 
         {selectedInverters.length < 2 && (

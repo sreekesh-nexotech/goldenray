@@ -51,7 +51,9 @@ PAGES = [
     ("/emi-calculator", "EMI Calculator", "Tools", True),
     ("/advanced-calculator", "Advanced Calculator", "Tools", True),
     ("/solar-comparison", "Solar Comparison", "Tools", True),
+    ("/comparison-table", "Solar Comparison Table", "Tools", True),
     ("/inverter-comparison", "Inverter Comparison", "Tools", True),
+    ("/inverter-comparison-table", "Inverter Comparison Table", "Tools", True),
     ("/group-purchase", "Group Purchase", "Tools", True),
     ("/quote-analyser", "Quote Analyser", "Tools", True),
 

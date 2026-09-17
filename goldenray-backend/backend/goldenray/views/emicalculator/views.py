@@ -70,11 +70,16 @@ class EMICalculatorAPIView(APIView):
     Inputs (JSON body):
       - size_id (int) or capacity_kw (float) : which system size to price.
       - tenure_years (int)   : 1–10 by default; falls back to the configured default.
-      - apply_subsidy (bool) : default true. Off means the loan is sized on the
-                               gross system cost.
       - interest_rate (float): customer adjustment. Clamped up to the band's
                                floor, and ignored entirely on a locked band.
-      - loan_amount (float)  : overrides the computed 90%; upfront follows it.
+      - system_cost (float)  : overrides the size's default price; clamped to
+                               the size's configured price slider band.
+      - down_payment_percent (float): overrides the default (minimum) down
+                               payment %; clamped to the configured band.
+      - apply_down_payment (bool) : default true. Off means no down payment
+                               is deducted, regardless of the slider.
+      - apply_subsidy (bool) : default true. Off means the loan is sized
+                               without deducting the subsidy.
     """
 
     permission_classes = [ApiMethodPermission]
@@ -88,13 +93,15 @@ class EMICalculatorAPIView(APIView):
             size_id = _to_int(data.get("size_id") or data.get("installation_id") or data.get("id"))
             tenure_years = _to_int(data.get("tenure_years"))
             interest_override = _to_float(data.get("interest_rate"))
-            loan_override = _to_float(data.get("loan_amount") or data.get("principal"))
+            price_override = _to_float(data.get("system_cost") or data.get("price"))
+            down_payment_override = _to_float(data.get("down_payment_percent"))
         except (TypeError, ValueError):
             return Response(
                 {"error": "Invalid numeric value in request"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        apply_down_payment = _to_bool(data.get("apply_down_payment"), default=True)
         apply_subsidy = _to_bool(data.get("apply_subsidy"), default=True)
 
         if size_id is None and capacity_kw is None:
@@ -108,9 +115,11 @@ class EMICalculatorAPIView(APIView):
                 capacity_kw=capacity_kw,
                 size_id=size_id,
                 tenure_years=tenure_years,
-                apply_subsidy=apply_subsidy,
                 interest_rate_override=interest_override,
-                loan_amount_override=loan_override,
+                system_cost_override=price_override,
+                down_payment_percent_override=down_payment_override,
+                apply_down_payment=apply_down_payment,
+                apply_subsidy=apply_subsidy,
             )
         except ValueError as exc:
             return Response({"error": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
@@ -137,7 +146,6 @@ def _with_legacy_keys(breakdown):
         "total_cost": system["system_cost"],
         "total_subsidy": subsidy["amount"],
         "final_cost": subsidy["net_cost_after_subsidy"],
-        "apply_subsidy": subsidy["applied"],
         "principal": loan["amount"],
         "interest_rate": interest["rate"],
         "interest_rate_min": interest["min_rate"],

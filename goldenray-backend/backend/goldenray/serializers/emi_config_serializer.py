@@ -9,7 +9,6 @@ from ..models import (
     EmiSubsidyRule,
     EmiSystemSize,
 )
-from ..utils.emi import format_inr as inr
 
 
 class EmiSystemSizeSerializer(serializers.ModelSerializer):
@@ -19,7 +18,7 @@ class EmiSystemSizeSerializer(serializers.ModelSerializer):
         model = EmiSystemSize
         fields = (
             "id", "label", "capacity_kw", "price_per_kw", "system_cost",
-            "max_system_cost", "monthly_bill_reference", "sort_order",
+            "price_min", "price_max", "monthly_bill_reference", "sort_order",
             "is_active", "created_at", "updated_at",
         )
         read_only_fields = ("id", "system_cost", "created_at", "updated_at")
@@ -38,24 +37,14 @@ class EmiSystemSizeSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        # The ceiling is on the derived cost, so it can only be checked once
-        # price and capacity are both resolved.
         def resolved(name):
             return attrs.get(name, getattr(self.instance, name, None))
 
-        price, capacity = resolved("price_per_kw"), resolved("capacity_kw")
-        ceiling = resolved("max_system_cost")
-        if ceiling is not None and price is not None and capacity is not None:
-            cost = price * capacity
-            if cost > ceiling:
-                raise serializers.ValidationError(
-                    {
-                        "price_per_kw": (
-                            f"{inr(price)}/kW puts this system at {inr(cost)}, "
-                            f"above the {inr(ceiling)} ceiling set for the size."
-                        )
-                    }
-                )
+        price_min, price_max = resolved("price_min"), resolved("price_max")
+        if price_min is not None and price_max is not None and price_min > price_max:
+            raise serializers.ValidationError(
+                {"price_max": "Slider maximum must be at least the minimum."}
+            )
         return attrs
 
 
@@ -122,9 +111,10 @@ class EmiCalculatorSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmiCalculatorSettings
         fields = (
-            "loan_percentage", "subsidy_before_loan", "tenure_min_years",
-            "tenure_max_years", "tenure_default_years", "daily_saving_divisor",
-            "loan_amount_min", "loan_amount_max", "loan_step", "rate_max",
+            "tenure_min_years", "tenure_max_years", "tenure_default_years",
+            "daily_saving_divisor", "price_step",
+            "down_payment_min_percent", "down_payment_max_percent",
+            "down_payment_step_percent", "rate_max",
             "default_interest_rate", "panel_life_years", "updated_at",
         )
         read_only_fields = ("updated_at",)
@@ -132,12 +122,6 @@ class EmiCalculatorSettingsSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         def resolved(name):
             return attrs.get(name, getattr(self.instance, name, None))
-
-        pct = resolved("loan_percentage")
-        if pct is not None and not (0 < pct <= 100):
-            raise serializers.ValidationError(
-                {"loan_percentage": "Must be greater than 0 and at most 100."}
-            )
 
         lo, hi = resolved("tenure_min_years"), resolved("tenure_max_years")
         default = resolved("tenure_default_years")
@@ -151,15 +135,33 @@ class EmiCalculatorSettingsSerializer(serializers.ModelSerializer):
                     {"tenure_default_years": "Default tenure must fall inside the allowed range."}
                 )
 
-        loan_lo, loan_hi = resolved("loan_amount_min"), resolved("loan_amount_max")
-        if loan_lo is not None and loan_hi is not None and loan_lo > loan_hi:
-            raise serializers.ValidationError(
-                {"loan_amount_max": "Maximum loan must be at least the minimum."}
-            )
-
         if resolved("daily_saving_divisor") in (0, None):
             raise serializers.ValidationError(
                 {"daily_saving_divisor": "Must be greater than zero."}
+            )
+
+        if resolved("price_step") in (0, None):
+            raise serializers.ValidationError(
+                {"price_step": "Must be greater than zero."}
+            )
+
+        dp_lo, dp_hi = resolved("down_payment_min_percent"), resolved("down_payment_max_percent")
+        if dp_lo is not None and not (0 < dp_lo <= 100):
+            raise serializers.ValidationError(
+                {"down_payment_min_percent": "Must be greater than 0 and at most 100."}
+            )
+        if dp_hi is not None and not (0 < dp_hi <= 100):
+            raise serializers.ValidationError(
+                {"down_payment_max_percent": "Must be greater than 0 and at most 100."}
+            )
+        if dp_lo is not None and dp_hi is not None and dp_lo > dp_hi:
+            raise serializers.ValidationError(
+                {"down_payment_max_percent": "Maximum % must be at least the minimum."}
+            )
+
+        if resolved("down_payment_step_percent") in (0, None):
+            raise serializers.ValidationError(
+                {"down_payment_step_percent": "Must be greater than zero."}
             )
         return attrs
 

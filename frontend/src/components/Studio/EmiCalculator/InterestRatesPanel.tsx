@@ -1,9 +1,9 @@
 "use client";
 
 // Interest-rate policy. Each rule can be scoped by capacity, by system cost,
-// by loan amount, or any combination — which is how today's policy (3kW is
-// locked at 5.75% whatever it costs, larger systems floored at 8%) and
-// cost- or loan-range slabs live in one table.
+// by loan amount, or any combination — which is how today's policy (loan
+// amount up to ₹2,00,000 is locked at 5.75%, above that locked at 8%) and
+// capacity- or cost-range slabs live in one table.
 
 import { GhostButton } from "../shared/primitives";
 import { studioColors } from "../shared/format";
@@ -159,7 +159,7 @@ export default function InterestRatesPanel({
                 label="Name"
                 value={str(row.label)}
                 onChange={(v) => patch(row.id, { label: v })}
-                placeholder="Above 3kW — floor 8%"
+                placeholder="Loan amount above ₹2,00,000 — 8%"
                 disabled={readOnly}
               />
               <NumberField
@@ -239,7 +239,7 @@ export default function InterestRatesPanel({
                 checked={row.is_locked}
                 onChange={() => patch(row.id, { is_locked: !row.is_locked })}
                 disabled={readOnly}
-                hint="Customer cannot change it (e.g. the 3kW SBI rate)."
+                hint="Customer cannot change it (e.g. the loan-amount rate bands)."
               />
               <ToggleField
                 label="Active"

@@ -1,14 +1,15 @@
 "use client";
 
-// The calculator's global knobs: the loan percentage and where it is applied,
-// tenure bounds, the daily-amount divisor and the slider limits.
+// The calculator's global knobs: tenure bounds, the daily-amount divisor,
+// the price and down-payment sliders' increments/bounds, and the rate
+// slider's ceiling.
 
 import { useState } from "react";
 import { GhostButton, GoldButton } from "../shared/primitives";
 import { studioColors } from "../shared/format";
 import type { EMISettings } from "@/services/emiCalculator";
 import { updateSettings } from "@/services/emiConfigService";
-import { FieldGrid, NumberField, PanelIntro, ToggleField, str } from "./shared";
+import { FieldGrid, NumberField, PanelIntro, str } from "./shared";
 
 export default function SettingsPanel({
   initial,
@@ -32,15 +33,14 @@ export default function SettingsPanel({
     setBusy(true);
     try {
       const next = await updateSettings({
-        loan_percentage: draft.loan_percentage,
-        subsidy_before_loan: draft.subsidy_before_loan,
         tenure_min_years: Number(draft.tenure_min_years) || 1,
         tenure_max_years: Number(draft.tenure_max_years) || 10,
         tenure_default_years: Number(draft.tenure_default_years) || 5,
         daily_saving_divisor: Number(draft.daily_saving_divisor) || 30,
-        loan_amount_min: draft.loan_amount_min,
-        loan_amount_max: draft.loan_amount_max,
-        loan_step: draft.loan_step,
+        price_step: draft.price_step,
+        down_payment_min_percent: draft.down_payment_min_percent,
+        down_payment_max_percent: draft.down_payment_max_percent,
+        down_payment_step_percent: draft.down_payment_step_percent,
         rate_max: draft.rate_max,
         default_interest_rate: draft.default_interest_rate,
         panel_life_years: Number(draft.panel_life_years) || 25,
@@ -90,14 +90,6 @@ export default function SettingsPanel({
       >
         <FieldGrid>
           <NumberField
-            label="Loan percentage"
-            value={str(draft.loan_percentage)}
-            onChange={(v) => set({ loan_percentage: v })}
-            suffix="%"
-            disabled={readOnly}
-            hint="Share of the cost that is financed. The rest is the customer's upfront."
-          />
-          <NumberField
             label="Daily amount divisor"
             value={str(draft.daily_saving_divisor)}
             onChange={(v) => set({ daily_saving_divisor: Number(v) || 30 })}
@@ -135,26 +127,36 @@ export default function SettingsPanel({
             hint="Where the tenure slider starts."
           />
           <NumberField
-            label="Loan slider minimum"
-            value={str(draft.loan_amount_min)}
-            onChange={(v) => set({ loan_amount_min: v })}
+            label="Price step"
+            value={str(draft.price_step)}
+            onChange={(v) => set({ price_step: v })}
             prefix="₹"
             disabled={readOnly}
+            hint="Increment for the system price +/− buttons and slider."
           />
           <NumberField
-            label="Loan slider maximum"
-            value={str(draft.loan_amount_max)}
-            onChange={(v) => set({ loan_amount_max: v })}
-            prefix="₹"
+            label="Down payment minimum"
+            value={str(draft.down_payment_min_percent)}
+            onChange={(v) => set({ down_payment_min_percent: v })}
+            suffix="%"
             disabled={readOnly}
+            hint="Floor for the down-payment slider, as % of the system price."
           />
           <NumberField
-            label="Loan step"
-            value={str(draft.loan_step)}
-            onChange={(v) => set({ loan_step: v })}
-            prefix="₹"
+            label="Down payment maximum"
+            value={str(draft.down_payment_max_percent)}
+            onChange={(v) => set({ down_payment_max_percent: v })}
+            suffix="%"
             disabled={readOnly}
-            hint="Increment for the +/− buttons and slider."
+            hint="Ceiling for the down-payment slider, as % of the system price."
+          />
+          <NumberField
+            label="Down payment step"
+            value={str(draft.down_payment_step_percent)}
+            onChange={(v) => set({ down_payment_step_percent: v })}
+            suffix="%"
+            disabled={readOnly}
+            hint="Increment for the down-payment +/− buttons and slider."
           />
           <NumberField
             label="Rate slider maximum"
@@ -170,13 +172,6 @@ export default function SettingsPanel({
             suffix="yrs"
             disabled={readOnly}
             hint="Used for the lifetime-savings projection."
-          />
-          <ToggleField
-            label="Deduct subsidy from the loan"
-            checked={draft.subsidy_before_loan}
-            onChange={() => set({ subsidy_before_loan: !draft.subsidy_before_loan })}
-            disabled={readOnly}
-            hint="On: the loan % is taken off the system cost first, then the subsidy comes off that loan. This is the agreed flow — turning it off leaves the loan at the full %."
           />
         </FieldGrid>
       </div>
