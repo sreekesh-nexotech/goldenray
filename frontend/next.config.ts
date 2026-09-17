@@ -54,6 +54,15 @@ const nextConfig: NextConfig = {
                 destination: '/about',
                 permanent: true,
             },
+            // /kseb-net-metering is a GSC 404: an internal link (service-area
+            // install steps) pointed at a page that was never built. The link
+            // now points at /how-flarize-works directly; this redirect covers
+            // any already-indexed or externally-backlinked copies of the URL.
+            {
+                source: '/kseb-net-metering',
+                destination: '/how-flarize-works',
+                permanent: true,
+            },
             // Legacy id-based resource/project URLs -> descriptive slugs.
             // Every destination is a slug that exists in the mock data; ids
             // 2, 3 and 6 were byte-identical duplicates of id 1 (same title,

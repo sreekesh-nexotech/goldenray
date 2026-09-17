@@ -30,22 +30,33 @@ export default async function InverterComparisonTablePage({
       <section className="relative w-full overflow-hidden bg-white">
         <PageIllustration />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8 md:pt-12 md:pb-10">
-          <nav className="flex items-center gap-1.5 text-sm mb-6">
+          <nav
+            aria-label="Breadcrumb"
+            className="flex items-center gap-1.5 text-sm mb-6"
+          >
             <Link
               href="/"
               className="text-[#6B7280] hover:text-[#074A4D] transition-colors"
             >
               Home
             </Link>
-            <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
+            <ChevronRight
+              aria-hidden="true"
+              className="w-4 h-4 text-[#9CA3AF]"
+            />
             <Link
               href="/inverter-comparison"
               className="text-[#6B7280] hover:text-[#074A4D] transition-colors"
             >
               Compare Solar Inverters
             </Link>
-            <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
-            <span className="text-[#074A4D] font-medium">Comparison Table</span>
+            <ChevronRight
+              aria-hidden="true"
+              className="w-4 h-4 text-[#9CA3AF]"
+            />
+            <span aria-current="page" className="text-[#074A4D] font-medium">
+              Comparison Table
+            </span>
           </nav>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 mb-4">
@@ -57,8 +68,9 @@ export default async function InverterComparisonTablePage({
           </div>
 
           <div className="text-center">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-semibold text-[#123532] mb-4 leading-tight">
+            <h1 className="text-[2.75rem] sm:text-6xl lg:text-5xl xl:text-6xl font-semibold text-[#123532] mb-4 leading-tight">
               Inverter Comparison Table
+              <br className="sm:hidden" /> for Kerala Homes
             </h1>
             <p className="text-base sm:text-base md:text-xl text-[#444444] max-w-3xl mx-auto">
               Select any inverters below and compare them spec-by-spec. Updated

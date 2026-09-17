@@ -116,7 +116,7 @@ function makeInstallSteps(designNote: string): InstallStep[] {
       title: "Permitting",
       description:
         "We submit your KSEB net metering application and PM Surya Ghar subsidy to MNRE — fully handled. KSEB approval takes 5–7 working days.",
-      link: { label: "KSEB net metering", href: "/kseb-net-metering" },
+      link: { label: "KSEB net metering", href: "/how-flarize-works" },
     },
     {
       title: "Installation",
