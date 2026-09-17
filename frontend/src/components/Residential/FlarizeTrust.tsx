@@ -93,7 +93,7 @@ const FlarizeTrust = () => {
         </p>
       </div>
 
-      <div className="mt-10 flex justify-center">
+      <div className="flex justify-center">
         <LinkingButton
           content="Switch to Solar with Flarize"
           ButtonLink="/contactus"
@@ -104,7 +104,7 @@ const FlarizeTrust = () => {
         />
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-3">
         <div className="flex items-center -space-x-3">
           {avatars.map(({ src, alt }) => (
             <Image
