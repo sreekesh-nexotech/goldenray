@@ -7,7 +7,7 @@ import { InverterComparisonMain } from "@/components/InverterComparison";
 const BASE_METADATA: Metadata = {
   title: "Compare Solar Inverters for Kerala | Find the Best Solar Inverter",
   description:
-    "Compare solar inverters side-by-side with Kerala climate ratings. Browse string, hybrid, and microinverters from top brands like Enphase, Fronius, SolarEdge, Sungrow, and GoodWe.",
+    "Compare solar inverters side-by-side with Kerala climate ratings. Browse string, hybrid, and microinverters from top brands like Sungrow, Huawei, Enphase, GoodWe, Solis, and Growatt.",
   keywords: [
     "solar inverter comparison kerala",
     "best solar inverter kerala",

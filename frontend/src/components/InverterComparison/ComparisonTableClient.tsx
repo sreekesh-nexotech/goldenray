@@ -38,6 +38,18 @@ export default function ComparisonTableClient({
     updateURL(newSelected.map((p) => p.id));
   };
 
+  // Picking a different inverter from a filled dropdown swaps that column,
+  // rather than trying (and failing, at 3) to append another one.
+  const handleReplaceInverter = (slotIndex: number, inverterId: string) => {
+    const toAdd = allInverters.find((p) => p.id === inverterId);
+    if (!toAdd || selectedInverters.some((p) => p.id === inverterId)) return;
+    const newSelected = selectedInverters.map((inverter, index) =>
+      index === slotIndex ? toAdd : inverter,
+    );
+    setSelectedInverters(newSelected);
+    updateURL(newSelected.map((p) => p.id));
+  };
+
   const handleAddInverter = (inverterId: string) => {
     if (selectedInverters.length >= 3) return;
     const toAdd = allInverters.find((p) => p.id === inverterId);
@@ -58,6 +70,7 @@ export default function ComparisonTableClient({
       allInverters={allInverters}
       onRemoveInverter={handleRemoveInverter}
       onAddInverter={handleAddInverter}
+      onReplaceInverter={handleReplaceInverter}
       onClose={handleBack}
     />
   );

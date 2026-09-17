@@ -9,7 +9,15 @@ import { GhostButton, GoldButton } from "../shared/primitives";
 import { studioColors } from "../shared/format";
 import type { EMISettings } from "@/services/emiCalculator";
 import { updateSettings } from "@/services/emiConfigService";
-import { FieldGrid, NumberField, PanelIntro, str } from "./shared";
+import { FieldGrid, NumberField, PanelIntro, TextField, str } from "./shared";
+
+/** "5000, 10000, 20000" → [5000, 10000, 20000]; junk and blanks are dropped. */
+function parseAmounts(text: string): number[] {
+  return text
+    .split(/[,\s]+/)
+    .map((s) => Number(s))
+    .filter((n) => Number.isFinite(n) && n > 0);
+}
 
 export default function SettingsPanel({
   initial,
@@ -24,6 +32,10 @@ export default function SettingsPanel({
 }) {
   const [saved, setSaved] = useState<EMISettings>(initial);
   const [draft, setDraft] = useState<EMISettings>(initial);
+  // Kept as the raw string so a half-typed "5000, 1" isn't mangled mid-edit.
+  const [quickAddsText, setQuickAddsText] = useState(
+    (initial.down_payment_quick_adds ?? []).join(", ")
+  );
   const [busy, setBusy] = useState(false);
 
   const dirty = JSON.stringify(saved) !== JSON.stringify(draft);
@@ -41,12 +53,14 @@ export default function SettingsPanel({
         down_payment_min_percent: draft.down_payment_min_percent,
         down_payment_max_percent: draft.down_payment_max_percent,
         down_payment_step_percent: draft.down_payment_step_percent,
+        down_payment_quick_adds: draft.down_payment_quick_adds,
         rate_max: draft.rate_max,
         default_interest_rate: draft.default_interest_rate,
         panel_life_years: Number(draft.panel_life_years) || 25,
       });
       setSaved(next);
       setDraft(next);
+      setQuickAddsText((next.down_payment_quick_adds ?? []).join(", "));
       onSaved(next);
       notify.success("Settings saved");
     } catch (err) {
@@ -64,7 +78,13 @@ export default function SettingsPanel({
           !readOnly &&
           dirty && (
             <div className="flex gap-2">
-              <GhostButton onClick={() => setDraft(saved)} disabled={busy}>
+              <GhostButton
+                onClick={() => {
+                  setDraft(saved);
+                  setQuickAddsText((saved.down_payment_quick_adds ?? []).join(", "));
+                }}
+                disabled={busy}
+              >
                 Discard
               </GhostButton>
               <GoldButton onClick={handleSave} disabled={busy}>
@@ -157,6 +177,17 @@ export default function SettingsPanel({
             suffix="%"
             disabled={readOnly}
             hint="Increment for the down-payment +/− buttons and slider."
+          />
+          <TextField
+            label="Down payment quick-adds"
+            value={quickAddsText}
+            onChange={(v) => {
+              setQuickAddsText(v);
+              set({ down_payment_quick_adds: parseAmounts(v) });
+            }}
+            placeholder="5000, 10000, 20000"
+            disabled={readOnly}
+            hint="₹ amounts for the one-tap chips under the slider, comma-separated."
           />
           <NumberField
             label="Rate slider maximum"

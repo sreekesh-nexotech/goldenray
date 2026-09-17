@@ -151,11 +151,11 @@ function transformInverterData(b: BackendInverterData): SolarInverter {
 export function getAvailableInverterBrands(): string[] {
   return [
     "Enphase",
-    "Fronius",
-    "SolarEdge",
-    "Sungrow",
     "GoodWe",
     "Growatt",
+    "Huawei",
+    "Solis",
+    "Sungrow",
   ].sort();
 }
 

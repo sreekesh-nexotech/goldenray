@@ -30,7 +30,7 @@ export default function HowToChoose() {
       number: "05.",
       title: "Monitoring isn't optional — it's essential",
       description:
-        "If your inverter goes down and you don't know for 3 months, that's 3 months of lost generation and money. Every inverter here offers app-based monitoring. Enphase and SolarEdge offer panel-level monitoring; Sungrow and GoodWe offer system-level via cloud platforms.",
+        "If your inverter goes down and you don't know for 3 months, that's 3 months of lost generation and money. Every inverter here offers app-based monitoring. Enphase offers panel-level monitoring out of the box and Huawei does with optimizers; Sungrow, GoodWe, Solis and Growatt offer system-level monitoring via their cloud platforms.",
     },
   ];
 

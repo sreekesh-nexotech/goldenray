@@ -22,6 +22,8 @@ export interface EMISettings {
   down_payment_max_percent: string;
   /** Increment for the down-payment +/- buttons and slider. */
   down_payment_step_percent: string;
+  /** ₹ amounts offered as one-tap "Quick add" chips under the down-payment slider. */
+  down_payment_quick_adds: number[];
   rate_max: string;
   default_interest_rate: string;
   panel_life_years: number;
@@ -114,6 +116,10 @@ export interface EMICalculatorResponse {
     min_percent: number;
     max_percent: number;
     step_percent: number;
+    /** min/max % expressed in ₹ against the current system price. */
+    min_amount: number;
+    max_amount: number;
+    quick_add_amounts: number[];
   };
   subsidy: {
     applied: boolean;
@@ -132,6 +138,14 @@ export interface EMICalculatorResponse {
     requested_rate: number | null;
     rule_id: number | null;
     rule_label: string | null;
+    /** Cheaper band reachable by paying more upfront; null when already on the lowest. */
+    unlock: {
+      rate: number;
+      extra_down_payment: number;
+      down_payment_amount: number;
+      down_payment_percent: number;
+      rule_label: string;
+    } | null;
   };
   tenure: { years: number; months: number };
   result: {

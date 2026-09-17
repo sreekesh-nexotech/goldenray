@@ -14,7 +14,7 @@ const defaultFaqs: FAQItem[] = [
   {
     question: "What is the best solar inverter for Kerala?",
     answer:
-      "It depends on your priorities. For shaded roofs or complex layouts, Enphase microinverters give you the best per-panel optimization. For maximum efficiency, SolarEdge's 99% HD-Wave is unmatched. For the best value-to-quality ratio, Sungrow SG5.0RS offers world-class reliability at mid-range pricing. For budget installs, Growatt delivers strong efficiency at the lowest cost.",
+      "It depends on your priorities. For shaded roofs or complex layouts, Enphase microinverters give you the best per-panel optimization. For peak efficiency, Huawei's SUN2000-5KTL-L1 and Growatt's MIN 5000TL-X2 both reach 98.4%. For the best value-to-quality ratio, Sungrow SG5.0RS offers world-class reliability, built-in arc-fault protection and a C5 corrosion rating at mid-range pricing. For budget installs, Growatt delivers strong efficiency at the lowest cost.",
   },
   {
     question: "String inverter vs microinverter — which is better for Kerala?",
@@ -24,7 +24,7 @@ const defaultFaqs: FAQItem[] = [
   {
     question: "Do I need a hybrid inverter for my Kerala home?",
     answer:
-      "Only if you plan to add battery storage within the next 2-3 years. A hybrid inverter like Fronius GEN24 lets you connect a battery later without replacing the inverter. But if you're doing standard grid-tie solar with KSEB net metering — which is what most Kerala homes opt for — a regular string inverter is more cost-effective. Don't pay for hybrid capability you may never use.",
+      "Only if you plan to add battery storage within the next 2-3 years. A hybrid inverter like the Sungrow SH5.0RS lets you connect a battery later without replacing the inverter, and keeps 5 kW of essential load running through a power cut. But if you're doing standard grid-tie solar with KSEB net metering — which is what most Kerala homes opt for — a regular string inverter is more cost-effective. Don't pay for hybrid capability you may never use.",
   },
   {
     question: "How does Kerala's climate affect inverter performance?",

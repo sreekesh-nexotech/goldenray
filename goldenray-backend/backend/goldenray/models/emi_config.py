@@ -276,6 +276,14 @@ class EmiCalculatorSettings(models.Model):
         max_digits=5, decimal_places=2, default=5,
         help_text="Increment for the down-payment +/- buttons and slider.",
     )
+    down_payment_quick_adds = models.JSONField(
+        default=list,
+        blank=True,
+        help_text=(
+            "₹ amounts offered as one-tap \"Quick add\" chips under the "
+            "down-payment slider, e.g. [5000, 10000, 20000]."
+        ),
+    )
     rate_max = models.DecimalField(
         max_digits=5, decimal_places=2, default=18,
         help_text="Upper end of the customer-facing rate slider.",

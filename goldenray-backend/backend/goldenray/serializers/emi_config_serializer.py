@@ -114,7 +114,7 @@ class EmiCalculatorSettingsSerializer(serializers.ModelSerializer):
             "tenure_min_years", "tenure_max_years", "tenure_default_years",
             "daily_saving_divisor", "price_step",
             "down_payment_min_percent", "down_payment_max_percent",
-            "down_payment_step_percent", "rate_max",
+            "down_payment_step_percent", "down_payment_quick_adds", "rate_max",
             "default_interest_rate", "panel_life_years", "updated_at",
         )
         read_only_fields = ("updated_at",)
@@ -164,6 +164,20 @@ class EmiCalculatorSettingsSerializer(serializers.ModelSerializer):
                 {"down_payment_step_percent": "Must be greater than zero."}
             )
         return attrs
+
+    def validate_down_payment_quick_adds(self, value):
+        if not isinstance(value, list):
+            raise serializers.ValidationError("Must be a list of ₹ amounts.")
+        amounts = []
+        for item in value:
+            try:
+                amount = float(item)
+            except (TypeError, ValueError):
+                raise serializers.ValidationError("Every quick-add must be a number.")
+            if amount <= 0:
+                raise serializers.ValidationError("Quick-add amounts must be greater than zero.")
+            amounts.append(amount)
+        return sorted(set(amounts))
 
 
 class EmiBankSerializer(serializers.ModelSerializer):

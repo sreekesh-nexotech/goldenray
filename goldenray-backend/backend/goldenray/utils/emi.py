@@ -15,7 +15,7 @@ Every input is read from the EmiConfig models so the Content Studio owns the
 numbers. Nothing here is hard-coded except the EMI formula itself.
 """
 
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_CEILING, ROUND_HALF_UP
 
 from ..models import (
     EmiCalculatorSettings,
@@ -84,6 +84,45 @@ def resolve_interest_rule(capacity_kw, loan_amount, system_cost=None):
         return None
     candidates.sort(key=lambda r: (r.priority, r.specificity), reverse=True)
     return candidates[0]
+
+
+def resolve_rate_unlock(
+    capacity_kw, system_cost, loan_amount, current_rate,
+    down_payment_amount, max_down_payment,
+):
+    """The cheapest rate band the customer can reach by paying more upfront.
+
+    Looks for an active rule with a lower rate whose loan ceiling sits below
+    the current loan amount, and works out the extra down payment needed to
+    bring the loan under that ceiling. Rules are tested with the loan pinned
+    at their own ceiling, so only the capacity/cost bands actually filter.
+    Returns None when nothing cheaper is reachable within the down-payment
+    band. The extra is rounded up to the nearest ₹100 so it reads as an
+    amount a person would actually pay.
+    """
+    best = None
+    for rule in EmiInterestRateRule.objects.filter(is_active=True):
+        if rule.max_loan is None or Decimal(rule.rate) >= current_rate:
+            continue
+        if Decimal(rule.max_loan) >= loan_amount:
+            continue
+        if not rule.matches(capacity_kw, Decimal(rule.max_loan), system_cost):
+            continue
+        extra = loan_amount - Decimal(rule.max_loan)
+        extra = (extra / 100).to_integral_value(rounding=ROUND_CEILING) * 100
+        if down_payment_amount + extra > max_down_payment:
+            continue
+        if best is None or extra < best[0]:
+            best = (extra, rule)
+    if best is None:
+        return None
+    extra, rule = best
+    return {
+        "rate": float(rule.rate),
+        "extra_down_payment": float(extra),
+        "down_payment_amount": float(down_payment_amount + extra),
+        "rule_label": rule.label,
+    }
 
 
 def find_system_size(capacity_kw=None, size_id=None):
@@ -208,6 +247,19 @@ def calculate(
     else:
         interest_rate = max(base_rate, floor_rate)
 
+    unlock = resolve_rate_unlock(
+        capacity_kw=resolved_capacity,
+        system_cost=system_cost,
+        loan_amount=loan_amount,
+        current_rate=interest_rate,
+        down_payment_amount=down_payment_amount,
+        max_down_payment=_money(system_cost * dp_max / Decimal("100")),
+    )
+    if unlock is not None:
+        unlock["down_payment_percent"] = float(
+            Decimal(str(unlock["down_payment_amount"])) / system_cost * 100
+        )
+
     # A computed loan of zero is legitimate now — a subsidy can cover the whole
     # financed share — and emi_calc returns zeros for it. Only a customer
     # override of zero is an error, and that is caught above.
@@ -242,6 +294,9 @@ def calculate(
             "min_percent": float(dp_min),
             "max_percent": float(dp_max),
             "step_percent": float(settings.down_payment_step_percent),
+            "min_amount": float(_money(system_cost * dp_min / Decimal("100"))),
+            "max_amount": float(_money(system_cost * dp_max / Decimal("100"))),
+            "quick_add_amounts": [float(a) for a in settings.down_payment_quick_adds],
         },
         "subsidy": {
             "applied": bool(apply_subsidy),
@@ -259,6 +314,7 @@ def calculate(
             "requested_rate": float(requested_rate) if requested_rate is not None else None,
             "rule_id": rule.id if rule else None,
             "rule_label": rule.label if rule else None,
+            "unlock": unlock,
         },
         "tenure": {
             "years": tenure,

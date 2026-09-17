@@ -10,7 +10,7 @@
 // used to let the UI and the API disagree.
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Minus, Plus, Zap, Award, ArrowRight, Check } from "lucide-react";
+import { Minus, Plus, Zap, Award, ArrowRight, Check, Lightbulb } from "lucide-react";
 import LinkingButton from "../ui/LinkingButton";
 import {
   calculateEMI,
@@ -27,6 +27,11 @@ function fmt(n: number) {
 function pct(val: number, min: number, max: number) {
   if (max <= min) return 0;
   return Math.min(100, Math.max(0, ((val - min) / (max - min)) * 100));
+}
+
+/** Whole percents stay whole; quick-adds land on fractions, shown to 1dp. */
+function fmtPct(p: number) {
+  return Number.isInteger(p) ? String(p) : p.toFixed(1).replace(/\.0$/, "");
 }
 
 function fmtPrice(p: number) {
@@ -157,9 +162,13 @@ export default function Calculator() {
   const dpMin = data?.down_payment.min_percent ?? Number(settings?.down_payment_min_percent ?? 10);
   const dpMax = data?.down_payment.max_percent ?? Number(settings?.down_payment_max_percent ?? 90);
   const dpStep = data?.down_payment.step_percent ?? Number(settings?.down_payment_step_percent ?? 5);
-  // The slider's position is independent of the on/off toggle, so it holds
-  // its place when the customer switches down payment back on.
-  const downPaymentPercent = downPaymentOverride ?? dpMin;
+  // While a debounced call is in flight the slider must still track the
+  // customer's thumb, so the override wins over the last server value.
+  const downPaymentPercent = downPaymentOverride ?? data?.down_payment.percent ?? dpMin;
+  const dpMinAmount = data?.down_payment.min_amount ?? (systemCost * dpMin) / 100;
+  const dpMaxAmount = data?.down_payment.max_amount ?? (systemCost * dpMax) / 100;
+  const quickAdds = data?.down_payment.quick_add_amounts ?? settings?.down_payment_quick_adds ?? [];
+  const unlock = data?.interest.unlock ?? null;
 
   const tenureMin = settings?.tenure_min_years ?? 1;
   const tenureMax = settings?.tenure_max_years ?? 10;
@@ -184,8 +193,15 @@ export default function Calculator() {
   const nudgePrice = (delta: number) =>
     setPriceOverride(Math.min(priceMax, Math.max(priceMin, systemCost + delta)));
 
+  const setDownPaymentPercent = (percent: number) =>
+    setDownPaymentOverride(Math.min(dpMax, Math.max(dpMin, Math.round(percent * 100) / 100)));
+
   const nudgeDownPayment = (delta: number) =>
-    setDownPaymentOverride(Math.min(dpMax, Math.max(dpMin, downPaymentPercent + delta)));
+    setDownPaymentPercent(downPaymentPercent + delta);
+
+  // Quick-add chips work in rupees; the API takes a % of the system price.
+  const addDownPayment = (rupees: number) =>
+    setDownPaymentPercent(((downPaymentAmount + rupees) / systemCost) * 100);
 
   if (configError) {
     return (
@@ -298,9 +314,12 @@ export default function Calculator() {
 
           {/* Down Payment */}
           <div className="flex flex-col gap-2">
-            <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">
-              Down Payment ({downPaymentPercent.toFixed(0)}%)
-            </p>
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">Down Payment</p>
+              <span className="text-[10px] sm:text-xs text-[#6B7280]">
+                Min {fmtPct(dpMin)}% · ₹{fmt(dpMinAmount)}
+              </span>
+            </div>
             <div className="flex items-center gap-3">
               <button onClick={() => nudgeDownPayment(-dpStep)} className="cursor-pointer">
                 <Minus size={16} className="text-black" />
@@ -312,28 +331,79 @@ export default function Calculator() {
                 <Plus size={16} className="text-black" />
               </button>
             </div>
+            <p className="text-center text-[10px] sm:text-xs text-[#6B7280] -mt-1">
+              {fmtPct(downPaymentPercent)}% of system price
+            </p>
+            {/* Quick-add chips land on fractional percents, so the slider can't snap to a step. */}
             <input
               type="range"
               className="calc-slider w-full"
               min={dpMin}
               max={dpMax}
-              step={dpStep}
+              step={0.01}
               value={Math.min(dpMax, Math.max(dpMin, downPaymentPercent))}
               style={{ "--progress": `${pct(downPaymentPercent, dpMin, dpMax)}%` } as React.CSSProperties}
-              onChange={(e) => setDownPaymentOverride(Number(e.target.value))}
+              onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
             />
             <div className="flex justify-between text-[11px] sm:text-sm text-[#6B7280]">
-              <span>Min {dpMin}%</span>
-              <span>Max {dpMax}%</span>
+              <span>₹{fmt(dpMinAmount)} ({fmtPct(dpMin)}%)</span>
+              <span>₹{fmt(dpMaxAmount)} ({fmtPct(dpMax)}%)</span>
             </div>
             {downPaymentOverride !== null && (
               <button
                 onClick={() => setDownPaymentOverride(null)}
                 className="cursor-pointer self-start text-[10px] sm:text-xs font-semibold text-[#123532] underline"
               >
-                Reset to {dpMin}%
+                Reset to {fmtPct(dpMin)}%
               </button>
             )}
+
+            {/* Quick add — fixed chips plus the exact amount that unlocks the cheaper rate */}
+            {(quickAdds.length > 0 || unlock) && (
+              <div className="flex flex-col gap-2 mt-1">
+                <p className="text-[11px] sm:text-sm font-semibold text-[#444444]">Quick add</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    ...quickAdds.map((amt) => ({ amt, isUnlock: false })),
+                    ...(unlock ? [{ amt: unlock.extra_down_payment, isUnlock: true }] : []),
+                  ]
+                    .sort((a, b) => a.amt - b.amt)
+                    .map(({ amt, isUnlock }) => {
+                      const disabled = downPaymentAmount + amt > dpMaxAmount + 0.5;
+                      return (
+                        <button
+                          key={`${amt}-${isUnlock}`}
+                          onClick={() => addDownPayment(amt)}
+                          disabled={disabled}
+                          className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs sm:text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                            isUnlock
+                              ? "border-[#F7BA41] bg-[#FBF1BD80] text-[#123532]"
+                              : "border-[#E5E7EB] text-[#123532] hover:border-[#F7BA41]/60"
+                          }`}
+                        >
+                          + ₹{fmt(amt)}
+                        </button>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
+
+            {/* Rate hint — tells the customer what more upfront buys them */}
+            <div className="flex items-start gap-2.5 mt-1 rounded-xl bg-[#16A34A1A] border border-[#16A34A33] px-4 py-3">
+              <Lightbulb size={16} className="shrink-0 mt-0.5 text-[#F7BA41]" fill="#F7BA41" />
+              <p className="text-xs sm:text-sm text-[#123532] leading-relaxed">
+                Your current interest rate is <strong>{rate.toFixed(2)}%</strong>.
+                {unlock ? (
+                  <>
+                    {" "}Add <strong>₹{fmt(unlock.extra_down_payment)}</strong> more to unlock{" "}
+                    <strong>{unlock.rate.toFixed(2)}%</strong> interest.
+                  </>
+                ) : (
+                  <> That&apos;s the lowest rate available.</>
+                )}
+              </p>
+            </div>
 
             {/* With/Without Subsidy toggle */}
             <div className="flex items-center justify-between gap-4 mt-2 bg-[#F3F4F6] border border-[#F3F4F6] rounded-2xl p-4">
@@ -469,7 +539,7 @@ export default function Calculator() {
                 <span className="font-semibold">₹{fmt(systemCost)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="font-medium">Down payment ({downPaymentPercent.toFixed(0)}%)</span>
+                <span className="font-medium">Down payment ({fmtPct(downPaymentPercent)}%)</span>
                 <span className="font-semibold">− ₹{fmt(downPaymentAmount)}</span>
               </div>
               {subsidyOn && (

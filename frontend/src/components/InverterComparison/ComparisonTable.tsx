@@ -1,171 +1,258 @@
 "use client";
 
 import { SolarInverter } from "@/types/solarInverter";
-import Image from "next/image";
-import { X, ChevronDown, Check, X as XIcon, Plus } from "lucide-react";
+import { ChevronDown, Star, X } from "lucide-react";
 import {
+  Fragment,
   useEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
+  type ReactNode,
   type RefObject,
 } from "react";
 import RecommendationSection from "./RecommendationSection";
 import ComparisonCTA from "./ComparisonCTA";
 import FAQSection from "./FAQSection";
+import CompareInverterCard from "./CompareInverterCard";
+import {
+  STARS_BY_GRADE,
+  architecture,
+  batteryReady,
+  buildQualityGrade,
+  certificationList,
+  coastalGrade,
+  computeBestFor,
+  hasArcFaultProtection,
+  hasCoastalRating,
+  heatToleranceGrade,
+  heavyRainGrade,
+  humidityGrade,
+  isMicro,
+  keralaWeatherFitGrade,
+  lightningGrade,
+  manufacturerTrackRecordGrade,
+  maxPvInputLabel,
+  maximumWarrantyStars,
+  mpptLabel,
+  panelLevelMonitoring,
+  ratedOutputLabel,
+  serviceNetworkGrade,
+  shadePerformanceGrade,
+  standardWarrantyStars,
+  voltageStabilityGrade,
+  type Grade,
+} from "./inverterInsights";
 
 interface ComparisonTableProps {
   selectedInverters: SolarInverter[];
   allInverters: SolarInverter[];
   onRemoveInverter: (inverterId: string) => void;
   onAddInverter: (inverterId: string) => void;
+  onReplaceInverter?: (slotIndex: number, inverterId: string) => void;
   onClose: () => void;
 }
 
-function SectionHeader({
-  title,
-  columns,
-  gridStyle,
-}: {
-  title: string;
-  columns: number;
-  gridStyle: CSSProperties;
-}) {
+/* ---------------------------------------------------------------- atoms -- */
+
+function Stars({ count }: { count: number }) {
   return (
-    <div
-      className="grid bg-[#F1F3F6] text-[#3F454D] text-sm sm:text-base"
-      style={gridStyle}
-    >
-      <div
-        data-section-header={title}
-        className="min-w-0 px-4 py-3 font-semibold sticky left-0 bg-[#F1F3F6] z-20 border-y border-[#DFE3E8] shadow-[2px_0_4px_rgba(0,0,0,0.05)]"
-      >
-        {title}
-      </div>
-      {Array.from({ length: columns }).map((_, idx) => (
-        <div
-          key={idx}
-          className="min-w-0 border-l border-y border-[#DFE3E8] bg-[#F1F3F6]"
+    <span className="flex items-center gap-0.5" aria-label={`${count} out of 5`}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star
+          key={i}
+          className={`h-3 w-3 ${
+            i < count
+              ? "fill-[#FFCE31] text-[#FFCE31]"
+              : "fill-[#E5E5EA] text-[#E5E5EA]"
+          }`}
         />
       ))}
+    </span>
+  );
+}
+
+function GreenPill({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full bg-[#E8F6ED] px-2.5 py-1 text-[13px] text-[#1D8F47]">
+      {children}
+    </span>
+  );
+}
+
+/** Green headline with the star row stacked beneath it — the "top pick" look. */
+function StackedVerdict({ label, stars }: { label: string; stars: number }) {
+  return (
+    <div className="flex flex-col items-start gap-1">
+      <span className="font-medium text-[#008130]">{label}</span>
+      <Stars count={stars} />
     </div>
   );
 }
 
-function ComparisonRow({
+/**
+ * A qualitative grade. "Excellent" is called out in green with stars; the
+ * lower grades stay plain so the winner reads at a glance.
+ */
+function GradeCell({ grade }: { grade: Grade }) {
+  if (grade !== "Excellent") {
+    return <span>{grade}</span>;
+  }
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span className="font-medium text-[#008130]">Excellent</span>
+      <Stars count={STARS_BY_GRADE.Excellent} />
+    </span>
+  );
+}
+
+/** An "Expert's Choice" verdict for Excellent, plain text otherwise. */
+function VerdictCell({ grade }: { grade: Grade }) {
+  if (grade !== "Excellent") {
+    return <span>{grade}</span>;
+  }
+  return (
+    <StackedVerdict label="Expert's Choice" stars={STARS_BY_GRADE.Excellent} />
+  );
+}
+
+function YearsCell({ years, stars }: { years: number; stars: number }) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span>{years} years</span>
+      <Stars count={stars} />
+    </span>
+  );
+}
+
+function CheckCell({ ok, yes, no }: { ok: boolean; yes: string; no: string }) {
+  return ok ? (
+    <span className="font-medium text-[#008130]">✓ {yes}</span>
+  ) : (
+    <span>{no}</span>
+  );
+}
+
+/* ----------------------------------------------------------- table rows -- */
+
+function SectionHeader({ title, gridStyle }: { title: string; gridStyle: CSSProperties }) {
+  return (
+    <div className="grid border-b border-[#E5E5EA] bg-[#F3F4F6]" style={gridStyle}>
+      <div
+        data-section-header={title}
+        className="sticky left-0 z-20 col-span-full min-w-0 bg-[#F3F4F6] px-4 py-3.5 text-[14px] font-normal text-[#1A1A1A] sm:px-6 sm:text-[15px] lg:px-10"
+      >
+        {title}
+      </div>
+    </div>
+  );
+}
+
+function Row({
   label,
   values,
   gridStyle,
-  highlight = false,
+  expandable = false,
+  isExpanded = false,
+  onToggle,
 }: {
   label: string;
-  values: (string | number | boolean | null)[];
+  values: ReactNode[];
   gridStyle: CSSProperties;
-  highlight?: boolean;
+  expandable?: boolean;
+  isExpanded?: boolean;
+  onToggle?: () => void;
 }) {
-  const formatValue = (value: string | number | boolean | null) => {
-    if (value === null || value === undefined) return "—";
-    if (typeof value === "boolean") {
-      return value ? (
-        <span className="inline-flex items-center gap-1 bg-[#D9F3E2] text-[#1E8D4E] px-2 py-0.5 rounded-full text-[12px]">
-          <Check className="w-3.5 h-3.5" />
-          Yes
-        </span>
-      ) : (
-        <span className="inline-flex items-center gap-1 text-red-500 text-[12px]">
-          <XIcon className="w-3.5 h-3.5" />
-          No
-        </span>
-      );
-    }
-
-    if (typeof value === "string") {
-      // Reusable badge formatting markers
-      if (value.includes("__K_BEST__")) {
-        return (
-          <div className="inline-flex items-center gap-2">
-            <span>{value.replace("__K_BEST__", "")}</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#D9F3E2] text-[#1E8D4E]">
-              Best for Kerala
-            </span>
-          </div>
-        );
-      }
-      if (value.includes("__GOOD__")) {
-        return (
-          <div className="inline-flex items-center gap-2">
-            <span>{value.replace("__GOOD__", "")}</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#FFECCF] text-[#C98013]">
-              Good
-            </span>
-          </div>
-        );
-      }
-      if (value.includes("__BEST__")) {
-        return (
-          <div className="inline-flex items-center gap-2">
-            <span>{value.replace("__BEST__", "")}</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#D9F3E2] text-[#1E8D4E]">
-              Best
-            </span>
-          </div>
-        );
-      }
-      if (value.includes("__BUILT_IN__")) {
-        return (
-          <span className="inline-flex items-center gap-1 bg-[#D9F3E2] text-[#1E8D4E] px-2 py-0.5 rounded-full text-[12px]">
-            <Check className="w-3.5 h-3.5" />
-            {value.replace("__BUILT_IN__", "")}
-          </span>
-        );
-      }
-      if (value.includes("__OPTIONAL__")) {
-        return (
-          <span className="inline-flex items-center gap-1 bg-[#FFECCF] text-[#C98013] px-2 py-0.5 rounded-full text-[12px]">
-            {value.replace("__OPTIONAL__", "")}
-          </span>
-        );
-      }
-      if (value.includes("__NOT_AVAILABLE__")) {
-        return (
-          <span className="text-red-500 text-[12px]">
-            {value.replace("__NOT_AVAILABLE__", "")}
-          </span>
-        );
-      }
-      if (value.includes("__ADVANCED__")) {
-        return (
-          <span className="inline-flex items-center gap-1 bg-[#D9F3E2] text-[#1E8D4E] px-2 py-0.5 rounded-full text-[12px]">
-            <Check className="w-3.5 h-3.5" />
-            {value.replace("__ADVANCED__", "")}
-          </span>
-        );
-      }
-    }
-
-    return value;
-  };
+  const labelContent = (
+    <>
+      <span>{label}</span>
+      {expandable && (
+        <ChevronDown
+          className={`h-4 w-4 flex-shrink-0 text-[#1A1A1A] transition-transform ${
+            isExpanded ? "rotate-180" : ""
+          }`}
+        />
+      )}
+    </>
+  );
 
   return (
-    <div
-      className={`grid ${highlight ? "bg-[#FFFFFF]" : "bg-white"}`}
-      style={gridStyle}
-    >
-      <div className="min-w-0 px-3 sm:px-4 py-3 text-[13px] text-[#616770] font-medium border-r border-b border-[#E1E5EA] flex items-center justify-between gap-2 sticky left-0 bg-white z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
-        <span>{label}</span>
-        <span className="text-[#8D8D8D] text-xs hidden sm:inline">ⓘ</span>
+    <div className="grid border-b border-[#E5E5EA] bg-white" style={gridStyle}>
+      <div className="sticky left-0 z-20 min-w-0 border-r border-[#E5E5EA] bg-white px-4 py-4 text-[13px] text-[#1A1A1A] shadow-[2px_0_4px_rgba(0,0,0,0.03)] sm:px-6 sm:text-[15px] lg:px-10">
+        {expandable ? (
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={isExpanded}
+            className="flex w-full items-center justify-between gap-3 text-left"
+          >
+            {labelContent}
+          </button>
+        ) : (
+          <span className="flex items-center justify-between gap-3">
+            {labelContent}
+          </span>
+        )}
       </div>
       {values.map((value, index) => (
         <div
           key={index}
-          className="min-w-0 px-3 sm:px-4 py-3 text-[11px] sm:text-[13px] text-[#3C4147] font-medium text-left border-r border-b border-[#E1E5EA] last:border-r-0 break-words"
+          className="min-w-0 break-words border-r border-[#E5E5EA] px-4 py-4 text-[12px] text-[#444444] last:border-r-0 sm:px-6 sm:text-[15px] lg:px-10"
         >
-          {formatValue(value)}
+          {value}
         </div>
       ))}
     </div>
   );
+}
+
+/** Full-width explainer that drops in under an expandable row. */
+function ExplainerRow({
+  title,
+  paragraphs,
+  gridStyle,
+}: {
+  title: string;
+  paragraphs: string[];
+  gridStyle: CSSProperties;
+}) {
+  // Deliberately drops gridStyle's minWidth: unlike Row/SectionHeader this
+  // content isn't per-inverter data needing the table's full scroll width —
+  // it's one paragraph that should wrap to the viewport, not the whole table.
+  return (
+    <div
+      className="grid border-b border-[#E5E5EA] bg-white"
+      style={{ gridTemplateColumns: gridStyle.gridTemplateColumns }}
+    >
+      <div
+        data-section-header={title}
+        className="sticky left-0 z-20 col-span-full min-w-0 space-y-4 bg-white px-4 py-5 sm:px-6 lg:px-10"
+      >
+        <p className="text-[14px] text-[#444444] sm:text-[15px]">{title}</p>
+        {paragraphs.map((paragraph) => (
+          <p
+            key={paragraph}
+            className="text-[13px] leading-relaxed text-[#757575] sm:text-[15px]"
+          >
+            {paragraph}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------- inverter selector -- */
+
+function selectorSummary(inverter: SolarInverter) {
+  const capacity = isMicro(inverter)
+    ? `${inverter.ratedOutputPower} W/unit`
+    : `${(inverter.ratedOutputPower / 1000).toFixed(1)} kW`;
+  const warranty = inverter.extendableWarrantyYears
+    ? `${inverter.warrantyYears} Yr – ${inverter.extendableWarrantyYears} Yr Warranty`
+    : `${inverter.warrantyYears} Yr Warranty`;
+  return `${inverter.type}  •  ${capacity}  •  ${warranty}`;
 }
 
 function InverterSelector({
@@ -183,66 +270,52 @@ function InverterSelector({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const available = allInverters.filter(
-    (p) => !selectedInverterIds.includes(p.id) || p.id === selectedInverter?.id,
+  const availableInverters = allInverters.filter(
+    (i) => !selectedInverterIds.includes(i.id) || i.id === selectedInverter?.id,
   );
 
-  const pillSummary = useMemo(() => {
-    if (!selectedInverter) return "";
-    return `${selectedInverter.type} • ${(selectedInverter.ratedOutputPower / 1000).toFixed(1)}kW${
-      selectedInverter.extendableWarrantyYears
-        ? ` • ${selectedInverter.warrantyYears} Yr → ${selectedInverter.extendableWarrantyYears} Yr`
-        : ` • ${selectedInverter.warrantyYears} Yr Warranty`
-    }`;
-  }, [selectedInverter]);
+  const summary = useMemo(
+    () => (selectedInverter ? selectorSummary(selectedInverter) : ""),
+    [selectedInverter],
+  );
 
   return (
-    <div className="relative w-[220px] sm:w-[230px]">
+    <div className="group relative w-[240px] flex-shrink-0 sm:w-[270px]">
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full rounded-[6px] border border-[#D8D8D8] bg-[#FAFAFA] px-3 py-2 text-left hover:border-[#074A4D] transition-colors"
+        className="w-full rounded-lg border border-[#E5E5EA] bg-white px-4 py-3 text-left transition-colors hover:border-[#074A4D]"
       >
         <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
-            <p className="text-[11px] text-[#2F2F2F] font-semibold truncate flex items-center gap-1.5">
-              {!selectedInverter && <Plus className="w-3.5 h-3.5" />}
-              {selectedInverter ? selectedInverter.name : "Add inverter"}
-            </p>
-            {selectedInverter && (
-              <p className="text-[10px] text-[#6B6B6B] truncate">
-                {pillSummary}
-              </p>
-            )}
-          </div>
-          {selectedInverter && (
-            <ChevronDown className="w-3.5 h-3.5 text-[#6B6B6B]" />
-          )}
+          <p className="min-w-0 flex-1 truncate text-[15px] text-[#1A1A1A]">
+            {selectedInverter ? selectedInverter.name : "Add inverter"}
+          </p>
+          <ChevronDown className="h-4 w-4 flex-shrink-0 text-[#1A1A1A]" />
         </div>
+        {selectedInverter && (
+          <p className="mt-1 truncate text-[11px] text-[#757575]">• {summary}</p>
+        )}
       </button>
 
       {isOpen && (
         <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 z-20 max-h-64 overflow-y-auto">
-            {available.map((inverter) => (
+          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+          <div className="absolute left-0 right-0 top-full z-20 mt-2 max-h-64 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+            {availableInverters.map((inverter) => (
               <button
                 key={inverter.id}
+                type="button"
                 onClick={() => {
                   onSelect(inverter.id);
                   setIsOpen(false);
                 }}
-                className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                className="w-full border-b border-gray-100 px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-gray-50"
               >
-                <p className="text-[11px] text-[#074A4D] font-semibold truncate">
+                <p className="truncate text-[13px] font-medium text-[#074A4D]">
                   {inverter.name}
                 </p>
-                <p className="text-[10px] text-gray-500 truncate">
-                  {inverter.type} •{" "}
-                  {(inverter.ratedOutputPower / 1000).toFixed(1)} kW •{" "}
-                  {inverter.warrantyYears} Yr Warranty
+                <p className="truncate text-[11px] text-gray-500">
+                  {selectorSummary(inverter)}
                 </p>
               </button>
             ))}
@@ -252,15 +325,19 @@ function InverterSelector({
 
       {selectedInverter && (
         <button
+          type="button"
           onClick={onRemove}
-          className="absolute -right-2 -top-2 w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-800"
+          aria-label={`Remove ${selectedInverter.name}`}
+          className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 opacity-0 shadow-sm transition-opacity hover:text-gray-800 focus-visible:opacity-100 group-hover:opacity-100"
         >
-          <X className="w-3.5 h-3.5" />
+          <X className="h-3.5 w-3.5" />
         </button>
       )}
     </div>
   );
 }
+
+/* ------------------------------------------------------ visual summary --- */
 
 function SummaryProgressBar({
   label,
@@ -278,9 +355,9 @@ function SummaryProgressBar({
     <div className="space-y-1 sm:space-y-1.5">
       <div className="flex items-center justify-between gap-2 text-[10px] sm:text-[11px] md:text-xs xl:text-[13px] 2xl:text-sm">
         <span className="text-[#4B5563]">{label}</span>
-        <span className="text-[#2F2F2F] font-medium">{rightText}</span>
+        <span className="font-medium text-[#2F2F2F]">{rightText}</span>
       </div>
-      <div className="h-1.5 sm:h-2 bg-[#E5E7EB] rounded-full overflow-hidden">
+      <div className="h-1.5 overflow-hidden rounded-full bg-[#E5E7EB] sm:h-2">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{ width: `${safeValue}%`, backgroundColor: barColor }}
@@ -299,11 +376,19 @@ function scoreToLabel(score: number) {
 
 function getSafetyScore(inverter: SolarInverter) {
   let score = 0;
-  if (inverter.dcSurgeProtection === "Built-in") score += 25;
-  if (inverter.acSurgeProtection === "Built-in") score += 25;
-  if (inverter.arcFaultDetection === "Built-in") score += 25;
+  if (/built-in|integrated|compatible/i.test(inverter.dcSurgeProtection)) score += 25;
+  if (/built-in|integrated|compatible/i.test(inverter.acSurgeProtection)) score += 25;
+  if (hasArcFaultProtection(inverter)) score += 25;
+  else if (/activation/i.test(inverter.arcFaultDetection)) score += 15;
   if (inverter.gridProtection) score += 25;
   return score;
+}
+
+function getBrandTrustScore(inverter: SolarInverter) {
+  let score = inverter.ratings.reliability;
+  if (hasCoastalRating(inverter)) score += 4;
+  if (inverter.warrantyYears >= 10) score += 4;
+  return Math.min(100, score);
 }
 
 function getValueForMoneyScore(inverter: SolarInverter) {
@@ -315,11 +400,12 @@ function getValueForMoneyScore(inverter: SolarInverter) {
 }
 
 function VisualSummaryCard({ inverter }: { inverter: SolarInverter }) {
+  const safety = getSafetyScore(inverter);
   const metrics = [
     {
-      label: "Efficiency (EU)",
+      label: "Efficiency (peak)",
       value: inverter.ratings.efficiency,
-      rightText: `${inverter.europeanEfficiency}%`,
+      rightText: `${inverter.maximumEfficiency}%`,
     },
     {
       label: "Kerala Durability",
@@ -328,24 +414,22 @@ function VisualSummaryCard({ inverter }: { inverter: SolarInverter }) {
     },
     {
       label: "Safety Features",
-      value: getSafetyScore(inverter),
-      rightText:
-        getSafetyScore(inverter) >= 85 ? "All Built-in" : "Optional Add-ons",
+      value: safety,
+      rightText: safety >= 85 ? "All Built-in" : "Optional Add-ons",
     },
     {
       label: "Monitoring",
-      value: inverter.ratings.reliability,
-      rightText: scoreToLabel(inverter.ratings.reliability),
+      value: isMicro(inverter) ? 100 : inverter.realTimeMonitoring ? 88 : 60,
+      rightText: isMicro(inverter)
+        ? "Panel-level"
+        : inverter.realTimeMonitoring
+          ? "Excellent"
+          : "Basic",
     },
     {
       label: "Brand Trust",
-      value: Math.min(
-        100,
-        60 +
-          (inverter.warrantyYears >= 12 ? 20 : 10) +
-          (inverter.corrosionProtection.includes("C5") ? 20 : 10),
-      ),
-      rightText: scoreToLabel(inverter.ratings.reliability),
+      value: getBrandTrustScore(inverter),
+      rightText: scoreToLabel(getBrandTrustScore(inverter)),
     },
     {
       label: "Value for Money",
@@ -355,11 +439,11 @@ function VisualSummaryCard({ inverter }: { inverter: SolarInverter }) {
   ];
 
   return (
-    <article className="rounded-xl sm:rounded-2xl bg-[#ECEDEF] p-2.5 sm:p-3 md:p-4 lg:p-4 xl:p-4.5 2xl:p-5">
-      <p className="text-[9px] sm:text-[10px] md:text-[11px] 2xl:text-xs font-medium text-[#F97316] uppercase tracking-wide mb-1.5 sm:mb-2">
+    <article className="rounded-xl bg-[#ECEDEF] p-2.5 sm:rounded-2xl sm:p-3 md:p-4 lg:p-4 xl:p-4.5 2xl:p-5">
+      <p className="mb-1.5 text-[9px] font-medium uppercase tracking-wide text-[#F97316] sm:mb-2 sm:text-[10px] md:text-[11px] 2xl:text-xs">
         {inverter.brand}
       </p>
-      <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[26px] 2xl:text-[28px] font-medium text-[#1F2937] leading-tight mb-3 sm:mb-3.5 md:mb-4">
+      <h3 className="mb-3 text-base font-medium leading-tight text-[#1F2937] sm:mb-3.5 sm:text-lg md:mb-4 md:text-xl lg:text-2xl xl:text-[26px] 2xl:text-[28px]">
         {inverter.name}
       </h3>
 
@@ -382,25 +466,28 @@ function VisualSummarySection({
 }: {
   selectedInverters: SolarInverter[];
 }) {
-  const isTwoPanelLayout = selectedInverters.length === 2;
+  const isTwoColumnLayout = selectedInverters.length === 2;
   return (
     <section className="mt-6 sm:mt-7 md:mt-8 lg:mt-9 xl:mt-10 2xl:mt-12">
-      <div className="text-center mb-4 sm:mb-5 md:mb-5 lg:mb-6 xl:mb-7 2xl:mb-8">
-        <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-[44px] xl:text-[48px] 2xl:text-[52px] font-semibold text-[#183C39] leading-tight">
+      <div className="mb-4 text-center sm:mb-5 md:mb-5 lg:mb-6 xl:mb-7 2xl:mb-8">
+        {/* A top-level section of the page, so it sits at h2 alongside
+            "Side-by-Side Comparison" rather than dangling at h3. */}
+        <h2 className="text-2xl font-semibold leading-tight text-[#183C39] sm:text-3xl md:text-4xl lg:text-[44px] xl:text-[48px] 2xl:text-[52px]">
           Visual Summary
-        </h3>
+        </h2>
       </div>
 
-      <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
+      {/* Mobile: horizontal scroll, Desktop: grid */}
+      <div className="-mx-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:overflow-visible sm:px-0">
         <div
           className={`flex gap-3 sm:grid sm:gap-4 md:gap-4 lg:gap-5 xl:gap-5 2xl:gap-6 ${
-            isTwoPanelLayout ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"
+            isTwoColumnLayout ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"
           }`}
         >
           {selectedInverters.map((inverter) => (
             <div
               key={inverter.id}
-              className="min-w-[280px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+              className="min-w-[280px] flex-shrink-0 sm:min-w-0 sm:flex-shrink"
             >
               <VisualSummaryCard inverter={inverter} />
             </div>
@@ -411,31 +498,15 @@ function VisualSummarySection({
   );
 }
 
-// Annotate Maximum DC Voltage with Better/Good labels
-function dcVoltageBadge(volts: number): string {
-  if (volts >= 600) return `${volts} V__BEST__`;
-  if (volts >= 500) return `${volts} V__GOOD__`;
-  return `${volts} V`;
-}
+/* ------------------------------------------------------------- content --- */
 
-function badgeBuiltIn(value: string): string {
-  if (value === "Built-in") return "Built-in__BUILT_IN__";
-  if (value === "Optional") return "Optional__OPTIONAL__";
-  return value;
-}
-
-function badgeIVCurve(value: string): string {
-  if (value.toLowerCase().includes("advanced")) return `${value}__ADVANCED__`;
-  if (value.toLowerCase().includes("not available"))
-    return `${value}__NOT_AVAILABLE__`;
-  return value;
-}
-
-function badgeMaxDcInput(value: string, hasSuitable: string): string {
-  if (hasSuitable.includes("5-6")) return `${value}__K_BEST__`;
-  if (hasSuitable) return `${value}__GOOD__`;
-  return value;
-}
+const AFCI_EXPLAINER = {
+  title: "What is arc-fault protection (AFCI)?",
+  paragraphs: [
+    "A loose DC connector, a rodent-chewed cable or a corroded MC4 can draw a sustained electrical arc at several hundred volts — the leading cause of rooftop solar fires. An arc-fault circuit interrupter listens for the electrical signature of an arc and shuts the inverter down in milliseconds, before insulation ignites.",
+    "Why it matters in Kerala: salt air and monsoon humidity corrode connectors faster than in dry climates, so arcs are more likely here over a 25-year life. \"Integrated\" means it ships on and working; \"activation required\" means the installer must switch it on at commissioning; \"optional\" means it's a paid add-on module.",
+  ],
+};
 
 // Section headers use `sticky left-0` to track horizontal scroll, but that
 // same ancestor's `overflow-x-auto` forces its computed overflow-y to `auto`
@@ -522,90 +593,106 @@ export default function ComparisonTable({
   allInverters,
   onRemoveInverter,
   onAddInverter,
+  onReplaceInverter,
 }: ComparisonTableProps) {
+  const [isAfciOpen, setIsAfciOpen] = useState(true);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
-  const selectedIds = selectedInverters.map((p) => p.id);
+
+  const selectedInverterIds = selectedInverters.map((i) => i.id);
+  const columnCount = selectedInverters.length;
+
   const tableGridStyle = useMemo<CSSProperties>(
     () => ({
-      gridTemplateColumns: `var(--comparison-label-col) repeat(${selectedInverters.length}, minmax(0, 1fr))`,
-      minWidth: `calc(var(--comparison-label-col) + ${selectedInverters.length * 180}px)`,
+      gridTemplateColumns: `var(--comparison-label-col) repeat(${columnCount}, minmax(0, 1fr))`,
+      minWidth: `calc(var(--comparison-label-col) + ${columnCount * 180}px)`,
     }),
-    [selectedInverters.length],
+    [columnCount],
   );
 
-  const inverterSlots = [0, 1, 2].map(
-    (index) => selectedInverters[index] || null,
-  );
+  // Slots for up to 3 inverters
+  const inverterSlots = [0, 1, 2].map((index) => selectedInverters[index] || null);
 
-  const handleSelect = (_slotIndex: number, inverterId: string) => {
-    onAddInverter(inverterId);
+  const handleSelectInverter = (slotIndex: number, inverterId: string) => {
+    if (inverterSlots[slotIndex] && onReplaceInverter) {
+      onReplaceInverter(slotIndex, inverterId);
+    } else {
+      onAddInverter(inverterId);
+    }
   };
 
-  const handleRemove = (slotIndex: number) => {
+  const handleRemoveInverter = (slotIndex: number) => {
     const inverter = inverterSlots[slotIndex];
     if (inverter) onRemoveInverter(inverter.id);
   };
 
-  const getValues = (
-    key:
-      | keyof SolarInverter
-      | ((inverter: SolarInverter) => string | number | boolean | null),
-  ) => {
-    return inverterSlots.slice(0, selectedInverters.length).map((inverter) => {
-      if (!inverter) return null;
-      if (typeof key === "function") return key(inverter);
-      return inverter[key] as string | number | boolean | null;
-    });
-  };
-
-  const pinnedHeader = usePinnedSectionHeader(
-    tableWrapperRef,
-    selectedInverters.length >= 2,
+  const bestFor = useMemo(
+    () => computeBestFor(selectedInverters),
+    [selectedInverters],
   );
 
-  return (
-    <div className="bg-[#F7F8FA] min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Inverter Selector row */}
-        <div className="overflow-x-auto sm:overflow-visible pb-2 mb-8 sm:mb-10 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-3 bg-[#F3F3F3] border border-[#E4E4E4] rounded-lg px-3 sm:px-4 py-3 min-w-max sm:min-w-0">
-            <InverterSelector
-              selectedInverter={inverterSlots[0]}
-              allInverters={allInverters}
-              selectedInverterIds={selectedIds}
-              onSelect={(id) => handleSelect(0, id)}
-              onRemove={() => handleRemove(0)}
-            />
-            <span className="text-xs sm:text-sm text-[#6B6B6B]">VS</span>
-            <InverterSelector
-              selectedInverter={inverterSlots[1]}
-              allInverters={allInverters}
-              selectedInverterIds={selectedIds}
-              onSelect={(id) => handleSelect(1, id)}
-              onRemove={() => handleRemove(1)}
-            />
-            <span className="text-xs sm:text-sm text-[#6B6B6B]">VS</span>
-            <InverterSelector
-              selectedInverter={inverterSlots[2]}
-              allInverters={allInverters}
-              selectedInverterIds={selectedIds}
-              onSelect={(id) => handleSelect(2, id)}
-              onRemove={() => handleRemove(2)}
-            />
-          </div>
-        </div>
+  /** Render one cell per selected inverter. */
+  const cells = (render: (inverter: SolarInverter, index: number) => ReactNode) =>
+    selectedInverters.map(render);
 
-        <div className="mb-4 text-center">
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#183C39]">
+  const pinnedHeader = usePinnedSectionHeader(tableWrapperRef, columnCount >= 2);
+
+  return (
+    <div className="min-h-screen bg-[#F7F8FA]">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mb-5 text-center sm:mb-6">
+          <h2 className="text-2xl font-bold text-[#183C39] sm:text-4xl">
             Side-by-Side Comparison
           </h2>
         </div>
 
-        {selectedInverters.length >= 2 && (
-          <>
+        {/* Inverter selectors */}
+        <div className="-mx-4 mb-6 overflow-x-auto px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0">
+          <div className="flex min-w-max items-center justify-start gap-3 rounded-xl bg-[#F1F3F5] px-4 py-4 sm:min-w-0 sm:justify-center sm:gap-4 sm:px-6">
+            {[0, 1, 2].map((slotIndex) => (
+              <Fragment key={slotIndex}>
+                {slotIndex > 0 && (
+                  <span className="text-[15px] font-medium text-[#444444]">
+                    VS
+                  </span>
+                )}
+                <InverterSelector
+                  selectedInverter={inverterSlots[slotIndex]}
+                  allInverters={allInverters}
+                  selectedInverterIds={selectedInverterIds}
+                  onSelect={(id) => handleSelectInverter(slotIndex, id)}
+                  onRemove={() => handleRemoveInverter(slotIndex)}
+                />
+              </Fragment>
+            ))}
+          </div>
+        </div>
+
+        {/* Inverter cards */}
+        {columnCount >= 2 && (
+          <div className="-mx-4 mb-8 overflow-x-auto px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0">
+            <div
+              className={`grid gap-4 sm:gap-5 ${
+                columnCount === 2 ? "grid-cols-2" : "grid-cols-3"
+              } min-w-max sm:min-w-0`}
+            >
+              {selectedInverters.map((inverter) => (
+                <div key={inverter.id} className="w-[260px] sm:w-auto">
+                  <CompareInverterCard inverter={inverter} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Comparison table */}
+        {columnCount >= 2 && (
+          <div
+            ref={tableWrapperRef}
+            className="overflow-x-auto rounded-xl border border-[#E5E5EA] bg-white [--comparison-label-col:150px] sm:[--comparison-label-col:220px] lg:[--comparison-label-col:280px] xl:[--comparison-label-col:340px]"
+          >
             {pinnedHeader && (
               <div
-                className="fixed z-30 border-y border-[#DFE3E8] bg-[#F1F3F6] px-4 py-3 text-sm font-semibold text-[#3F454D] shadow-sm sm:hidden"
+                className="fixed z-30 border-b border-[#E5E5EA] bg-[#F3F4F6] px-4 py-3.5 text-[14px] font-normal text-[#1A1A1A] shadow-sm sm:hidden"
                 style={{
                   top: 64,
                   left: pinnedHeader.left,
@@ -615,309 +702,379 @@ export default function ComparisonTable({
                 {pinnedHeader.title}
               </div>
             )}
-            <div
-              ref={tableWrapperRef}
-              className="bg-white border border-[#DFE3E8] overflow-x-auto [--comparison-label-col:140px] sm:[--comparison-label-col:160px] md:[--comparison-label-col:170px] lg:[--comparison-label-col:190px] xl:[--comparison-label-col:220px] 2xl:[--comparison-label-col:240px]"
-            >
-            <div className="min-w-full" style={tableGridStyle}>
-              {/* Column headers */}
-              <div className="grid" style={tableGridStyle}>
-                <div className="min-w-0 border-r border-b border-[#DFE3E8] bg-white sticky left-0 z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]" />
-                {inverterSlots
-                  .slice(0, selectedInverters.length)
-                  .map((inverter, idx) => (
-                    <div
-                      key={inverter?.id || idx}
-                      className="min-w-0 bg-[#F4F1E6] border-r border-b border-[#DFE3E8] flex items-center justify-between gap-2 px-3 sm:px-4 py-2 text-[10px] sm:text-[13px] font-semibold text-[#355659]"
-                    >
-                      <span className="truncate min-w-0">{inverter?.name}</span>
-                      <button
-                        onClick={() => handleRemove(idx)}
-                        className="p-1 text-gray-500 hover:text-gray-800 flex-shrink-0"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-              </div>
+            <div className="min-w-full">
+              {/* The Verdict */}
+              <SectionHeader title="The Verdict" gridStyle={tableGridStyle} />
+              <Row
+                label="Overall Rating"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <VerdictCell key={inverter.id} grade={inverter.overallRating} />
+                ))}
+              />
+              <Row
+                label="Best For"
+                gridStyle={tableGridStyle}
+                values={cells((inverter, index) => (
+                  <GreenPill key={inverter.id}>{bestFor[index]}</GreenPill>
+                ))}
+              />
 
-              {/* Image row */}
-              <div className="grid" style={tableGridStyle}>
-                <div className="min-w-0 border-r border-b border-[#DFE3E8] bg-white sticky left-0 z-20 shadow-[2px_0_4px_rgba(0,0,0,0.05)]" />
-                {inverterSlots
-                  .slice(0, selectedInverters.length)
-                  .map((inverter, idx) => (
-                    <div
-                      key={inverter?.id || idx}
-                      className="min-w-0 border-r border-b border-[#DFE3E8] bg-white flex items-center justify-center h-[180px] sm:h-[260px]"
-                    >
-                      {inverter && (
-                        <div className="relative w-[92%] h-[90%] overflow-hidden">
-                          <Image
-                            src={inverter.imageUrl || "/invertor image.png"}
-                            alt={inverter.name}
-                            fill
-                            className="object-contain scale-[1.15]"
-                            sizes="(max-width: 640px) 60vw, (max-width: 1024px) 45vw, 32vw"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-              </div>
-
-              {/* The Basics */}
+              {/* Trust & Reliability */}
               <SectionHeader
-                title="The Basics"
-                columns={selectedInverters.length}
+                title="Trust & Reliability"
                 gridStyle={tableGridStyle}
               />
-              <ComparisonRow
-                label="Type"
-                values={getValues((p) =>
-                  p.type === "Hybrid" || p.type === "Microinverter"
-                    ? p.type
-                    : `On-Grid ${p.type} Inverter`,
-                )}
+              <Row
+                label="Manufacturer Track Record"
                 gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <GradeCell
+                    key={inverter.id}
+                    grade={manufacturerTrackRecordGrade(inverter)}
+                  />
+                ))}
               />
-              <ComparisonRow
-                label="Rated Output Power"
-                values={getValues((p) =>
-                  p.suitableSystemSize
-                    ? `${p.ratedOutputPower}W__K_BEST__`
-                    : `${p.ratedOutputPower}W`,
-                )}
+              <Row
+                label="Monitoring"
                 gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <CheckCell
+                    key={inverter.id}
+                    ok={inverter.realTimeMonitoring}
+                    yes={isMicro(inverter) ? "Panel-level" : "Yes"}
+                    no="Not included"
+                  />
+                ))}
               />
-              <ComparisonRow
-                label="Maximum DC Input"
-                values={getValues((p) =>
-                  badgeMaxDcInput(`${p.maximumDcInput}W`, p.suitableSystemSize),
-                )}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="MPPT Trackers"
-                values={getValues("mpptTrackers")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Maximum DC Voltage"
-                values={getValues((p) => dcVoltageBadge(p.maximumDcVoltage))}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Maximum Input Current"
-                values={getValues("maximumInputCurrent")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Weight"
-                values={getValues((p) => `${p.weight} kg`)}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Display"
-                values={getValues("display")}
-                gridStyle={tableGridStyle}
-              />
-
-              {/* Performance & Efficiency */}
-              <SectionHeader
-                title="Performance & Efficiency"
-                columns={selectedInverters.length}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Maximum Efficiency"
-                values={getValues((p) => `${p.maximumEfficiency}%`)}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="European Efficiency"
-                values={getValues((p) => `${p.europeanEfficiency}%`)}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="MPPT Efficiency"
-                values={getValues((p) => `${p.mpptEfficiency}%`)}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="DC Oversizing"
-                values={getValues((p) => `${p.dcOversizing}%`)}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="AC Overloading"
-                values={getValues((p) => `${p.acOverloading}%`)}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="PID Protection"
-                values={getValues("pidProtection")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="IV Curve Scanning"
-                values={getValues((p) => badgeIVCurve(p.ivCurveScanning))}
-                gridStyle={tableGridStyle}
-              />
-
-              {/* Durability */}
-              <SectionHeader
-                title="Durability"
-                columns={selectedInverters.length}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="IP Rating"
-                values={getValues((p) =>
-                  p.ipRating.includes("66") || p.ipRating.includes("68")
-                    ? `${p.ipRating}__K_BEST__`
-                    : p.ipRating,
-                )}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Corrosion Protection"
-                values={getValues("corrosionProtection")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Operating Temperature"
-                values={getValues("operatingTemperature")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Cooling"
-                values={getValues("cooling")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Noise Level"
-                values={getValues("noiseLevel")}
-                gridStyle={tableGridStyle}
-              />
-
-              {/* Safety Features */}
-              <SectionHeader
-                title="Safety Features"
-                columns={selectedInverters.length}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="DC Surge Protection"
-                values={getValues((p) => badgeBuiltIn(p.dcSurgeProtection))}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="AC Surge Protection"
-                values={getValues((p) => badgeBuiltIn(p.acSurgeProtection))}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Arc Fault Detection (AFCI)"
-                values={getValues((p) => badgeBuiltIn(p.arcFaultDetection))}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Grid Protection"
-                values={getValues("gridProtection")}
-                gridStyle={tableGridStyle}
-              />
-
-              {/* Monitoring & Software */}
-              <SectionHeader
-                title="Monitoring & Software"
-                columns={selectedInverters.length}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Monitoring App"
-                values={getValues("monitoringApp")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Real-Time Monitoring"
-                values={getValues("realTimeMonitoring")}
-                gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
+              <Row
                 label="Remote Diagnostics"
-                values={getValues("remoteDiagnostics")}
                 gridStyle={tableGridStyle}
+                values={cells((inverter) => inverter.remoteDiagnostics)}
               />
-              <ComparisonRow
-                label="Firmware Updates"
-                values={getValues("firmwareUpdates")}
+              <Row
+                label="Government Approved"
                 gridStyle={tableGridStyle}
-              />
-              <ComparisonRow
-                label="Connectivity"
-                values={getValues("connectivity")}
-                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <CheckCell
+                    key={inverter.id}
+                    ok={inverter.certifications.some((c) => /BIS|IS 16221/i.test(c))}
+                    yes="BIS"
+                    no="Not listed"
+                  />
+                ))}
               />
 
-              {/* Warranty & Brand Trust */}
+              {/* Build Quality & Protection */}
               <SectionHeader
-                title="Warranty & Brand Trust"
-                columns={selectedInverters.length}
+                title="Build Quality & Protection"
                 gridStyle={tableGridStyle}
               />
-              <ComparisonRow
-                label="Warranty"
-                values={getValues((p) =>
-                  p.extendableWarrantyYears
-                    ? `${p.warrantyYears} Years (ext. to ${p.extendableWarrantyYears})`
-                    : `${p.warrantyYears} Years`,
+              <Row
+                label="Build Quality"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <VerdictCell key={inverter.id} grade={buildQualityGrade(inverter)} />
+                ))}
+              />
+              <Row
+                label="IP Protection"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => inverter.ipRating)}
+              />
+              <Row
+                label="Surge Protection (DC / AC)"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <div key={inverter.id} className="space-y-0.5">
+                    <p>DC: {inverter.dcSurgeProtection}</p>
+                    <p>AC: {inverter.acSurgeProtection}</p>
+                  </div>
+                ))}
+              />
+              <Row
+                label="Arc-Fault Protection (AFCI)"
+                gridStyle={tableGridStyle}
+                expandable
+                isExpanded={isAfciOpen}
+                onToggle={() => setIsAfciOpen((open) => !open)}
+                values={cells((inverter) =>
+                  hasArcFaultProtection(inverter) ? (
+                    <span key={inverter.id} className="font-medium text-[#008130]">
+                      ✓ {inverter.arcFaultDetection}
+                    </span>
+                  ) : (
+                    inverter.arcFaultDetection
+                  ),
                 )}
+              />
+              {isAfciOpen && (
+                <ExplainerRow
+                  title={AFCI_EXPLAINER.title}
+                  paragraphs={AFCI_EXPLAINER.paragraphs}
+                  gridStyle={tableGridStyle}
+                />
+              )}
+              <Row
+                label="Corrosion / Coastal Protection"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) =>
+                  hasCoastalRating(inverter) ? (
+                    <span key={inverter.id} className="font-medium text-[#008130]">
+                      ✓ {inverter.corrosionProtection}
+                    </span>
+                  ) : (
+                    inverter.corrosionProtection
+                  ),
+                )}
+              />
+
+              {/* Kerala Performance */}
+              <SectionHeader
+                title="Kerala Performance"
                 gridStyle={tableGridStyle}
               />
-              <ComparisonRow
+              <Row
+                label="Kerala Weather Fit"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <GradeCell key={inverter.id} grade={keralaWeatherFitGrade(inverter)} />
+                ))}
+              />
+              <Row
+                label="Heat Tolerance"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <GradeCell key={inverter.id} grade={heatToleranceGrade(inverter)} />
+                ))}
+              />
+              <Row
+                label="Humidity"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <GradeCell key={inverter.id} grade={humidityGrade(inverter)} />
+                ))}
+              />
+              <Row
+                label="Heavy Rain"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <GradeCell key={inverter.id} grade={heavyRainGrade(inverter)} />
+                ))}
+              />
+              <Row
+                label="Coastal / Salt Air"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <GradeCell key={inverter.id} grade={coastalGrade(inverter)} />
+                ))}
+              />
+              <Row
+                label="Lightning Protection"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <GradeCell key={inverter.id} grade={lightningGrade(inverter)} />
+                ))}
+              />
+              <Row
+                label="Voltage Stability"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <GradeCell key={inverter.id} grade={voltageStabilityGrade(inverter)} />
+                ))}
+              />
+              <Row
+                label="Shade Performance"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <GradeCell key={inverter.id} grade={shadePerformanceGrade(inverter)} />
+                ))}
+              />
+              <Row
+                label="Service Network"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <GradeCell key={inverter.id} grade={serviceNetworkGrade(inverter)} />
+                ))}
+              />
+              <Row
+                label="Overall Kerala Score"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <span key={inverter.id} className="font-medium text-[#1A1A1A]">
+                    {inverter.keralaClimateScore}/100
+                  </span>
+                ))}
+              />
+
+              {/* Warranty Reliability */}
+              <SectionHeader
+                title="Warranty Reliability"
+                gridStyle={tableGridStyle}
+              />
+              <Row
+                label="Standard Warranty"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <YearsCell
+                    key={inverter.id}
+                    years={inverter.warrantyYears}
+                    stars={standardWarrantyStars(inverter.warrantyYears)}
+                  />
+                ))}
+              />
+              <Row
+                label="Maximum Warranty"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) =>
+                  inverter.extendableWarrantyYears ? (
+                    <YearsCell
+                      key={inverter.id}
+                      years={inverter.extendableWarrantyYears}
+                      stars={maximumWarrantyStars(inverter.extendableWarrantyYears)}
+                    />
+                  ) : (
+                    "Extension available — cap not published"
+                  ),
+                )}
+              />
+              <Row
+                label="Warranty Extension"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <CheckCell
+                    key={inverter.id}
+                    ok={Boolean(inverter.extendableWarrantyYears)}
+                    yes="Available"
+                    no="Ask your installer"
+                  />
+                ))}
+              />
+              <Row
+                label="Claim Experience"
+                gridStyle={tableGridStyle}
+                values={cells(() => "Not publicly scored")}
+              />
+
+              {/* Technology & Standards */}
+              <SectionHeader
+                title="Technology & Standards"
+                gridStyle={tableGridStyle}
+              />
+              <Row
+                label="Architecture"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => architecture(inverter))}
+              />
+              <Row
+                label="MPPT"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => mpptLabel(inverter))}
+              />
+              <Row
+                label="Battery Ready"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => batteryReady(inverter))}
+              />
+              <Row
+                label="Panel-Level Monitoring"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <CheckCell
+                    key={inverter.id}
+                    ok={panelLevelMonitoring(inverter)}
+                    yes="Yes"
+                    no="No"
+                  />
+                ))}
+              />
+              <Row
+                label="App Monitoring"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => inverter.monitoringApp)}
+              />
+              <Row
+                label="Connectivity"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => inverter.connectivity)}
+              />
+              <Row
                 label="Certifications"
-                values={getValues((p) => p.certifications.join(", ") || "—")}
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => (
+                  <div key={inverter.id} className="space-y-1">
+                    {certificationList(inverter).map((cert) => (
+                      <p key={cert}>{cert}</p>
+                    ))}
+                  </div>
+                ))}
+              />
+
+              {/* Technical specs */}
+              <SectionHeader
+                title="Performance Specifications"
                 gridStyle={tableGridStyle}
               />
-              <ComparisonRow
-                label="Brand Trust"
-                values={getValues("brandTrust")}
+              <Row
+                label="Maximum Efficiency (higher = better)"
                 gridStyle={tableGridStyle}
+                values={cells((inverter) => `${inverter.maximumEfficiency}%`)}
               />
-              <ComparisonRow
-                label="Year Founded"
-                values={getValues((p) =>
-                  p.yearFounded ? String(p.yearFounded) : "—",
-                )}
+              <Row
+                label="Weighted Efficiency"
                 gridStyle={tableGridStyle}
+                values={cells((inverter) => `${inverter.europeanEfficiency}%`)}
               />
-              <ComparisonRow
-                label="Global Installations"
-                values={getValues((p) => p.globalInstallations || "—")}
+              <Row
+                label="Rated Output"
                 gridStyle={tableGridStyle}
+                values={cells((inverter) => ratedOutputLabel(inverter))}
               />
-              <ComparisonRow
-                label="Countries Served"
-                values={getValues((p) => p.countriesServed || "—")}
+              <Row
+                label="Max PV Input"
                 gridStyle={tableGridStyle}
+                values={cells((inverter) => maxPvInputLabel(inverter))}
               />
-              <ComparisonRow
-                label="Price Range"
-                values={getValues("priceRange")}
+              <Row
+                label="Max DC Voltage"
                 gridStyle={tableGridStyle}
-                highlight
+                values={cells((inverter) => `${inverter.maximumDcVoltage} V`)}
+              />
+              <Row
+                label="Max Input Current"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => inverter.maximumInputCurrent)}
+              />
+              <Row
+                label="Operating Temperature"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => inverter.operatingTemperature)}
+              />
+              <Row
+                label="Cooling"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => inverter.cooling)}
+              />
+              <Row
+                label="Noise"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => inverter.noiseLevel)}
+              />
+              <Row
+                label="Weight"
+                gridStyle={tableGridStyle}
+                values={cells((inverter) => `${inverter.weight} kg`)}
               />
             </div>
-            </div>
-          </>
+          </div>
         )}
 
-        {selectedInverters.length < 2 && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 sm:p-12 text-center">
-            <div className="text-gray-400 mb-4">
+        {/* Empty state */}
+        {columnCount < 2 && (
+          <div className="rounded-2xl border border-gray-100 bg-white p-8 text-center shadow-sm sm:p-12">
+            <div className="mb-4 text-gray-400">
               <svg
-                className="w-16 h-16 mx-auto"
+                className="mx-auto h-16 w-16"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -930,7 +1087,7 @@ export default function ComparisonTable({
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="mb-2 text-lg font-semibold text-gray-900">
               Select at least 2 inverters to compare
             </h3>
             <p className="text-sm text-gray-500">
@@ -939,11 +1096,14 @@ export default function ComparisonTable({
           </div>
         )}
 
-        {selectedInverters.length >= 2 && (
+        {columnCount >= 2 && (
           <>
             <div className="mt-6 text-center">
-              <button className="bg-[#F7BA41] hover:bg-[#E5A930] text-[#272218] px-5 py-2 rounded-lg font-medium text-[12px] transition-colors duration-200">
-                Get Free Quote for these Inverters
+              <button
+                type="button"
+                className="rounded-lg bg-[#F7BA41] px-5 py-2.5 text-[13px] font-medium text-[#272218] transition-colors duration-200 hover:bg-[#E5A930]"
+              >
+                Get free Quote for these Inverters
               </button>
             </div>
 
@@ -954,7 +1114,8 @@ export default function ComparisonTable({
         )}
       </div>
 
-      {selectedInverters.length >= 2 && <FAQSection />}
+      {/* FAQ Section - outside the container since it has its own */}
+      {columnCount >= 2 && <FAQSection />}
     </div>
   );
 }
