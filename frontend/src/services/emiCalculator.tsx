@@ -132,6 +132,8 @@ export interface EMICalculatorResponse {
   };
   interest: {
     rate: number;
+    /** Price minus down payment — the figure the rate band is decided on (subsidy not deducted). */
+    basis_amount: number;
     base_rate: number;
     min_rate: number;
     is_locked: boolean;

@@ -3,7 +3,6 @@ import Image from "next/image";
 type Award = {
   title: string;
   description: string;
-  date: string;
   image: string;
 };
 
@@ -11,14 +10,12 @@ const awards: Award[] = [
   {
     title: "Best Technology-Enabled Solar Solutions Provider",
     description: "Kerala Energy Excellence Awards 2026.",
-    date: "Dec 10, 2024",
     image:
       "https://golden-ray.b-cdn.net/About%20us/8fa3547a2edbe08b3398a7781582510c6fb4b6b7.jpg",
   },
   {
     title: "Visionary Leader of the Year",
     description: "Harikrishnan K.R, Kerala Energy Excellence Awards 2026.",
-    date: "Dec 10, 2024",
     image:
       "https://golden-ray.b-cdn.net/About%20us/8fa3547a2edbe08b3398a7781582510c6fb4b6b7.jpg",
   },
@@ -60,7 +57,6 @@ export default function Recognition() {
                 {award.title}
               </h3>
               <p className="text-sm text-gray-600">{award.description}</p>
-              <p className="text-xs text-gray-400">{award.date}</p>
             </div>
           </div>
         ))}

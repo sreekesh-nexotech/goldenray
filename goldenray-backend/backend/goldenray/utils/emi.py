@@ -6,9 +6,10 @@ Order of operations:
     down_payment  = system_cost × down_payment_percent / 100 (customer slider,
                     10%-90% of the price by default policy)
     subsidy       = subsidy rule for this capacity — only if "with subsidy"
-    loan_amount   = system_cost − down_payment − subsidy  (the "final loan amount")
-    rate          = interest rule for this loan amount / capacity / system-cost
-    emi           = standard reducing-balance formula
+    rate_basis    = system_cost − down_payment            (picks the rate band)
+    loan_amount   = system_cost − down_payment − subsidy  (what the EMI is on)
+    rate          = interest rule for rate_basis / capacity / system-cost
+    emi           = standard reducing-balance formula on loan_amount
     daily         = emi ÷ daily_saving_divisor
 
 Every input is read from the EmiConfig models so the Content Studio owns the
@@ -220,13 +221,15 @@ def calculate(
     subsidy = resolve_subsidy(resolved_capacity) if apply_subsidy else Decimal("0")
     subsidy = min(subsidy, system_cost)
 
-    # What's left after the down payment and (optionally) the subsidy is the
-    # "final loan amount" the interest-rate rule and the EMI key off.
-    loan_amount = _money(
-        max(Decimal("0"), system_cost - down_payment_amount - subsidy)
-    )
+    # Two different "loan" figures, by policy:
+    #   rate_basis  = price − down payment          → picks the interest band
+    #   loan_amount = price − down payment − subsidy → what the EMI is paid on
+    # The subsidy lowers the EMI but never moves the customer into a cheaper
+    # rate band.
+    rate_basis = _money(max(Decimal("0"), system_cost - down_payment_amount))
+    loan_amount = _money(max(Decimal("0"), rate_basis - subsidy))
 
-    rule = resolve_interest_rule(resolved_capacity, loan_amount, system_cost)
+    rule = resolve_interest_rule(resolved_capacity, rate_basis, system_cost)
     requested_rate = _dec(interest_rate_override)
 
     if rule is None:
@@ -250,7 +253,7 @@ def calculate(
     unlock = resolve_rate_unlock(
         capacity_kw=resolved_capacity,
         system_cost=system_cost,
-        loan_amount=loan_amount,
+        loan_amount=rate_basis,
         current_rate=interest_rate,
         down_payment_amount=down_payment_amount,
         max_down_payment=_money(system_cost * dp_max / Decimal("100")),
@@ -308,6 +311,7 @@ def calculate(
         },
         "interest": {
             "rate": float(interest_rate),
+            "basis_amount": float(rate_basis),
             "base_rate": float(base_rate),
             "min_rate": float(floor_rate),
             "is_locked": locked,

@@ -149,6 +149,7 @@ export default function Calculator() {
     priceOverride ?? data?.system.system_cost ?? Number(selectedSize?.system_cost ?? 0);
   const loanAmount = data?.loan.amount ?? 0;
   const rate = data?.interest.rate ?? 0;
+  const rateBasis = data?.interest.basis_amount ?? 0;
 
   const priceMin = Number(
     data?.system.price_min ?? selectedSize?.price_min ?? selectedSize?.system_cost ?? 0
@@ -446,8 +447,9 @@ export default function Calculator() {
               </span>
             </div>
             <span className="text-start text-[9px] sm:text-xs text-[#444444]">
-              Your loan amount is ₹{fmt(loanAmount)}, so the applicable rate is{" "}
-              {rate.toFixed(2)}%.
+              Your system price after down payment is ₹{fmt(rateBasis)}, so the
+              applicable rate is {rate.toFixed(2)}%. The subsidy reduces your EMI
+              but does not change the rate band.
             </span>
           </div>
 
