@@ -34,9 +34,10 @@ export default function HeroHome() {
         {/* Left Side - Text */}
         <div className="w-full text-center md:text-left">
           <h1 className="text-5xl md:text-6xl font-semibold leading-tight text-[#123532] mb-4">
-            Solar Energy Solutions in Kerala
+            Solar Panel Installation in Kerala
           </h1>
           <p className="text-sm md:text-xl font-normal leading-relaxed text-[#444444] mb-6">
+            Looking for a reliable Kerala solar panel installation service?
             India&apos;s first solar booking platform. Your KSEB bill isn&apos;t
             going down — we stop it from going up. Backed by Flarize (300+
             installations, 4.9★). KSEB approved solar EPC company for homes and

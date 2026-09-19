@@ -94,7 +94,7 @@ export default function EmiCalculatorScreen() {
       <TipBanner>
         Changes go live as soon as a row is saved — the public page reads these
         values on every visit. The calculation itself runs on the server:
-        the customer's down payment (10–90% of the system price by default)
+        the customer&apos;s down payment (10–90% of the system price by default)
         and, if selected, the subsidy come off the system price to give the
         loan amount, the interest rate follows the loan-amount rule, and the
         daily figure is the monthly EMI ÷{" "}

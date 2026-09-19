@@ -6,11 +6,23 @@ import CmsPageSchema from "@/components/CmsPageSchema";
 import JsonLD from "@/components/JsonLD";
 import { localBusinessSchema, organizationSchema, faqSchema, breadcrumbSchema } from "@/data/jsonld";
 
+// Semrush audit (SEO-Implementation-Report-Semrush-Audit.md): the page's head
+// term is "solar panel installation in Kerala" and it leads the title. The
+// string already carries the brand, so `absolute` opts out of the root
+// layout's "%s | Flarize" template rather than appending it a second time.
+const TITLE = "Solar Panel Installation in Kerala | KSEB Approved | Flarize";
+const DESCRIPTION =
+  "Solar panel installation in Kerala for homes and businesses. Flarize handles KSEB approvals, PM Surya Ghar subsidy and net metering for long-term savings.";
+
 const BASE_METADATA: Metadata = {
-  title: "Solar Panel Installation Kerala | KSEB Approved | Flarize",
-  description:
-    "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
+  title: { absolute: TITLE },
+  description: DESCRIPTION,
   keywords: [
+    "solar panel installation in kerala",
+    "kerala solar panel",
+    "solar installation kerala",
+    "solar panel kerala",
+    "solar panel in kerala",
     "solar power system for home kerala",
     "solar panel price in kerala",
     "rooftop solar kerala",
@@ -19,9 +31,8 @@ const BASE_METADATA: Metadata = {
     "best solar company in kerala",
   ],
   openGraph: {
-    title: "Solar Panel Installation Kerala | KSEB Approved | Flarize",
-    description:
-      "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
+    title: TITLE,
+    description: DESCRIPTION,
     url: "https://flarize.com",
     siteName: "Flarize",
     images: [
@@ -37,9 +48,8 @@ const BASE_METADATA: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Solar Power Systems in Kerala for Homes & Businesses",
-    description:
-      "Switch to clean solar energy in Kerala. Flarize installs reliable solar power systems for homes and businesses with long-term savings.",
+    title: TITLE,
+    description: DESCRIPTION,
     images: ["/heroImg.png"],
   },
   icons: {
