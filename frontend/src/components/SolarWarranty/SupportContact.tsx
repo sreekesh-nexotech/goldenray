@@ -302,7 +302,7 @@ const SupportContact = () => {
             <button
               type="submit"
               disabled={submitStatus === "submitting"}
-              className="w-full bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              className="btn-m w-full bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {submitStatus === "submitting"
                 ? "Submitting..."
@@ -360,7 +360,7 @@ const SupportContact = () => {
             </p>
             <Link
               href="/"
-              className="block w-full bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg"
+              className="btn-m block w-full bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg"
             >
               Go back to home
             </Link>

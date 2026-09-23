@@ -248,9 +248,8 @@ export default function SolarComparisonMain() {
   // Placeholder destination: stays on this page, carrying the current filters
   // and selection, rather than leaving for /contact.
   const handleRecommendedQuote = useCallback(() => {
-    const qs = searchParams.toString();
-    router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
-  }, [router, pathname, searchParams]);
+    router.push("/contactus");
+  }, [router]);
 
   // Preselect the pick for comparison, then drop the user at the grid to add
   // the panels they want to weigh it against.
@@ -445,10 +444,7 @@ export default function SolarComparisonMain() {
       {/* CTA Section */}
       <CTASection
         hasSelectedPanels={selectedPanelIds.length >= 2}
-        onGetQuote={() => {
-          // Will implement quote functionality
-          window.location.href = "/contact";
-        }}
+        onGetQuote={() => router.push("/contactus")}
         onCompareSelected={handleCompare}
       />
 

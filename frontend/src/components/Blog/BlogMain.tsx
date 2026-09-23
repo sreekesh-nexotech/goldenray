@@ -210,6 +210,9 @@ function BlogCard({ post }: { post: BlogArticle }) {
 }
 
 // ─── Newsletter ─────────────────────────────────────────────────────────────────
+// Hidden until subscriptions are wired to a backend — the form submitted nowhere.
+const SHOW_NEWSLETTER = false;
+
 function BlogNewsletter() {
   return (
     <section className=" py-14 px-4 sm:px-6 lg:px-8 mt-4">
@@ -226,7 +229,7 @@ function BlogNewsletter() {
             placeholder="Enter your email"
             className="w-full sm:w-auto flex-1 max-w-sm px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm md:text-base text-[#444444] placeholder-[#aaaaaa] focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
           />
-          <button className="bg-[#F7BA41] hover:bg-[#e5a934] text-[#1F2937] font-semibold px-6 py-3 rounded-xl transition-colors text-base md:text-xl leading-snug whitespace-nowrap">
+          <button className="btn-m bg-[#F7BA41] hover:bg-[#e5a934] text-[#1F2937] font-semibold px-6 py-3 rounded-xl transition-colors text-base md:text-xl leading-snug whitespace-nowrap">
             Subscribe
           </button>
         </div>
@@ -338,7 +341,7 @@ function BlogCta() {
               </p>
               <Link
                 href={card.href}
-                className="w-full py-2.5 rounded-xl border border-[#123532] text-[#123532] text-base md:text-xl font-semibold leading-snug text-center hover:bg-[#123532] hover:text-white transition-colors duration-200 mt-auto"
+                className="btn-m w-full py-2.5 rounded-xl border border-[#123532] text-[#123532] text-base md:text-xl font-semibold leading-snug text-center hover:bg-[#123532] hover:text-white transition-colors duration-200 mt-auto"
               >
                 {card.cta}
               </Link>
@@ -434,7 +437,7 @@ export default function BlogMain({ articles, categories }: BlogMainProps) {
         )}
       </div>
 
-      <BlogNewsletter />
+      {SHOW_NEWSLETTER && <BlogNewsletter />}
       <BlogCta />
     </div>
   );

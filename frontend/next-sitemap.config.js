@@ -16,6 +16,8 @@ module.exports = {
     "/quotation",
     "/quotation/*",
     "/subsidy",
+    // Hidden until the analyser actually analyses (page.tsx returns 404).
+    "/quote-analyser",
     "/resources",
     // Content Studio is auth-gated: middleware 301s every anonymous request to
     // /studio/login, so listing these ships redirecting URLs to Google -- the

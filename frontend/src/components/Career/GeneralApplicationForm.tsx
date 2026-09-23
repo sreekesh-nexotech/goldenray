@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { ChevronDown, UploadCloud, FileText, X } from "lucide-react";
 import ConfirmationModal from "../common/ConfirmationModal";
+import { submitJobApplication } from "@/services/careerApplicationService";
 
 const baseInput =
   "w-full bg-white border rounded-lg px-4 py-3 text-sm md:text-base text-[#121217] outline-none placeholder:text-gray-400";
@@ -274,6 +275,7 @@ export default function GeneralApplicationForm() {
   const [confirmed, setConfirmed] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const clearError = (key: string) =>
     setErrors((prev) => {
@@ -365,17 +367,79 @@ export default function GeneralApplicationForm() {
     focusable?.focus({ preventScroll: true });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Server field names → this form's field keys, for mapping API errors back.
+  const SERVER_FIELD: Record<string, string> = {
+    full_name: "fullName",
+    phone: "mobile",
+    portfolio_website: "portfolio",
+    portfolio_file: "portfolioFile",
+    declaration_accepted: "confirmed",
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       focusFirstError(errs);
       return;
     }
-    // No backend yet — surface the confirmation. When wired up, send the
-    // trimmed `form` values + files here and only show the modal on success.
-    setSubmitted(true);
+
+    setSubmitting(true);
+    try {
+      // Lands in the Studio's Applications queue as a general application;
+      // the area of interest fills the department so HR can filter on it.
+      await submitJobApplication({
+        position: "General application",
+        department_name: form.interest,
+        full_name: form.fullName.trim(),
+        email: form.email.trim().toLowerCase(),
+        phone: form.mobile.trim().replace(/\s+/g, ""),
+        location: form.location.trim(),
+        linkedin: form.linkedin.trim(),
+        portfolio_website: form.portfolio.trim(),
+        current_role: form.currentRole.trim(),
+        total_experience: form.experience,
+        notice_period: form.notice,
+        availability: form.availability,
+        cover_note: form.why.trim(),
+        declaration_accepted: confirmed,
+        resume: resume as File,
+        portfolio_file: portfolioFile,
+        website: "",
+      });
+      setForm(INITIAL);
+      setResume(null);
+      setPortfolioFile(null);
+      setConfirmed(false);
+      setErrors({});
+      setSubmitted(true);
+    } catch (err) {
+      const apiError = err as {
+        errorData?: { errors?: Record<string, string[]>; message?: string };
+      };
+      const fieldErrors = apiError?.errorData?.errors;
+      if (fieldErrors) {
+        const mapped: Record<string, string> = {};
+        for (const [key, msgs] of Object.entries(fieldErrors)) {
+          if (Array.isArray(msgs) && msgs[0]) mapped[SERVER_FIELD[key] ?? key] = msgs[0];
+        }
+        if (!FIELD_ORDER.some((k) => mapped[k])) {
+          mapped.form = Object.values(mapped)[0] ?? "Something went wrong. Please try again.";
+        }
+        setErrors(mapped);
+        focusFirstError(mapped);
+      } else {
+        setErrors({
+          form:
+            apiError?.errorData?.message ||
+            "Something went wrong. Please try again.",
+        });
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -610,16 +674,19 @@ export default function GeneralApplicationForm() {
           {/* Submit */}
           {Object.keys(errors).length > 0 && (
             <p className="text-center text-sm font-medium text-red-500">
-              Please fix the highlighted{" "}
-              {Object.keys(errors).length === 1 ? "field" : "fields"} above
-              before submitting.
+              {errors.form
+                ? errors.form
+                : `Please fix the highlighted ${
+                    Object.keys(errors).length === 1 ? "field" : "fields"
+                  } above before submitting.`}
             </p>
           )}
           <button
             type="submit"
-            className="w-full bg-[#F7BA41] hover:bg-yellow-500 transition-colors rounded-xl py-4 text-sm md:text-base font-semibold text-[#272218] cursor-pointer"
+            disabled={submitting}
+            className="btn-m w-full bg-[#F7BA41] hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-xl py-4 text-sm md:text-base font-semibold text-[#272218] cursor-pointer"
           >
-            Submit Application
+            {submitting ? "Submitting..." : "Submit Application"}
           </button>
         </form>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // ─── Reward model ─────────────────────────────────────────────────────────────
 const MIN_FAMILIES = 5;
@@ -172,12 +173,12 @@ const CalculateRewards = () => {
 
           {/* CTA */}
           <div className="mt-8 flex justify-center">
-            <button
-              type="button"
-              className="rounded-lg bg-[#F7BA41] px-16 py-3.5 text-base font-semibold text-[#123532] transition-colors hover:bg-yellow-500"
+            <Link
+              href="#reserve"
+              className="btn bg-[#F7BA41] px-16 text-[#272218] hover:bg-yellow-500"
             >
               Start your group
-            </button>
+            </Link>
           </div>
           {/* Disclaimer */}
               <p className="mt-6 text-[#9CA3AF] block sm:hidden text-xs leading-relaxed">

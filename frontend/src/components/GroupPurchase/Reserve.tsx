@@ -10,6 +10,10 @@ import {
   WalletMinimal,
 } from "lucide-react";
 import ConfirmationModal from "../common/ConfirmationModal";
+import {
+  submitContactForm,
+  contactErrorMessage,
+} from "@/services/basicContactService";
 
 const INFO_ITEMS = [
   {
@@ -238,6 +242,7 @@ const Reserve = () => {
   const [form, setForm] = useState<FormState>(INITIAL);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const update = (key: keyof FormState) => (value: string) => {
     setForm((f) => ({ ...f, [key]: sanitize(value) }));
@@ -282,19 +287,39 @@ const Reserve = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       focusFirstError(errs);
       return;
     }
-    // No backend yet — surface the confirmation. When wired up, POST the
-    // trimmed `form` values here and only show the modal on success.
-    setSubmitted(true);
-    setForm(INITIAL);
-    setErrors({});
+    setSubmitting(true);
+    try {
+      await submitContactForm({
+        name: form.name.trim(),
+        phone_number: form.phone.trim().replace(/\s+/g, ""),
+        source: "group_purchase",
+        details: {
+          Email: form.email.trim(),
+          Role: form.role,
+          District: form.district,
+          Locality: form.locality.trim(),
+          "Estimated homes": form.estimate,
+          "Monthly bill": form.bill,
+          "Group name": form.groupName.trim(),
+        },
+      });
+      setSubmitted(true);
+      setForm(INITIAL);
+      setErrors({});
+    } catch (err) {
+      setErrors({ form: contactErrorMessage(err) });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -437,9 +462,11 @@ const Reserve = () => {
 
           {Object.keys(errors).length > 0 && (
             <p className="mt-5 text-center text-sm font-medium text-red-500">
-              Please fix the highlighted{" "}
-              {Object.keys(errors).length === 1 ? "field" : "fields"} above
-              before submitting.
+              {errors.form
+                ? errors.form
+                : `Please fix the highlighted ${
+                    Object.keys(errors).length === 1 ? "field" : "fields"
+                  } above before submitting.`}
             </p>
           )}
 
@@ -448,15 +475,16 @@ const Reserve = () => {
             <button
               type="button"
               onClick={handleCancel}
-              className="w-full rounded-lg border border-[#123532]/25 px-6 py-3.5 text-base font-semibold text-[#123532] transition-colors hover:bg-[#123532]/5"
+              className="btn-m w-full rounded-lg border border-[#123532]/25 px-6 py-3.5 text-base font-semibold text-[#123532] transition-colors hover:bg-[#123532]/5"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="w-full rounded-lg bg-[#F7BA41] px-6 py-3.5 text-base font-semibold text-[#123532] transition-colors hover:bg-yellow-500"
+              disabled={submitting}
+              className="btn-m w-full rounded-lg bg-[#F7BA41] px-6 py-3.5 text-base font-semibold text-[#123532] transition-colors hover:bg-yellow-500 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Submit Group Request
+              {submitting ? "Submitting..." : "Submit Group Request"}
             </button>
           </div>
         </form>

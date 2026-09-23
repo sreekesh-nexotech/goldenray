@@ -5,6 +5,7 @@ import {
   submitAffiliateApplication,
   AffiliateApplicationData,
 } from "../../services/affiliateProgramService";
+import { PARTNER_MANAGER_PHONE, whatsappLink } from "@/data/contact";
 
 const PROFESSIONS = [
   "Real Estate Agent",
@@ -306,7 +307,7 @@ const Form = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-[#F7BA41] hover:bg-[#e5a51f] transition-colors duration-200 text-[#272218] font-semibold text-base md:text-xl leading-snug py-3 rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              className="btn-m w-full bg-[#F7BA41] hover:bg-[#e5a51f] transition-colors duration-200 text-[#272218] font-semibold text-base md:text-xl leading-snug py-3 rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {submitting ? "Submitting..." : "Submit Application"}
             </button>
@@ -318,10 +319,13 @@ const Form = () => {
 
             {/* WhatsApp */}
             <a
-              href="https://wa.me/+916282922988?text=Hi, I'd like to know more about Flarize solar solutions."
+              href={whatsappLink(
+                PARTNER_MANAGER_PHONE,
+                "Hi, I'd like to know more about the Flarize referral partner program.",
+              )}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full border border-[#074A4D] text-[#074A4D] hover:bg-[#F3F4F6] transition-colors duration-200 font-semibold text-base md:text-xl leading-snug py-3 rounded-xl flex items-center justify-center gap-2"
+              className="btn-m w-full border border-[#074A4D] text-[#074A4D] hover:bg-[#F3F4F6] transition-colors duration-200 font-semibold text-base md:text-xl leading-snug py-3 rounded-xl flex items-center justify-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -2,8 +2,8 @@
 
 // src/components/Studio/Enquiries/EnquiriesScreen.tsx
 //
-// Enquiries — every contact request captured by the site footer / home page
-// forms, read from GET lead-collection-home/ on the main Flarize API (not the
+// Enquiries — every request captured by the site's contact-type forms (footer,
+// booking, Contact Us, Group Purchase, quotation, referral, warranty …), read from GET lead-collection-home/ on the main Flarize API (not the
 // CMS admin API). The endpoint returns the full list newest-first with no
 // pagination, so search, sort and paging are all done client-side.
 
@@ -66,6 +66,7 @@ export default function EnquiriesScreen() {
   const [q, setQ] = useState("");
   const [search, setSearch] = useState(""); // debounced copy of q
   const [sortKey, setSortKey] = useState<SortKey>("newest");
+  const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [page, setPage] = useState(1);
   const [menuAt, setMenuAt] = useState<{ top: number; left: number } | null>(null);
 
@@ -108,7 +109,7 @@ export default function EnquiriesScreen() {
 
   useEffect(() => {
     setPage(1);
-  }, [search, sortKey]);
+  }, [search, sortKey, sourceFilter]);
 
   const refresh = async () => {
     setRefreshing(true);
@@ -132,20 +133,29 @@ export default function EnquiriesScreen() {
     };
   }, [all]);
 
+  // Only the forms that have actually sent something, labelled as the API does.
+  const sources = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const r of all) if (r.source && !seen.has(r.source)) seen.set(r.source, r.source_label || r.source);
+    return [...seen.entries()].sort((a, b) => a[1].localeCompare(b[1]));
+  }, [all]);
+
   const filtered = useMemo(() => {
+    const bySource = sourceFilter === "all" ? all : all.filter((r) => r.source === sourceFilter);
     const list = search
-      ? all.filter(
+      ? bySource.filter(
           (r) =>
             r.name.toLowerCase().includes(search) ||
-            r.phone_number.toLowerCase().includes(search)
+            r.phone_number.toLowerCase().includes(search) ||
+            Object.values(r.details ?? {}).some((v) => String(v).toLowerCase().includes(search))
         )
-      : all;
+      : bySource;
     const sorted = [...list];
     if (sortKey === "newest") sorted.sort((a, b) => b.ts - a.ts);
     else if (sortKey === "oldest") sorted.sort((a, b) => a.ts - b.ts);
     else sorted.sort((a, b) => a.name.localeCompare(b.name));
     return sorted;
-  }, [all, search, sortKey]);
+  }, [all, search, sortKey, sourceFilter]);
 
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -191,7 +201,7 @@ export default function EnquiriesScreen() {
             </span>
           ) : undefined
         }
-        subtitle="Name, phone number and time of every request submitted through the site’s contact forms."
+        subtitle="Every request submitted through the site’s forms — who, which form, what they told us and when."
         actions={
           <>
             <button
@@ -226,8 +236,8 @@ export default function EnquiriesScreen() {
 
       {tips && (
         <TipBanner mb={14}>
-          These come straight from the <b style={{ color: studioColors.tealDeep }}>footer &amp; home page</b> contact
-          forms. Times are shown in your local timezone ({localZone()}); tap a number to call it.
+          These come straight from <b style={{ color: studioColors.tealDeep }}>every enquiry form on the site</b> —
+          filter by form to see one source. Times are shown in your local timezone ({localZone()}); tap a number to call it.
         </TipBanner>
       )}
 
@@ -279,7 +289,7 @@ export default function EnquiriesScreen() {
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search by name or phone number…"
+                placeholder="Search by name, phone or details…"
                 aria-label="Search enquiries"
                 style={{
                   flex: 1,
@@ -294,6 +304,19 @@ export default function EnquiriesScreen() {
                 }}
               />
             </div>
+            <select
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value)}
+              aria-label="Filter by form"
+              style={{ ...sortButtonStyle, paddingRight: 10, maxWidth: 260 }}
+            >
+              <option value="all">All forms</option>
+              {sources.map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
             {search !== "" && (
               <button
                 type="button"
@@ -308,10 +331,10 @@ export default function EnquiriesScreen() {
 
           {/* Table */}
           <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 640 }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 860 }}>
               <thead>
                 <tr>
-                  {["Name", "Phone number", "Date", "Time", "Received"].map((h) => (
+                  {["Name", "Phone number", "Form", "Details", "Submitted", "Received"].map((h) => (
                     <th key={h} style={headStyle}>
                       {h}
                     </th>
@@ -340,11 +363,20 @@ export default function EnquiriesScreen() {
                           {r.phone_number}
                         </a>
                       </td>
+                      <td style={{ ...cellStyle, fontSize: 12.5, color: studioColors.bodyGray, minWidth: 150 }}>
+                        <div style={{ fontWeight: 600, color: studioColors.tealDeep }}>{r.source_label || "Website form"}</div>
+                        {r.page && (
+                          <div style={{ fontFamily: studioFonts.mono, fontSize: 11, color: studioColors.faintGray, marginTop: 2 }}>
+                            {r.page}
+                          </div>
+                        )}
+                      </td>
+                      <td style={{ ...cellStyle, fontSize: 12, color: studioColors.bodyGray, minWidth: 200, maxWidth: 320 }}>
+                        <EnquiryDetails details={r.details} />
+                      </td>
                       <td style={{ ...cellStyle, fontSize: 13, color: studioColors.bodyGray, whiteSpace: "nowrap" }}>
                         {d ? dateFmt.format(d) : "—"}
-                      </td>
-                      <td style={{ ...cellStyle, fontFamily: studioFonts.num, fontSize: 13, color: studioColors.bodyGray, whiteSpace: "nowrap" }}>
-                        {d ? timeFmt.format(d) : "—"}
+                        <div style={{ fontFamily: studioFonts.num, fontSize: 12, marginTop: 2 }}>{d ? timeFmt.format(d) : ""}</div>
                       </td>
                       <td style={{ ...cellStyle, fontSize: 12.5, color: studioColors.faintGray, whiteSpace: "nowrap" }}>
                         {valid ? humanTime(r.ts, now) : "—"}
@@ -364,11 +396,11 @@ export default function EnquiriesScreen() {
                 <path d="m3 7 9 6 9-6" />
               </svg>
               <div style={{ fontSize: 14, fontWeight: 600, color: studioColors.tealDeep, marginTop: 8 }}>
-                {search ? "No enquiries match" : "No enquiries yet"}
+                {search || sourceFilter !== "all" ? "No enquiries match" : "No enquiries yet"}
               </div>
               <div style={{ fontSize: 12.5, color: studioColors.bodyGray, marginTop: 3 }}>
-                {search
-                  ? "Try a different name or phone number."
+                {search || sourceFilter !== "all"
+                  ? "Try a different search or form filter."
                   : "New submissions from the site’s contact forms will appear here."}
               </div>
             </div>
@@ -428,6 +460,21 @@ export default function EnquiriesScreen() {
 /* -------------------------------------------------------------------------- */
 /*  Local pieces + styles                                                      */
 /* -------------------------------------------------------------------------- */
+
+function EnquiryDetails({ details }: { details?: ContactEnquiry["details"] }) {
+  const entries = Object.entries(details ?? {}).filter(([, v]) => v !== "" && v !== null && v !== undefined);
+  if (entries.length === 0) return <span style={{ color: studioColors.faintGray }}>—</span>;
+  return (
+    <dl style={{ margin: 0, display: "grid", gap: 2 }}>
+      {entries.map(([k, v]) => (
+        <div key={k} style={{ wordBreak: "break-word" }}>
+          <dt style={{ display: "inline", color: studioColors.mutedGray }}>{k}: </dt>
+          <dd style={{ display: "inline", margin: 0, color: studioColors.tealDeep }}>{String(v)}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
 
 function StatTile({ label, value }: { label: string; value: string }) {
   return (

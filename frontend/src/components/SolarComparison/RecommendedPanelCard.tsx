@@ -182,14 +182,14 @@ export default function RecommendedPanelCard({
         <button
           type="button"
           onClick={onGetQuote}
-          className="rounded-xl bg-[#F7BA41] px-8 py-3.5 text-sm font-semibold text-[#272218] transition-colors hover:bg-[#E5A930] sm:min-w-[240px]"
+          className="btn-m rounded-xl bg-[#F7BA41] px-8 py-3.5 text-sm font-semibold text-[#272218] transition-colors hover:bg-[#E5A930] sm:min-w-[240px]"
         >
           Get a Free Quote
         </button>
         <button
           type="button"
           onClick={onCompare}
-          className="rounded-xl border border-[#123532] px-8 py-3.5 text-sm font-semibold text-[#123532] transition-colors hover:bg-[#123532] hover:text-white sm:min-w-[240px]"
+          className="btn-m rounded-xl border border-[#123532] px-8 py-3.5 text-sm font-semibold text-[#123532] transition-colors hover:bg-[#123532] hover:text-white sm:min-w-[240px]"
         >
           Compare With Other Panels
         </button>

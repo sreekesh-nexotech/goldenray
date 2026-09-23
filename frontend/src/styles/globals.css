@@ -28,6 +28,31 @@ body {
   @apply px-3 py-[5px];
 }
 
+/*
+ * Mobile button system. On phones every CTA shares one size, spacing, type
+ * and radius. `.btn` gets it automatically; `.btn-m` opts in a button that is
+ * styled with its own utilities on desktop, so only its mobile look changes.
+ * This CSS is unlayered, so it wins over Tailwind utilities (which live in
+ * @layer utilities). Keep it that way — that is what makes it a system.
+ */
+@media (max-width: 767.98px) {
+  .btn,
+  .btn-m {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 48px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    text-align: center;
+    white-space: normal;
+  }
+}
+
 /* logo scrolling in partners section (home page) */
 @keyframes scroll-logos {
   0% {

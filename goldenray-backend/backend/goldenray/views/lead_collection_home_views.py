@@ -47,19 +47,19 @@ class LeadCollectionHomeAPIView(APIView):
 
     @non_authenticated_view
     def post(self, request):
+        # Every submission is kept, including a repeat from the same number —
+        # each one is a fresh enquiry the sales team should see.
         serializer = LeadCollectionHomeSerializer(data=request.data)
         if serializer.is_valid():
-            # Check if phone number already exists
-            phone_number = serializer.validated_data.get('phone_number')
-            if LeadCollectionHome.objects.filter(phone_number=phone_number).exists():
-                return Response({
-                    'message': 'Phone number already exists',
-                    'phone_number': phone_number
-                }, status=status.HTTP_200_OK)
-
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {**serializer.data, 'message': "Thank you! We'll be in touch shortly.", 'status': 'success'},
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            {'message': 'Validation failed', 'status': 'error', 'errors': serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     def put(self, request, pk):
         try:

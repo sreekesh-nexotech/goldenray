@@ -2,10 +2,13 @@
 "use client";
 
 import React from "react";
+import { SALES_PHONE, whatsappLink } from "@/data/contact";
 
 const FloatingChatButton = () => {
-  const whatsappUrl =
-    "https://api.whatsapp.com/send/?phone=919995083579&text=Hello%2C+I+saw+your+advertisement+and+I’m+interested+in+learning+more.+Could+you+please+share+more+details%3F&type=phone_number&app_absent=0";
+  const whatsappUrl = whatsappLink(
+    SALES_PHONE,
+    "Hello, I saw your advertisement and I’m interested in learning more. Could you please share more details?",
+  );
 
   return (
     <a

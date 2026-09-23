@@ -485,13 +485,13 @@ export default function FaqMain() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/advanced-calculator"
-              className="px-8 py-3 bg-[#F7BA41] text-[#123532] font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200"
+              className="btn-m px-8 py-3 bg-[#F7BA41] text-[#123532] font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200"
             >
               Calculate Your Savings
             </Link>
             <Link
               href="/contactus"
-              className="px-8 py-3 border-2 border-[#123532] text-[#123532] font-semibold rounded-lg hover:bg-[#123532] hover:text-white transition-colors duration-200"
+              className="btn-m px-8 py-3 border-2 border-[#123532] text-[#123532] font-semibold rounded-lg hover:bg-[#123532] hover:text-white transition-colors duration-200"
             >
               Book a Call
             </Link>

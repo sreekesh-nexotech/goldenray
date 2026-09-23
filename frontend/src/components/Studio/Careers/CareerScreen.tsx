@@ -843,6 +843,8 @@ function ApplicationDetail({
               <DetailRow label="Expected salary">{row.expected_salary}</DetailRow>
               <DetailRow label="Notice period">{row.notice_period}</DetailRow>
               <DetailRow label="Heard about us">{row.heard_about_us}</DetailRow>
+              <DetailRow label="Availability">{row.availability}</DetailRow>
+              <DetailRow label="Why Flarize?">{row.cover_note && <span style={{ whiteSpace: "pre-line" }}>{row.cover_note}</span>}</DetailRow>
             </DetailSection>
 
             <DetailSection title="Documents">

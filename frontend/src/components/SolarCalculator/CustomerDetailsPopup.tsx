@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { getQuotationBom, type QuotationBom } from "@/services/bomService";
+import { submitContactForm } from "@/services/basicContactService";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
 
 interface CustomerDetailsPopupProps {
@@ -105,6 +106,22 @@ export default function CustomerDetailsPopup({
     if (!validateForm()) return;
 
     setIsGenerating(true);
+
+    // Capture the request in the Studio's Enquiries inbox. Fire-and-forget: a
+    // failure here must never stop the customer getting their PDF.
+    submitContactForm({
+      name: customerName.trim(),
+      phone_number: phoneNumber.trim(),
+      source: "quotation",
+      details: {
+        Address: address.trim(),
+        Pincode: pincode,
+        "Monthly bill": monthlyBill === "" ? "" : `₹${monthlyBill}`,
+        "System size": systemSize,
+        "Subsidy eligibility": subsidyEligibility,
+        Language: preferredLanguage,
+      },
+    }).catch(() => {});
 
     // Fetch the Bill of Materials from the backend BOM engine (best-effort).
     const bom = await getQuotationBom({ systemSize, customerName });
@@ -313,7 +330,7 @@ export default function CustomerDetailsPopup({
             <button
               type="submit"
               disabled={isGenerating}
-              className="w-full cursor-pointer px-8 py-3 bg-[#F7BA41] text-black font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="btn-m w-full cursor-pointer px-8 py-3 bg-[#F7BA41] text-black font-semibold rounded-lg hover:bg-[#e6a73a] transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isGenerating ? (
                 <span className="flex items-center justify-center gap-2">

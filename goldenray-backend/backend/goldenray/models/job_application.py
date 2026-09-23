@@ -121,6 +121,11 @@ class JobApplication(models.Model):
         max_length=32, choices=HEARD_ABOUT_CHOICES, blank=True, default=""
     )
 
+    # General-application extras: the talent-pool form asks for these instead
+    # of a posting.
+    availability = models.CharField(max_length=32, blank=True, default="")
+    cover_note = models.TextField(blank=True, default="", help_text="'Why Flarize?' answer")
+
     # Uploads
     resume = models.FileField(upload_to=resume_upload_path)
     portfolio_file = models.FileField(

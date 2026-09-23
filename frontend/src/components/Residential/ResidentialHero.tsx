@@ -29,22 +29,26 @@ export default function ResidentialHero() {
               Thinking about solar but not sure who to trust? Get connected with certified residential solar experts across Kerala. Receive three tailored proposals, complete subsidy assistance, KSEB documentation, and one accountable team managing your project from start to finish.
             </p>
                       
-            <div className="flex flex-row justify-center text-xs lg:text-lg md:justify-start lg:gap-4 gap-2 mt-5">
+            {/* Stacked full-width on phones (same as every other CTA pair on
+                this page), side by side from sm */}
+            <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center md:justify-start lg:gap-4 lg:text-lg">
               <LinkingButton
-              content="Book a Free Consultation"
-              ButtonLink="/contactus"
-              ButtonBg="bg-[#F7BA41]"
-              Buttontext="text-[#272218]"
-              ButtonHover="hover:bg-yellow-500"
-            />
-            <LinkingButton
-              content="Explore Solar Guide"
-              ButtonLink="/blog"
-              ButtonBorder="border border-[#074A4D]"
-              ButtonBg="bg-[#FFFFFF]"
-              Buttontext="text-[#074A4D]"
-              ButtonHover="hover:bg-[#eeeeee]"
-            />
+                content="Book a Free Consultation"
+                ButtonLink="/contactus"
+                ButtonBg="bg-[#F7BA41]"
+                Buttontext="text-[#272218]"
+                ButtonHover="hover:bg-yellow-500"
+                className="w-full sm:w-auto"
+              />
+              <LinkingButton
+                content="Explore Solar Guide"
+                ButtonLink="/blog"
+                ButtonBorder="border border-[#074A4D]"
+                ButtonBg="bg-[#FFFFFF]"
+                Buttontext="text-[#074A4D]"
+                ButtonHover="hover:bg-[#eeeeee]"
+                className="w-full sm:w-auto"
+              />
             </div>
             <ul className="no-scrollbar mt-6 flex flex-nowrap items-center justify-start gap-4 md:gap-6 overflow-x-auto text-[11px] md:text-sm font-medium text-[#171717]">
               <li className="flex shrink-0 items-center gap-2 whitespace-nowrap">

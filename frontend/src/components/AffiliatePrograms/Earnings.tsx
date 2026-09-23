@@ -131,7 +131,7 @@ const Earnings = () => {
         <div className="flex  justify-center mt-10">
           <Link
             href="#form"
-            className="bg-[#F7BA41] w-full lg:w-fit text-base md:text-xl font-semibold leading-snug cursor-pointer hover:bg-[#e5a51f] transition-all duration-300 text-[#000000] px-10 md:px-20 py-4 rounded-xl shadow-[0_10px_25px_rgba(242,178,51,0.35)] flex items-center justify-center gap-3"
+            className="btn-m bg-[#F7BA41] w-full lg:w-fit text-base md:text-xl font-semibold leading-snug cursor-pointer hover:bg-[#e5a51f] transition-all duration-300 text-[#000000] px-10 md:px-20 py-4 rounded-xl shadow-[0_10px_25px_rgba(242,178,51,0.35)] flex items-center justify-center gap-3"
           >
             
             Apply as  Referral partner

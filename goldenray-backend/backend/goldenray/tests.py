@@ -173,3 +173,72 @@ class ApplicationsWorkflowTests(TestCase):
         app = JobApplication.objects.get(email="new@example.com")
         self.assertEqual((app.position_id, app.department_name, app.status), (7, "Engineering", "new"))
         self.assertTrue(app.events.filter(kind="received").exists())
+
+
+@override_settings(STUDIO_JWT_SIGNING_KEY=KEY, MEDIA_ROOT=tempfile.mkdtemp(prefix="goldenray-test-media-"))
+class WebsiteFormsReachStudioTests(TestCase):
+    """Every public form's submission must end up somewhere the Studio shows."""
+
+    def setUp(self):
+        self.sales = bearer(token(**SALES))
+
+    def enquiries(self):
+        return self.client.get("/api/lead-collection-home/", **self.sales).json()
+
+    def test_a_repeat_enquiry_from_the_same_number_is_recorded_not_refused(self):
+        body = {"name": "test", "phone_number": "9605466933", "source": "footer", "page": "/"}
+        first = self.client.post("/api/lead-collection-home/", body, content_type="application/json")
+        again = self.client.post("/api/lead-collection-home/", body, content_type="application/json")
+        self.assertEqual((first.status_code, again.status_code), (201, 201), again.content)
+        self.assertEqual(LeadCollectionHome.objects.filter(phone_number="9605466933").count(), 2)
+
+    def test_source_page_and_details_are_stored_and_listed(self):
+        resp = self.client.post(
+            "/api/lead-collection-home/",
+            {"name": "Asha", "phone_number": "+91 98765 43210", "source": "group_purchase", "page": "/group-purchase",
+             "details": {"District": "Ernakulam", "Locality": "Kakkanad", "Empty": ""}},
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, 201, resp.content)
+        row = self.enquiries()[0]
+        self.assertEqual(row["phone_number"], "9876543210")
+        self.assertEqual((row["source"], row["source_label"], row["page"]), ("group_purchase", "Group Purchase reservation", "/group-purchase"))
+        self.assertEqual(row["details"], {"District": "Ernakulam", "Locality": "Kakkanad"})
+
+    def test_invalid_input_returns_field_errors(self):
+        resp = self.client.post("/api/lead-collection-home/", {"name": "x", "phone_number": "12345"}, content_type="application/json")
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn("phone_number", resp.json()["errors"])
+        nested = self.client.post(
+            "/api/lead-collection-home/",
+            {"name": "x", "phone_number": "9876543210", "details": {"a": {"nested": 1}}},
+            content_type="application/json",
+        )
+        self.assertEqual(nested.status_code, 400)
+
+    def test_referral_and_warranty_forms_are_mirrored_into_enquiries(self):
+        ref = self.client.post("/api/affiliate-applications/", {
+            "full_name": "Ravi", "phone": "9123456780", "email": "ravi@example.com",
+            "profession": "Other", "district": "Kollam", "website": "",
+        })
+        self.assertEqual(ref.status_code, 201, ref.content)
+        war = self.client.post("/api/warranty-service-requests/", {
+            "full_name": "Mini", "phone": "9123456781", "issue_type": "Inverter Fault", "description": "No output", "website": "",
+        })
+        self.assertEqual(war.status_code, 201, war.content)
+        by_source = {r["source"]: r for r in self.enquiries()}
+        self.assertEqual(by_source["referral_partner"]["details"]["District"], "Kollam")
+        self.assertEqual(by_source["warranty_service"]["details"]["Issue"], "Inverter Fault")
+
+    def test_general_application_submits_with_its_extra_fields(self):
+        resp = self.client.post("/api/job-applications/", {
+            "position": "General application", "department_name": "Operations",
+            "full_name": "Gen Person", "email": "gen@example.com", "phone": "9123456782", "location": "Kochi",
+            "linkedin": "linkedin.com/in/gen", "declaration_accepted": "true",
+            "availability": "Full-time", "cover_note": "I like solar.",
+            "resume": SimpleUploadedFile("cv.pdf", b"%PDF-1.4"), "website": "",
+        })
+        self.assertEqual(resp.status_code, 201, resp.content)
+        app = JobApplication.objects.get(email="gen@example.com")
+        self.assertEqual((app.position, app.department_name, app.availability, app.cover_note),
+                         ("General application", "Operations", "Full-time", "I like solar."))

@@ -1,9 +1,12 @@
 "use client";
 
 import { SolarPanel } from "@/types/solarPanel";
+import Link from "next/link";
+import AnchoredMenu from "@/components/common/AnchoredMenu";
 import { ChevronDown, Star, X } from "lucide-react";
 import {
   Fragment,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -252,6 +255,8 @@ function PanelSelector({
   onRemove: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const closeMenu = useCallback(() => setIsOpen(false), []);
 
   const availablePanels = allPanels.filter(
     (p) => !selectedPanelIds.includes(p.id) || p.id === selectedPanel?.id,
@@ -265,7 +270,10 @@ function PanelSelector({
   return (
     <div className="group relative w-[240px] flex-shrink-0 sm:w-[270px]">
       <button
+        ref={buttonRef}
         type="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
         className="w-full rounded-lg border border-[#E5E5EA] bg-white px-4 py-3 text-left transition-colors hover:border-[#074A4D]"
       >
@@ -280,10 +288,7 @@ function PanelSelector({
         )}
       </button>
 
-      {isOpen && (
-        <>
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute left-0 right-0 top-full z-20 mt-2 max-h-64 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+      <AnchoredMenu anchorRef={buttonRef} open={isOpen} onClose={closeMenu}>
             {availablePanels.map((panel) => (
               <button
                 key={panel.id}
@@ -303,9 +308,7 @@ function PanelSelector({
                 </p>
               </button>
             ))}
-          </div>
-        </>
-      )}
+      </AnchoredMenu>
 
       {selectedPanel && (
         <button
@@ -969,12 +972,12 @@ export default function ComparisonTable({
         {columnCount >= 2 && (
           <>
             <div className="mt-6 text-center">
-              <button
-                type="button"
-                className="rounded-lg bg-[#F7BA41] px-5 py-2.5 text-[13px] font-medium text-[#272218] transition-colors duration-200 hover:bg-[#E5A930]"
+              <Link
+                href="/contactus"
+                className="btn w-full sm:w-auto bg-[#F7BA41] text-[#272218] hover:bg-[#E5A930]"
               >
-                Get free Quote for these Panels
-              </button>
+                Get Free Quote for these Panels
+              </Link>
             </div>
 
             <VisualSummarySection selectedPanels={selectedPanels} />

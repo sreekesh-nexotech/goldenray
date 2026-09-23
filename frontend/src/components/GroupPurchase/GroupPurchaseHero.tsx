@@ -30,7 +30,7 @@ export default function GroupPurchaseHero() {
             </p>
             <div className="mt-6 flex justify-center lg:justify-start">
               <Link
-                href="/contactus"
+                href="#reserve"
                 className="btn bg-[#F7BA41] text-[#272218] hover:bg-[#f0b235]"
               >
                 Reserve Your Group Spot

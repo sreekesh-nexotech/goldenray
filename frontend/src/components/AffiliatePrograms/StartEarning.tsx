@@ -1,6 +1,6 @@
 import React from "react";
 import LinkingButton from "../ui/LinkingButton";
-import Link from "next/link";
+import { PARTNER_MANAGER_PHONE, whatsappLink } from "@/data/contact";
 
 const StartEarning = () => {
   return (
@@ -24,13 +24,17 @@ const StartEarning = () => {
           Buttontext="text-[#272218]"
         />
 
-        <Link
-          href="#form"
+        <a
+          href={whatsappLink(
+            PARTNER_MANAGER_PHONE,
+            "Hi, I'd like to talk to the partner manager about the Flarize referral program.",
+          )}
           target="_blank"
+          rel="noopener noreferrer"
           className="btn border border-[#074A4D] flex items-center gap-2 bg-transparent text-[#074A4D] hover:bg-[#eeeeee] transition-all duration-200"
         >
           Talk to Partner Manager
-        </Link>
+        </a>
       </div>
     </section>
   );

@@ -149,7 +149,7 @@ export default function PanelFinderModal({
             type="button"
             disabled={!selected}
             onClick={advance}
-            className={`rounded-xl px-6 py-3 text-sm font-semibold transition-colors ${
+            className={`btn-m rounded-xl px-6 py-3 text-sm font-semibold transition-colors ${
               selected
                 ? "cursor-pointer bg-[#F7BA41] text-[#272218] hover:bg-[#E5A930]"
                 : "cursor-not-allowed bg-[#FBE3AC] text-[#A0987F]"

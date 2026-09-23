@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getServiceAreaContent } from "@/data/service-area-content";
+import { SALES_PHONE, whatsappLink } from "@/data/contact";
 
-const WHATSAPP_URL = "https://wa.me/919995010043";
+const WHATSAPP_URL = whatsappLink(SALES_PHONE);
 
 const InstallationProcess = ({ district }: { district?: string }) => {
   const { steps, alsoServe } = getServiceAreaContent(district).installation;

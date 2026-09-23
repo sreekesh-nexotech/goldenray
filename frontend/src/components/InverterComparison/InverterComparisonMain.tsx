@@ -410,9 +410,7 @@ export default function InverterComparisonMain() {
 
       <CTASection
         hasSelectedInverters={selectedIds.length >= 2}
-        onGetQuote={() => {
-          window.location.href = "/contact";
-        }}
+        onGetQuote={() => router.push("/contactus")}
         onCompareSelected={handleCompare}
       />
 

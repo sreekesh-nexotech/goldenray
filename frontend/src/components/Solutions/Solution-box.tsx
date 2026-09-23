@@ -57,7 +57,7 @@ export default function SolutionBox({
           <div>
             <Link
               href="/projects"
-              className={`block w-full text-center py-3 md:px-12 md:py-5 rounded-xl font-bold text-lg md:text-xl transition-all duration-300 ${
+              className={`btn-m block w-full text-center py-3 md:px-12 md:py-5 rounded-xl font-bold text-lg md:text-xl transition-all duration-300 ${
                 showYellowBtn
                   ? "bg-[#F7BA41] text-[#272218] hover:bg-[#e6a832]"
                   : "bg-white text-[#272218] hover:bg-gray-100"

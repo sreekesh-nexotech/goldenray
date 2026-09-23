@@ -5,6 +5,7 @@ from ..twilio_utils import send_otp, verify_otp
 from ..serializers.otp_serializer import SendOTPSerializer, VerifyOTPSerializer
 from ..models import SentQuote
 from ..models.send_quote_junk import SendQuoteJunk
+from ..models.lead_collection_home import LeadCollectionHome, record_lead
 from ..serializers.send_quote_junk_serializer import SendQuoteJunkSerializer
 import uuid
 from rest_framework.permissions import AllowAny
@@ -104,6 +105,14 @@ class VerifyOTPAPIView(APIView):
             try:
                 result = verify_otp(phone_number, code)
                 if result == 'approved':
+                    # A verified quote request is an enquiry — surface it in the
+                    # Studio inbox, repeat or not.
+                    record_lead(
+                        name=name,
+                        phone_number=phone_number[-10:],
+                        source=LeadCollectionHome.Source.QUOTE_OTP,
+                        page="/advanced-calculator",
+                    )
                     # Check if phone already exists in SentQuote
                     if SentQuote.objects.filter(phone=phone_number).exists():
                         return Response({

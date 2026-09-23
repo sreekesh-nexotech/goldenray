@@ -156,7 +156,7 @@ export default function OpenPositions() {
                   </div>
                   <Link
                     href={`/career/${job.slug}`}
-                    className="flex-shrink-0 bg-[#F7BA41] hover:bg-yellow-500 transition-colors rounded-lg px-5 py-2.5 text-sm font-semibold text-[#272218] cursor-pointer"
+                    className="btn-m flex-shrink-0 bg-[#F7BA41] hover:bg-yellow-500 transition-colors rounded-lg px-5 py-2.5 text-sm font-semibold text-[#272218] cursor-pointer"
                   >
                     View Details
                   </Link>

@@ -30,6 +30,10 @@ export interface JobApplicationData {
   notice_period?: string;
   heard_about_us?: string;
 
+  // General-application extras
+  availability?: string;
+  cover_note?: string;
+
   // Declaration checkbox — must be true.
   declaration_accepted: boolean;
 
@@ -66,6 +70,9 @@ export async function submitJobApplication(
     fd.append("position_id", String(data.position_id));
     fd.append("position_title", data.position_title ?? data.position ?? "");
     fd.append("department_name", data.department_name ?? "");
+  } else if (data.department_name) {
+    // General application: the applicant's area of interest.
+    fd.append("department_name", data.department_name);
   }
   fd.append("full_name", data.full_name);
   fd.append("email", data.email);
@@ -84,6 +91,8 @@ export async function submitJobApplication(
     "expected_salary",
     "notice_period",
     "heard_about_us",
+    "availability",
+    "cover_note",
   ];
   for (const key of optional) {
     const value = data[key];
@@ -139,6 +148,9 @@ export interface CareerApplication {
   expected_salary: string;
   notice_period: string;
   heard_about_us: string;
+  /** General application only. Absent on rows from before the column existed. */
+  availability?: string;
+  cover_note?: string;
 
   /**
    * Raw MEDIA_URL location of the upload. Only reachable while Django runs with

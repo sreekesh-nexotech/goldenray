@@ -2,10 +2,10 @@
 "use client";
 
 import React from "react";
+import { SALES_PHONE, telLink } from "@/data/contact";
 
 const FloatingPhoneButton = () => {
-  const phoneNumber = "6282922988";
-  const telUrl = `tel:${phoneNumber}`;
+  const telUrl = telLink(SALES_PHONE);
 
   return (
     <a

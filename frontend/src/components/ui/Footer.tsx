@@ -6,7 +6,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
 
-import { submitContactForm } from "@/services/basicContactService";
+import {
+  submitContactForm,
+  contactErrorMessage,
+} from "@/services/basicContactService";
 import { allLocations } from "@/data/locations";
 import FlarizeLogo from "../../../public/logoFooter.png";
 
@@ -24,8 +27,7 @@ const resourceLinks = [
   { label: "Government Subsidies", href: "/subsidy" },
   { label: "FAQs", href: "/faq" },
   { label: "Blogs", href: "/blog" },
-  // NOTE: no dedicated /newsletters route exists yet — placeholder href.
-  { label: "Newsletters", href: "#" },
+  // "Newsletters" is hidden until a newsletter page/subscription backend exists.
 ];
 
 const legalLinks = [
@@ -124,25 +126,13 @@ export default function Footer() {
     setSuccessMessage(null);
 
     try {
-      await submitContactForm({ name, phone_number });
+      await submitContactForm({ name, phone_number, source: "footer" });
       setSuccessMessage(
         "Thank you! Your request has been submitted. We'll be in touch shortly!",
       );
       formRef.current?.reset();
     } catch (err) {
-      if (
-        err instanceof Error &&
-        err.message.includes(
-          'HTTP error! Status: 400, Message: {"phone_number":["lead collection home with this phone number already exists."]}',
-        )
-      ) {
-        setSuccessMessage("We already have your details! Our team will contact you soon.");
-        formRef.current?.reset();
-      } else {
-        const errorMessage =
-          err instanceof Error ? err.message : "An unexpected error occurred.";
-        setError(`Failed to submit: ${errorMessage}`);
-      }
+      setError(contactErrorMessage(err));
     } finally {
       setIsLoading(false);
       window.scrollTo(0, scrollY);
@@ -216,7 +206,7 @@ export default function Footer() {
                   type="submit"
                   disabled={isLoading}
                   aria-label="Book consultation"
-                  className={`mt-2 rounded-xl bg-[#F7BA41] px-12 py-4 text-base font-semibold text-[#1F2430] transition-colors duration-300 hover:bg-[#e8a92f] lg:w-fit ${
+                  className={`btn-m mt-2 rounded-xl bg-[#F7BA41] px-12 py-4 text-base font-semibold text-[#1F2430] transition-colors duration-300 hover:bg-[#e8a92f] lg:w-fit ${
                     isLoading ? "cursor-not-allowed opacity-60" : ""
                   }`}
                 >

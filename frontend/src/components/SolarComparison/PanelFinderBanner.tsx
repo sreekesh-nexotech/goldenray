@@ -20,7 +20,7 @@ export default function PanelFinderBanner({ onStart }: PanelFinderBannerProps) {
       <button
         type="button"
         onClick={onStart}
-        className="shrink-0 self-start rounded-xl bg-[#F7BA41] px-6 py-3.5 text-sm font-semibold text-[#272218] transition-colors hover:bg-[#E5A930] md:self-auto"
+        className="btn-m shrink-0 self-start rounded-xl bg-[#F7BA41] px-6 py-3.5 text-sm font-semibold text-[#272218] transition-colors hover:bg-[#E5A930] md:self-auto"
       >
         Find My Perfect Panel
       </button>

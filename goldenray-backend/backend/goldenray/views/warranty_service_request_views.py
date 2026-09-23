@@ -6,6 +6,7 @@ from rest_framework.throttling import ScopedRateThrottle
 from ..serializers.warranty_service_request_serializer import (
     WarrantyServiceRequestSerializer,
 )
+from ..models.lead_collection_home import LeadCollectionHome, record_lead
 from ..permissions import ApiMethodPermission, non_authenticated_view
 
 
@@ -18,7 +19,17 @@ class WarrantyServiceRequestAPIView(APIView):
     def post(self, request):
         serializer = WarrantyServiceRequestSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            service_request = serializer.save()
+            record_lead(
+                name=service_request.full_name,
+                phone_number=service_request.phone,
+                source=LeadCollectionHome.Source.WARRANTY,
+                page="/solar-warranty",
+                details={
+                    "Issue": service_request.issue_type,
+                    "Description": service_request.description,
+                },
+            )
             return Response(
                 {
                     "message": "Service request received. Our team will contact you shortly.",

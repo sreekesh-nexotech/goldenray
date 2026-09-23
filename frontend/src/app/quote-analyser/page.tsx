@@ -3,6 +3,11 @@ import { Metadata } from "next";
 import { withCmsSeo } from "@/lib/cmsMetadata";
 import CmsPageSchema from "@/components/CmsPageSchema";
 import React from "react";
+import { notFound } from "next/navigation";
+
+// The analyser form doesn't submit anywhere yet, so the page is hidden (404)
+// and unlinked from the nav/Residential page. Flip this to re-launch it.
+const QUOTE_ANALYSER_LIVE = false;
 
 const ogImage = "https://golden-ray.b-cdn.net/images/slide1.jpg";
 
@@ -58,6 +63,7 @@ const BASE_METADATA: Metadata = {
 // canonical and indexing; anything left blank there keeps the shipped value.
 export const generateMetadata = () => withCmsSeo("/quote-analyser", BASE_METADATA);
 const Page = () => {
+  if (!QUOTE_ANALYSER_LIVE) notFound();
   return (
     <>
       <CmsPageSchema route="/quote-analyser" />

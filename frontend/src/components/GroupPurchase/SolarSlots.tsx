@@ -89,7 +89,7 @@ export default function SolarSlots() {
                   <Link
                     href={isFull ? "#" : "#reserve"}
                     aria-disabled={isFull}
-                    className={`flex items-center justify-center w-full px-4 py-2.5 rounded-lg font-semibold text-sm transition-colors ${
+                    className={`btn-m flex items-center justify-center w-full px-4 py-2.5 rounded-lg font-semibold text-sm transition-colors ${
                       isFull
                         ? "bg-gray-100 text-gray-400 pointer-events-none"
                         : "bg-[#F7BA41] text-[#272218] hover:bg-[#e6a73a]"

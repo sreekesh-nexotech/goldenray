@@ -8,7 +8,6 @@ import SafetyAndCompliance from './SafetyAndCompliance'
 import SolarPriceInKerala from './SolarPriceInKerala'
 import FinancingYourFuture from './FinancingYourFuture'
 import WhichSolarSystem from './WhichSolarSystem'
-import QuoteAnalyserCTA from './QuoteAnalyserCTA'
 import Certified from '../certified-by'
 import HomeTestimonial from '../Home/Testimomial'
 import ExploreBeforeYouDecide from './ExploreBeforeYouDecide'
@@ -21,7 +20,6 @@ const ResidentialMain = () => {
       <ResidentialHero />  
       <FlarizeTrust />
       <HomeReadyForSolar />
-      <QuoteAnalyserCTA />
       <WhichSolarSystem />
       <UnderstandingSolarPanels />
       <WhatsIncluded />

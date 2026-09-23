@@ -1,9 +1,12 @@
 "use client";
 
 import { SolarInverter } from "@/types/solarInverter";
+import Link from "next/link";
+import AnchoredMenu from "@/components/common/AnchoredMenu";
 import { ChevronDown, Star, X } from "lucide-react";
 import {
   Fragment,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -269,6 +272,8 @@ function InverterSelector({
   onRemove: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const closeMenu = useCallback(() => setIsOpen(false), []);
 
   const availableInverters = allInverters.filter(
     (i) => !selectedInverterIds.includes(i.id) || i.id === selectedInverter?.id,
@@ -282,7 +287,10 @@ function InverterSelector({
   return (
     <div className="group relative w-[240px] flex-shrink-0 sm:w-[270px]">
       <button
+        ref={buttonRef}
         type="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
         className="w-full rounded-lg border border-[#E5E5EA] bg-white px-4 py-3 text-left transition-colors hover:border-[#074A4D]"
       >
@@ -297,10 +305,7 @@ function InverterSelector({
         )}
       </button>
 
-      {isOpen && (
-        <>
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute left-0 right-0 top-full z-20 mt-2 max-h-64 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+      <AnchoredMenu anchorRef={buttonRef} open={isOpen} onClose={closeMenu}>
             {availableInverters.map((inverter) => (
               <button
                 key={inverter.id}
@@ -319,9 +324,7 @@ function InverterSelector({
                 </p>
               </button>
             ))}
-          </div>
-        </>
-      )}
+      </AnchoredMenu>
 
       {selectedInverter && (
         <button
@@ -1099,12 +1102,12 @@ export default function ComparisonTable({
         {columnCount >= 2 && (
           <>
             <div className="mt-6 text-center">
-              <button
-                type="button"
-                className="rounded-lg bg-[#F7BA41] px-5 py-2.5 text-[13px] font-medium text-[#272218] transition-colors duration-200 hover:bg-[#E5A930]"
+              <Link
+                href="/contactus"
+                className="btn w-full sm:w-auto bg-[#F7BA41] text-[#272218] hover:bg-[#E5A930]"
               >
-                Get free Quote for these Inverters
-              </button>
+                Get Free Quote for these Inverters
+              </Link>
             </div>
 
             <VisualSummarySection selectedInverters={selectedInverters} />
