@@ -53,7 +53,7 @@ export default function FounderNote() {
           <div className="bg-white p-8 md:p-10 flex flex-col items-center text-center md:flex-row md:items-center md:text-left gap-6 md:w-[62%]">
             <div className="relative w-24 h-28 md:w-28 md:h-32 flex-shrink-0 rounded-md overflow-hidden">
               <Image
-                src="https://golden-ray.b-cdn.net/About%20us/abaf40f3b4844ec6fa9001430d6f02e2b814f139.png"
+                src="https://golden-ray.b-cdn.net/images/Advisor%20Georgekutty%20.jpg"
                 alt="Georgekutty Kariyanappally"
                 fill
                 sizes="112px"

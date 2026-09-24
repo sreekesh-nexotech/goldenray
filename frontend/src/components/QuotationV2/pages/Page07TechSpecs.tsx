@@ -201,10 +201,10 @@ export default function Page07TechSpecs({
               style={{
                 position: "relative",
                 width: 1274,
-                height: 1574,
+                height: 1582,
                 display: "grid",
                 gridTemplateRows:
-                  "auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto",
+                  "repeat(16, auto)",
                 gridTemplateColumns: "auto 1fr 1fr 1fr",
                 flexShrink: 0,
               }}
@@ -2091,7 +2091,7 @@ export default function Page07TechSpecs({
                   gridColumn: "1",
                   position: "relative",
                   width: 318.5,
-                  height: 88,
+                  height: 72,
                   overflow: "hidden",
                   backgroundColor: "var(--light-grey)",
                   borderTop: "0.500px solid rgb(204,205,208)",
@@ -2101,7 +2101,7 @@ export default function Page07TechSpecs({
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2123,14 +2123,13 @@ export default function Page07TechSpecs({
                 >
                   Total System Cost
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
                   gridRow: "13",
                   gridColumn: "2",
                   position: "relative",
                   width: 318.5,
-                  height: 88,
+                  height: 72,
                   overflow: "hidden",
                   backgroundColor: "var(--light-grey)",
                   borderTop: "0.500px solid rgba(204,205,208,0.63)",
@@ -2140,7 +2139,7 @@ export default function Page07TechSpecs({
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2162,22 +2161,21 @@ export default function Page07TechSpecs({
                 >
                   {data.premium.total}
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
                   gridRow: "13",
                   gridColumn: "3",
                   position: "relative",
                   zIndex: 1,
                   width: 318.5,
-                  height: 88,
+                  height: 72,
                   overflow: "hidden",
                   backgroundColor: "rgb(255,249,243)",
                   border: "1px solid rgb(248,138,34)",
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2199,14 +2197,13 @@ export default function Page07TechSpecs({
                 >
                   {data.smart.total}
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
                   gridRow: "13",
                   gridColumn: "4",
                   position: "relative",
                   width: 318.5,
-                  height: 88,
+                  height: 72,
                   overflow: "hidden",
                   backgroundColor: "var(--light-grey)",
                   borderTop: "0.500px solid rgba(204,205,208,0.63)",
@@ -2216,7 +2213,7 @@ export default function Page07TechSpecs({
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2238,20 +2235,163 @@ export default function Page07TechSpecs({
                 >
                   {data.basic.total}
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
                   gridRow: "14",
                   gridColumn: "1",
                   position: "relative",
                   width: 318.5,
-                  height: 88,
+                  height: 72,
+                  overflow: "hidden",
+                  backgroundColor: "rgb(255,255,255)",
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 10,
+                  padding: "20px 20px 20px 20px",
+                  alignItems: "center",
+                  flexWrap: "nowrap",
+                  boxSizing: "border-box",
+                }}
+              >
+                <span
+                  style={{
+                    position: "relative",
+                    fontFamily:
+                      'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    fontWeight: 400,
+                    fontSize: 26,
+                    lineHeight: "29px",
+                    letterSpacing: "-0.500px",
+                    color: "var(--black)",
+                    flexGrow: 1,
+                    alignSelf: "stretch",
+                  }}
+                >Down Payment (10%)</span>
+              </div><div
+                style={{
+                  gridRow: "14",
+                  gridColumn: "2",
+                  position: "relative",
+                  width: 318.5,
+                  height: 72,
+                  overflow: "hidden",
+                  backgroundColor: "rgb(255,255,255)",
+                  borderTop: "1px solid rgba(204,205,208,0.63)",
+                  borderRight: "1px solid rgba(204,205,208,0.63)",
+                  borderBottom: "0.500px solid rgba(204,205,208,0.63)",
+                  borderLeft: "0.500px solid rgba(204,205,208,0.63)",
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 10,
+                  padding: "20px 20px 20px 20px",
+                  alignItems: "center",
+                  flexWrap: "nowrap",
+                  boxSizing: "border-box",
+                }}
+              >
+                <span
+                  style={{
+                    position: "relative",
+                    fontFamily:
+                      'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    fontWeight: 600,
+                    fontSize: 28,
+                    lineHeight: "31px",
+                    letterSpacing: "-0.500px",
+                    color: "var(--2-2)",
+                    flexGrow: 1,
+                    alignSelf: "stretch",
+                  }}
+                >
+                  {data.premium.downPayment}
+                </span>
+              </div><div
+                style={{
+                  gridRow: "14",
+                  gridColumn: "3",
+                  position: "relative",
+                  zIndex: 1,
+                  width: 318.5,
+                  height: 72,
+                  overflow: "hidden",
+                  backgroundColor: "rgb(255,249,243)",
+                  border: "1px solid rgb(248,138,34)",
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 10,
+                  padding: "20px 20px 20px 20px",
+                  alignItems: "center",
+                  flexWrap: "nowrap",
+                  boxSizing: "border-box",
+                }}
+              >
+                <span
+                  style={{
+                    position: "relative",
+                    fontFamily:
+                      'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    fontWeight: 600,
+                    fontSize: 28,
+                    lineHeight: "31px",
+                    letterSpacing: "-0.500px",
+                    color: "var(--2-2)",
+                    flexGrow: 1,
+                    alignSelf: "stretch",
+                  }}
+                >
+                  {data.smart.downPayment}
+                </span>
+              </div><div
+                style={{
+                  gridRow: "14",
+                  gridColumn: "4",
+                  position: "relative",
+                  width: 318.5,
+                  height: 72,
+                  overflow: "hidden",
+                  backgroundColor: "rgb(255,255,255)",
+                  borderTop: "1px solid rgba(204,205,208,0.63)",
+                  borderRight: "1px solid rgba(204,205,208,0.63)",
+                  borderBottom: "0.500px solid rgba(204,205,208,0.63)",
+                  borderLeft: "0.500px solid rgba(204,205,208,0.63)",
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 10,
+                  padding: "20px 20px 20px 20px",
+                  alignItems: "center",
+                  flexWrap: "nowrap",
+                  boxSizing: "border-box",
+                }}
+              >
+                <span
+                  style={{
+                    position: "relative",
+                    fontFamily:
+                      'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    fontWeight: 600,
+                    fontSize: 28,
+                    lineHeight: "31px",
+                    letterSpacing: "-0.500px",
+                    color: "var(--2-2)",
+                    flexGrow: 1,
+                    alignSelf: "stretch",
+                  }}
+                >
+                  {data.basic.downPayment}
+                </span>
+              </div><div
+                style={{
+                  gridRow: "15",
+                  gridColumn: "1",
+                  position: "relative",
+                  width: 318.5,
+                  height: 72,
                   overflow: "hidden",
                   backgroundColor: "var(--light-grey)",
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2273,14 +2413,13 @@ export default function Page07TechSpecs({
                 >
                   Subsidy Amount
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
-                  gridRow: "14",
+                  gridRow: "15",
                   gridColumn: "2",
                   position: "relative",
                   width: 318.5,
-                  height: 88,
+                  height: 72,
                   overflow: "hidden",
                   backgroundColor: "var(--light-grey)",
                   borderTop: "1px solid rgba(204,205,208,0.63)",
@@ -2290,7 +2429,7 @@ export default function Page07TechSpecs({
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2312,22 +2451,21 @@ export default function Page07TechSpecs({
                 >
                   {data.subsidyRowValue}
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
-                  gridRow: "14",
+                  gridRow: "15",
                   gridColumn: "3",
                   position: "relative",
                   zIndex: 1,
                   width: 318.5,
-                  height: 88,
+                  height: 72,
                   overflow: "hidden",
                   backgroundColor: "rgb(255,249,243)",
                   border: "1px solid rgb(248,138,34)",
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2349,14 +2487,13 @@ export default function Page07TechSpecs({
                 >
                   {data.subsidyRowValue}
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
-                  gridRow: "14",
+                  gridRow: "15",
                   gridColumn: "4",
                   position: "relative",
                   width: 318.5,
-                  height: 88,
+                  height: 72,
                   overflow: "hidden",
                   backgroundColor: "var(--light-grey)",
                   borderTop: "1px solid rgba(204,205,208,0.63)",
@@ -2366,7 +2503,7 @@ export default function Page07TechSpecs({
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2388,14 +2525,13 @@ export default function Page07TechSpecs({
                 >
                   {data.subsidyRowValue}
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
-                  gridRow: "15",
+                  gridRow: "16",
                   gridColumn: "1",
                   position: "relative",
                   width: 318.5,
-                  height: 128,
+                  height: 96,
                   overflow: "hidden",
                   backgroundColor: "var(--green-2)",
                   borderTop: "1px solid rgba(204,205,208,0.63)",
@@ -2405,7 +2541,7 @@ export default function Page07TechSpecs({
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2425,16 +2561,15 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.totalPayableLabel}
+                  Amount Payable / Financed
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
-                  gridRow: "15",
+                  gridRow: "16",
                   gridColumn: "2",
                   position: "relative",
                   width: 318.5,
-                  height: 128,
+                  height: 96,
                   overflow: "hidden",
                   backgroundColor: "var(--green1)",
                   borderTop: "1px solid rgba(204,205,208,0.63)",
@@ -2444,7 +2579,7 @@ export default function Page07TechSpecs({
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2463,17 +2598,16 @@ export default function Page07TechSpecs({
                     flexGrow: 1,
                   }}
                 >
-                  {data.premium.final}
+                  {data.premium.financed}
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
-                  gridRow: "15",
+                  gridRow: "16",
                   gridColumn: "3",
                   position: "relative",
                   zIndex: 1,
                   width: 318.5,
-                  height: 128,
+                  height: 96,
                   overflow: "hidden",
                   backgroundColor: "var(--green-2)",
                   borderTop: "1px solid rgba(204,205,208,0.63)",
@@ -2483,7 +2617,7 @@ export default function Page07TechSpecs({
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2502,16 +2636,15 @@ export default function Page07TechSpecs({
                     flexGrow: 1,
                   }}
                 >
-                  {data.smart.final}
+                  {data.smart.financed}
                 </span>
-              </div>
-              <div
+              </div><div
                 style={{
-                  gridRow: "15",
+                  gridRow: "16",
                   gridColumn: "4",
                   position: "relative",
                   width: 318.5,
-                  height: 128,
+                  height: 96,
                   overflow: "hidden",
                   backgroundColor: "var(--green-2)",
                   borderTop: "1px solid rgba(204,205,208,0.63)",
@@ -2521,7 +2654,7 @@ export default function Page07TechSpecs({
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
-                  padding: "32px 20px 32px 20px",
+                  padding: "20px 20px 20px 20px",
                   alignItems: "center",
                   flexWrap: "nowrap",
                   boxSizing: "border-box",
@@ -2540,10 +2673,27 @@ export default function Page07TechSpecs({
                     flexGrow: 1,
                   }}
                 >
-                  {data.basic.final}
+                  {data.basic.financed}
                 </span>
               </div>
-            </div>
+            </div><p
+                style={{
+                  position: "relative",
+                  // Sits right under the table rather than a full column gap below it.
+                  margin: "-32px 0 0",
+                  width: 1274,
+                  boxSizing: "border-box",
+                  padding: "12px 4px 0",
+                  fontFamily:
+                    'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  fontSize: 17,
+                  lineHeight: "22px",
+                  color: "var(--grey)",
+                  flexShrink: 0,
+                }}
+              >
+                Down payment is calculated on the total system cost. Amount payable / financed is the total cost less the down payment and the subsidy, and is the basis for the EMI.
+              </p>
           </div>
           <div
             style={{

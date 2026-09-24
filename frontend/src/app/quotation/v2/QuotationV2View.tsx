@@ -12,6 +12,8 @@ import {
   type QuotationV2Input,
 } from "@/components/QuotationV2/quotationV2Data";
 import { sampleQuotationData } from "@/components/Quotation/sampleQuotationData";
+import type { QuotationDocumentSettings } from "@/components/QuotationV2/financing";
+import { getQuotationSettings } from "@/services/quotationSettingsService";
 
 /**
  * On-screen view of the redesigned quotation.
@@ -26,6 +28,19 @@ export default function QuotationV2View() {
   const [loading, setLoading] = useState(true);
   const [quoteNo, setQuoteNo] = useState("");
   const [stats, setStats] = useState<InstallationSummary | undefined>();
+  // Admin's EMI rates and offer banner. The document waits for them (they
+  // change printed figures) and falls back to defaults if the backend is down.
+  const [settings, setSettings] = useState<QuotationDocumentSettings | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getQuotationSettings().then((s) => {
+      if (!cancelled) setSettings(s);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     // Generated once on mount: re-deriving it every render would change the
@@ -44,8 +59,8 @@ export default function QuotationV2View() {
   }, [router]);
 
   const data = useMemo(
-    () => (input && quoteNo ? buildQuotationV2Data(input, { quoteNo, stats }) : null),
-    [input, quoteNo, stats],
+    () => (input && quoteNo && settings ? buildQuotationV2Data(input, { quoteNo, stats, settings }) : null),
+    [input, quoteNo, stats, settings],
   );
 
   // Overlay the backend's real neighbourhood install counts once they arrive.
@@ -60,7 +75,7 @@ export default function QuotationV2View() {
     };
   }, [data, stats]);
 
-  if (loading) {
+  if (loading || !settings) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#123532]"></div>

@@ -1,8 +1,10 @@
 import Image from "next/image";
 
 const teamPhotos = [
-  "https://golden-ray.b-cdn.net/About%20us/3ed69491d4806925ed05dbda2d909f9ed7742996.jpg",
-  "https://golden-ray.b-cdn.net/About%20us/3ed69491d4806925ed05dbda2d909f9ed7742996.jpg",
+  "https://golden-ray.b-cdn.net/images/Team%20img%202.jpg",
+  "https://golden-ray.b-cdn.net/images/Team%20image%203.jpg",
+  "/images/career/Team%20img%204.jpg",
+  "/images/career/Team%20image%205.jpg",
 ];
 
 export default function TeamShowcase() {

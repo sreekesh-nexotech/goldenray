@@ -16,6 +16,7 @@ from .views.api import (
     StructureTemplateItemList, StructureTemplateItemDetail,
     TubeWeightList, TubeWeightDetail,
     OfferList, OfferDetail,
+    QuotationSettingsView,
 )
 
 app_name = "bom"
@@ -77,4 +78,7 @@ urlpatterns = [
     # ── Offer ────────────────────────────────────────────────────────────────
     path("api/offers/", OfferList.as_view(), name="api-offer-list"),
     path("api/offers/<int:pk>/", OfferDetail.as_view(), name="api-offer-detail"),
+
+    # ── Quotation document: EMI rates + offer banner (GET is public) ────────
+    path("api/quotation-settings/", QuotationSettingsView.as_view(), name="api-quotation-settings"),
 ]

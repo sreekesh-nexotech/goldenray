@@ -12,6 +12,8 @@ import {
   type QuotationV2Input,
 } from "@/components/QuotationV2Malayalam/quotationV2MalayalamData";
 import { sampleQuotationData } from "@/components/Quotation/sampleQuotationData";
+import type { QuotationDocumentSettings } from "@/components/QuotationV2/financing";
+import { getQuotationSettings } from "@/services/quotationSettingsService";
 
 /**
  * On-screen view of the Malayalam quotation document.
@@ -27,6 +29,19 @@ export default function QuotationV2MalayalamView() {
   const [loading, setLoading] = useState(true);
   const [quoteNo, setQuoteNo] = useState("");
   const [stats, setStats] = useState<InstallationSummary | undefined>();
+  // Admin's EMI rates and offer banner. The document waits for them (they
+  // change printed figures) and falls back to defaults if the backend is down.
+  const [settings, setSettings] = useState<QuotationDocumentSettings | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getQuotationSettings().then((s) => {
+      if (!cancelled) setSettings(s);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     // Generated once on mount: re-deriving it every render would change the
@@ -46,10 +61,10 @@ export default function QuotationV2MalayalamView() {
 
   const data = useMemo(
     () =>
-      input && quoteNo
-        ? buildQuotationV2MalayalamData(input, { quoteNo, stats })
+      input && quoteNo && settings
+        ? buildQuotationV2MalayalamData(input, { quoteNo, stats, settings })
         : null,
-    [input, quoteNo, stats],
+    [input, quoteNo, stats, settings],
   );
 
   // Overlay the backend's real neighbourhood install counts once they arrive.
@@ -64,7 +79,7 @@ export default function QuotationV2MalayalamView() {
     };
   }, [data, stats]);
 
-  if (loading) {
+  if (loading || !settings) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#123532]"></div>

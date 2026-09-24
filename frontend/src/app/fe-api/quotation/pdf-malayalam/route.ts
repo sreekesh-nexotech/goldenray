@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import puppeteer, { type Browser } from "puppeteer-core";
 
+import { resolveChromePath } from "@/lib/chromePath";
+import { attachmentHeader, quotationFileName } from "@/lib/quotationFileName";
+
 /**
  * Renders the Malayalam quotation to a PDF with real Chrome.
  *
@@ -15,8 +18,6 @@ export const runtime = "nodejs";
 // Chrome needs longer than the default for a cold page compile in dev.
 export const maxDuration = 120;
 
-const CHROME_PATH =
-  process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium-browser";
 
 /** Where Chrome should reach this app from inside the container. */
 function selfOrigin(): string {
@@ -27,11 +28,6 @@ function selfOrigin(): string {
   return `http://127.0.0.1:${port}`;
 }
 
-function safeFileName(name: unknown): string {
-  const cleaned =
-    typeof name === "string" ? name.trim().replace(/[^a-zA-Z0-9]+/g, "-") : "";
-  return cleaned || "Customer";
-}
 
 export async function POST(request: Request) {
   let browser: Browser | undefined;
@@ -47,7 +43,7 @@ export async function POST(request: Request) {
     }
 
     browser = await puppeteer.launch({
-      executablePath: CHROME_PATH,
+      executablePath: resolveChromePath(),
       headless: true,
       protocolTimeout: 120_000,
       args: [
@@ -115,14 +111,16 @@ export async function POST(request: Request) {
       timeout: 90_000,
     });
 
-    const fileName = `Flarize-Quotation-${safeFileName(
-      (quotationData as { customerName?: string }).customerName,
-    )}-ML.pdf`;
+    const { customerName, systemSize } = quotationData as {
+      customerName?: string;
+      systemSize?: string;
+    };
+    const fileName = quotationFileName(customerName, systemSize);
 
     return new NextResponse(Buffer.from(pdf), {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${fileName}"`,
+        "Content-Disposition": attachmentHeader(fileName),
         "Cache-Control": "no-store",
       },
     });

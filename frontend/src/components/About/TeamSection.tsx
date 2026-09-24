@@ -4,10 +4,10 @@ import TeamMember from "./TeamMember";
 // Sample data structure for team members (can be replaced with API data)
 const teamMembers = [
   {
-    name: "Jude Jame",
+    name: "Jude James",
     title: "Operations Manager",
     linkedin: "https://www.linkedin.com/in/jude-james-38b45263/",
-    imageUrl: "https://golden-ray.b-cdn.net/About%20us/Team/Jude%20James.jpeg",
+    imageUrl: "https://golden-ray.b-cdn.net/images/Operations%20Manager.jpg",
   },
   {
     name: "Aromal K M",
@@ -18,17 +18,14 @@ const teamMembers = [
   },
   {
     name: "Ananthakrishnan G",
-    title: "Project Manager",
-    linkedin:
-      "https://www.linkedin.com/in/ananthakrishnan-g-4421b1276?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
-    imageUrl:
-      "https://golden-ray.b-cdn.net/About%20us/Team/Ananthakrishnnan%20G.jpeg",
+    title: "Project Head",
+    linkedin: "https://www.linkedin.com/in/ananthakrishnan-g-4421b1276/",
+    imageUrl: "https://golden-ray.b-cdn.net/images/Project%20Head%20.jpg",
   },
   {
     name: "Anupriya MS",
     title: "Sales Head",
-    linkedin:
-      "https://www.linkedin.com/in/anupriya-m-s-22b989338?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+    linkedin: "https://www.linkedin.com/in/anupriya-m-s-22b989338/",
     imageUrl: "https://golden-ray.b-cdn.net/About%20us/Team/Anupriya%20MS.jpeg",
   },
   

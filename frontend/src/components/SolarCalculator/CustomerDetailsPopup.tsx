@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { getQuotationBom, type QuotationBom } from "@/services/bomService";
 import { submitContactForm } from "@/services/basicContactService";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
+import { quotationFileName } from "@/lib/quotationFileName";
 
 interface CustomerDetailsPopupProps {
   onClose: () => void;
@@ -173,9 +174,8 @@ export default function CustomerDetailsPopup({
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `Flarize-Quotation-${
-        customerName.trim().replace(/[^a-zA-Z0-9]+/g, "-") || "Customer"
-      }.pdf`;
+      // "Customer Name_System Capacity.pdf", e.g. "Shaithya_5kW.pdf".
+      link.download = quotationFileName(customerName, systemSize);
       document.body.appendChild(link);
       link.click();
       link.remove();

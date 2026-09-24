@@ -14,10 +14,18 @@ import type { QuotationBom } from "@/services/bomService";
 import { getInstallationStats } from "@/services/installationStatsService";
 import {
   PM_SURYA_GHAR_SUBSIDY,
-  fiveYearEmi,
   quotationPricing,
   subsidyForEligibility,
 } from "@/components/Quotation/subsidy";
+import {
+  DEFAULT_QUOTATION_SETTINGS,
+  EMI_YEARS,
+  emiRateFor,
+  formatRate,
+  paymentBreakdown,
+  resolveOffer,
+  type QuotationDocumentSettings,
+} from "@/components/QuotationV2/financing";
 
 /** What the customer details form writes to sessionStorage. */
 export interface QuotationV2Input {
@@ -43,10 +51,14 @@ export interface QuotationV2Tier {
   total: string;
   /** What the customer actually pays for this tier. */
   final: string;
-  /** Monthly EMI on the final cost, e.g. "~₹3,940/mo". */
+  /** 10% of the total cost. */
+  downPayment: string;
+  /** Total − down payment − subsidy; what the EMI is on. */
+  financed: string;
+  /** Monthly EMI on the financed amount, e.g. "₹2,646". */
   emi: string;
-  /** Line under the EMI describing the net monthly position. */
-  emiNote: string;
+  /** EMI ÷ 30, e.g. "₹88". */
+  daily: string;
 }
 
 export interface QuotationV2Data {
@@ -81,10 +93,13 @@ export interface QuotationV2Data {
   subsidyAmount: string;
   /** Subsidy cell on the spec table; that table is a grid, so the row stays. */
   subsidyRowValue: string;
-  totalPayableLabel: string;
   optionsSubtitle: string;
-  afterSubsidyNote: string;
   sizeLabel: string;
+  /** "5 kW · On-Grid Solar System", under each package name on page 5. */
+  systemDescription: string;
+  emiYears: number;
+  /** Interest rate for this system size, e.g. "7.9%". */
+  emiRate: string;
   equivalentWatts: string;
   premium: QuotationV2Tier;
   smart: QuotationV2Tier;
@@ -101,8 +116,11 @@ export interface QuotationV2Data {
   savedLakh: string;
   grossCost: string;
   netCost: string;
+  /** Quoted system's breakdown, for the summary page. */
+  downPayment: string;
+  financed: string;
   emi: string;
-  netMonthlyDuringEmi: string;
+  daily: string;
   chart: {
     labels: string[];
     withoutSolar: number[];
@@ -116,7 +134,14 @@ export interface QuotationV2Data {
   ksebRefund: string;
 
   // ── Summary (page 12) ────────────────────────────────────────────────────
-  offerValidDate: string;
+  /** Admin's offer banner, or null when there is no active offer. */
+  offer: {
+    title: string;
+    description: string;
+    details: string;
+    imageUrl: string;
+    validUntil: string;
+  } | null;
 }
 
 const GST_NO = "32AAUFG1464A1ZP";
@@ -249,9 +274,6 @@ const MONTHS = [
 const formatINR = (value: number) => Math.round(value).toLocaleString("en-IN");
 const rupees = (value: number) => `₹${formatINR(value)}`;
 
-/** Rupee amount that may be negative, e.g. "+₹860" / "−₹757". */
-const signedRupees = (value: number) =>
-  `${value < 0 ? "−" : "+"}₹${formatINR(Math.abs(value))}`;
 
 function formatDate(date: Date): string {
   const day = String(date.getDate()).padStart(2, "0");
@@ -285,11 +307,13 @@ interface BuildOptions {
   now?: Date;
   /** Backend installation counts; falls back to the pincode heuristics. */
   stats?: InstallationSummary;
+  /** Admin's EMI rates and offer banner; defaults when the backend is down. */
+  settings?: QuotationDocumentSettings;
 }
 
 export function buildQuotationV2Data(
   input: QuotationV2Input,
-  { quoteNo, now = new Date(), stats }: BuildOptions,
+  { quoteNo, now = new Date(), stats, settings = DEFAULT_QUOTATION_SETTINGS }: BuildOptions,
 ): QuotationV2Data {
   const billAmount =
     typeof input.monthlyBill === "number" && input.monthlyBill > 0
@@ -308,11 +332,12 @@ export function buildQuotationV2Data(
     input.emiPerMonth,
     subsidy,
   );
-  // Priced with the same helper as the three tier cards, so the EMI on the
-  // summary page matches the one printed for the Smart system on the options
-  // page. (v1 scales the calculator's EMI here instead and the two pages end
-  // up a few rupees apart.)
-  const emi = fiveYearEmi(netCost);
+  // ── Financing ────────────────────────────────────────────────────────────
+  // 10% down on the full system cost; the rest, less the subsidy, is financed
+  // over ten years. The summary page and the three tier cards all come from
+  // `paymentBreakdown`, so the Smart card on page 5 matches page 12.
+  const emiRate = emiRateFor(sizeKW, settings.emiRates);
+  const quoted = paymentBreakdown(grossCost, subsidy, emiRate);
 
   // ── Monthly savings ──────────────────────────────────────────────────────
   // 80%–95% of the current bill, as the v1 investment summary computes it.
@@ -341,18 +366,14 @@ export function buildQuotationV2Data(
   const premiumTotal = smartTotal + 70000;
 
   const buildTier = (total: number): QuotationV2Tier => {
-    const final = total - subsidy;
-    const tierEmi = fiveYearEmi(final);
-    const minNet = minSavings - tierEmi;
-    const maxNet = maxSavings - tierEmi;
+    const b = paymentBreakdown(total, subsidy, emiRate);
     return {
       total: rupees(total),
-      final: rupees(final),
-      emi: `~${rupees(tierEmi)}/mo`,
-      emiNote:
-        minNet > 0
-          ? `Net positive from Day 1: saving +₹${formatINR(minNet)}–${formatINR(maxNet)}/mo`
-          : `Near break-even during EMI; full ₹${formatINR(minSavings)}–${formatINR(maxSavings)}/mo becomes pure savings once EMI ends`,
+      final: rupees(total - subsidy),
+      downPayment: rupees(b.downPayment),
+      financed: rupees(b.financed),
+      emi: rupees(b.emi),
+      daily: rupees(b.daily),
     };
   };
 
@@ -364,9 +385,6 @@ export function buildQuotationV2Data(
   // negative export, e.g. "-1-1 units/day".
   const minSurplus = Math.max(0, Math.round(minDaily - DAILY_USAGE_UNITS));
   const maxSurplus = Math.max(0, Math.round(maxDaily - DAILY_USAGE_UNITS));
-
-  const minNetEmi = minSavings - emi;
-  const maxNetEmi = maxSavings - emi;
 
   const firstName =
     input.customerName?.trim().split(/\s+/)[0] || input.customerName || "";
@@ -405,14 +423,16 @@ export function buildQuotationV2Data(
     hasSubsidy,
     subsidyAmount: rupees(subsidy),
     subsidyRowValue: hasSubsidy ? rupees(subsidy) : "Not applicable",
-    totalPayableLabel: hasSubsidy
-      ? "Total System Cost After Subsidy"
-      : "Total Payable",
     optionsSubtitle: hasSubsidy
-      ? `All prices shown after ${rupees(subsidy)} PM Surya Ghar subsidy. Pick what fits your home.`
-      : "All prices shown are the full system cost — PM Surya Ghar subsidy is not applicable. Pick what fits your home.",
-    afterSubsidyNote: `after ${rupees(subsidy)} subsidy`,
+      ? `Full system cost, down payment, ${rupees(subsidy)} PM Surya Ghar subsidy and EMI for each package.`
+      : "Full system cost, down payment and EMI for each package. Pick what fits your home.",
     sizeLabel: `${sizeKW} kW Solar System`,
+    // The customer calculator only ever quotes on-grid systems.
+    systemDescription: `${sizeKW} kW · ${
+      input.bom?.systemLabel?.startsWith("Hybrid") ? "Hybrid" : "On-Grid"
+    } Solar System`,
+    emiYears: EMI_YEARS,
+    emiRate: formatRate(emiRate),
     equivalentWatts: `${sizeKW * 1000} W`,
     premium: buildTier(premiumTotal),
     smart: buildTier(smartTotal),
@@ -430,13 +450,10 @@ export function buildQuotationV2Data(
     savedLakh: `₹${Math.round(paidToKsebLakh * 0.65)} lakh`,
     grossCost: rupees(grossCost),
     netCost: rupees(netCost),
-    emi: `~${rupees(emi)}/month`,
-    // The "positive from Day 1" claim only holds while the EMI stays below
-    // the monthly saving.
-    netMonthlyDuringEmi:
-      minNetEmi > 0
-        ? `+₹${formatINR(minNetEmi)}–${formatINR(maxNetEmi)} (positive from Day 1)`
-        : `${signedRupees(minNetEmi)} to ${signedRupees(maxNetEmi)}`,
+    downPayment: rupees(quoted.downPayment),
+    financed: rupees(quoted.financed),
+    emi: rupees(quoted.emi),
+    daily: rupees(quoted.daily),
     chart: {
       labels: input.graphData.labels.map((l) => l.replace("Year ", "")),
       withoutSolar: input.graphData.datasets[0]?.data ?? [],
@@ -448,6 +465,16 @@ export function buildQuotationV2Data(
     // 80% of the pre-tax registration fee of ₹1,000 per kW.
     ksebRefund: `${sizeKW}kw - Rs ${formatINR(sizeKW * 1000 * 0.8)}`,
 
-    offerValidDate: `${validUntil.getDate()} ${MONTHS[validUntil.getMonth()]} ${validUntil.getFullYear()}`,
+    offer: (() => {
+      const offer = resolveOffer(settings.offer, {
+        now,
+        fallbackUntil: validUntil,
+        malayalam: false,
+      });
+      return offer && {
+        ...offer,
+        validUntil: `${offer.validUntil.getDate()} ${MONTHS[offer.validUntil.getMonth()]} ${offer.validUntil.getFullYear()}`,
+      };
+    })(),
   };
 }
