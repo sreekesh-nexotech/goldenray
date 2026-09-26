@@ -11,13 +11,13 @@ const awards: Award[] = [
     title: "Best Technology-Enabled Solar Solutions Provider",
     description: "Kerala Energy Excellence Awards 2026.",
     image:
-      "https://golden-ray.b-cdn.net/images/Best%20Technology-Enabled%20Solar%20Solutions%20Provider%20award%20(1).jpg",
+      "https://golden-ray.b-cdn.net/About%20us/Best%20Technology-Enabled%20Solar%20Solutions%20Provider%20award.jpg",
   },
   {
     title: "Visionary Leader of the Year",
     description: "Harikrishnan K.R, Kerala Energy Excellence Awards 2026.",
     image:
-      "https://golden-ray.b-cdn.net/images/Visionary%20Leader%20of%20the%20Year.jpg",
+      "https://golden-ray.b-cdn.net/About%20us/Visionary%20Leader%20of%20the%20Year.jpg",
   },
 ];
 

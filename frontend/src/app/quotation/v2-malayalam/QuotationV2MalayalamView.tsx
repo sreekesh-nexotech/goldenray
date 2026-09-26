@@ -12,7 +12,12 @@ import {
   type QuotationV2Input,
 } from "@/components/QuotationV2Malayalam/quotationV2MalayalamData";
 import { sampleQuotationData } from "@/components/Quotation/sampleQuotationData";
-import type { QuotationDocumentSettings } from "@/components/QuotationV2/financing";
+import {
+  packagePrices,
+  type QuotationDocumentSettings,
+  type QuotationFinancing,
+} from "@/components/QuotationV2/financing";
+import { getQuotationFinancing } from "@/services/quotationEmiService";
 import { getQuotationSettings } from "@/services/quotationSettingsService";
 
 /**
@@ -32,6 +37,20 @@ export default function QuotationV2MalayalamView() {
   // Admin's EMI rates and offer banner. The document waits for them (they
   // change printed figures) and falls back to defaults if the backend is down.
   const [settings, setSettings] = useState<QuotationDocumentSettings | null>(null);
+
+  // EMI figures from the /emi-calculator engine, for this customer's prices.
+  const [financing, setFinancing] = useState<QuotationFinancing | null>(null);
+
+  useEffect(() => {
+    if (!input) return;
+    let cancelled = false;
+    getQuotationFinancing(packagePrices(input)).then((f) => {
+      if (!cancelled) setFinancing(f);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [input]);
 
   useEffect(() => {
     let cancelled = false;
@@ -61,10 +80,10 @@ export default function QuotationV2MalayalamView() {
 
   const data = useMemo(
     () =>
-      input && quoteNo && settings
-        ? buildQuotationV2MalayalamData(input, { quoteNo, stats, settings })
+      input && quoteNo && settings && financing
+        ? buildQuotationV2MalayalamData(input, { quoteNo, stats, settings, financing })
         : null,
-    [input, quoteNo, stats, settings],
+    [input, quoteNo, stats, settings, financing],
   );
 
   // Overlay the backend's real neighbourhood install counts once they arrive.
@@ -79,7 +98,7 @@ export default function QuotationV2MalayalamView() {
     };
   }, [data, stats]);
 
-  if (loading || !settings) {
+  if (loading || !settings || (input && !financing)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#123532]"></div>

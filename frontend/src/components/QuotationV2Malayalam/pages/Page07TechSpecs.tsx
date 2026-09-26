@@ -1642,7 +1642,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 color: "var(--black)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>ഡൗൺ പേയ്‌മെന്റ് (10%)</span></div><div style={{
+              }}>{`ഡൗൺ പേയ്‌മെന്റ് (${data.downPaymentPercent}%)`}</span></div><div style={{
               gridRow: "14",
               gridColumn: "2",
               position: "relative",

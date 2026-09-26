@@ -1,8 +1,9 @@
 // src/services/quotationSettingsService.ts
 //
-// EMI interest rates and the summary-page offer banner for the quotation
-// document, managed by admin in the Django BOM app (Django admin → Quotation
-// Settings, or PATCH /bom/api/quotation-settings/). The GET is public.
+// The summary-page offer banner for the quotation document, managed by admin
+// in the Django BOM app (Django admin → Quotation Settings, or PATCH
+// /bom/api/quotation-settings/). The GET is public. EMI figures come from the
+// EMI calculator instead — see quotationEmiService.ts.
 import { API_BASE_URL } from "@/config";
 import {
   DEFAULT_QUOTATION_SETTINGS,
@@ -14,8 +15,6 @@ const BOM_BASE_URL = API_BASE_URL.replace(/api\/?$/, "bom/");
 const ENDPOINT = `${BOM_BASE_URL}api/quotation-settings/`;
 
 interface QuotationSettingsApi {
-  emi_rate_up_to_3kw: string;
-  emi_rate_above_3kw: string;
   offer_enabled: boolean;
   offer_title: string;
   offer_description: string;
@@ -29,11 +28,6 @@ interface QuotationSettingsApi {
   offer_image_src: string;
 }
 
-const rate = (value: string, fallback: number) => {
-  const n = parseFloat(value);
-  return Number.isFinite(n) ? n : fallback;
-};
-
 /**
  * The admin's settings, or the built-in defaults if the backend cannot be
  * reached — a quotation must still render when the BOM service is down.
@@ -45,10 +39,6 @@ export async function getQuotationSettings(): Promise<QuotationDocumentSettings>
     const s: QuotationSettingsApi = await res.json();
     const d = DEFAULT_QUOTATION_SETTINGS;
     return {
-      emiRates: {
-        upTo3kW: rate(s.emi_rate_up_to_3kw, d.emiRates.upTo3kW),
-        above3kW: rate(s.emi_rate_above_3kw, d.emiRates.above3kW),
-      },
       offer: {
         enabled: Boolean(s.offer_enabled),
         title: s.offer_title ?? "",

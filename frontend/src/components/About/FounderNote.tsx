@@ -7,13 +7,14 @@ export default function FounderNote() {
         {/* Founder's note */}
         <div className=" flex flex-col md:flex-row gap-8 md:gap-12">
           {/* Photo */}
-          <div className="order-2 md:order-1 w-full md:w-[280px] flex-shrink-0">
-            <div className="relative w-full aspect-[4/3] md:aspect-square rounded-2xl overflow-hidden">
+          <div className="order-2 md:order-1 w-full max-w-[340px] mx-auto md:mx-0 md:w-[280px] flex-shrink-0">
+            {/* Matches the photo's own 1089×1280 ratio so nothing is cropped */}
+            <div className="relative w-full aspect-[1089/1280] rounded-2xl overflow-hidden">
               <Image
-                src="https://golden-ray.b-cdn.net/About%20us/6f0be9432f447d43a33ee2817ae83eb2e0a220cf.jpg"
+                src="https://golden-ray.b-cdn.net/About%20us/CEO%20Harikrishnan%20KR.jpg"
                 alt="Harikrishnan, Founder & CEO of Flarize"
                 fill
-                sizes="(min-width: 768px) 280px, 100vw"
+                sizes="(min-width: 768px) 280px, 340px"
                 className="object-cover shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
               />
             </div>
@@ -51,12 +52,12 @@ export default function FounderNote() {
             </p>
           </div>
           <div className="bg-white p-8 md:p-10 flex flex-col items-center text-center md:flex-row md:items-center md:text-left gap-6 md:w-[62%]">
-            <div className="relative w-24 h-28 md:w-28 md:h-32 flex-shrink-0 rounded-md overflow-hidden">
+            <div className="relative w-28 h-36 md:w-32 md:h-44 flex-shrink-0 rounded-md overflow-hidden">
               <Image
-                src="https://golden-ray.b-cdn.net/images/Advisor%20Georgekutty%20.jpg"
+                src="https://golden-ray.b-cdn.net/About%20us/Advisor%20Georgekutty%20.jpg"
                 alt="Georgekutty Kariyanappally"
                 fill
-                sizes="112px"
+                sizes="128px"
                 className="object-cover"
               />
             </div>

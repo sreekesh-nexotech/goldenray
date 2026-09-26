@@ -174,14 +174,11 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "rgb(0,0,0)",
               flexGrow: 1,
-              alignSelf: "stretch",
+              alignSelf: "center",
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Elite System (Micro inverter)</span>{"\n"}<span style={{
-                fontWeight: 300,
-                fontSize: 23
-              }}>{data.premium.total}</span></span></div><div style={{
+              }}>Elite System (Micro inverter)</span></span></div><div style={{
             gridRow: "1",
             gridColumn: "3",
             position: "relative",
@@ -210,14 +207,11 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "rgb(0,0,0)",
               flexGrow: 1,
-              alignSelf: "stretch",
+              alignSelf: "center",
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Smart System</span>{"\n"}<span style={{
-                fontWeight: 300,
-                fontSize: 23
-              }}>{data.smart.total}</span></span></div><div style={{
+              }}>Smart System</span></span></div><div style={{
             gridRow: "1",
             gridColumn: "4",
             position: "relative",
@@ -247,14 +241,11 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "rgb(0,0,0)",
               flexGrow: 1,
-              alignSelf: "stretch",
+              alignSelf: "center",
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Essential System</span>{"\n"}<span style={{
-                fontWeight: 300,
-                fontSize: 23
-              }}>{data.basic.total}</span></span></div><div style={{
+              }}>Essential System</span></span></div><div style={{
             gridRow: "2",
             gridColumn: "1",
             position: "relative",

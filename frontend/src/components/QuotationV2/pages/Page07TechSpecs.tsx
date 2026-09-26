@@ -2266,7 +2266,7 @@ export default function Page07TechSpecs({
                     flexGrow: 1,
                     alignSelf: "stretch",
                   }}
-                >Down Payment (10%)</span>
+                >{`Down Payment (${data.downPaymentPercent}%)`}</span>
               </div><div
                 style={{
                   gridRow: "14",

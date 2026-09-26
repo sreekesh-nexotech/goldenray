@@ -2,31 +2,120 @@
  * Payment breakdown, EMI and the summary-page offer banner, shared by the
  * English and Malayalam quotations.
  *
- * Every price on pages 5, 7 and 12 is broken down the same way:
+ * The EMI follows the /emi-calculator page exactly — the quotation asks the
+ * same backend engine (`POST /api/emi-calculator/quotation/`, see
+ * `services/quotationEmiService.ts`), so the Content Studio's EMI rules,
+ * minimum down payment and daily divisor drive both:
  *
- *   Total System Cost − Down Payment (10%) − Subsidy = Amount Payable / Financed
+ *   Total System Cost − Down Payment          = X   (picks the rate band)
+ *   X − Subsidy (if applicable)               = Amount Payable / Financed (the loan)
+ *   EMI on the loan over ten years; Daily Investment = EMI ÷ 30
  *
- * and the EMI is always on the amount financed, over ten years. The interest
- * rates and the offer banner are admin-controlled in the Django BOM app
- * (`/bom/api/quotation-settings/`, see `services/quotationSettingsService.ts`);
- * the defaults here apply while that is unreachable.
+ * `localFinancing` below is only the fallback for when that backend cannot be
+ * reached; it mirrors the calculator's policy at the time of writing.
  */
+import {
+  quotationPricing,
+  subsidyForEligibility,
+} from "@/components/Quotation/subsidy";
 
-export const DOWN_PAYMENT_SHARE = 0.1;
 export const EMI_YEARS = 10;
 
-/**
- * PM Surya Ghar loans are priced by system size: one rate for systems up to
- * 3 kW, another for anything larger.
- */
-export const EMI_SIZE_THRESHOLD_KW = 3;
+/** Offline fallback only — the live values come from the EMI calculator. */
+const FALLBACK_POLICY = {
+  downPaymentPercent: 10,
+  /** X = total − down payment at or below this is at `rateAtOrBelow`. */
+  threshold: 200000,
+  rateAtOrBelow: 5.75,
+  rateAbove: 8,
+  dailyDivisor: 30,
+};
 
-export interface EmiRates {
-  upTo3kW: number;
-  above3kW: number;
+export type PackageKey = "premium" | "smart" | "basic";
+export const PACKAGE_KEYS: PackageKey[] = ["premium", "smart", "basic"];
+
+/** One package's financing, as the EMI calculator works it out. */
+export interface PackageFinancing {
+  downPaymentPercent: number;
+  downPayment: number;
+  /** The loan: total − down payment − subsidy. */
+  financed: number;
+  /** Annual rate, in percent. */
+  rate: number;
+  emi: number;
+  daily: number;
 }
 
-export const DEFAULT_EMI_RATES: EmiRates = { upTo3kW: 5.75, above3kW: 7.9 };
+export type QuotationFinancing = Record<PackageKey, PackageFinancing>;
+
+/** What the quotation prices, before any financing. */
+export interface PackagePrices {
+  sizeKW: number;
+  /** Applied subsidy; 0 for a Non-DCR customer. */
+  subsidy: number;
+  /** Pre-subsidy total per package. */
+  totals: Record<PackageKey, number>;
+}
+
+/**
+ * The three package totals. The recommended ("Smart") package is the system
+ * the calculator priced; the other two sit ±₹70,000 around it, as the
+ * technical-specification table has always derived them.
+ */
+export function packagePrices(input: {
+  systemSize: string;
+  systemPrice: number;
+  emiPerMonth: number;
+  subsidyEligibility?: string;
+}): PackagePrices {
+  const subsidy = subsidyForEligibility(input.subsidyEligibility);
+  const { grossCost } = quotationPricing(input.systemPrice, input.emiPerMonth, subsidy);
+  return {
+    sizeKW: parseFloat(input.systemSize) || 5,
+    subsidy,
+    totals: { premium: grossCost + 70000, smart: grossCost, basic: grossCost - 70000 },
+  };
+}
+
+/** "5.75%" / "8%" — no trailing zeros. */
+export function formatRate(rate: number): string {
+  return `${Number(rate.toFixed(2))}%`;
+}
+
+/** Exact monthly instalment on `principal` at `annualRatePct` over `years`. */
+function exactEmi(principal: number, annualRatePct: number, years = EMI_YEARS): number {
+  if (principal <= 0 || annualRatePct <= 0) return 0;
+  const months = years * 12;
+  const r = annualRatePct / 100 / 12;
+  const growth = Math.pow(1 + r, months);
+  return (principal * r * growth) / (growth - 1);
+}
+
+/** The calculator's policy computed locally, for when its backend is down. */
+export function localFinancing(prices: PackagePrices): QuotationFinancing {
+  const p = FALLBACK_POLICY;
+  const one = (total: number): PackageFinancing => {
+    const downPayment = Math.round((total * p.downPaymentPercent) / 100);
+    const x = total - downPayment;
+    const rate = x > p.threshold ? p.rateAbove : p.rateAtOrBelow;
+    const financed = Math.max(0, x - Math.min(prices.subsidy, total));
+    // As the engine does: the daily figure divides the exact EMI.
+    const emi = exactEmi(financed, rate);
+    return {
+      downPaymentPercent: p.downPaymentPercent,
+      downPayment,
+      financed,
+      rate,
+      emi: Math.round(emi),
+      daily: Math.round(emi / p.dailyDivisor),
+    };
+  };
+  return {
+    premium: one(prices.totals.premium),
+    smart: one(prices.totals.smart),
+    basic: one(prices.totals.basic),
+  };
+}
 
 export interface OfferSettings {
   enabled: boolean;
@@ -44,13 +133,11 @@ export interface OfferSettings {
 }
 
 export interface QuotationDocumentSettings {
-  emiRates: EmiRates;
   offer: OfferSettings;
 }
 
 /** What the summary page printed before the banner became admin-controlled. */
 export const DEFAULT_QUOTATION_SETTINGS: QuotationDocumentSettings = {
-  emiRates: DEFAULT_EMI_RATES,
   offer: {
     enabled: true,
     title: "Priority 10-Day Installation",
@@ -64,46 +151,6 @@ export const DEFAULT_QUOTATION_SETTINGS: QuotationDocumentSettings = {
     imageUrl: "https://golden-ray.b-cdn.net/icons/37.png",
   },
 };
-
-/** Annual interest rate, in percent, for a system of `sizeKW`. */
-export function emiRateFor(sizeKW: number, rates: EmiRates = DEFAULT_EMI_RATES): number {
-  const rate = sizeKW <= EMI_SIZE_THRESHOLD_KW ? rates.upTo3kW : rates.above3kW;
-  return Number.isFinite(rate) && rate >= 0 ? rate : DEFAULT_EMI_RATES.above3kW;
-}
-
-/** "5.75%" / "7.9%" — no trailing zeros. */
-export function formatRate(rate: number): string {
-  return `${Number(rate.toFixed(2))}%`;
-}
-
-/** Monthly instalment on `principal` at `annualRatePct` over `years`, to the rupee. */
-export function loanEmi(principal: number, annualRatePct: number, years = EMI_YEARS): number {
-  if (principal <= 0) return 0;
-  const months = years * 12;
-  const r = annualRatePct / 100 / 12;
-  if (r === 0) return Math.round(principal / months);
-  const growth = Math.pow(1 + r, months);
-  return Math.round((principal * r * growth) / (growth - 1));
-}
-
-export interface PaymentBreakdown {
-  downPayment: number;
-  financed: number;
-  emi: number;
-  daily: number;
-}
-
-/** Down payment, amount financed, EMI and daily cost for a pre-subsidy price. */
-export function paymentBreakdown(
-  grossCost: number,
-  subsidy: number,
-  annualRatePct: number,
-): PaymentBreakdown {
-  const downPayment = Math.round(grossCost * DOWN_PAYMENT_SHARE);
-  const financed = Math.max(0, grossCost - downPayment - subsidy);
-  const emi = loanEmi(financed, annualRatePct);
-  return { downPayment, financed, emi, daily: Math.round(emi / 30) };
-}
 
 export interface ResolvedOffer {
   title: string;

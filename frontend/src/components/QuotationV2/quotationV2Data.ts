@@ -20,11 +20,13 @@ import {
 import {
   DEFAULT_QUOTATION_SETTINGS,
   EMI_YEARS,
-  emiRateFor,
   formatRate,
-  paymentBreakdown,
+  localFinancing,
+  packagePrices,
   resolveOffer,
+  type PackageFinancing,
   type QuotationDocumentSettings,
+  type QuotationFinancing,
 } from "@/components/QuotationV2/financing";
 
 /** What the customer details form writes to sessionStorage. */
@@ -55,6 +57,8 @@ export interface QuotationV2Tier {
   downPayment: string;
   /** Total − down payment − subsidy; what the EMI is on. */
   financed: string;
+  /** This package's interest rate, e.g. "5.75%"; set by total − down payment. */
+  emiRate: string;
   /** Monthly EMI on the financed amount, e.g. "₹2,646". */
   emi: string;
   /** EMI ÷ 30, e.g. "₹88". */
@@ -98,7 +102,9 @@ export interface QuotationV2Data {
   /** "5 kW · On-Grid Solar System", under each package name on page 5. */
   systemDescription: string;
   emiYears: number;
-  /** Interest rate for this system size, e.g. "7.9%". */
+  /** Minimum down payment the EMI calculator applies, e.g. 10. */
+  downPaymentPercent: number;
+  /** Interest rate for the quoted package, e.g. "5.75%". */
   emiRate: string;
   equivalentWatts: string;
   premium: QuotationV2Tier;
@@ -309,11 +315,16 @@ interface BuildOptions {
   stats?: InstallationSummary;
   /** Admin's EMI rates and offer banner; defaults when the backend is down. */
   settings?: QuotationDocumentSettings;
+  /**
+   * Per-package financing from the EMI calculator's engine (see
+   * services/quotationEmiService.ts); computed locally when omitted.
+   */
+  financing?: QuotationFinancing;
 }
 
 export function buildQuotationV2Data(
   input: QuotationV2Input,
-  { quoteNo, now = new Date(), stats, settings = DEFAULT_QUOTATION_SETTINGS }: BuildOptions,
+  { quoteNo, now = new Date(), stats, settings = DEFAULT_QUOTATION_SETTINGS, financing }: BuildOptions,
 ): QuotationV2Data {
   const billAmount =
     typeof input.monthlyBill === "number" && input.monthlyBill > 0
@@ -333,11 +344,13 @@ export function buildQuotationV2Data(
     subsidy,
   );
   // ── Financing ────────────────────────────────────────────────────────────
-  // 10% down on the full system cost; the rest, less the subsidy, is financed
-  // over ten years. The summary page and the three tier cards all come from
-  // `paymentBreakdown`, so the Smart card on page 5 matches page 12.
-  const emiRate = emiRateFor(sizeKW, settings.emiRates);
-  const quoted = paymentBreakdown(grossCost, subsidy, emiRate);
+  // The /emi-calculator page's own policy, from its backend engine: down
+  // payment, rate band (on total − down payment), loan (less the subsidy),
+  // EMI and daily amount for each package. The summary page is the quoted
+  // ("Smart") package, so page 12 always matches its card on page 5.
+  const prices = packagePrices(input);
+  const fin = financing ?? localFinancing(prices);
+  const quoted = fin.smart;
 
   // ── Monthly savings ──────────────────────────────────────────────────────
   // 80%–95% of the current bill, as the v1 investment summary computes it.
@@ -361,17 +374,18 @@ export function buildQuotationV2Data(
   // instead prints fixed ₹2,60,000/₹1,90,000/₹1,20,000 figures, which
   // contradict its own spec table for any system the calculator did not price
   // at ₹1,90,000; v2 drives both pages from this one table.
-  const smartTotal = grossCost;
-  const basicTotal = smartTotal - 70000;
-  const premiumTotal = smartTotal + 70000;
+  const smartTotal = prices.totals.smart;
+  const basicTotal = prices.totals.basic;
+  const premiumTotal = prices.totals.premium;
 
-  const buildTier = (total: number): QuotationV2Tier => {
-    const b = paymentBreakdown(total, subsidy, emiRate);
+  const buildTier = (total: number, b: PackageFinancing): QuotationV2Tier => {
     return {
       total: rupees(total),
       final: rupees(total - subsidy),
       downPayment: rupees(b.downPayment),
       financed: rupees(b.financed),
+      // Each package has its own rate: it depends on its total − down payment.
+      emiRate: formatRate(b.rate),
       emi: rupees(b.emi),
       daily: rupees(b.daily),
     };
@@ -432,11 +446,13 @@ export function buildQuotationV2Data(
       input.bom?.systemLabel?.startsWith("Hybrid") ? "Hybrid" : "On-Grid"
     } Solar System`,
     emiYears: EMI_YEARS,
-    emiRate: formatRate(emiRate),
+    downPaymentPercent: quoted.downPaymentPercent,
+    // Rate for the quoted package, on the summary page.
+    emiRate: formatRate(quoted.rate),
     equivalentWatts: `${sizeKW * 1000} W`,
-    premium: buildTier(premiumTotal),
-    smart: buildTier(smartTotal),
-    basic: buildTier(basicTotal),
+    premium: buildTier(premiumTotal, fin.premium),
+    smart: buildTier(smartTotal, fin.smart),
+    basic: buildTier(basicTotal, fin.basic),
 
     monthlyBillValue: rupees(billAmount),
     withSolarBill: `₹${formatINR(WITH_SOLAR_BILL_MIN)}-${formatINR(

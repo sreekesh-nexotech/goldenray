@@ -7,26 +7,27 @@ const teamMembers = [
     name: "Jude James",
     title: "Operations Manager",
     linkedin: "https://www.linkedin.com/in/jude-james-38b45263/",
-    imageUrl: "https://golden-ray.b-cdn.net/images/Operations%20Manager.jpg",
+    imageUrl: "https://golden-ray.b-cdn.net/About%20us/Operations%20Manager.jpg",
   },
-  {
-    name: "Aromal K M",
-    title: "CTO - Chief Technology Officer",
-    linkedin:
-      "https://www.linkedin.com/in/aromal-km-627ba3325/?originalSubdomain=in",
-    imageUrl: "https://golden-ray.b-cdn.net/About%20us/Team/Aromal%20KM.jpg",
-  },
+  // Hidden for now; restore this entry (and lg:grid-cols-4 below) to bring him back.
+  // {
+  //   name: "Aromal K M",
+  //   title: "CTO - Chief Technology Officer",
+  //   linkedin:
+  //     "https://www.linkedin.com/in/aromal-km-627ba3325/?originalSubdomain=in",
+  //   imageUrl: "https://golden-ray.b-cdn.net/About%20us/Team/Aromal%20KM.jpg",
+  // },
   {
     name: "Ananthakrishnan G",
     title: "Project Head",
     linkedin: "https://www.linkedin.com/in/ananthakrishnan-g-4421b1276/",
-    imageUrl: "https://golden-ray.b-cdn.net/images/Project%20Head%20.jpg",
+    imageUrl: "https://golden-ray.b-cdn.net/About%20us/Project%20Head%20.jpg",
   },
   {
     name: "Anupriya MS",
     title: "Sales Head",
     linkedin: "https://www.linkedin.com/in/anupriya-m-s-22b989338/",
-    imageUrl: "https://golden-ray.b-cdn.net/About%20us/Team/Anupriya%20MS.jpeg",
+    imageUrl: "https://golden-ray.b-cdn.net/About%20us/Sales%20head.jpg",
   },
   
 ];
@@ -46,7 +47,7 @@ const TeamSection = ({ members = teamMembers }) => {
         </div>
 
         {/* Team Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {members.map((member, index) => (
             <TeamMember
               key={index}

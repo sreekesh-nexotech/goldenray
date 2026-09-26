@@ -17,6 +17,7 @@ interface TierPricing {
   total: string;
   downPayment: string;
   financed: string;
+  emiRate: string;
   emi: string;
   daily: string;
 }
@@ -27,6 +28,7 @@ interface PricingData {
   subsidyAmount: string;
   systemDescription: string;
   emiYears: number;
+  downPaymentPercent: number;
   emiRate: string;
   premium: TierPricing;
   smart: TierPricing;
@@ -65,7 +67,7 @@ export const LABELS: Record<Language, {
   systemCostPreSubsidy: string;
   systemCost: string;
   paymentBreakdown: string;
-  downPayment: string;
+  downPayment: (percent: number) => string;
   subsidy: string;
   financed: string;
   emi: (years: number, rate: string) => string;
@@ -85,7 +87,7 @@ export const LABELS: Record<Language, {
     systemCostPreSubsidy: "System Cost (Pre-Subsidy)",
     systemCost: "System Cost",
     paymentBreakdown: "Payment Breakdown",
-    downPayment: "Down Payment (10%)",
+    downPayment: (percent: number) => `Down Payment (${percent}%)`,
     subsidy: "PM Surya Ghar Subsidy",
     financed: "Amount Payable / Financed",
     emi: (years: number, rate: string) => `EMI (${years} yrs @ ${rate})`,
@@ -105,7 +107,7 @@ export const LABELS: Record<Language, {
     systemCostPreSubsidy: "സിസ്റ്റത്തിന്റെ മൊത്തം വില (സബ്‌സിഡിക്ക് മുമ്പ്)",
     systemCost: "സിസ്റ്റത്തിന്റെ മൊത്തം വില",
     paymentBreakdown: "പേയ്‌മെന്റ് വിശദാംശങ്ങൾ",
-    downPayment: "ഡൗൺ പേയ്‌മെന്റ് (10%)",
+    downPayment: (percent: number) => `ഡൗൺ പേയ്‌മെന്റ് (${percent}%)`,
     subsidy: "പി.എം. സൂര്യ ഘർ സബ്‌സിഡി",
     financed: "അടയ്ക്കേണ്ട / ലോൺ തുക",
     emi: (years: number, rate: string) => `EMI (${years} വർഷം @ ${rate})`,
@@ -270,7 +272,7 @@ function PackageCard({
             {l.paymentBreakdown}
           </span>
           <div style={row({ lineHeight: "28px" })}>
-            <span style={text(16, 400, GREY)}>{l.downPayment}</span>
+            <span style={text(16, 400, GREY)}>{l.downPayment(data.downPaymentPercent)}</span>
             <span style={text(17, 600, INK)}>{tier.downPayment}</span>
           </div>
           {data.hasSubsidy && (
@@ -299,7 +301,7 @@ function PackageCard({
         {/* EMI */}
         <div style={{ borderTop: RULE, marginTop: 10, paddingTop: 8, marginBottom: 10 }}>
           <span style={text(16, 400, GREY, { lineHeight: "20px", display: "block" })}>
-            {l.emi(data.emiYears, data.emiRate)}
+            {l.emi(data.emiYears, tier.emiRate)}
           </span>
           <span style={text(28, 700, ORANGE, { lineHeight: "32px", display: "block" })}>
             {tier.emi}{" "}
@@ -387,7 +389,7 @@ export function InvestmentSummaryCard({
             {l.paymentBreakdown}
           </span>
           <div style={row({ padding: "6px 0" })}>
-            <span style={text(22, 400, "var(--grey)")}>{l.downPayment}</span>
+            <span style={text(22, 400, "var(--grey)")}>{l.downPayment(data.downPaymentPercent)}</span>
             <span style={text(22, 600, "rgb(17,24,39)")}>{data.downPayment}</span>
           </div>
           {data.hasSubsidy && (

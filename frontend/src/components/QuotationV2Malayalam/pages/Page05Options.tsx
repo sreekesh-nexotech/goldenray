@@ -174,14 +174,11 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "rgb(0,0,0)",
               flexGrow: 1,
-              alignSelf: "stretch",
+              alignSelf: "center",
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Elite System (Micro inverter)</span>{"\n"}<span style={{
-                fontWeight: 300,
-                fontSize: 23
-              }}>{data.premium.total}</span></span></div><div style={{
+              }}>Elite System (Micro inverter)</span></span></div><div style={{
             gridRow: "1",
             gridColumn: "3",
             position: "relative",
@@ -210,14 +207,11 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "rgb(0,0,0)",
               flexGrow: 1,
-              alignSelf: "stretch",
+              alignSelf: "center",
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Smart System </span>{"\n"}<span style={{
-                fontWeight: 300,
-                fontSize: 23
-              }}>{data.smart.total}</span></span></div><div style={{
+              }}>Smart System </span></span></div><div style={{
             gridRow: "1",
             gridColumn: "4",
             position: "relative",
@@ -247,14 +241,11 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "rgb(0,0,0)",
               flexGrow: 1,
-              alignSelf: "stretch",
+              alignSelf: "center",
               whiteSpace: "pre-wrap"
             }}><span style={{
                 fontSize: 25
-              }}>Essential System</span>{"\n"}<span style={{
-                fontWeight: 300,
-                fontSize: 23
-              }}>{data.basic.total}</span></span></div><div style={{
+              }}>Essential System</span></span></div><div style={{
             gridRow: "2",
             gridColumn: "1",
             position: "relative",
@@ -269,7 +260,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             alignItems: "center",
             flexWrap: "nowrap",
             boxSizing: "border-box"
@@ -282,7 +273,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>ഇൻസ്റ്റലേഷൻ</span></div><div style={{
             gridRow: "2",
             gridColumn: "2",
@@ -298,7 +289,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -313,7 +304,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>5–10 പ്രവൃത്തി ദിവസങ്ങൾ</span></div><div style={{
             gridRow: "2",
             gridColumn: "3",
@@ -329,7 +320,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -344,7 +335,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>10–15 പ്രവൃത്തി ദിവസങ്ങൾ</span></div><div style={{
             gridRow: "2",
             gridColumn: "4",
@@ -360,7 +351,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -375,7 +366,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>15–20 പ്രവൃത്തി ദിവസങ്ങൾ</span></div><div style={{
             gridRow: "3",
             gridColumn: "1",
@@ -391,7 +382,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             alignItems: "center",
             flexWrap: "nowrap",
             boxSizing: "border-box"
@@ -404,7 +395,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>സർവീസ് റെസ്‌പോൺസ്</span></div><div style={{
             gridRow: "3",
             gridColumn: "2",
@@ -420,7 +411,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -435,7 +426,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>24×7 മുൻഗണനാ സേവനം</span></div><div style={{
             gridRow: "3",
             gridColumn: "3",
@@ -451,7 +442,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -466,7 +457,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}> മുൻഗണനാ സേവനം</span></div><div style={{
             gridRow: "3",
             gridColumn: "4",
@@ -482,7 +473,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -497,7 +488,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>ഓഫീസ് പ്രവർത്തന സമയങ്ങളിൽ</span></div><div style={{
             gridRow: "4",
             gridColumn: "1",
@@ -895,7 +886,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             alignItems: "center",
             flexWrap: "nowrap",
             boxSizing: "border-box"
@@ -908,7 +899,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>പ്രിവന്റീവ് മെയിന്റനൻസ്</span></div><div style={{
             gridRow: "7",
             gridColumn: "2",
@@ -924,7 +915,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -939,7 +930,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>5 വർഷം</span></div><div style={{
             gridRow: "7",
             gridColumn: "3",
@@ -955,7 +946,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -970,7 +961,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>5 വർഷം</span></div><div style={{
             gridRow: "7",
             gridColumn: "4",
@@ -986,7 +977,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -1001,7 +992,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>5 വർഷം</span></div><div style={{
             gridRow: "8",
             gridColumn: "1",
@@ -1017,7 +1008,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             alignItems: "center",
             flexWrap: "nowrap",
             boxSizing: "border-box"
@@ -1030,7 +1021,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
+              alignSelf: "center"
             }}>വാർഷിക പരിശോധന</span></div><div style={{
             gridRow: "8",
             gridColumn: "2",
@@ -1046,7 +1037,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -1061,8 +1052,8 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
-            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷം)</span></div><div style={{
+              alignSelf: "center"
+            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷത്തിൽ)</span></div><div style={{
             gridRow: "8",
             gridColumn: "3",
             position: "relative",
@@ -1077,7 +1068,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -1092,8 +1083,8 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
-            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷം)</span></div><div style={{
+              alignSelf: "center"
+            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷത്തിൽ)</span></div><div style={{
             gridRow: "8",
             gridColumn: "4",
             position: "relative",
@@ -1108,7 +1099,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             display: "flex",
             flexDirection: "row",
             gap: 10,
-            padding: "24px 20px 24px 20px",
+            padding: "8px 20px 8px 20px",
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "nowrap",
@@ -1123,8 +1114,8 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1,
-              alignSelf: "stretch"
-            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷം)</span></div><div style={{
+              alignSelf: "center"
+            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷത്തിൽ)</span></div><div style={{
             gridRow: "9",
             gridColumn: "1",
             position: "relative",
@@ -1182,7 +1173,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷം)</span></div><div style={{
+            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷത്തിൽ)</span></div><div style={{
             gridRow: "9",
             gridColumn: "3",
             position: "relative",
@@ -1212,7 +1203,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
               letterSpacing: "-0.500px",
               color: "var(--grey)",
               flexGrow: 1
-            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷം)</span></div><div style={{
+            }}>2 ഫ്രീ വിസിറ്റ് (1 വർഷത്തിൽ)</span></div><div style={{
             gridRow: "9",
             gridColumn: "4",
             position: "relative",
