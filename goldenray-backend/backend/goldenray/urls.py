@@ -23,6 +23,7 @@ from .views.affiliate_application_views import AffiliateApplicationAPIView
 from .views.emicalculator import (
     EMICalculatorAPIView,
     EMICalculatorConfigAPIView,
+    EMIQuotationAPIView,
     EmiBankViewSet,
     EmiCalculatorSettingsAPIView,
     EmiInterestRateRuleViewSet,
@@ -103,6 +104,8 @@ urlpatterns = [
     # EMI Calculator (public)
     path("emi-calculator/", EMICalculatorAPIView.as_view(), name="emi-calculator"),
     path("emi-calculator/config/", EMICalculatorConfigAPIView.as_view(), name="emi-calculator-config"),
+    # The same policy applied to a quotation's own package prices.
+    path("emi-calculator/quotation/", EMIQuotationAPIView.as_view(), name="emi-calculator-quotation"),
     # EMI Calculator configuration (Content Studio authoring)
     path("emi-admin/settings/", EmiCalculatorSettingsAPIView.as_view(), name="emi-admin-settings"),
     path("emi-admin/", include(emi_admin_router.urls)),

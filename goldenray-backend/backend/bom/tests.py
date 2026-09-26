@@ -38,8 +38,6 @@ class QuotationSettingsApiTests(TestCase):
     def test_public_get_returns_defaults(self):
         res = self.client.get(URL)
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data["emi_rate_up_to_3kw"], "5.75")
-        self.assertEqual(res.data["emi_rate_above_3kw"], "7.90")
         self.assertEqual(res.data["offer_title"], "Priority 10-Day Installation")
         self.assertTrue(res.data["offer_active"])
         self.assertEqual(res.data["offer_image_src"], "https://golden-ray.b-cdn.net/icons/37.png")
@@ -56,19 +54,14 @@ class QuotationSettingsApiTests(TestCase):
     def test_partial_update(self):
         self.auth()
         res = self.client.patch(
-            URL, {"emi_rate_up_to_3kw": "6.00", "offer_title": "Free Panel Cleaning"}, format="json",
+            URL, {"offer_details": "T&C apply", "offer_title": "Free Panel Cleaning"}, format="json",
         )
         self.assertEqual(res.status_code, 200, res.data)
         obj = QuotationSettings.load()
-        self.assertEqual(str(obj.emi_rate_up_to_3kw), "6.00")
+        self.assertEqual(obj.offer_details, "T&C apply")
         self.assertEqual(obj.offer_title, "Free Panel Cleaning")
-        self.assertEqual(str(obj.emi_rate_above_3kw), "7.90")  # untouched
+        self.assertEqual(obj.offer_description, "Fast-tracked scheduling and execution")  # untouched
         self.assertEqual(QuotationSettings.objects.count(), 1)
-
-    def test_rejects_out_of_range_rate(self):
-        self.auth()
-        res = self.client.patch(URL, {"emi_rate_above_3kw": "45"}, format="json")
-        self.assertEqual(res.status_code, 400)
 
     def test_rejects_offer_that_ends_before_it_starts(self):
         self.auth()

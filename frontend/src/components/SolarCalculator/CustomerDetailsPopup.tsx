@@ -1,10 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { getQuotationBom, type QuotationBom } from "@/services/bomService";
 import { submitContactForm } from "@/services/basicContactService";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
-import { quotationFileName } from "@/lib/quotationFileName";
+import {
+  assembleQuotationData,
+  requestQuotationPdf,
+  saveFile,
+  type QuotationData,
+} from "@/services/quotationPdfService";
 
 interface CustomerDetailsPopupProps {
   onClose: () => void;
@@ -21,25 +25,8 @@ interface CustomerDetailsPopupProps {
   };
 }
 
-export interface QuotationData {
-  customerName: string;
-  address: string;
-  phoneNumber: string;
-  preferredLanguage: QuotationLanguage;
-  subsidyEligibility: string;
-  pincode: string;
-  monthlyBill: number | "";
-  systemSize: string;
-  systemPrice: number;
-  emiPerMonth: number;
-  graphData: {
-    labels: string[];
-    datasets: {
-      data: number[];
-    }[];
-  };
-  bom?: QuotationBom;
-}
+// Kept exported from here for existing imports; defined in quotationPdfService.
+export type { QuotationData };
 
 export default function CustomerDetailsPopup({
   onClose,
@@ -124,23 +111,20 @@ export default function CustomerDetailsPopup({
       },
     }).catch(() => {});
 
-    // Fetch the Bill of Materials from the backend BOM engine (best-effort).
-    const bom = await getQuotationBom({ systemSize, customerName });
-
-    const quotationData: QuotationData = {
-      customerName,
-      address,
-      phoneNumber,
-      preferredLanguage,
-      subsidyEligibility,
-      pincode,
-      monthlyBill,
-      systemSize,
-      systemPrice,
-      emiPerMonth,
-      graphData,
-      bom: bom ?? undefined,
-    };
+    // Calculator figures + the BOM (best-effort), the same assembly the
+    // Studio's accounting copy uses.
+    const quotationData: QuotationData = await assembleQuotationData(
+      {
+        customerName,
+        address,
+        phoneNumber,
+        preferredLanguage,
+        subsidyEligibility,
+        pincode,
+        monthlyBill,
+      },
+      { systemSize, systemPrice, emiPerMonth, graphData },
+    );
 
     // Also store in sessionStorage so /quotation/v2 (or /quotation/v2-malayalam)
     // can be opened directly.
@@ -150,37 +134,13 @@ export default function CustomerDetailsPopup({
     abortControllerRef.current = abortController;
 
     try {
-      // Chrome renders the real /quotation/v2 (or /quotation/v2-malayalam) page
-      // server-side and returns the PDF, so the download is exactly what the
-      // preview page shows. The Malayalam document is a separate page/PDF
-      // pipeline, not a language flag on the English one.
-      // Deliberately not under /api/ — nginx already routes that whole
-      // prefix to the Django backend, so a route here would 404 in
-      // production despite working locally. See fe-api/ sibling routes.
-      const pdfEndpoint =
-        preferredLanguage === "Malayalam"
-          ? "/fe-api/quotation/pdf-malayalam"
-          : "/fe-api/quotation/pdf";
-      const response = await fetch(pdfEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(quotationData),
+      // Chrome renders the real /quotation/v2 (or /quotation/v2-malayalam)
+      // page server-side, so the download is exactly what the preview shows.
+      const { blob, fileName } = await requestQuotationPdf(quotationData, {
         signal: abortController.signal,
       });
-
-      if (!response.ok) throw new Error(`PDF request failed: ${response.status}`);
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
       // "Customer Name_System Capacity.pdf", e.g. "Shaithya_5kW.pdf".
-      link.download = quotationFileName(customerName, systemSize);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      // Revoking immediately can cancel the download in some browsers.
-      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      saveFile(blob, fileName);
 
       setIsGenerating(false);
       onClose();

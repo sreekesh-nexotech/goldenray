@@ -3,6 +3,7 @@ import puppeteer, { type Browser } from "puppeteer-core";
 
 import { resolveChromePath } from "@/lib/chromePath";
 import { attachmentHeader, quotationFileName } from "@/lib/quotationFileName";
+import { pageCountFor, parseVariant } from "@/components/QuotationV2/pageSets";
 
 /**
  * Renders the v2 quotation to a PDF with real Chrome.
@@ -35,6 +36,9 @@ export async function POST(request: Request) {
 
   try {
     const quotationData = await request.json();
+    // `?variant=accounting` is the Studio's short copy (pages 1, 5, 7, 8).
+    const variant = parseVariant(new URL(request.url).searchParams.get("variant"));
+    const expectedPages = pageCountFor(variant);
 
     if (!quotationData || typeof quotationData !== "object") {
       return NextResponse.json(
@@ -95,16 +99,17 @@ export async function POST(request: Request) {
       window.sessionStorage.setItem("quotationData", data);
     }, payload);
 
-    await page.goto(`${selfOrigin()}/quotation/v2`, {
+    await page.goto(`${selfOrigin()}/quotation/v2?variant=${variant}`, {
       waitUntil: "networkidle0",
       timeout: 90_000,
     });
 
-    // All twelve sheets must be in the DOM before printing.
+    // Every sheet of this copy must be in the DOM before printing.
     await page.waitForSelector(".qv2-sheet", { timeout: 30_000 });
     await page.waitForFunction(
-      () => document.querySelectorAll(".qv2-sheet").length >= 12,
+      (count: number) => document.querySelectorAll(".qv2-sheet").length >= count,
       { timeout: 30_000 },
+      expectedPages,
     );
     await page.evaluateHandle("document.fonts.ready");
 
@@ -120,7 +125,7 @@ export async function POST(request: Request) {
       customerName?: string;
       systemSize?: string;
     };
-    const fileName = quotationFileName(customerName, systemSize);
+    const fileName = quotationFileName(customerName, systemSize, variant);
 
     return new NextResponse(Buffer.from(pdf), {
       headers: {

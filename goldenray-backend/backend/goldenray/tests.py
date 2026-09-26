@@ -242,3 +242,85 @@ class WebsiteFormsReachStudioTests(TestCase):
         app = JobApplication.objects.get(email="gen@example.com")
         self.assertEqual((app.position, app.department_name, app.availability, app.cover_note),
                          ("General application", "Operations", "Full-time", "I like solar."))
+
+
+class EmiQuotationTests(TestCase):
+    """The quotation's EMI endpoint must apply exactly the calculator's policy."""
+
+    URL = "/api/emi-calculator/quotation/"
+
+    def setUp(self):
+        from decimal import Decimal
+
+        from .models import EmiCalculatorSettings, EmiInterestRateRule, EmiSystemSize
+
+        # Today's policy: price − down payment up to ₹2L → 5.75%, above → 8%.
+        # Start from exactly that, whatever the seed migrations installed.
+        EmiInterestRateRule.objects.all().delete()
+        EmiInterestRateRule.objects.create(
+            label="up to 2L", max_loan=Decimal("200000"), rate=Decimal("5.75"),
+            min_rate=Decimal("5.75"), is_locked=True, priority=20,
+        )
+        EmiInterestRateRule.objects.create(
+            label="above 2L", min_loan=Decimal("200000.01"), rate=Decimal("8"),
+            min_rate=Decimal("8"), is_locked=True, priority=20,
+        )
+        EmiCalculatorSettings.load()
+        EmiSystemSize.objects.update_or_create(
+            capacity_kw=Decimal("5"),
+            defaults={"label": "5kW", "price_per_kw": Decimal("66000"), "is_active": True},
+        )
+
+    def post(self, body):
+        return self.client.post(self.URL, body, content_type="application/json")
+
+    def test_rate_band_follows_price_minus_down_payment(self):
+        res = self.post({"capacity_kw": 3, "packages": {
+            "elite": {"system_cost": 300000, "subsidy": 78000},   # basis 2,70,000 → 8%
+            "essential": {"system_cost": 200000, "subsidy": 78000},  # basis 1,80,000 → 5.75%
+        }})
+        self.assertEqual(res.status_code, 200, res.content)
+        elite, essential = res.json()["packages"]["elite"], res.json()["packages"]["essential"]
+        self.assertEqual(res.json()["tenure_years"], 10)
+
+        self.assertEqual(elite["down_payment"], 30000)
+        self.assertEqual(elite["rate_basis"], 270000)
+        self.assertEqual(elite["loan_amount"], 192000)
+        self.assertEqual(elite["interest_rate"], 8)
+
+        self.assertEqual(essential["rate_basis"], 180000)
+        self.assertEqual(essential["loan_amount"], 102000)
+        self.assertEqual(essential["interest_rate"], 5.75)
+        self.assertAlmostEqual(essential["daily_amount"], round(essential["emi_per_month"] / 30, 2))
+
+    def test_boundary_is_inclusive_at_two_lakh(self):
+        # 2,22,222.22 − 10% = 2,00,000.00 exactly → still the ≤ ₹2L band.
+        res = self.post({"capacity_kw": 3, "packages": {"p": {"system_cost": 222222.22, "subsidy": 0}}})
+        self.assertEqual(res.json()["packages"]["p"]["rate_basis"], 200000)
+        self.assertEqual(res.json()["packages"]["p"]["interest_rate"], 5.75)
+
+    def test_subsidy_lowers_emi_but_not_the_band(self):
+        with_sub = self.post({"capacity_kw": 5, "packages": {"p": {"system_cost": 330000, "subsidy": 78000}}}).json()
+        without = self.post({"capacity_kw": 5, "packages": {"p": {"system_cost": 330000, "subsidy": 0}}}).json()
+        self.assertEqual(with_sub["packages"]["p"]["interest_rate"], without["packages"]["p"]["interest_rate"])
+        self.assertLess(with_sub["packages"]["p"]["emi_per_month"], without["packages"]["p"]["emi_per_month"])
+
+    def test_matches_the_calculator_for_the_same_price(self):
+        from .utils import emi as emi_engine
+
+        calc = emi_engine.calculate(capacity_kw=5, tenure_years=10)
+        res = self.post({"capacity_kw": 5, "packages": {"p": {
+            "system_cost": calc["system"]["system_cost"], "subsidy": calc["subsidy"]["amount"],
+        }}}).json()["packages"]["p"]
+        self.assertEqual(res["interest_rate"], calc["interest"]["rate"])
+        self.assertEqual(res["loan_amount"], calc["loan"]["amount"])
+        self.assertEqual(res["emi_per_month"], calc["result"]["emi_per_month"])
+        self.assertEqual(res["daily_amount"], calc["result"]["daily_amount"])
+
+    def test_rejects_bad_input(self):
+        self.assertEqual(self.post({"capacity_kw": 3, "packages": {}}).status_code, 400)
+        self.assertEqual(self.post({"packages": {"p": {"system_cost": 1}}}).status_code, 400)
+        self.assertEqual(self.post({"capacity_kw": 3, "packages": {"p": {"system_cost": 0}}}).status_code, 400)
+        self.assertEqual(self.post({"capacity_kw": 3, "tenure_years": 99, "packages": {"p": {"system_cost": 1}}}).status_code, 400)
+        many = {str(i): {"system_cost": 100000} for i in range(7)}
+        self.assertEqual(self.post({"capacity_kw": 3, "packages": many}).status_code, 400)

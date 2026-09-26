@@ -30,7 +30,7 @@ export type StudioApiRole = "admin" | "editor" | "author";
 export type StudioModule =
   | "dashboard"
   | "pages" | "blogs" | "faqs" | "media" | "seo"
-  | "leads" | "emi"
+  | "leads" | "emi" | "quotations"
   | "careers" | "job_positions" | "applications" | "departments" | "career_page"
   | "users" | "roles" | "settings";
 

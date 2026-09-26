@@ -97,6 +97,13 @@ const I = {
       <path d="M8.5 18h.01M12 18h.01" />
     </svg>
   ),
+  quotations: (
+    <svg {...iconProps}>
+      <path d="M6.5 2.5h8l4 4v13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2Z" />
+      <path d="M14.5 2.5v4h4" />
+      <path d="M8.5 12h7M8.5 15.5h7M8.5 8.5h3" />
+    </svg>
+  ),
   careers: (
     <svg {...iconProps}>
       <path d="M3.5 20.5v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3" />
@@ -210,6 +217,7 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
     items: [
       { key: "enq", label: "Leads / Entries", href: "/studio/enquiries", icon: I.leads, module: "leads" },
       { key: "emi", label: "EMI Calculator", href: "/studio/emi-calculator", icon: I.emi, module: "emi" },
+      { key: "quo", label: "Quotations", href: "/studio/quotations", icon: I.quotations, module: "quotations" },
     ],
   },
   {

@@ -5,11 +5,12 @@ from .admin_views import (
     EmiSubsidyRuleViewSet,
     EmiSystemSizeViewSet,
 )
-from .views import EMICalculatorAPIView, EMICalculatorConfigAPIView
+from .views import EMICalculatorAPIView, EMICalculatorConfigAPIView, EMIQuotationAPIView
 
 __all__ = [
     "EMICalculatorAPIView",
     "EMICalculatorConfigAPIView",
+    "EMIQuotationAPIView",
     "EmiBankViewSet",
     "EmiCalculatorSettingsAPIView",
     "EmiInterestRateRuleViewSet",

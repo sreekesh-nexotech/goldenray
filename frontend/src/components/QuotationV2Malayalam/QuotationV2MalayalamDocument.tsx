@@ -50,15 +50,19 @@ const PAGES: PageEntry[] = [
 export function QuotationV2MalayalamPages({
   data,
   renderFrame,
+  pageIds,
 }: {
   data: QuotationV2Data;
+  /** Only these pages, in document order; the full document when omitted. */
+  pageIds?: readonly string[];
   renderFrame: (page: {
     id: string;
     children: React.ReactNode;
   }) => React.ReactNode;
 }) {
+  const pages = pageIds ? PAGES.filter(({ id }) => pageIds.includes(id)) : PAGES;
   return (
-    <>{PAGES.map(({ id, render }) => renderFrame({ id, children: render(data) }))}</>
+    <>{pages.map(({ id, render }) => renderFrame({ id, children: render(data) }))}</>
   );
 }
 
@@ -72,8 +76,11 @@ export function QuotationV2MalayalamPages({
  */
 export default function QuotationV2MalayalamDocument({
   data,
+  pageIds,
 }: {
   data: QuotationV2Data;
+  /** Only these pages (e.g. the accounting copy); all 12 when omitted. */
+  pageIds?: readonly string[];
 }) {
   const [zoomLevel, setZoomLevel] = useState(1);
 
@@ -104,6 +111,7 @@ export default function QuotationV2MalayalamDocument({
       >
         <QuotationV2MalayalamPages
           data={data}
+          pageIds={pageIds}
           renderFrame={({ id, children }) => (
             <A4PageFrame key={id} pageId={id}>
               {children}

@@ -87,6 +87,34 @@ def resolve_interest_rule(capacity_kw, loan_amount, system_cost=None):
     return candidates[0]
 
 
+def resolve_rate(capacity_kw, rate_basis, system_cost, settings, requested_rate=None):
+    """The interest rate the policy gives this loan.
+
+    Shared by the calculator and the quotation document so the two can never
+    quote different rates for the same system. Returns
+    ``(rate, base_rate, floor_rate, locked, rule)``.
+    """
+    rule = resolve_interest_rule(capacity_kw, rate_basis, system_cost)
+    if rule is None:
+        base_rate = Decimal(settings.default_interest_rate)
+        floor_rate = base_rate
+        locked = False
+    else:
+        base_rate = Decimal(rule.rate)
+        floor_rate = Decimal(rule.min_rate)
+        locked = rule.is_locked
+
+    if locked:
+        # Both loan-amount bands are fixed policy rates: a customer
+        # adjustment is accepted by the API but deliberately ignored.
+        rate = base_rate
+    elif requested_rate is not None:
+        rate = max(requested_rate, floor_rate)
+    else:
+        rate = max(base_rate, floor_rate)
+    return rate, base_rate, floor_rate, locked, rule
+
+
 def resolve_rate_unlock(
     capacity_kw, system_cost, loan_amount, current_rate,
     down_payment_amount, max_down_payment,
@@ -229,26 +257,10 @@ def calculate(
     rate_basis = _money(max(Decimal("0"), system_cost - down_payment_amount))
     loan_amount = _money(max(Decimal("0"), rate_basis - subsidy))
 
-    rule = resolve_interest_rule(resolved_capacity, rate_basis, system_cost)
     requested_rate = _dec(interest_rate_override)
-
-    if rule is None:
-        base_rate = Decimal(settings.default_interest_rate)
-        floor_rate = base_rate
-        locked = False
-    else:
-        base_rate = Decimal(rule.rate)
-        floor_rate = Decimal(rule.min_rate)
-        locked = rule.is_locked
-
-    if locked:
-        # Both loan-amount bands are fixed policy rates: a customer
-        # adjustment is accepted by the API but deliberately ignored.
-        interest_rate = base_rate
-    elif requested_rate is not None:
-        interest_rate = max(requested_rate, floor_rate)
-    else:
-        interest_rate = max(base_rate, floor_rate)
+    interest_rate, base_rate, floor_rate, locked, rule = resolve_rate(
+        resolved_capacity, rate_basis, system_cost, settings, requested_rate,
+    )
 
     unlock = resolve_rate_unlock(
         capacity_kw=resolved_capacity,
@@ -332,4 +344,46 @@ def calculate(
             "daily_saving_divisor": divisor,
             "monthly_savings": round(monthly_savings, 2),
         },
+    }
+
+
+def quotation_breakdown(capacity_kw, system_cost, subsidy, tenure_years, settings=None):
+    """The calculator's flow for a price the quotation already knows.
+
+    ``calculate`` prices a configured system size and clamps the price to its
+    slider band; a quotation instead carries its own per-package prices from
+    the BOM. Everything after the price is the calculator's own policy: the
+    minimum down payment, the rate band picked on price − down payment, the
+    EMI on price − down payment − subsidy, and the daily divisor. ``subsidy``
+    is whatever the quotation applies (0 when the customer is not eligible).
+    """
+    settings = settings or EmiCalculatorSettings.load()
+    capacity = _dec(capacity_kw)
+    system_cost = _money(_dec(system_cost))
+    if system_cost <= 0:
+        raise ValueError("system_cost must be greater than zero")
+    subsidy = min(max(_money(_dec(subsidy, Decimal("0"))), Decimal("0")), system_cost)
+
+    down_payment_percent = Decimal(settings.down_payment_min_percent)
+    down_payment_amount = _money(system_cost * down_payment_percent / Decimal("100"))
+    rate_basis = _money(max(Decimal("0"), system_cost - down_payment_amount))
+    loan_amount = _money(max(Decimal("0"), rate_basis - subsidy))
+
+    rate, _base, _floor, _locked, rule = resolve_rate(capacity, rate_basis, system_cost, settings)
+    emi = emi_calc(principal=float(loan_amount), interest_rate=float(rate), tenure_years=tenure_years)
+    divisor = settings.daily_saving_divisor or 30
+
+    return {
+        "system_cost": float(system_cost),
+        "down_payment_percent": float(down_payment_percent),
+        "down_payment": float(down_payment_amount),
+        "subsidy": float(subsidy),
+        "rate_basis": float(rate_basis),
+        "loan_amount": float(loan_amount),
+        "interest_rate": float(rate),
+        "rule_label": rule.label if rule else None,
+        "tenure_years": tenure_years,
+        "emi_per_month": emi["emi_per_month"],
+        "daily_amount": round(emi["emi_per_month"] / divisor, 2),
+        "daily_saving_divisor": divisor,
     }

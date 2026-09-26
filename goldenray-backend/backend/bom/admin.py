@@ -8,9 +8,6 @@ class QuotationSettingsAdmin(admin.ModelAdmin):
     """One row. Opening the changelist goes straight to it."""
 
     fieldsets = (
-        ("EMI (10-year loan on the amount financed)", {
-            "fields": ("emi_rate_up_to_3kw", "emi_rate_above_3kw"),
-        }),
         ("Offer banner", {
             "description": "Printed only while switched on, titled and within its dates. "
                            "Leave 'valid until' blank to run it for as long as the quotation is valid.",

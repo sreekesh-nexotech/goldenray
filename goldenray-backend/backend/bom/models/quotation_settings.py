@@ -1,37 +1,25 @@
-from decimal import Decimal
-
 from django.core.exceptions import ValidationError
-from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
+from django.core.validators import FileExtensionValidator
 from django.db import models
 
 DEFAULT_OFFER_IMAGE_URL = "https://golden-ray.b-cdn.net/icons/37.png"
 
-_RATE_VALIDATORS = [MinValueValidator(Decimal("0")), MaxValueValidator(Decimal("30"))]
 
 
 class QuotationSettings(models.Model):
     """
     What the quotation document prints but the BOM does not decide — one row.
 
-    * EMI interest rates. Every EMI on the document is a 10-year loan on the
-      amount financed (total cost − 10% down payment − subsidy); PM Surya Ghar
-      loans are priced by system size, so there is one rate for systems up to
-      3 kW and one for anything larger.
+    EMI rates are deliberately not here: the quotation asks the EMI calculator
+    (`/api/emi-calculator/quotation/`) so it applies exactly the Content
+    Studio's EMI rules, the same as the /emi-calculator page.
+
     * The offer banner on the summary page. It is printed only while it is
       switched on, has a title and today falls inside its dates; otherwise the
       document drops the section entirely.
 
     Defaults reproduce what the document printed before this was configurable.
     """
-
-    emi_rate_up_to_3kw = models.DecimalField(
-        "EMI rate up to 3 kW (% p.a.)", max_digits=5, decimal_places=2,
-        default=Decimal("5.75"), validators=_RATE_VALIDATORS,
-    )
-    emi_rate_above_3kw = models.DecimalField(
-        "EMI rate above 3 kW (% p.a.)", max_digits=5, decimal_places=2,
-        default=Decimal("7.90"), validators=_RATE_VALIDATORS,
-    )
 
     offer_enabled = models.BooleanField("Show offer", default=True)
     offer_title = models.CharField(max_length=150, blank=True, default="Priority 10-Day Installation")

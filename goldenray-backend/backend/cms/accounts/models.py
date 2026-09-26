@@ -157,7 +157,7 @@ class AdminUser(AbstractUser):
                 **mod.grant([mod.Module.PAGES], [mod.Action.VIEW, mod.Action.EDIT]),
                 **mod.grant([mod.Module.BLOGS, mod.Module.FAQS]),
                 **mod.grant([mod.Module.MEDIA, mod.Module.SEO]),
-                **mod.grant([mod.Module.LEADS, mod.Module.EMI]),
+                **mod.grant([mod.Module.LEADS, mod.Module.EMI, mod.Module.QUOTATIONS]),
                 **mod.grant(
                     [
                         mod.Module.CAREERS,

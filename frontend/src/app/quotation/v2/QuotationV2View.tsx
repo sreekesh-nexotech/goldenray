@@ -18,6 +18,7 @@ import {
   type QuotationFinancing,
 } from "@/components/QuotationV2/financing";
 import { getQuotationFinancing } from "@/services/quotationEmiService";
+import { pageIdsFor, parseVariant } from "@/components/QuotationV2/pageSets";
 import { getQuotationSettings } from "@/services/quotationSettingsService";
 
 /**
@@ -32,6 +33,9 @@ export default function QuotationV2View() {
   const [input, setInput] = useState<QuotationV2Input | null>(null);
   const [loading, setLoading] = useState(true);
   const [quoteNo, setQuoteNo] = useState("");
+  // `?variant=accounting` renders the Studio's short accounting copy (pages 1,
+  // 5, 7, 8) instead of all twelve pages.
+  const [pageIds, setPageIds] = useState<readonly string[] | undefined>();
   const [stats, setStats] = useState<InstallationSummary | undefined>();
   // Admin's EMI rates and offer banner. The document waits for them (they
   // change printed figures) and falls back to defaults if the backend is down.
@@ -65,6 +69,9 @@ export default function QuotationV2View() {
     // Generated once on mount: re-deriving it every render would change the
     // quote number on screen each time React re-renders the document.
     setQuoteNo(generateQuoteNo());
+    setPageIds(
+      pageIdsFor(parseVariant(new URLSearchParams(window.location.search).get("variant"))),
+    );
 
     const storedData = sessionStorage.getItem("quotationData");
     if (storedData) {
@@ -104,5 +111,5 @@ export default function QuotationV2View() {
 
   if (!data) return null;
 
-  return <QuotationV2Document data={data} />;
+  return <QuotationV2Document data={data} pageIds={pageIds} />;
 }
