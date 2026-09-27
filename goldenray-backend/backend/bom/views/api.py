@@ -22,6 +22,7 @@ from bom.models import (
     TubeWeight,
     Offer,
     QuotationSettings,
+    QuotationTestimonial,
 )
 from bom.serializers import (
     GlobalCostsSerializer,
@@ -37,6 +38,7 @@ from bom.serializers import (
     TubeWeightSerializer,
     OfferSerializer,
     QuotationSettingsSerializer,
+    QuotationTestimonialSerializer,
 )
 
 
@@ -377,3 +379,40 @@ class QuotationSettingsView(APIView):
         return Response(serializer.data)
 
     put = patch
+
+
+# ── QuotationTestimonial ──────────────────────────────────────────────────────
+
+class QuotationTestimonialPublicList(generics.ListAPIView):
+    """
+    GET /bom/api/quotation-testimonials/  public — the active testimonials, in
+    display order. Page 6 of the quotation reads this: the BOM calculator lets
+    the sales person pick three, the website's quotation shows the first three.
+    """
+
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    pagination_class = None
+    serializer_class = QuotationTestimonialSerializer
+    queryset = QuotationTestimonial.objects.filter(is_active=True)
+
+
+class QuotationTestimonialList(AuthMixin, generics.ListCreateAPIView):
+    """GET/POST /bom/api/quotation-testimonials/manage/ — every testimonial, active or not."""
+
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+    serializer_class = QuotationTestimonialSerializer
+    queryset = QuotationTestimonial.objects.all()
+
+
+class QuotationTestimonialDetail(AuthMixin, generics.RetrieveUpdateDestroyAPIView):
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+    serializer_class = QuotationTestimonialSerializer
+    queryset = QuotationTestimonial.objects.all()
+
+    def perform_destroy(self, instance):
+        photo = instance.photo.name if instance.photo else None
+        storage = instance.photo.storage if instance.photo else None
+        instance.delete()
+        if photo:
+            storage.delete(photo)

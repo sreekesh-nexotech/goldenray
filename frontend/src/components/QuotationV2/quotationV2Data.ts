@@ -28,6 +28,11 @@ import {
   type QuotationDocumentSettings,
   type QuotationFinancing,
 } from "@/components/QuotationV2/financing";
+import {
+  buildTestimonialCards,
+  type TestimonialCard,
+  type TestimonialEntry,
+} from "@/components/QuotationV2/testimonials";
 
 /** What the customer details form writes to sessionStorage. */
 export interface QuotationV2Input {
@@ -135,6 +140,8 @@ export interface QuotationV2Data {
 
   // ── Social proof (page 6) ────────────────────────────────────────────────
   stats: InstallationSummary;
+  /** The three testimonial cards. */
+  testimonials: TestimonialCard[];
 
   // ── Journey (page 9) ─────────────────────────────────────────────────────
   ksebRefund: string;
@@ -320,11 +327,13 @@ interface BuildOptions {
    * services/quotationEmiService.ts); computed locally when omitted.
    */
   financing?: QuotationFinancing;
+  /** Page-6 testimonials from the Django BOM library; the built-in three when omitted. */
+  testimonials?: TestimonialEntry[];
 }
 
 export function buildQuotationV2Data(
   input: QuotationV2Input,
-  { quoteNo, now = new Date(), stats, settings = DEFAULT_QUOTATION_SETTINGS, financing }: BuildOptions,
+  { quoteNo, now = new Date(), stats, settings = DEFAULT_QUOTATION_SETTINGS, financing, testimonials }: BuildOptions,
 ): QuotationV2Data {
   const billAmount =
     typeof input.monthlyBill === "number" && input.monthlyBill > 0
@@ -476,6 +485,7 @@ export function buildQuotationV2Data(
       withSolar: input.graphData.datasets[1]?.data ?? [],
     },
 
+    testimonials: buildTestimonialCards(testimonials, "English"),
     stats: stats ?? fallbackStats(input.pincode, now.getFullYear()),
 
     // 80% of the pre-tax registration fee of ₹1,000 per kW.

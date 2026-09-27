@@ -18,6 +18,8 @@ import {
   type QuotationFinancing,
 } from "@/components/QuotationV2/financing";
 import { getQuotationFinancing } from "@/services/quotationEmiService";
+import { getQuotationTestimonials } from "@/services/quotationTestimonialsService";
+import type { TestimonialEntry } from "@/components/QuotationV2/testimonials";
 import { pageIdsFor, parseVariant } from "@/components/QuotationV2/pageSets";
 import { getQuotationSettings } from "@/services/quotationSettingsService";
 
@@ -56,6 +58,19 @@ export default function QuotationV2MalayalamView() {
     };
   }, [input]);
 
+  // Page 6 testimonials from the Django BOM library.
+  const [testimonials, setTestimonials] = useState<TestimonialEntry[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getQuotationTestimonials().then((rows) => {
+      if (!cancelled) setTestimonials(rows);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     getQuotationSettings().then((s) => {
@@ -87,10 +102,10 @@ export default function QuotationV2MalayalamView() {
 
   const data = useMemo(
     () =>
-      input && quoteNo && settings && financing
-        ? buildQuotationV2MalayalamData(input, { quoteNo, stats, settings, financing })
+      input && quoteNo && settings && financing && testimonials
+        ? buildQuotationV2MalayalamData(input, { quoteNo, stats, settings, financing, testimonials })
         : null,
-    [input, quoteNo, stats, settings, financing],
+    [input, quoteNo, stats, settings, financing, testimonials],
   );
 
   // Overlay the backend's real neighbourhood install counts once they arrive.
@@ -105,7 +120,7 @@ export default function QuotationV2MalayalamView() {
     };
   }, [data, stats]);
 
-  if (loading || !settings || (input && !financing)) {
+  if (loading || !settings || !testimonials || (input && !financing)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#123532]"></div>

@@ -4,6 +4,7 @@
 import type { CSSProperties } from "react";
 import type { QuotationV2Data } from "../quotationV2Data";
 import LetsIconsArrowLeft from "../icons/LetsIconsArrowLeft";
+import TestimonialPhoto from "../TestimonialPhoto";
 import MingcuteLocation2Fill from "../icons/MingcuteLocation2Fill";
 
 interface Page06SocialProofProps {
@@ -208,7 +209,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                   height: 333.229,
                   flexShrink: 0,
                   alignSelf: "stretch"
-                }}><div className="fig-asset-a633cb1664c8569f-76d774a5" style={{
+                }}><TestimonialPhoto image={data.testimonials[0].image} style={{
                     position: "absolute",
                     left: 0,
                     top: 0,
@@ -228,24 +229,26 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                       position: "relative",
                       fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                       fontWeight: 700,
-                      fontSize: 20,
+                      fontSize: data.testimonials[0].nameFontSize,
+                    whiteSpace: "nowrap",
                       textAlign: "center",
                       lineHeight: "28px",
                       color: "rgb(255,255,255)",
                       flexShrink: 0,
                       alignSelf: "stretch",
                       filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                    }}>Jose V P - Vadakkal, Alappuzha</span><span style={{
+                    }}>{data.testimonials[0].nameLine}</span><span style={{
                       position: "relative",
                       fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                       fontWeight: 400,
                       fontSize: 20,
+                    whiteSpace: "nowrap",
                       lineHeight: "30px",
                       color: "rgb(255,255,255)",
                       flexShrink: 0,
                       alignSelf: "stretch",
                       filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                    }}>5 kW System | Installed on June 2025</span></div></div><div style={{
+                    }}>{data.testimonials[0].systemLine}</span></div></div><div style={{
                   position: "relative",
                   overflow: "hidden",
                   borderRadius: 8,
@@ -267,7 +270,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                     lineHeight: "36px",
                     color: "var(--2)",
                     flexGrow: 1
-                  }}>&quot;&quot;The solar panel installation process was smooth from the very beginning. The team clearly explained each stage—from understanding our energy needs to system design, installation, and final activation. All timelines were communicated in advance, and the execution stayed on track without unnecessary delays. The overall experience felt well-planned and dependable.&quot;.&quot;</span></div><div style={{
+                  }}>“{data.testimonials[0].quote}”</span></div><div style={{
                   position: "relative",
                   backgroundColor: "rgba(0,0,0,0)",
                   borderTop: "1px solid rgb(229,231,235)",
@@ -313,7 +316,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                         letterSpacing: "-0.500px",
                         color: "rgb(220,38,38)",
                         flexShrink: 0
-                      }}>₹3,200</span></div><LetsIconsArrowLeft style={{
+                      }}>{data.testimonials[0].before}</span></div><LetsIconsArrowLeft style={{
                       position: "relative",
                       width: 24,
                       height: 24,
@@ -343,7 +346,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                         letterSpacing: "-0.500px",
                         color: "rgb(15,118,110)",
                         flexShrink: 0
-                      }}>₹200</span></div></div><div style={{
+                      }}>{data.testimonials[0].after}</span></div></div><div style={{
                     position: "relative",
                     borderRadius: 6,
                     display: "flex",
@@ -366,7 +369,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                       letterSpacing: "-0.500px",
                       color: "var(--green-2)",
                       flexShrink: 0
-                    }}>Saves ₹2,900/mo</span></div></div></div><div style={{
+                    }}>{data.testimonials[0].saves}</span></div></div></div><div style={{
                 position: "absolute",
                 left: 442,
                 top: 3.089,
@@ -387,7 +390,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                   height: 333.229,
                   flexShrink: 0,
                   alignSelf: "stretch"
-                }}><div className="fig-asset-a633cb1664c8569f-76d774a5" style={{
+                }}><TestimonialPhoto image={data.testimonials[1].image} style={{
                     position: "absolute",
                     left: 0,
                     top: 0,
@@ -402,12 +405,12 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                     height: 28,
                     fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                     fontWeight: 700,
-                    fontSize: 20,
+                    fontSize: data.testimonials[1].nameFontSize,
                     whiteSpace: "nowrap",
                     lineHeight: "28px",
                     color: "rgb(255,255,255)",
                     filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>Siraj K P - Cherthala, Alappuzha</span><span style={{
+                  }}>{data.testimonials[1].nameLine}</span><span style={{
                     position: "absolute",
                     left: 10,
                     top: 291,
@@ -420,7 +423,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                     lineHeight: "30px",
                     color: "rgb(255,255,255)",
                     filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>5 kW System | Installed on March 2025</span></div><div style={{
+                  }}>{data.testimonials[1].systemLine}</span></div><div style={{
                   position: "relative",
                   overflow: "hidden",
                   borderRadius: 8,
@@ -442,7 +445,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                     lineHeight: "36px",
                     color: "var(--2)",
                     flexGrow: 1
-                  }}>&quot;Our commercial solar installation brought better predictability to our monthly power expenses. The team maintained transparent communication throughout the project and handled the technical and approval processes professionally. The transition to solar was structured, efficient, and free from operational disruption, which made the decision feel reassuring&quot;</span></div><div style={{
+                  }}>“{data.testimonials[1].quote}”</span></div><div style={{
                   position: "relative",
                   backgroundColor: "rgba(0,0,0,0)",
                   borderTop: "1px solid rgb(229,231,235)",
@@ -488,7 +491,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                         letterSpacing: "-0.500px",
                         color: "rgb(220,38,38)",
                         flexShrink: 0
-                      }}>₹3,200</span></div><LetsIconsArrowLeft style={{
+                      }}>{data.testimonials[1].before}</span></div><LetsIconsArrowLeft style={{
                       position: "relative",
                       width: 24,
                       height: 24,
@@ -518,7 +521,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                         letterSpacing: "-0.500px",
                         color: "rgb(15,118,110)",
                         flexShrink: 0
-                      }}>₹200</span></div></div><div style={{
+                      }}>{data.testimonials[1].after}</span></div></div><div style={{
                     position: "relative",
                     borderRadius: 6,
                     display: "flex",
@@ -541,7 +544,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                       letterSpacing: "-0.500px",
                       color: "var(--green-2)",
                       flexShrink: 0
-                    }}>Saves ₹2,900/mo</span></div></div></div><div style={{
+                    }}>{data.testimonials[1].saves}</span></div></div></div><div style={{
                 position: "absolute",
                 left: 884,
                 top: 0,
@@ -563,7 +566,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                   height: 333.229,
                   flexShrink: 0,
                   alignSelf: "stretch"
-                }}><div className="fig-asset-a633cb1664c8569f-76d774a5" style={{
+                }}><TestimonialPhoto image={data.testimonials[2].image} style={{
                     position: "absolute",
                     left: 0,
                     top: 0,
@@ -578,11 +581,12 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                     height: 28,
                     fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                     fontWeight: 700,
-                    fontSize: 20,
+                    fontSize: data.testimonials[2].nameFontSize,
+                    whiteSpace: "nowrap",
                     lineHeight: "28px",
                     color: "rgb(255,255,255)",
                     filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>Stephen V C - Vattayal, Alappuzha</span><span style={{
+                  }}>{data.testimonials[2].nameLine}</span><span style={{
                     position: "absolute",
                     left: 17,
                     top: 291,
@@ -595,7 +599,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                     lineHeight: "30px",
                     color: "rgb(255,255,255)",
                     filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))"
-                  }}>5 kW System | Installed on May 2024</span></div><div style={{
+                  }}>{data.testimonials[2].systemLine}</span></div><div style={{
                   position: "relative",
                   overflow: "hidden",
                   borderRadius: 8,
@@ -617,7 +621,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                     lineHeight: "36px",
                     color: "var(--2)",
                     flexGrow: 1
-                  }}>&quot;What stood out most was the honest guidance we received on system capacity and realistic expectations around savings. The team took time to explain what would work best for our usage rather than overselling. From planning to completion, the project felt reliable, transparent, and well managed.&quot;</span></div><div style={{
+                  }}>“{data.testimonials[2].quote}”</span></div><div style={{
                   position: "relative",
                   backgroundColor: "rgba(0,0,0,0)",
                   borderTop: "1px solid rgb(229,231,235)",
@@ -663,7 +667,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                         letterSpacing: "-0.500px",
                         color: "rgb(220,38,38)",
                         flexShrink: 0
-                      }}>₹3,200</span></div><LetsIconsArrowLeft style={{
+                      }}>{data.testimonials[2].before}</span></div><LetsIconsArrowLeft style={{
                       position: "relative",
                       width: 24,
                       height: 24,
@@ -693,7 +697,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                         letterSpacing: "-0.500px",
                         color: "rgb(15,118,110)",
                         flexShrink: 0
-                      }}>₹200</span></div></div><div style={{
+                      }}>{data.testimonials[2].after}</span></div></div><div style={{
                     position: "relative",
                     borderRadius: 6,
                     display: "flex",
@@ -716,7 +720,7 @@ export default function Page06SocialProof({ className, style, data }: Page06Soci
                       letterSpacing: "-0.500px",
                       color: "var(--green-2)",
                       flexShrink: 0
-                    }}>Saves ₹2,900/mo</span></div></div></div></div></div></div><div style={{
+                    }}>{data.testimonials[2].saves}</span></div></div></div></div></div></div><div style={{
           position: "relative",
           width: 1322,
           overflow: "hidden",

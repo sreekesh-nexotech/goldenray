@@ -9,7 +9,7 @@ from django.utils import timezone
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from bom.models import QuotationSettings
+from bom.models import QuotationSettings, QuotationTestimonial
 
 URL = "/bom/api/quotation-settings/"
 
@@ -129,3 +129,74 @@ class QuotationSettingsApiTests(TestCase):
     def test_singleton_cannot_be_deleted(self):
         QuotationSettings.load().delete()
         self.assertEqual(QuotationSettings.objects.count(), 1)
+
+
+class QuotationTestimonialApiTests(TestCase):
+    PUBLIC = "/bom/api/quotation-testimonials/"
+    MANAGE = "/bom/api/quotation-testimonials/manage/"
+
+    def setUp(self):
+        self.media = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.media, ignore_errors=True)
+        override = override_settings(MEDIA_ROOT=self.media)
+        override.enable()
+        self.addCleanup(override.disable)
+        self.client = APIClient()
+        user = get_user_model().objects.create_user(username="admin", password="x")
+        self.token = str(RefreshToken.for_user(user).access_token)
+
+    def auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
+
+    def test_seeded_with_the_designs_three_testimonials(self):
+        res = self.client.get(self.PUBLIC)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual([t["name"] for t in res.data], ["Jose V P", "Siraj K P", "Stephen V C"])
+        first = res.data[0]
+        self.assertEqual((first["bill_before"], first["bill_after"], first["monthly_saving"]), (3200, 200, 3000))
+        self.assertTrue(first["quote_ml"])
+        self.assertIn("a633cb1664c8569f.jpg", first["photo_src"])  # stock photo
+
+    def test_public_list_hides_inactive_and_follows_sort_order(self):
+        QuotationTestimonial.objects.filter(name="Jose V P").update(is_active=False)
+        QuotationTestimonial.objects.filter(name="Stephen V C").update(sort_order=0)
+        names = [t["name"] for t in self.client.get(self.PUBLIC).data]
+        self.assertEqual(names, ["Stephen V C", "Siraj K P"])
+
+    def test_public_list_cannot_be_written(self):
+        self.auth()
+        self.assertEqual(self.client.post(self.PUBLIC, {"name": "x"}, format="json").status_code, 405)
+
+    def test_manage_requires_auth(self):
+        self.assertEqual(self.client.get(self.MANAGE).status_code, 401)
+        self.assertEqual(self.client.post(self.MANAGE, {}, format="json").status_code, 401)
+
+    def test_create_with_photo(self):
+        self.auth()
+        res = self.client.post(self.MANAGE, {
+            "name": "Anu", "location": "Kochi", "installed_on": "2026-01-15",
+            "quote": "Great.", "bill_before": "5000", "bill_after": "400",
+            "photo": SimpleUploadedFile("p.png", PNG, content_type="image/png"),
+        }, format="multipart")
+        self.assertEqual(res.status_code, 201, res.data)
+        self.assertEqual(res.data["monthly_saving"], 4600)
+        self.assertIn("/media/quotation/testimonials/", res.data["photo_src"])
+
+    def test_rejects_bill_after_above_before(self):
+        self.auth()
+        pk = QuotationTestimonial.objects.first().pk
+        res = self.client.patch(f"{self.MANAGE}{pk}/", {"bill_after": 9999}, format="json")
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("bill_after", res.data)
+
+    def test_delete_removes_uploaded_photo(self):
+        self.auth()
+        res = self.client.post(self.MANAGE, {
+            "name": "Anu", "location": "Kochi", "installed_on": "2026-01-15", "quote": "Great.",
+            "photo": SimpleUploadedFile("p.png", PNG, content_type="image/png"),
+        }, format="multipart")
+        obj = QuotationTestimonial.objects.get(pk=res.data["id"])
+        storage, name = obj.photo.storage, obj.photo.name
+        self.assertTrue(storage.exists(name))
+        self.assertEqual(self.client.delete(f"{self.MANAGE}{obj.pk}/").status_code, 204)
+        self.assertFalse(storage.exists(name))
