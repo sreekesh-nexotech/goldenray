@@ -6,12 +6,15 @@ import { API_BASE_URL } from "@/config";
 import type { TestimonialEntry } from "@/components/QuotationV2/testimonials";
 
 // The BOM app is mounted at `/bom/` on the backend, not under `/api/`.
+// Capped so a request that hangs (e.g. the PDF renderer inside the server
+// reaching the public API) falls back to defaults instead of stalling the page.
+const TIMEOUT_MS = 8000;
 const ENDPOINT = `${API_BASE_URL.replace(/api\/?$/, "bom/")}api/quotation-testimonials/`;
 
 /** Active testimonials in display order; [] (the built-in three) if unreachable. */
 export async function getQuotationTestimonials(): Promise<TestimonialEntry[]> {
   try {
-    const res = await fetch(ENDPOINT, { cache: "no-store" });
+    const res = await fetch(ENDPOINT, { cache: "no-store", signal: AbortSignal.timeout(TIMEOUT_MS) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const rows: TestimonialEntry[] = await res.json();
     return Array.isArray(rows) ? rows : [];

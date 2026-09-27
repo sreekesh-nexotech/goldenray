@@ -1,141 +1,18 @@
-import { NextResponse } from "next/server";
-import puppeteer, { type Browser } from "puppeteer-core";
-
-import { resolveChromePath } from "@/lib/chromePath";
-import { attachmentHeader, quotationFileName } from "@/lib/quotationFileName";
-import { pageCountFor, parseVariant } from "@/components/QuotationV2/pageSets";
+import { renderQuotationPdf } from "@/lib/renderQuotationPdf";
 
 /**
- * Renders the Malayalam quotation to a PDF with real Chrome.
+ * POST the customer's quotation data → the Malayalam quotation as a PDF.
+ * `?variant=accounting` returns the Studio's short copy (pages 1, 5, 7, 8).
  *
- * A dedicated route from `/fe-api/quotation/pdf` (the English one) rather than a
- * shared route with a language flag: it loads the separate `/quotation/v2-malayalam`
- * page, which is its own component tree, so the two PDFs can evolve
- * independently. See that route's comment for why Chrome renders the real
- * page instead of rasterising in JS.
+ * A route of its own because it loads the separate /quotation/v2-malayalam
+ * page (its own component tree); the rendering is shared with the English
+ * route in renderQuotationPdf.
  */
 
 export const runtime = "nodejs";
 // Chrome needs longer than the default for a cold page compile in dev.
 export const maxDuration = 120;
 
-
-/** Where Chrome should reach this app from inside the container. */
-function selfOrigin(): string {
-  if (process.env.PDF_RENDER_ORIGIN) return process.env.PDF_RENDER_ORIGIN;
-  // Chrome runs in the same container, so the app is always on localhost —
-  // the public host in the request may not resolve from in here.
-  const port = process.env.PORT || "3000";
-  return `http://127.0.0.1:${port}`;
-}
-
-
-export async function POST(request: Request) {
-  let browser: Browser | undefined;
-
-  try {
-    const quotationData = await request.json();
-    // `?variant=accounting` is the Studio's short copy (pages 1, 5, 7, 8).
-    const variant = parseVariant(new URL(request.url).searchParams.get("variant"));
-    const expectedPages = pageCountFor(variant);
-
-    if (!quotationData || typeof quotationData !== "object") {
-      return NextResponse.json(
-        { error: "Missing quotation data." },
-        { status: 400 },
-      );
-    }
-
-    browser = await puppeteer.launch({
-      executablePath: resolveChromePath(),
-      headless: true,
-      protocolTimeout: 120_000,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        // The default 64MB /dev/shm in a container is too small for Chrome.
-        "--disable-dev-shm-usage",
-        // Without these two, GPU/EGL initialisation fails inside the container
-        // and the browser stops answering CDP — `newPage()` then hangs until
-        // the protocol timeout rather than erroring.
-        "--disable-gpu",
-        "--disable-software-rasterizer",
-        "--no-zygote",
-        "--no-first-run",
-        "--font-render-hinting=none",
-        // Crashpad (Chrome's crash-report handler) needs to create a
-        // database directory on disk before the browser will finish
-        // starting up. In a container with a read-only filesystem outside
-        // a few mounted paths, that write fails and Chrome never launches
-        // at all ("chrome_crashpad_handler: --database is required"). We
-        // don't need crash reports in a server context, so disable the
-        // handler entirely rather than depend on a writable path for it.
-        "--disable-crash-reporter",
-      ],
-    });
-
-    // If the customer closes the popup (or otherwise disconnects) before
-    // the PDF finishes, don't keep burning Chrome/CPU on a response nobody
-    // will receive — close the browser as soon as we notice.
-    request.signal.addEventListener("abort", () => {
-      browser?.close().catch(() => {});
-    });
-
-    const page = await browser.newPage();
-    // Render at the sheet's CSS width so layout matches the on-screen document.
-    await page.setViewport({ width: 900, height: 1400, deviceScaleFactor: 1 });
-
-    // The page reads `quotationData` from sessionStorage on mount, exactly as
-    // it does for a real visitor. Seeding it before any page script runs means
-    // the route needs no special "render mode" and cannot drift from what the
-    // browser shows.
-    const payload = JSON.stringify(quotationData);
-    await page.evaluateOnNewDocument((data: string) => {
-      window.sessionStorage.setItem("quotationData", data);
-    }, payload);
-
-    await page.goto(`${selfOrigin()}/quotation/v2-malayalam?variant=${variant}`, {
-      waitUntil: "networkidle0",
-      timeout: 90_000,
-    });
-
-    // Every sheet of this copy must be in the DOM before printing.
-    await page.waitForSelector(".qv2-sheet", { timeout: 30_000 });
-    await page.waitForFunction(
-      (count: number) => document.querySelectorAll(".qv2-sheet").length >= count,
-      { timeout: 30_000 },
-      expectedPages,
-    );
-    await page.evaluateHandle("document.fonts.ready");
-
-    const pdf = await page.pdf({
-      // `@page { size: A4; margin: 0 }` already lives in quotation-v2.css, so
-      // the stylesheet stays the single source of truth for page geometry.
-      preferCSSPageSize: true,
-      printBackground: true,
-      timeout: 90_000,
-    });
-
-    const { customerName, systemSize } = quotationData as {
-      customerName?: string;
-      systemSize?: string;
-    };
-    const fileName = quotationFileName(customerName, systemSize, variant);
-
-    return new NextResponse(Buffer.from(pdf), {
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": attachmentHeader(fileName),
-        "Cache-Control": "no-store",
-      },
-    });
-  } catch (error) {
-    console.error("Malayalam quotation PDF generation failed:", error);
-    return NextResponse.json(
-      { error: "Failed to generate the quotation PDF." },
-      { status: 500 },
-    );
-  } finally {
-    await browser?.close();
-  }
+export function POST(request: Request) {
+  return renderQuotationPdf(request, { path: "/quotation/v2-malayalam", label: "Malayalam quotation" });
 }

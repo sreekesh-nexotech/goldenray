@@ -12,6 +12,9 @@ import {
 
 // The BOM app is mounted at `/bom/` on the backend, not under `/api/`.
 const BOM_BASE_URL = API_BASE_URL.replace(/api\/?$/, "bom/");
+// Capped so a request that hangs (e.g. the PDF renderer inside the server
+// reaching the public API) falls back to defaults instead of stalling the page.
+const TIMEOUT_MS = 8000;
 const ENDPOINT = `${BOM_BASE_URL}api/quotation-settings/`;
 
 interface QuotationSettingsApi {
@@ -34,7 +37,7 @@ interface QuotationSettingsApi {
  */
 export async function getQuotationSettings(): Promise<QuotationDocumentSettings> {
   try {
-    const res = await fetch(ENDPOINT, { cache: "no-store" });
+    const res = await fetch(ENDPOINT, { cache: "no-store", signal: AbortSignal.timeout(TIMEOUT_MS) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const s: QuotationSettingsApi = await res.json();
     const d = DEFAULT_QUOTATION_SETTINGS;

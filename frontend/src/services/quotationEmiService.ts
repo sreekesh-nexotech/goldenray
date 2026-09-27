@@ -13,6 +13,9 @@ import {
   type QuotationFinancing,
 } from "@/components/QuotationV2/financing";
 
+// Capped so a request that hangs (e.g. the PDF renderer inside the server
+// reaching the public API) falls back to defaults instead of stalling the page.
+const TIMEOUT_MS = 8000;
 const ENDPOINT = `${API_BASE_URL}emi-calculator/quotation/`;
 
 interface EngineBreakdown {
@@ -38,6 +41,7 @@ export async function getQuotationFinancing(prices: PackagePrices): Promise<Quot
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ capacity_kw: prices.sizeKW, tenure_years: EMI_YEARS, packages }),
       cache: "no-store",
+      signal: AbortSignal.timeout(TIMEOUT_MS),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const body: { packages: Record<string, EngineBreakdown> } = await res.json();

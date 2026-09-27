@@ -21,6 +21,7 @@ import { getQuotationFinancing } from "@/services/quotationEmiService";
 import { getQuotationTestimonials } from "@/services/quotationTestimonialsService";
 import type { TestimonialEntry } from "@/components/QuotationV2/testimonials";
 import { pageIdsFor, parseVariant } from "@/components/QuotationV2/pageSets";
+import { withTimeout } from "@/lib/withTimeout";
 import { getQuotationSettings } from "@/services/quotationSettingsService";
 
 /**
@@ -112,12 +113,22 @@ export default function QuotationV2MalayalamView() {
   useEffect(() => {
     if (!data || stats) return;
     let cancelled = false;
-    resolveInstallationStats(data.pincode, data.stats).then((resolved) => {
+    // Capped: a slow stats lookup falls back to the pincode estimate rather
+    // than holding up the document (and the server-side PDF).
+    withTimeout(resolveInstallationStats(data.pincode, data.stats), 8000, data.stats).then((resolved) => {
       if (!cancelled) setStats(resolved);
     });
     return () => {
       cancelled = true;
     };
+  }, [data, stats]);
+
+  // The PDF route prints once this is set: the document is built and the
+  // neighbourhood stats have settled (real or fallback). Waiting for this,
+  // rather than for the network to go quiet, means a stray request that
+  // never finishes (analytics, say) cannot block the PDF.
+  useEffect(() => {
+    if (data && stats) document.documentElement.dataset.quotationReady = "1";
   }, [data, stats]);
 
   if (loading || !settings || !testimonials || (input && !financing)) {
