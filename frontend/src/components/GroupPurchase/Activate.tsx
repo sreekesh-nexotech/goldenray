@@ -1,12 +1,12 @@
 import React from "react";
 import LinkingButton from "../ui/LinkingButton";
 import Link from "next/link";
+import { SALES_PHONE, whatsappLink } from "@/data/contact";
 
-const whatsappNumber = "6282922988";
-const message = encodeURIComponent(
+const whatsappUrl = whatsappLink(
+  SALES_PHONE,
   "Hi, I'd like to know more about Flarize solar solutions.",
 );
-const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
 
 const Activate = () => {
   return (

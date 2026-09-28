@@ -54,8 +54,15 @@ class SeededRolesTests(TestCase):
 
     def test_sales_lead_reaches_leads_and_read_only_emi_only(self):
         perms = role(mod.SALES_LEAD).permissions
-        self.assertEqual(set(perms), {"dashboard", "leads", "emi"})
+        self.assertEqual(set(perms), {"dashboard", "leads", "emi", "quotations"})
         self.assertEqual(perms["emi"], ["view"])
+        self.assertEqual(perms["quotations"], ["view"])
+
+    def test_super_admin_reaches_quotations(self):
+        self.assertEqual(role(mod.SUPER_ADMIN).permissions.get("quotations"), ["view"])
+
+    def test_content_manager_does_not_reach_quotations(self):
+        self.assertNotIn("quotations", role(mod.CONTENT_MANAGER).permissions)
 
 
 class RoleModelTests(TestCase):

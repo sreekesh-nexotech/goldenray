@@ -30,6 +30,7 @@ export default function ResidentialHero() {
             </p>
 
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-start">
+
               <LinkingButton
                 content="Book a Free Consultation"
                 ButtonLink="/contactus"

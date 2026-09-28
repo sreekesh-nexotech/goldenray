@@ -6,6 +6,7 @@ from rest_framework.throttling import ScopedRateThrottle
 from ..serializers.affiliate_application_serializer import (
     AffiliateApplicationSerializer,
 )
+from ..models.lead_collection_home import LeadCollectionHome, record_lead
 from ..permissions import ApiMethodPermission, non_authenticated_view
 
 
@@ -18,7 +19,18 @@ class AffiliateApplicationAPIView(APIView):
     def post(self, request):
         serializer = AffiliateApplicationSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            application = serializer.save()
+            record_lead(
+                name=application.full_name,
+                phone_number=application.phone,
+                source=LeadCollectionHome.Source.REFERRAL,
+                page="/solar-referral-program",
+                details={
+                    "Email": application.email,
+                    "Profession": application.profession,
+                    "District": application.district,
+                },
+            )
             return Response(
                 {
                     "message": "Message sent!",

@@ -11,6 +11,8 @@ from .serializers import (
     StructureTemplateItemSerializer,
     TubeWeightSerializer,
     OfferSerializer,
+    QuotationSettingsSerializer,
+    QuotationTestimonialSerializer,
 )
 
 __all__ = [
@@ -26,4 +28,6 @@ __all__ = [
     "StructureTemplateItemSerializer",
     "TubeWeightSerializer",
     "OfferSerializer",
+    "QuotationSettingsSerializer",
+    "QuotationTestimonialSerializer",
 ]

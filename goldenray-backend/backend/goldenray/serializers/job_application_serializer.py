@@ -80,6 +80,8 @@ class JobApplicationSerializer(serializers.ModelSerializer):
             "expected_salary",
             "notice_period",
             "heard_about_us",
+            "availability",
+            "cover_note",
             "resume",
             "portfolio_file",
             "resume_download_url",
@@ -112,6 +114,8 @@ class JobApplicationSerializer(serializers.ModelSerializer):
             "expected_salary": {"required": False, "allow_blank": True},
             "notice_period": {"required": False, "allow_blank": True},
             "heard_about_us": {"required": False, "allow_blank": True},
+            "availability": {"required": False, "allow_blank": True},
+            "cover_note": {"required": False, "allow_blank": True, "max_length": 3000},
         }
 
     def _download_url(self, instance, kind):

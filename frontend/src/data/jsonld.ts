@@ -39,7 +39,7 @@ export const localBusinessSchema = {
   currenciesAccepted: "INR",
   description:
     "Kerala-based solar EPC company. KSEB-approved, MNRE-empanelled. 300+ installations across Kerala.",
-  telephone: "+91-6282922988",
+  telephone: "+91-9995031006",
   address: {
     "@type": "PostalAddress",
     streetAddress: "1st Floor, Tharath Building, Kalappura",
@@ -105,7 +105,7 @@ export const organizationSchema = {
 
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+91-9995083579",
+    telephone: "+91-9995031006",
     contactType: "customer service",
     areaServed: "IN",
     availableLanguage: ["en", "ml"],
@@ -348,7 +348,7 @@ export const residentialPageSchema = {
       name: "Flarize Solar",
       url: `${SITE_URL}/`,
       image: { "@id": LOGO_ID },
-      telephone: "+91-6282922988",
+      telephone: "+91-9995031006",
       priceRange: "₹₹",
       currenciesAccepted: "INR",
       address: {

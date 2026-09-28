@@ -77,6 +77,9 @@ class Module:
     # BUSINESS
     LEADS = "leads"
     EMI = "emi"
+    #: Short accounting copy of a customer quotation (pages 1, 5, 7, 8), for
+    #: the sales / accounting team.
+    QUOTATIONS = "quotations"
 
     # CAREERS
     CAREERS = "careers"
@@ -96,7 +99,7 @@ class Module:
 MODULE_GROUPS = (
     ("", (Module.DASHBOARD,)),
     ("WEBSITE", (Module.PAGES, Module.BLOGS, Module.FAQS, Module.MEDIA, Module.SEO)),
-    ("BUSINESS", (Module.LEADS, Module.EMI)),
+    ("BUSINESS", (Module.LEADS, Module.EMI, Module.QUOTATIONS)),
     (
         "CAREERS",
         (
@@ -119,6 +122,7 @@ MODULE_LABELS = {
     Module.SEO: "SEO",
     Module.LEADS: "Leads / Entries",
     Module.EMI: "EMI Calculator",
+    Module.QUOTATIONS: "Quotations (accounting copy)",
     Module.CAREERS: "Careers Overview",
     Module.JOB_POSITIONS: "Job Positions",
     Module.APPLICATIONS: "Applications",
@@ -157,6 +161,8 @@ ALLOWED_ACTIONS = {
     Module.SEO: (Action.VIEW, Action.EDIT, Action.PUBLISH),
     Module.LEADS: (Action.VIEW, Action.EDIT, Action.ARCHIVE),
     Module.EMI: (Action.VIEW, Action.EDIT),
+    # Generating a copy changes nothing server-side, so View is the whole grant.
+    Module.QUOTATIONS: _READ_ONLY,
     Module.CAREERS: _READ_ONLY,
     Module.JOB_POSITIONS: _CONTENT,
     Module.APPLICATIONS: (Action.VIEW, Action.EDIT, Action.ARCHIVE),
@@ -270,12 +276,16 @@ SEED_ROLES = (
     {
         "slug": SALES_LEAD,
         "name": "Sales / Lead",
-        "description": "Leads / Entries and the EMI calculator. Nothing else without explicit approval.",
+        "description": (
+            "Leads / Entries, the EMI calculator and quotation accounting copies. "
+            "Nothing else without explicit approval."
+        ),
         "legacy_role": "author",
         "permissions": {
             **grant([Module.DASHBOARD]),
             **grant([Module.LEADS]),
             **grant([Module.EMI], [Action.VIEW]),
+            **grant([Module.QUOTATIONS]),
         },
     },
 )

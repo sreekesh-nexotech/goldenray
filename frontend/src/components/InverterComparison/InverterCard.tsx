@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { SolarInverter } from "@/types/solarInverter";
 import Image from "next/image";
 import { Plus, Check } from "lucide-react";
@@ -164,9 +165,12 @@ export default function InverterCard({
             )}
             {isSelected ? "Selected" : "Compare"}
           </button>
-          <button className="bg-[#F7BA41] hover:bg-[#E5A930] text-[#272218] px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors duration-200 min-w-[110px]">
+          <Link
+            href="/contactus"
+            className="flex items-center justify-center bg-[#F7BA41] hover:bg-[#E5A930] text-[#272218] px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors duration-200 min-w-[110px]"
+          >
             Get Quote
-          </button>
+          </Link>
         </div>
       </div>
     </div>

@@ -29,7 +29,7 @@ export default function CareerBanner() {
 
           <Link
             href="/career"
-            className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-[#F7BA41] text-[#272218] font-semibold transition-colors hover:bg-yellow-500"
+            className="btn-m inline-flex items-center justify-center px-8 py-3 rounded-lg bg-[#F7BA41] text-[#272218] font-semibold transition-colors hover:bg-yellow-500"
           >
             View Open Positions
           </Link>

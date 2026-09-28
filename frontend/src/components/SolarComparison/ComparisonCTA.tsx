@@ -1,11 +1,12 @@
 "use client";
 
+import { SALES_PHONE, whatsappLink as buildWhatsappLink } from "@/data/contact";
+
 export default function ComparisonCTA() {
-  const whatsappNumber = "6282922988";
-  const whatsappMessage = encodeURIComponent(
+  const whatsappLink = buildWhatsappLink(
+    SALES_PHONE,
     "Hi! I'm comparing solar panels on your website and would like help choosing the right one. Here's my KSEB bill:",
   );
-  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
     <section className="mt-12 sm:mt-14 md:mt-16 lg:mt-20 py-10 sm:py-12 md:py-14 lg:py-16">
@@ -22,7 +23,7 @@ export default function ComparisonCTA() {
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-[#F7BA41] hover:bg-[#E5A930] text-[#272218] px-8 sm:px-10 md:px-12 py-3 sm:py-3.5 rounded-full font-semibold text-sm sm:text-base transition-all duration-200 hover:shadow-lg"
+          className="btn-m inline-block bg-[#F7BA41] hover:bg-[#E5A930] text-[#272218] px-8 sm:px-10 md:px-12 py-3 sm:py-3.5 rounded-full font-semibold text-sm sm:text-base transition-all duration-200 hover:shadow-lg"
         >
           Whatsapp us your KSEB bill
         </a>

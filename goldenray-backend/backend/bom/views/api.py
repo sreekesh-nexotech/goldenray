@@ -3,7 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status as drf_status
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from django.db import models as django_models
 from django.utils import timezone
 
@@ -20,6 +21,8 @@ from bom.models import (
     StructureTemplateItem,
     TubeWeight,
     Offer,
+    QuotationSettings,
+    QuotationTestimonial,
 )
 from bom.serializers import (
     GlobalCostsSerializer,
@@ -34,6 +37,8 @@ from bom.serializers import (
     StructureTemplateItemSerializer,
     TubeWeightSerializer,
     OfferSerializer,
+    QuotationSettingsSerializer,
+    QuotationTestimonialSerializer,
 )
 
 
@@ -332,3 +337,82 @@ class BomCalculateView(APIView):
                 "hybrid_inv": False, "battery": False, "wiring": True,
             },
         }
+
+
+# ── QuotationSettings ─────────────────────────────────────────────────────────
+
+class QuotationSettingsView(APIView):
+    """
+    GET   /bom/api/quotation-settings/  public — the quotation document reads it
+    PATCH /bom/api/quotation-settings/  authenticated — JSON, or multipart to
+                                        upload `offer_image`
+    PUT   /bom/api/quotation-settings/  authenticated — same as PATCH
+
+    Single-row settings: EMI interest rates and the summary-page offer banner.
+    Send `offer_image` as an empty value to remove an uploaded image and fall
+    back to `offer_image_url`.
+    """
+
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+    def get_authenticators(self):
+        if self.request is not None and self.request.method == "GET":
+            return []
+        return [JWTAuthentication()]
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+    def get(self, request):
+        settings_obj = QuotationSettings.load()
+        return Response(QuotationSettingsSerializer(settings_obj, context={"request": request}).data)
+
+    def patch(self, request):
+        settings_obj = QuotationSettings.load()
+        serializer = QuotationSettingsSerializer(
+            settings_obj, data=request.data, partial=True, context={"request": request},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    put = patch
+
+
+# ── QuotationTestimonial ──────────────────────────────────────────────────────
+
+class QuotationTestimonialPublicList(generics.ListAPIView):
+    """
+    GET /bom/api/quotation-testimonials/  public — the active testimonials, in
+    display order. Page 6 of the quotation reads this: the BOM calculator lets
+    the sales person pick three, the website's quotation shows the first three.
+    """
+
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    pagination_class = None
+    serializer_class = QuotationTestimonialSerializer
+    queryset = QuotationTestimonial.objects.filter(is_active=True)
+
+
+class QuotationTestimonialList(AuthMixin, generics.ListCreateAPIView):
+    """GET/POST /bom/api/quotation-testimonials/manage/ — every testimonial, active or not."""
+
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+    serializer_class = QuotationTestimonialSerializer
+    queryset = QuotationTestimonial.objects.all()
+
+
+class QuotationTestimonialDetail(AuthMixin, generics.RetrieveUpdateDestroyAPIView):
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+    serializer_class = QuotationTestimonialSerializer
+    queryset = QuotationTestimonial.objects.all()
+
+    def perform_destroy(self, instance):
+        photo = instance.photo.name if instance.photo else None
+        storage = instance.photo.storage if instance.photo else None
+        instance.delete()
+        if photo:
+            storage.delete(photo)

@@ -234,7 +234,7 @@ const QuoteAnalyzerSection = () => {
 
                 <button
                   type="button"
-                  className="w-full mt-6 bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg cursor-pointer"
+                  className="btn-m w-full mt-6 bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg cursor-pointer"
                 >
                   Analyze My Quote
                 </button>
@@ -346,7 +346,7 @@ const ManualForm = () => {
       <div className="md:col-span-2 mt-2">
         <button
           type="submit"
-          className="w-full bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg cursor-pointer"
+          className="btn-m w-full bg-[#F7BA41] hover:bg-yellow-500 text-[#272218] font-semibold py-3 sm:py-4 rounded-xl text-sm sm:text-base md:text-lg cursor-pointer"
         >
           Analyze My Quote
         </button>

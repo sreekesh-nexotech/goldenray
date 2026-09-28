@@ -708,7 +708,7 @@ export default function ApplicationForm({
         <button
           type="submit"
           disabled={submitting}
-          className="w-full bg-[#F7BA41] hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-xl py-4 text-sm md:text-base font-semibold text-[#272218] cursor-pointer"
+          className="btn-m w-full bg-[#F7BA41] hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-xl py-4 text-sm md:text-base font-semibold text-[#272218] cursor-pointer"
         >
           {submitting ? "Submitting…" : "Submit Application"}
         </button>

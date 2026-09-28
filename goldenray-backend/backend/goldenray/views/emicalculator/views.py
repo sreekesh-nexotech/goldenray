@@ -127,6 +127,66 @@ class EMICalculatorAPIView(APIView):
         return Response(_with_legacy_keys(breakdown), status=status.HTTP_200_OK)
 
 
+class EMIQuotationAPIView(APIView):
+    """POST a quotation's package prices → the calculator's EMI for each.
+
+    The quotation document prices its packages from the BOM, so it cannot use
+    the size tiles above; it sends the prices and gets back exactly what the
+    calculator's policy gives them (down payment, rate band, loan, EMI, daily).
+
+    Body:
+      - capacity_kw (float)      : the quoted system size
+      - tenure_years (int)       : optional, defaults to 10 (the quotation's)
+      - packages (object)        : {key: {"system_cost": float, "subsidy": float}},
+                                   at most 6 packages
+    """
+
+    permission_classes = [ApiMethodPermission]
+    MAX_PACKAGES = 6
+    DEFAULT_TENURE_YEARS = 10
+
+    @non_authenticated_view
+    def post(self, request):
+        data = request.data or {}
+        packages = data.get("packages")
+        if not isinstance(packages, dict) or not packages:
+            return Response({"error": "packages must be a non-empty object"}, status=status.HTTP_400_BAD_REQUEST)
+        if len(packages) > self.MAX_PACKAGES:
+            return Response({"error": f"At most {self.MAX_PACKAGES} packages"}, status=status.HTTP_400_BAD_REQUEST)
+
+        settings_row = EmiCalculatorSettings.load()
+        try:
+            capacity_kw = _to_float(data.get("capacity_kw"))
+            tenure = _to_int(data.get("tenure_years"))
+        except (TypeError, ValueError):
+            return Response({"error": "Invalid numeric value in request"}, status=status.HTTP_400_BAD_REQUEST)
+        if capacity_kw is None or capacity_kw <= 0:
+            return Response({"error": "capacity_kw is required"}, status=status.HTTP_400_BAD_REQUEST)
+        tenure = self.DEFAULT_TENURE_YEARS if tenure is None else tenure
+        if not settings_row.tenure_min_years <= tenure <= settings_row.tenure_max_years:
+            return Response(
+                {"error": f"tenure_years must be between {settings_row.tenure_min_years} and {settings_row.tenure_max_years}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        result = {}
+        for key, package in packages.items():
+            if not isinstance(package, dict):
+                return Response({"error": f"packages.{key} must be an object"}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                result[str(key)[:32]] = emi_engine.quotation_breakdown(
+                    capacity_kw=capacity_kw,
+                    system_cost=_to_float(package.get("system_cost")),
+                    subsidy=_to_float(package.get("subsidy")) or 0,
+                    tenure_years=tenure,
+                    settings=settings_row,
+                )
+            except (TypeError, ValueError, ArithmeticError) as exc:
+                return Response({"error": f"packages.{key}: {exc}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"tenure_years": tenure, "packages": result}, status=status.HTTP_200_OK)
+
+
 def _with_legacy_keys(breakdown):
     """Flatten the headline numbers alongside the nested breakdown.
 

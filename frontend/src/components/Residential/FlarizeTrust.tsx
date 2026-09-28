@@ -101,6 +101,7 @@ const FlarizeTrust = () => {
           Buttontext="text-[#272218]"
           ButtonHover="hover:bg-yellow-500"
           className="w-full px-4 py-3 sm:w-auto md:px-10"
+
         />
       </div>
 

@@ -28,7 +28,7 @@ export default function AboutUsHero() {
 
         <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-6">
           <Image
-            src="https://golden-ray.b-cdn.net/About%20us/3ed69491d4806925ed05dbda2d909f9ed7742996.jpg"
+            src="https://golden-ray.b-cdn.net/About%20us/Flarize%20team%20img.jpg"
             alt="The Flarize team"
             fill
             priority
@@ -40,13 +40,13 @@ export default function AboutUsHero() {
         <div className="relative flex flex-col gap-3 z-10">
           <Link
             href="#team"
-            className="inline-flex items-center justify-center px-8 py-4 rounded-lg bg-[#F7BA41] text-[#272218] font-semibold text-base transition-colors hover:bg-yellow-500"
+            className="btn-m inline-flex items-center justify-center px-8 py-4 rounded-lg bg-[#F7BA41] text-[#272218] font-semibold text-base transition-colors hover:bg-yellow-500"
           >
             Meet our team
           </Link>
           <Link
             href="/career"
-            className="inline-flex items-center justify-center px-8 py-4 rounded-lg border border-[#123532] text-[#123532] font-semibold text-base transition-colors hover:bg-[#123532] hover:text-white"
+            className="btn-m inline-flex items-center justify-center px-8 py-4 rounded-lg border border-[#123532] text-[#123532] font-semibold text-base transition-colors hover:bg-[#123532] hover:text-white"
           >
             View Open Positions
           </Link>
@@ -57,7 +57,7 @@ export default function AboutUsHero() {
       <section className="relative w-full min-h-screen hidden sm:flex items-center justify-center overflow-hidden">
         {/* Background image */}
         <Image
-          src="https://golden-ray.b-cdn.net/About%20us/3ed69491d4806925ed05dbda2d909f9ed7742996.jpg"
+          src="https://golden-ray.b-cdn.net/About%20us/Flarize%20team%20img.jpg"
           alt="The Flarize team"
           fill
           priority
@@ -86,7 +86,7 @@ export default function AboutUsHero() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
             <Link
               href="#team"
-              className="inline-flex items-center justify-center min-w-[300px] px-8 py-4 rounded-lg bg-[#F7BA41] text-[#272218] font-semibold text-lg transition-colors hover:bg-yellow-500"
+              className="btn-m inline-flex items-center justify-center min-w-[300px] px-8 py-4 rounded-lg bg-[#F7BA41] text-[#272218] font-semibold text-lg transition-colors hover:bg-yellow-500"
             >
               Meet the Our Team
             </Link>

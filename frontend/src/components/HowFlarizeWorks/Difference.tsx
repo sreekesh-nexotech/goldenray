@@ -75,7 +75,7 @@ const Difference = () => {
 
       {/* CTA buttons */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2">
-        <Link href="/contactus" className="bg-[#EFB44A] text-[#123532] font-semibold px-8 py-3 rounded-lg transition-colors duration-200 hover:bg-[#e3a534]">
+        <Link href="/contactus" className="btn-m bg-[#EFB44A] text-[#123532] font-semibold px-8 py-3 rounded-lg transition-colors duration-200 hover:bg-[#e3a534]">
           Get my free quotes
         </Link>
         <Link

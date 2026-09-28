@@ -22,6 +22,7 @@ export default function Header() {
 
   const tools = [
     { name: "Check Your Monthly Cost", href: "/emi-calculator" },
+    // "Review Your Solar Quote" (/quote-analyser) is hidden until the analyser works.
     { name: "Compare Solar Options", href: "/solar-comparison" },
     { name: "Choose the Right Inverter", href: "/inverter-comparison" },
   ];
@@ -157,8 +158,6 @@ export default function Header() {
               </div>
             </li>
 
-            
-            {/*
             <li>
               <Link
                 href="/about"
@@ -169,6 +168,8 @@ export default function Header() {
                 About Us
               </Link>
             </li>
+
+            {/*
             <li>
               <LinkingButton
                 content="Contact us"
@@ -302,7 +303,6 @@ export default function Header() {
           </div>
         </li>
 
-        {/*
         <li>
           <Link
             href="/about"
@@ -314,7 +314,6 @@ export default function Header() {
             About Us
           </Link>
         </li>
-        */}
         <li>
           <Link
             href="/contactus"

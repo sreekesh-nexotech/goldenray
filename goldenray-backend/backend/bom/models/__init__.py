@@ -10,6 +10,8 @@ from .structure_template import StructureTemplate
 from .structure_template_item import StructureTemplateItem
 from .tube_weight import TubeWeight
 from .offer import Offer
+from .quotation_settings import QuotationSettings
+from .quotation_testimonial import QuotationTestimonial
 
 __all__ = [
     "GlobalCosts",
@@ -24,4 +26,6 @@ __all__ = [
     "StructureTemplateItem",
     "TubeWeight",
     "Offer",
+    "QuotationSettings",
+    "QuotationTestimonial",
 ]

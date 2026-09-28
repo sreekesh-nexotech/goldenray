@@ -530,8 +530,13 @@ export default function Calculator() {
             </p>
 
             {/* Daily amount — EMI ÷ 30 */}
-            <div className="inline-flex items-center gap-1 bg-white/20 text-white text-xs sm:text-sm font-medium px-3 py-2 rounded-full whitespace-nowrap mb-4">
-              ₹{fmt(dailyAmount)}/day · just ₹{fmt(dailyAmount)} a day
+            <div className="bg-white rounded-xl px-4 py-3 mt-4 mb-4">
+              <p className="text-base sm:text-lg font-bold text-[#15803D]">
+                ₹{fmt(dailyAmount)} /day
+              </p>
+              <p className="text-xs sm:text-sm text-[#111827] mt-1">
+                You need to save per day for your EMI
+              </p>
             </div>
 
             {/* Calculation breakdown — system price down to the loan amount */}

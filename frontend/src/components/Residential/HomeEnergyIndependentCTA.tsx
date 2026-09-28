@@ -1,11 +1,11 @@
 import Link from "next/link";
 import LinkingButton from "../ui/LinkingButton";
+import { SALES_PHONE, whatsappLink as buildWhatsappLink } from "@/data/contact";
 
-const whatsappNumber = "6282922988";
-const whatsappMessage = encodeURIComponent(
+const whatsappLink = buildWhatsappLink(
+  SALES_PHONE,
   "Hi! I'd like to book a free site assessment for solar at my home.",
 );
-const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
 const WhatsAppIcon = () => (
   <svg

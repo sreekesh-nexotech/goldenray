@@ -49,6 +49,7 @@ function crumbsFor(pathname: string): Crumb[] {
     "/studio/seo": "SEO",
     "/studio/enquiries": "Leads / Entries",
     "/studio/emi-calculator": "EMI Calculator",
+    "/studio/quotations": "Quotations",
     "/studio/careers": "Careers overview",
     "/studio/careers/positions": "Job Positions",
     "/studio/careers/applications": "Applications",

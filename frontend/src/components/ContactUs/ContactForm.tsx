@@ -2,7 +2,10 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { submitContactForm } from "@/services/basicContactService";
+import {
+  submitContactForm,
+  contactErrorMessage,
+} from "@/services/basicContactService";
 
 export default function ContactForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +50,15 @@ export default function ContactForm() {
     setSuccessMessage(null);
 
     try {
-      await submitContactForm({ name, phone_number });
+      await submitContactForm({
+        name,
+        phone_number,
+        source: "contact_page",
+        details: {
+          Pincode: (formData.get("pin_code") as string) ?? "",
+          "Property type": propertyType,
+        },
+      });
       setSuccessMessage(
         "Thank you for reaching out! We'll get back to you shortly.",
       );
@@ -55,22 +66,7 @@ export default function ContactForm() {
         formRef.current.reset();
       }
     } catch (err) {
-      if (
-        err instanceof Error &&
-        err.message.includes("HTTP error! Status: 400") &&
-        err.message.includes("phone number already exists")
-      ) {
-        setSuccessMessage(
-          "We already have your details! Our team will contact you soon.",
-        );
-        if (formRef.current) {
-          formRef.current.reset();
-        }
-      } else {
-        const errorMessage =
-          err instanceof Error ? err.message : "An unexpected error occurred.";
-        setError(`Failed to submit: ${errorMessage}`);
-      }
+      setError(contactErrorMessage(err));
     } finally {
       setIsLoading(false);
       window.scrollTo(0, scrollY);
@@ -152,7 +148,7 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className={`w-full bg-[#F7BA41] hover:bg-[#e6a73a] text-[#272218] font-semibold px-6 py-3 sm:py-4 rounded-lg text-base md:text-xl leading-snug transition-colors duration-300 ${
+          className={`btn-m w-full bg-[#F7BA41] hover:bg-[#e6a73a] text-[#272218] font-semibold px-6 py-3 sm:py-4 rounded-lg text-base md:text-xl leading-snug transition-colors duration-300 ${
             isLoading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           aria-label="Book now"

@@ -30,6 +30,7 @@ const ROUTE_MODULES: [string, StudioModule][] = [
   ["/studio/seo", "seo"],
   ["/studio/enquiries", "leads"],
   ["/studio/emi-calculator", "emi"],
+  ["/studio/quotations", "quotations"],
   ["/studio/careers/positions", "job_positions"],
   ["/studio/careers/applications", "applications"],
   ["/studio/careers/departments", "departments"],

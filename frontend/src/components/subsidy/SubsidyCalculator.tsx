@@ -159,7 +159,7 @@ export default function SubsidyCalculator({
 
             <button
               type="submit"
-              className={`w-full bg-[#F7BA41] hover:bg-[#e5a934] text-[#272218] font-semibold py-4 rounded-xl transition-colors ${
+              className={`btn-m w-full bg-[#F7BA41] hover:bg-[#e5a934] text-[#272218] font-semibold py-4 rounded-xl transition-colors ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
               disabled={isLoading}

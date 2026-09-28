@@ -1330,50 +1330,6 @@ Branch: <span style={{
                   display: "inline-block"
                 }}>8. ITR (ലോൺ ₹2 ലക്ഷത്തിന് മുകളിൽ ആണെങ്കിൽ)</span></div></div></div></div><div style={{
           position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          gap: 24,
-          padding: "40px 80px 40px 80px",
-          alignItems: "center",
-          flexWrap: "nowrap",
-          boxSizing: "border-box",
-          flexShrink: 0,
-          alignSelf: "stretch"
-        }}><div style={{
-            position: "relative",
-            borderLeft: "2px solid var(--1-2)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 20,
-            padding: "0px 16px 0px 16px",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            flexWrap: "nowrap",
-            boxSizing: "border-box",
-            flexShrink: 0,
-            alignSelf: "stretch"
-          }}><span style={{
-              position: "relative",
-              fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-              fontWeight: 400,
-              fontSize: 24,
-              lineHeight: "28px",
-              letterSpacing: "-0.500px",
-              color: "var(--grey)",
-              flexShrink: 0,
-              alignSelf: "stretch"
-            }}>അധിക Structure Cost  (ആവശ്യമെങ്കിൽ)</span><span style={{
-              position: "relative",
-              fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-              fontWeight: 600,
-              fontSize: 24,
-              lineHeight: "28px",
-              letterSpacing: "-0.500px",
-              color: "var(--p1)",
-              flexShrink: 0,
-              alignSelf: "stretch"
-            }}>₹4500/kw</span></div></div><div style={{
-          position: "relative",
           height: 98,
           backgroundColor: "rgb(247,244,230)",
           flexShrink: 0,

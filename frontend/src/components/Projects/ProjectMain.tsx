@@ -8,6 +8,9 @@ import ProjectCard from "@/components/Projects/Project-card";
 import { Project } from "@/data/Mock-projects";
 import { mockProjects } from "@/data/Mock-projects";
 
+
+// "Commercial" is hidden until there are commercial projects to show; an old
+
 const CATEGORIES = ["All Projects", "Residential"] as const;
 type Category = (typeof CATEGORIES)[number];
 
@@ -77,7 +80,7 @@ export default function ProjectMain() {
       />
 
       <div className=" mx-auto px-3 lg:px-18 xl:px-36 flex flex-col items-center mb-20">
-        <div className="flex justify-between items-center mb-16 p-2 bg-[#F3F3F3] xl:w-3/5 max-w-full rounded-full overflow-auto ">
+        <div className="flex justify-between items-center mb-16 p-2 bg-[#F3F3F3] xl:w-2/5 max-w-full rounded-full overflow-auto ">
           {CATEGORIES.map((category) => (
             <button
               key={category}

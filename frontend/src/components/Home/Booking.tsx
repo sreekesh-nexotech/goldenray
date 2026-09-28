@@ -2,7 +2,10 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { submitContactForm } from "@/services/basicContactService";
+import {
+  submitContactForm,
+  contactErrorMessage,
+} from "@/services/basicContactService";
 
 interface BookingFormProps {
   title?: string;
@@ -58,8 +61,7 @@ export default function BookingForm(
     setSuccessMessage(null);
 
     try {
-      // Destructure 'message' directly, no need for a 'response' variable here
-      await submitContactForm({ name, phone_number });
+      await submitContactForm({ name, phone_number, source: "home_booking" });
       setSuccessMessage(
         "Thank you! Your consultation request has been successfully submitted. We'll be in touch shortly!",
       );
@@ -67,23 +69,7 @@ export default function BookingForm(
         formRef.current.reset();
       }
     } catch (err) {
-      if (
-        err instanceof Error &&
-        err.message.includes(
-          'HTTP error! Status: 400, Message: {"phone_number":["lead collection home with this phone number already exists."]}',
-        )
-      ) {
-        setSuccessMessage(
-          "We already have your details! Our team will contact you soon.",
-        );
-        if (formRef.current) {
-          formRef.current.reset();
-        }
-      } else {
-        const errorMessage =
-          err instanceof Error ? err.message : "An unexpected error occurred.";
-        setError(`Failed to submit: ${errorMessage}`);
-      }
+      setError(contactErrorMessage(err));
     } finally {
       setIsLoading(false);
       window.scrollTo(0, scrollY);
