@@ -24,10 +24,10 @@ const HomeEnergyIndependentCTA = () => {
     <div className="relative w-full bg-gradient-to-b from-white  to-[#F8F2E1]">
       <section className="relative z-10 container mx-auto px-4 py-10 md:py-14 max-w-7xl">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-[26px] md:text-4xl font-bold leading-tight text-[#123532]">
+          <h2 className="text-[36px] font-semibold leading-[1.08] tracking-[-0.03em] text-[#123532] md:text-[44px]">
             Ready to Make Your Home Energy Independent?
           </h2>
-          <p className="mt-3 text-sm md:text-base leading-relaxed text-[#444444]">
+          <p className="mt-3 text-[14px] leading-[22px] text-[#444444] md:text-[16px] md:leading-[24px]">
             Book a free site assessment today. Our experts will visit your home,
             analyze your roof, and provide a customized solar blueprint tailored
             to your needs.
@@ -41,14 +41,14 @@ const HomeEnergyIndependentCTA = () => {
               ButtonBg="bg-[#F7BA41]"
               Buttontext="text-[#272218]"
               ButtonHover="hover:bg-yellow-500"
-              className="w-full justify-center px-8 py-3 text-sm font-semibold sm:w-auto md:text-base"
+              className="w-full justify-center sm:w-auto"
             />
 
             <Link
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn w-full justify-center gap-2 border border-[#074A4D] px-8 py-3 text-sm font-semibold text-[#074A4D] hover:bg-[#F6F6F6] sm:w-auto md:text-base"
+              className="btn w-full justify-center gap-2 rounded-xl border border-[#074A4D] px-4 py-3 text-[14px] font-semibold leading-[20px] text-[#074A4D] transition-all duration-200 hover:bg-[#F6F6F6] sm:w-auto"
             >
               <WhatsAppIcon />
               Message us on WhatsApp

@@ -971,6 +971,9 @@ export default function ComparisonTable({
             <div className="mt-6 text-center">
               <button
                 type="button"
+                onClick={() => {
+                  window.location.href = "/contact";
+                }}
                 className="rounded-lg bg-[#F7BA41] px-5 py-2.5 text-[13px] font-medium text-[#272218] transition-colors duration-200 hover:bg-[#E5A930]"
               >
                 Get free Quote for these Panels

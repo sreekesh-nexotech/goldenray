@@ -8,7 +8,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
+import { Children, useEffect, useState, type ReactNode } from "react";
 import Wordmark from "./Wordmark";
 import { useStudio } from "../shared/StudioContext";
 import { ConfirmDialog } from "../shared/overlays";

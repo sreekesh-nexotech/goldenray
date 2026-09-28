@@ -25,7 +25,7 @@ const resourceLinks = [
   { label: "FAQs", href: "/faq" },
   { label: "Blogs", href: "/blog" },
   // NOTE: no dedicated /newsletters route exists yet — placeholder href.
-  { label: "Newsletters", href: "#" },
+  // { label: "Newsletters", href: "#" },
 ];
 
 const legalLinks = [

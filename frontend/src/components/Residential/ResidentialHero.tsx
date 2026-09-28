@@ -17,34 +17,36 @@ export default function ResidentialHero() {
             {/* The head term this page ranks for lives in the H1 — the highest
                 weighted on-page signal. The old "Power Your Home with Smarter
                 Solar Decisions" carried no keyword at all. */}
-            <h1 className="text-4xl md:text-5xl font-semibold  leading-tight text-[#171717]">
+            <h1 className="text-[40px] font-semibold leading-[1.08] tracking-[-0.03em] text-[#171717] md:text-[48px]">
               Solar Panels for Your Kerala Home —{" "}
                 <span className="text-[#F18627]">
                   Priced Honestly
                 </span>
             </h1>
             <p
-              className="mt-5 text-base md:text-xl font-normal  leading-snug text-[#444444]"
+              className="mt-5 text-[14px] font-normal leading-[22px] text-[#444444] md:text-[16px]"
             >
               Thinking about solar but not sure who to trust? Get connected with certified residential solar experts across Kerala. Receive three tailored proposals, complete subsidy assistance, KSEB documentation, and one accountable team managing your project from start to finish.
             </p>
-                      
-            <div className="flex flex-row justify-center text-xs lg:text-lg md:justify-start lg:gap-4 gap-2 mt-5">
+
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-start">
               <LinkingButton
-              content="Book a Free Consultation"
-              ButtonLink="/contactus"
-              ButtonBg="bg-[#F7BA41]"
-              Buttontext="text-[#272218]"
-              ButtonHover="hover:bg-yellow-500"
-            />
-            <LinkingButton
-              content="Explore Solar Guide"
-              ButtonLink="/blog"
-              ButtonBorder="border border-[#074A4D]"
-              ButtonBg="bg-[#FFFFFF]"
-              Buttontext="text-[#074A4D]"
-              ButtonHover="hover:bg-[#eeeeee]"
-            />
+                content="Book a Free Consultation"
+                ButtonLink="/contactus"
+                ButtonBg="bg-[#F7BA41]"
+                Buttontext="text-[#272218]"
+                ButtonHover="hover:bg-yellow-500"
+                className="w-full sm:w-auto"
+              />
+              <LinkingButton
+                content="Explore Solar Guide"
+                ButtonLink="/blog"
+                ButtonBorder="border border-[#074A4D]"
+                ButtonBg="bg-[#FFFFFF]"
+                Buttontext="text-[#074A4D]"
+                ButtonHover="hover:bg-[#eeeeee]"
+                className="w-full sm:w-auto"
+              />
             </div>
             <ul className="no-scrollbar mt-6 flex flex-nowrap items-center justify-start gap-4 md:gap-6 overflow-x-auto text-[11px] md:text-sm font-medium text-[#171717]">
               <li className="flex shrink-0 items-center gap-2 whitespace-nowrap">

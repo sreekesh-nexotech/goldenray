@@ -1,6 +1,7 @@
 import React from "react";
 import LinkingButton from "../ui/LinkingButton";
-import Link from "next/link";
+
+const PARTNER_MANAGER_WHATSAPP = "https://wa.me/916282922988";
 
 const StartEarning = () => {
   return (
@@ -24,13 +25,14 @@ const StartEarning = () => {
           Buttontext="text-[#272218]"
         />
 
-        <Link
-          href="#form"
+        <a
+          href={PARTNER_MANAGER_WHATSAPP}
           target="_blank"
+          rel="noopener noreferrer"
           className="btn border border-[#074A4D] flex items-center gap-2 bg-transparent text-[#074A4D] hover:bg-[#eeeeee] transition-all duration-200"
         >
-          Talk to Partner Manager
-        </Link>
+          Talk to a Manager
+        </a>
       </div>
     </section>
   );

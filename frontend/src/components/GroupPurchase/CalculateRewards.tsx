@@ -174,6 +174,11 @@ const CalculateRewards = () => {
           <div className="mt-8 flex justify-center">
             <button
               type="button"
+              onClick={() =>
+                document
+                  .getElementById("reserve")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" })
+              }
               className="rounded-lg bg-[#F7BA41] px-16 py-3.5 text-base font-semibold text-[#123532] transition-colors hover:bg-yellow-500"
             >
               Start your group

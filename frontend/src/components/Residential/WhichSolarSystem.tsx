@@ -88,7 +88,7 @@ const Points = ({
             strokeWidth={2}
             aria-hidden="true"
           />
-          <span className="text-xs md:text-sm font-normal leading-relaxed text-[#444444]">
+          <span className="text-[12px] font-normal leading-[18px] text-[#444444] md:text-[14px] md:leading-[22px]">
             {text}
           </span>
         </li>
@@ -102,10 +102,10 @@ const WhichSolarSystem = () => {
     <section className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-7xl flex flex-col items-center h-full gap-10">
       {/* Heading */}
       <div className="w-full max-w-4xl mx-auto text-center">
-        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532]">
+        <h2 className="text-[36px] font-semibold leading-[1.08] tracking-[-0.03em] text-[#123532] md:text-[44px]">
           Which Solar System Is Right?
         </h2>
-        <p className="mt-3 text-sm md:text-lg text-[#757575]">
+        <p className="mt-3 text-[14px] leading-[22px] text-[#757575] md:text-[16px]">
           Understand the three main ways solar can power your Kerala home.
         </p>
       </div>
@@ -132,15 +132,15 @@ const WhichSolarSystem = () => {
                   className="object-contain object-center"
                 />
               </div>
-              <h3 className="mt-6 text-2xl font-bold leading-snug text-[#123532]">
+              <h3 className="mt-6 text-[20px] font-semibold leading-[28px] text-[#123532]">
                 {system.title}
               </h3>
               <p
-                className={`mt-1 text-sm font-semibold ${system.taglineColor}`}
+                className={`mt-1 text-[14px] font-semibold ${system.taglineColor}`}
               >
                 {system.tagline}
               </p>
-              <p className="mt-4 text-base font-normal leading-relaxed text-[#444444]">
+              <p className="mt-4 text-[12px] font-normal leading-[18px] text-[#444444] md:text-[14px] md:leading-[22px]">
                 {system.desc}
               </p>
               <div className="mt-5">
@@ -151,11 +151,11 @@ const WhichSolarSystem = () => {
             {/* Mobile: title row, then points beside the image, then description */}
             <div className="flex flex-col lg:hidden">
               <div className="flex items-baseline justify-between gap-3">
-                <h3 className="text-base font-bold leading-snug text-[#123532]">
+                <h3 className="text-[20px] font-semibold leading-[28px] text-[#123532]">
                   {system.title}
                 </h3>
                 <p
-                  className={`text-right text-xs font-semibold ${system.taglineColor}`}
+                  className={`text-right text-[12px] font-semibold ${system.taglineColor}`}
                 >
                   {system.tagline}
                 </p>
@@ -176,7 +176,7 @@ const WhichSolarSystem = () => {
                 </div>
               </div>
 
-              <p className="mt-4 text-sm font-normal leading-relaxed text-[#444444]">
+              <p className="mt-4 text-[12px] font-normal leading-[18px] text-[#444444]">
                 {system.desc}
               </p>
             </div>

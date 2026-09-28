@@ -23,7 +23,7 @@ export default function LinkingButton({
   return (
     <Link
       href={ButtonLink}
-      className={`btn ${ButtonBg} ${ButtonHover} ${Buttontext} ${ButtonBorder ?? ""} ${className ?? ""}`}
+      className={`btn w-full justify-center rounded-xl border border-transparent text-[14px] font-semibold leading-[20px] transition-all duration-200 sm:w-auto ${ButtonBg} ${ButtonHover} ${Buttontext} ${ButtonBorder ?? ""} ${className ?? ""}`}
     >
       {content}
     </Link>

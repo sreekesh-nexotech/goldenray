@@ -5,7 +5,7 @@ import React from "react";
 
 const FloatingChatButton = () => {
   const whatsappUrl =
-    "https://api.whatsapp.com/send/?phone=919995083579&text=Hello%2C+I+saw+your+advertisement+and+I’m+interested+in+learning+more.+Could+you+please+share+more+details%3F&type=phone_number&app_absent=0";
+    "https://api.whatsapp.com/send/?phone=919995031006&text=Hello%2C+I+saw+your+advertisement+and+I’m+interested+in+learning+more.+Could+you+please+share+more+details%3F&type=phone_number&app_absent=0";
 
   return (
     <a

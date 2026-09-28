@@ -8,17 +8,15 @@ import ProjectCard from "@/components/Projects/Project-card";
 import { Project } from "@/data/Mock-projects";
 import { mockProjects } from "@/data/Mock-projects";
 
-const CATEGORIES = ["All Projects", "Residential", "Commercial"] as const;
+const CATEGORIES = ["All Projects", "Residential"] as const;
 type Category = (typeof CATEGORIES)[number];
 
 const categoryFromParam = (value: string | null): Category => {
-  if (value === "commercial") return "Commercial";
   if (value === "residential") return "Residential";
   return "All Projects";
 };
 
 const paramFromCategory = (category: Category): string | null => {
-  if (category === "Commercial") return "commercial";
   if (category === "Residential") return "residential";
   return null;
 };
