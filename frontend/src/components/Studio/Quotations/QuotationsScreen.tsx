@@ -4,8 +4,9 @@
 //
 // Content Studio → Quotations. The sales / accounting team's copy of a
 // customer quotation: the same document the customer downloads from the
-// website, cut down to pages 1, 5, 7 and 8 (cover, package pricing, technical
-// specifications & pricing table, savings), in English or Malayalam.
+// website, either in full (all 12 pages) or cut down to pages 1, 5, 7 and 8
+// (cover, package pricing, technical specifications & pricing table, savings),
+// in English or Malayalam.
 //
 // Nothing here is re-implemented. The system size, price and savings come from
 // the public solar calculator's own endpoint; the quotation payload, BOM and
@@ -37,6 +38,11 @@ import {
   type CalculatorFigures,
 } from "@/services/quotationPdfService";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
+import {
+  ACCOUNTING_PAGE_IDS,
+  FULL_PAGE_COUNT,
+  type QuotationVariant,
+} from "@/components/QuotationV2/pageSets";
 import type { BasicCalculatorData } from "@/types/types";
 
 /** Same limit the public calculator enforces. */
@@ -44,6 +50,12 @@ const MAX_BILL = 40000;
 
 /** The option values the customer's popup stores, so the document reads them the same way. */
 const SUBSIDY_OPTIONS = ["Eligible (DCR)", "Not Eligible (Non-DCR)"];
+
+/** Short = the accounting copy; full = the whole document the customer receives. */
+const VERSION_OPTIONS: { value: QuotationVariant; label: string }[] = [
+  { value: "accounting", label: `Short — ${ACCOUNTING_PAGE_IDS.length} pages (1, 5, 7, 8)` },
+  { value: "customer", label: `Full — all ${FULL_PAGE_COUNT} pages` },
+];
 
 interface FormState {
   customerName: string;
@@ -54,9 +66,10 @@ interface FormState {
   monthlyBill: string;
   subsidyEligibility: string;
   salesPerson: string;
+  variant: QuotationVariant;
 }
 
-const EMPTY: Omit<FormState, "salesPerson"> = {
+const EMPTY: Omit<FormState, "salesPerson" | "variant"> = {
   customerName: "",
   phoneNumber: "",
   address: "",
@@ -131,7 +144,7 @@ export default function QuotationsScreen() {
     [me],
   );
 
-  const [form, setForm] = useState<FormState>({ ...EMPTY, salesPerson: "" });
+  const [form, setForm] = useState<FormState>({ ...EMPTY, salesPerson: "", variant: "accounting" });
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [calc, setCalc] = useState<BasicCalculatorData | null>(null);
   const [calculating, setCalculating] = useState(false);
@@ -189,11 +202,11 @@ export default function QuotationsScreen() {
         figuresFrom(calc),
         { salesPerson },
       );
-      const { blob, fileName } = await requestQuotationPdf(data, { language, variant: "accounting" });
+      const { blob, fileName } = await requestQuotationPdf(data, { language, variant: form.variant });
       saveFile(blob, fileName);
       toast(`Downloaded ${fileName}`);
     } catch (err) {
-      console.error("Accounting quotation failed:", err);
+      console.error("Studio quotation failed:", err);
       toast("Could not generate the quotation PDF. Please try again.", "error");
     } finally {
       setDownloading(null);
@@ -201,7 +214,8 @@ export default function QuotationsScreen() {
   };
 
   const reset = () => {
-    setForm({ ...EMPTY, salesPerson: "" });
+    // Keep the chosen version: it is a preference, not part of the customer's details.
+    setForm((f) => ({ ...EMPTY, salesPerson: "", variant: f.variant }));
     setErrors({});
     setCalc(null);
   };
@@ -214,14 +228,15 @@ export default function QuotationsScreen() {
     <div>
       <PageHeader
         title="Quotations"
-        subtitle="Accounting copy of a customer quotation — pages 1, 5, 7 and 8 of the full document, in English or Malayalam."
+        subtitle="A customer quotation for sales and accounting — the full document or a short copy (pages 1, 5, 7 and 8), in English or Malayalam."
       />
 
       <TipBanner>
         Enter the customer&apos;s details exactly as on the website calculator. The system size,
         price and savings come from the same calculator, and the EMI from the EMI calculator&apos;s
-        rules, so the copy carries the same figures as the customer&apos;s quotation. The PDF
-        contains the cover, package pricing, technical specifications and savings pages.
+        rules, so the copy carries the same figures as the customer&apos;s quotation. The short
+        version contains the cover, package pricing, technical specifications and savings pages;
+        the full version is the complete 12-page document the customer receives.
       </TipBanner>
 
       <div className="grid gap-4" style={{ gridTemplateColumns: "minmax(0, 1.4fr) minmax(0, 1fr)" }}>
@@ -277,15 +292,22 @@ export default function QuotationsScreen() {
                 ))}
               </SelectField>
             </Field>
-            <div style={{ gridColumn: "1 / -1" }}>
-              <Field label="Proposal by (printed on the cover)">
-                <TextInput
-                  value={form.salesPerson}
-                  onChange={(v) => set("salesPerson", v)}
-                  placeholder={defaultSalesPerson || "Flarize Team"}
-                />
-              </Field>
-            </div>
+            <Field label="Proposal by (printed on the cover)">
+              <TextInput
+                value={form.salesPerson}
+                onChange={(v) => set("salesPerson", v)}
+                placeholder={defaultSalesPerson || "Flarize Team"}
+              />
+            </Field>
+            <Field label="Document version">
+              <SelectField value={form.variant} onChange={(v) => set("variant", v as QuotationVariant)}>
+                {VERSION_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </SelectField>
+            </Field>
             <div className="flex gap-2" style={{ gridColumn: "1 / -1" }}>
               <GoldButton onClick={calculate} disabled={busy}>
                 {calculating ? "Calculating…" : calc ? "Recalculate" : "Calculate"}
@@ -299,7 +321,7 @@ export default function QuotationsScreen() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Accounting copy</CardTitle>
+            <CardTitle>{form.variant === "accounting" ? "Short copy" : "Full quotation"}</CardTitle>
           </CardHeader>
           <div style={{ padding: 16 }}>
             {!calc ? (

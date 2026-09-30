@@ -82,8 +82,8 @@ export default function QuotationPdfGenerator({
   const quoteNo = `QUO-GR-AS-${year}-${month}-${random}`;
 
   const proposalBy = data.bom?.salesPerson || "Flarize Team";
-  const gstNo = "32AAUFG1464A1ZP";
-  const companyRegistration = "U40109KA2021PTC155197";
+  const gstNo = "32AAGCF7283D1ZR";
+  const companyRegistration = "U43222KL2025PTC098799";
 
   // Wait for images and webfonts to load after render. Fonts must be ready
   // before rasterising, otherwise the capture bakes in fallback glyphs.
