@@ -26,7 +26,7 @@ import {
   getConfig,
   getDashboard,
   getMe,
-  isAuthError,
+  isSessionExpired,
   logout,
   type StudioAction,
   type StudioConfig,
@@ -110,8 +110,9 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
         setDashboard(dashData);
       } catch (err) {
         if (cancelled) return;
-        if (isAuthError(err)) {
-          // Session expired / revoked — drop it and go sign in again.
+        if (isSessionExpired(err)) {
+          // Session expired / revoked — drop it and go sign in again. A 403 or
+          // a server hiccup falls through to the error banner instead.
           logout();
           router.replace("/studio/login");
           return;

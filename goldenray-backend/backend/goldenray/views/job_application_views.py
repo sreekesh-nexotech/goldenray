@@ -10,6 +10,7 @@ from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 
 from ..models.job_application import JobApplication, JobApplicationEvent, JobApplicationNote
+from ..models.lead_collection_home import LeadCollectionHome, record_lead
 from ..serializers.job_application_serializer import (
     JobApplicationAssignSerializer,
     JobApplicationDetailSerializer,
@@ -113,6 +114,20 @@ class JobApplicationAPIView(APIView):
         if serializer.is_valid():
             application = serializer.save()
             _record(application, JobApplicationEvent.Kind.RECEIVED, detail=application.display_position)
+            # The résumé and hiring workflow stay on the Applications screen;
+            # the Enquiries inbox gets a pointer so no website form is missed.
+            record_lead(
+                name=application.full_name,
+                phone_number=application.phone,
+                source=LeadCollectionHome.Source.CAREER,
+                page="/career" if application.position_id else "/career/general-application-form",
+                details={
+                    "Position": application.display_position,
+                    "Department": application.department_name,
+                    "Email": application.email,
+                    "Location": application.location,
+                },
+            )
             return Response(
                 {
                     "message": "Application received. Our team will get in touch if there's a fit.",

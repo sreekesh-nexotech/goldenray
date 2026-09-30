@@ -48,9 +48,11 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,backend
+    # Threaded workers: the default single sync worker lets one slow request
+    # (or an idle browser connection) stall every visitor and Studio user.
     command: >
       sh -c "python manage.py migrate --noinput &&
-             gunicorn backend.wsgi:application --bind 0.0.0.0:8000"
+             gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --workers 3 --worker-class gthread --threads 4 --timeout 120"
     # Host port 8012 — 8000, 8010 and 8011 are used by other projects on this
     # shared VM.
     ports:
@@ -89,10 +91,11 @@ services:
       DJANGO_ALLOWED_HOSTS: ${CMS_ALLOWED_HOSTS:-localhost,127.0.0.1,cms}
     # The blog_cms database is created by the db container's init script
     # (see ./initdb/), so here we just migrate and serve. Static (admin UI) is
-    # already collected into the image.
+    # already collected into the image. Threaded workers so one slow request
+    # (e.g. a Bunny upload) can't stall every other Studio user — see Dockerfile.
     command: >
       sh -c "python manage.py migrate --noinput &&
-             gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --worker-class gthread --threads 4 --timeout 120"
     # Host port 8009 — the frontend's NEXT_PUBLIC_ADMIN_API_BASE_URL points here.
     ports:
       - "8009:8000"

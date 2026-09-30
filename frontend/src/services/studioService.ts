@@ -171,6 +171,14 @@ export function isAuthError(err: unknown): boolean {
   return err instanceof StudioApiError && (err.status === 401 || err.status === 403);
 }
 
+/**
+ * True only when the session itself is gone (401 after a failed refresh). A
+ * 403 is a permission gap on one screen, not a reason to sign the user out.
+ */
+export function isSessionExpired(err: unknown): boolean {
+  return err instanceof StudioApiError && err.status === 401;
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Token storage (cookies, readable by the middleware)                        */
 /* -------------------------------------------------------------------------- */
@@ -280,10 +288,25 @@ async function request<T>(
   return res.json() as Promise<T>;
 }
 
+/**
+ * The refresh in flight, if any. A Publish click fires several calls at once
+ * (save, publish, re-fetch) and auto-save may be mid-flight too; when the
+ * access token has just expired they all 401 together. They share this one
+ * refresh instead of each rotating the token pair independently.
+ */
+let refreshInFlight: Promise<string> | null = null;
+
 /** POST auth/refresh/ with the stored (rotating) refresh token. */
-async function refreshTokens(): Promise<string> {
+function refreshTokens(): Promise<string> {
+  refreshInFlight ??= doRefresh().finally(() => {
+    refreshInFlight = null;
+  });
+  return refreshInFlight;
+}
+
+async function doRefresh(): Promise<string> {
   const refresh = readCookie(STUDIO_REFRESH_COOKIE);
-  if (!refresh) throw new StudioApiError(401, "Not signed in");
+  if (!refresh) throw new StudioApiError(401, "Your session has expired — please sign in again");
   try {
     const tokens = await request<StudioTokens>("auth/refresh/", {
       method: "POST",
@@ -292,8 +315,26 @@ async function refreshTokens(): Promise<string> {
     saveTokens(tokens); // refresh rotates — always persist the new pair
     return tokens.access;
   } catch (err) {
-    clearTokens(); // stale session; force a fresh sign-in
-    throw err;
+    // Only a definite rejection of the refresh token ends the session. A
+    // network drop, a timeout or a 5xx while the API restarts says nothing
+    // about the token, so keep it: the next save retries and succeeds once
+    // the server answers again, instead of silently signing the editor out
+    // mid-article.
+    if (err instanceof StudioApiError && (err.status === 400 || err.status === 401)) {
+      // Another tab may have rotated the pair while this call was out — its
+      // fresh token is already in the cookie, so use that rather than sign out.
+      const current = readCookie(STUDIO_REFRESH_COOKIE);
+      if (current && current !== refresh) {
+        const access = readCookie(STUDIO_ACCESS_COOKIE);
+        if (access) return access;
+      }
+      clearTokens();
+      throw new StudioApiError(401, "Your session has expired — please sign in again");
+    }
+    if (err instanceof StudioApiError) {
+      throw new StudioApiError(err.status, "The server is busy — your changes are kept, try again in a moment");
+    }
+    throw new StudioApiError(0, "Can’t reach the server — check your connection and try again");
   }
 }
 

@@ -7,7 +7,7 @@ class LeadCollectionHome(models.Model):
     This is the single inbox the Studio's Enquiries screen reads, so every
     form that captures a customer's name and number lands here — the ones with
     their own table (referral applications, warranty requests, OTP quote
-    requests) are mirrored in by ``record_lead``. ``source`` says which form it
+    requests, career applications) are mirrored in by ``record_lead``. ``source`` says which form it
     came from and ``details`` holds whatever extra fields that form collects.
 
     A phone number is deliberately *not* unique: a returning customer's second
@@ -24,6 +24,7 @@ class LeadCollectionHome(models.Model):
         QUOTE_OTP = "quote_request", "Quote request (advanced calculator)"
         REFERRAL = "referral_partner", "Referral partner application"
         WARRANTY = "warranty_service", "Warranty service request"
+        CAREER = "career_application", "Career application"
         OTHER = "other", "Website form"
 
     name = models.CharField(max_length=255)

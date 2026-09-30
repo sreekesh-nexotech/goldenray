@@ -509,8 +509,12 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       savedSnapshot.current = snapshot;
       setAutoState("saved");
     } catch (err) {
+      // Toast once when auto-save starts failing; while it keeps failing the
+      // inline "Save failed — retrying" status says so without stacking toasts.
+      if (autoState !== "error") {
+        toast(err instanceof StudioApiError ? `Save failed: ${err.message}` : "Save failed", "error");
+      }
       setAutoState("error");
-      toast(err instanceof StudioApiError ? `Save failed: ${err.message}` : "Save failed", "error");
     }
   };
 
