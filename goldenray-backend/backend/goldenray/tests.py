@@ -78,7 +78,17 @@ class LeadsGatingTests(TestCase):
 
     def test_a_forged_token_is_refused(self):
         forged = jwt.encode({"role": "admin", "modules": ["leads"], "exp": datetime.now(timezone.utc) + timedelta(minutes=5)}, "wrong-key", algorithm="HS256")
-        self.assertEqual(self.client.get("/api/lead-collection-home/", **bearer(forged)).status_code, 403)
+        self.assertEqual(self.client.get("/api/lead-collection-home/", **bearer(forged)).status_code, 401)
+
+    def test_an_expired_token_is_a_401_so_the_studio_refreshes(self):
+        # A 403 here left the Enquiries screen blank once the access token
+        # expired: the Studio only refreshes on a 401.
+        expired = jwt.encode(
+            {"role": "admin", "modules": ["leads"], "permissions": {"leads": ["view"]},
+             "exp": datetime.now(timezone.utc) - timedelta(minutes=1)},
+            KEY, algorithm="HS256",
+        )
+        self.assertEqual(self.client.get("/api/lead-collection-home/", **bearer(expired)).status_code, 401)
 
 
 @override_settings(STUDIO_JWT_SIGNING_KEY=KEY)

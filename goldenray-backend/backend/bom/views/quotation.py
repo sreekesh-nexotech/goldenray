@@ -8,6 +8,8 @@ fed with the BOM's own figures instead of the website calculator's estimates:
   * the three packages on page 5 are the BOM engine's real price for each tier
     (same configuration, tier changed), and the summary describes the tier the
     sales person configured;
+  * a hybrid quote compares battery options instead of tiers: the configured
+    tier with no battery, one battery and two batteries;
   * the subsidy is the one the calculator applied;
   * page 8's savings graph uses the website calculator's formula, anchored on
     the quoted price;
@@ -43,6 +45,8 @@ from goldenray.views.customer_installation_views import InstallationStatsByPinco
 
 #: BOM tier → the package it is sold as in the quotation document.
 PACKAGE_FOR_TIER = {"premium": "premium", "value": "smart", "base": "basic"}
+#: Hybrid BOM battery config → the option it is sold as in the hybrid document.
+OPTION_FOR_BATTERY = {"0": "noBattery", "1": "oneBattery", "2": "twoBattery"}
 TIER_LABELS = {"premium": "Premium", "value": "Value", "base": "Base"}
 SYSTEM_LABELS = {"ongrid": "On-Grid", "hybrid": "Hybrid"}
 LANGUAGES = {"English", "Malayalam"}
@@ -199,17 +203,26 @@ class QuotationPdfView(APIView):
             return Response({"errors": errors}, status=drf_status.HTTP_400_BAD_REQUEST)
 
         params = engine._coerce(config)
-        # One run per tier: the configured one is the quote, the other two are
-        # what the same configuration costs in the other packages.
+        hybrid = params["sys_type"] == "hybrid"
+        if hybrid and params["bat_config"] not in OPTION_FOR_BATTERY:
+            return Response(
+                {"errors": ["Battery config must be 0, 1 or 2 batteries."]},
+                status=drf_status.HTTP_400_BAD_REQUEST,
+            )
+        # One run per package: the configured one is the quote, the other two
+        # are what the same configuration costs as the other packages — another
+        # tier on-grid, another battery count on a hybrid.
+        if hybrid:
+            runs = {option: {**params, "bat_config": bat} for bat, option in OPTION_FOR_BATTERY.items()}
+            quoted_package = OPTION_FOR_BATTERY[params["bat_config"]]
+        else:
+            runs = {package: {**params, "tier": tier} for tier, package in PACKAGE_FOR_TIER.items()}
+            quoted_package = PACKAGE_FOR_TIER[params["tier"]]
         try:
-            results = {
-                PACKAGE_FOR_TIER[tier]: engine.compute({**params, "tier": tier})
-                for tier in PACKAGE_FOR_TIER
-            }
+            results = {package: engine.compute(run) for package, run in runs.items()}
         except BomUnavailable as exc:
             return Response({"error": exc.message}, status=exc.status)
 
-        quoted_package = PACKAGE_FOR_TIER[params["tier"]]
         quoted = results[quoted_package]
         pricing = quoted["pricing"]
         kw = BomCalculator._size_to_kw(str(quoted["meta"]["size"]))
@@ -234,6 +247,9 @@ class QuotationPdfView(APIView):
             "systemPrice": max(0, gross - subsidy),
             "emiPerMonth": 0,
             "graphData": _graph(bill, property_type, gross, subsidy),
+            # "hybrid" switches pages 5 and 7 to the battery-option layout;
+            # packageTotals / financing are then keyed by OPTION_FOR_BATTERY.
+            "systemType": params["sys_type"],
             "packageTotals": {k: float(r["pricing"]["final_price"]) for k, r in results.items()},
             "quotedPackage": quoted_package,
             "subsidyAmount": subsidy,
