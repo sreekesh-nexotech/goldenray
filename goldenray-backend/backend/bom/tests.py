@@ -200,3 +200,23 @@ class QuotationTestimonialApiTests(TestCase):
         self.assertTrue(storage.exists(name))
         self.assertEqual(self.client.delete(f"{self.MANAGE}{obj.pk}/").status_code, 204)
         self.assertFalse(storage.exists(name))
+
+
+class BatteryConfigCoercionTests(TestCase):
+    """The calculator page used to send "10"/"20" for one/two batteries."""
+
+    def coerce(self, bat_config):
+        from bom.views.api import BomCalculateView
+
+        return BomCalculateView()._coerce(
+            {"sys_type": "hybrid", "size": "5", "tier": "value", "bat_config": bat_config}
+        )["bat_config"]
+
+    def test_template_keys_pass_through(self):
+        for value in ("0", "1", "2"):
+            self.assertEqual(self.coerce(value), value)
+
+    def test_legacy_values_map_to_template_keys(self):
+        self.assertEqual(self.coerce("10"), "1")
+        self.assertEqual(self.coerce("20"), "2")
+        self.assertEqual(self.coerce(20), "2")
