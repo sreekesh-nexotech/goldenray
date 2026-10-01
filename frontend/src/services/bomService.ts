@@ -70,11 +70,22 @@ const ONGRID_SIZES: { kw: number; key: string }[] = [
   { kw: 10, key: "10" },
 ];
 
-/** Map a system size like "5 kW" to the nearest on-grid BOM `size` key. */
-function mapSystemSizeToKey(systemSize: string): { key: string; kw: number } {
+// Sizes the hybrid BOM template offers.
+const HYBRID_SIZES: { kw: number; key: string }[] = [
+  { kw: 3, key: "3" },
+  { kw: 5, key: "5" },
+  { kw: 8, key: "8" },
+  { kw: 10, key: "10" },
+];
+
+/** Map a system size like "5 kW" to the nearest BOM `size` key. */
+function mapSystemSizeToKey(
+  systemSize: string,
+  sizes = ONGRID_SIZES,
+): { key: string; kw: number } {
   const parsed = parseFloat(systemSize) || 3;
-  let best = ONGRID_SIZES[0];
-  for (const s of ONGRID_SIZES) {
+  let best = sizes[0];
+  for (const s of sizes) {
     if (Math.abs(s.kw - parsed) < Math.abs(best.kw - parsed)) best = s;
   }
   return { key: best.key, kw: best.kw };
@@ -82,34 +93,29 @@ function mapSystemSizeToKey(systemSize: string): { key: string; kw: number } {
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-interface GetQuotationBomArgs {
-  systemSize: string;
+/** The recommended tier the customer-facing quotations are priced at. */
+const TIER = "value";
+
+interface BomRun {
+  sysType: "ongrid" | "hybrid";
+  sizeKey: string;
+  kw: number;
+  batConfig: string;
   customerName: string;
-  salesPerson?: string;
+  salesPerson: string;
 }
 
-/**
- * Fetch the Bill of Materials for the quotation. Best-effort: returns `null`
- * if the backend BOM engine is unavailable/unseeded so the quote can still be
- * generated (Page 5 degrades gracefully).
- */
-export async function getQuotationBom({
-  systemSize,
-  customerName,
-  salesPerson = "",
-}: GetQuotationBomArgs): Promise<QuotationBom | null> {
-  const { key, kw } = mapSystemSizeToKey(systemSize);
-  const tier = "value";
-
+/** One run of the BOM engine, or null if it is unavailable / unseeded. */
+async function runBom({ sysType, sizeKey, kw, batConfig, customerName, salesPerson }: BomRun): Promise<QuotationBom | null> {
   try {
     const res = await fetch(`${BOM_BASE_URL}${BOM_CALCULATE_ENDPOINT}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        sys_type: "ongrid",
-        size: key,
-        tier,
-        bat_config: "0",
+        sys_type: sysType,
+        size: sizeKey,
+        tier: TIER,
+        bat_config: batConfig,
         subsidy_type: "residential",
       }),
     });
@@ -138,11 +144,58 @@ export async function getQuotationBom({
       priceAfterSubsidy: pricing.price_after_subsidy ?? 0,
       customerName,
       salesPerson,
-      systemLabel: `On-Grid ${kw}kW`,
-      tierLabel: capitalize(tier),
+      systemLabel: `${sysType === "hybrid" ? "Hybrid" : "On-Grid"} ${kw}kW`,
+      tierLabel: capitalize(TIER),
     };
   } catch (err) {
     console.error("BOM calculate error:", err);
     return null;
   }
+}
+
+interface GetQuotationBomArgs {
+  systemSize: string;
+  customerName: string;
+  salesPerson?: string;
+}
+
+/**
+ * Fetch the Bill of Materials for the quotation. Best-effort: returns `null`
+ * if the backend BOM engine is unavailable/unseeded so the quote can still be
+ * generated (Page 5 degrades gracefully).
+ */
+export async function getQuotationBom({
+  systemSize,
+  customerName,
+  salesPerson = "",
+}: GetQuotationBomArgs): Promise<QuotationBom | null> {
+  const { key, kw } = mapSystemSizeToKey(systemSize);
+  return runBom({ sysType: "ongrid", sizeKey: key, kw, batConfig: "0", customerName, salesPerson });
+}
+
+/** A hybrid quote's three battery options, priced by the BOM engine. */
+export interface HybridBoms {
+  /** The hybrid template's nearest size to the calculator's, in kW. */
+  kw: number;
+  noBattery: QuotationBom;
+  oneBattery: QuotationBom;
+  twoBattery: QuotationBom;
+}
+
+/**
+ * Price the hybrid system with no battery, one and two (battery configs
+ * "0" / "1" / "2"). Unlike the on-grid BOM this is not optional — the hybrid
+ * document's prices come from it — so it returns null if any run fails.
+ */
+export async function getHybridBoms({
+  systemSize,
+  customerName,
+  salesPerson = "",
+}: GetQuotationBomArgs): Promise<HybridBoms | null> {
+  const { key, kw } = mapSystemSizeToKey(systemSize, HYBRID_SIZES);
+  const run = (batConfig: string) =>
+    runBom({ sysType: "hybrid", sizeKey: key, kw, batConfig, customerName, salesPerson });
+  const [noBattery, oneBattery, twoBattery] = await Promise.all([run("0"), run("1"), run("2")]);
+  if (!noBattery || !oneBattery || !twoBattery) return null;
+  return { kw, noBattery, oneBattery, twoBattery };
 }

@@ -33,9 +33,17 @@ import {
   type TestimonialCard,
   type TestimonialEntry,
 } from "@/components/QuotationV2/testimonials";
+import {
+  buildHybridOptions,
+  type HybridKey,
+  type HybridQuotationInput,
+} from "@/components/QuotationV2/hybrid";
 
-/** What the customer details form writes to sessionStorage. */
-export interface QuotationV2Input {
+/**
+ * What the customer details form writes to sessionStorage; the BOM
+ * calculator adds the hybrid fields.
+ */
+export interface QuotationV2Input extends HybridQuotationInput {
   customerName: string;
   address: string;
   phoneNumber: string;
@@ -115,6 +123,11 @@ export interface QuotationV2Data {
   premium: QuotationV2Tier;
   smart: QuotationV2Tier;
   basic: QuotationV2Tier;
+  /**
+   * A hybrid quote's three battery options (pages 5 and 7), or null for an
+   * on-grid quote. `subtitle` sits under each option's name on page 5.
+   */
+  hybrid: (Record<HybridKey, QuotationV2Tier> & { subtitle: string }) | null;
 
   // ── Savings (pages 8, 12) ────────────────────────────────────────────────
   monthlyBillValue: string;
@@ -462,6 +475,10 @@ export function buildQuotationV2Data(
     premium: buildTier(premiumTotal, fin.premium),
     smart: buildTier(smartTotal, fin.smart),
     basic: buildTier(basicTotal, fin.basic),
+    hybrid: (() => {
+      const options = buildHybridOptions(input, subsidy, buildTier);
+      return options && { ...options, subtitle: `${sizeKW} kW Solar System` };
+    })(),
 
     monthlyBillValue: rupees(billAmount),
     withSolarBill: `₹${formatINR(WITH_SOLAR_BILL_MIN)}-${formatINR(

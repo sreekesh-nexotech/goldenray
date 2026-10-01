@@ -1,5 +1,6 @@
 // Page 7 of the Flarize quotation document (English) — Technical Specifications — full spec comparison table
 import type { CSSProperties } from "react";
+import { HybridSpecTable } from "@/components/QuotationV2/HybridBlocks";
 import type { QuotationV2Data } from "../quotationV2MalayalamData";
 
 interface Page07TechSpecsProps {
@@ -129,7 +130,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               color: "var(--grey)",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}>ഓരോ ഘടകത്തിന്റെയും വിവരങ്ങൾ വ്യക്തമായി അവതരിപ്പിക്കുന്നു.</span></div><div style={{
+            }}>ഓരോ ഘടകത്തിന്റെയും വിവരങ്ങൾ വ്യക്തമായി അവതരിപ്പിക്കുന്നു.</span></div>{data.hybrid ? <HybridSpecTable data={data} language="Malayalam" /> : <div style={{
             position: "relative",
             width: 1274,
             height: 1582,
@@ -1951,7 +1952,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 letterSpacing: "-0.500px",
                 color: "rgb(255,255,255)",
                 flexGrow: 1
-              }}>{data.basic.financed}</span></div></div><p
+              }}>{data.basic.financed}</span></div></div>}<p
                 style={{
                   position: "relative",
                   // Sits right under the table rather than a full column gap below it.

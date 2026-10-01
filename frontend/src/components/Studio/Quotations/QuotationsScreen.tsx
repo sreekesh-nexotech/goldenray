@@ -44,6 +44,12 @@ import {
   type QuotationVariant,
 } from "@/components/QuotationV2/pageSets";
 import type { BasicCalculatorData } from "@/types/types";
+import {
+  INSTALLATION_OPTIONS,
+  propertyTypeOf,
+  systemTypeOf,
+  type InstallationType,
+} from "@/components/SolarCalculator/installationType";
 
 /** Same limit the public calculator enforces. */
 const MAX_BILL = 40000;
@@ -62,7 +68,8 @@ interface FormState {
   phoneNumber: string;
   address: string;
   pincode: string;
-  propertyType: "residential" | "commercial";
+  /** Residential on-grid / hybrid, or commercial — as on the website calculator. */
+  propertyType: InstallationType;
   monthlyBill: string;
   subsidyEligibility: string;
   salesPerson: string;
@@ -74,7 +81,7 @@ const EMPTY: Omit<FormState, "salesPerson" | "variant"> = {
   phoneNumber: "",
   address: "",
   pincode: "",
-  propertyType: "residential",
+  propertyType: "residential-ongrid",
   monthlyBill: "",
   subsidyEligibility: SUBSIDY_OPTIONS[0],
 };
@@ -168,7 +175,7 @@ export default function QuotationsScreen() {
     try {
       const data = await getSolarAdvantageData({
         pincode: form.pincode.trim(),
-        property_type: form.propertyType,
+        property_type: propertyTypeOf(form.propertyType),
         monthly_bill: Number(form.monthlyBill),
       });
       setCalc(data);
@@ -200,7 +207,7 @@ export default function QuotationsScreen() {
           monthlyBill: Number(form.monthlyBill),
         },
         figuresFrom(calc),
-        { salesPerson },
+        { salesPerson, systemType: systemTypeOf(form.propertyType) },
       );
       const { blob, fileName } = await requestQuotationPdf(data, { language, variant: form.variant });
       saveFile(blob, fileName);
@@ -221,7 +228,8 @@ export default function QuotationsScreen() {
   };
 
   const billLabel =
-    form.propertyType === "residential" ? "Average bi-monthly bill (₹)" : "Average monthly bill (₹)";
+    propertyTypeOf(form.propertyType) === "residential" ? "Average bi-monthly bill (₹)" : "Average monthly bill (₹)";
+  const hybrid = systemTypeOf(form.propertyType) === "hybrid";
   const busy = calculating || downloading !== null;
 
   return (
@@ -272,8 +280,11 @@ export default function QuotationsScreen() {
                 value={form.propertyType}
                 onChange={(v) => set("propertyType", v as FormState["propertyType"])}
               >
-                <option value="residential">Residential</option>
-                <option value="commercial">Commercial</option>
+                {INSTALLATION_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
               </SelectField>
             </Field>
             <Field label={billLabel} error={errors.monthlyBill}>
@@ -337,6 +348,8 @@ export default function QuotationsScreen() {
                 <SummaryRow label="Area required" value={calc.specifications.area_requirement} />
                 <p style={{ fontSize: 12, color: studioColors.mutedGray, margin: "12px 0 14px" }}>
                   The quotation applies the subsidy only when the customer is eligible (DCR).
+                  {hybrid &&
+                    " Hybrid: the BOM calculator prices the nearest hybrid size with no battery, one and two batteries when you download, so the PDF's prices differ from the on-grid figures above."}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <GoldButton onClick={() => download("English")} disabled={busy}>

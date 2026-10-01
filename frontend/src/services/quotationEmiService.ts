@@ -7,8 +7,8 @@
 import { API_BASE_URL } from "@/config";
 import {
   EMI_YEARS,
-  PACKAGE_KEYS,
-  localFinancing,
+  localPackageFinancing,
+  type PackageFinancing,
   type PackagePrices,
   type QuotationFinancing,
 } from "@/components/QuotationV2/financing";
@@ -28,26 +28,32 @@ interface EngineBreakdown {
 }
 
 /**
- * Financing for every package. Falls back to the calculator's policy computed
- * locally if the backend is unreachable, so a quotation still renders.
+ * The engine's financing for any set of packages (at most six), keyed as given.
+ * Falls back to the calculator's policy computed locally if the backend is
+ * unreachable, so a quotation still renders.
  */
-export async function getQuotationFinancing(prices: PackagePrices): Promise<QuotationFinancing> {
+export async function getPackagesFinancing<K extends string>(
+  sizeKW: number,
+  subsidy: number,
+  totals: Record<K, number>,
+): Promise<Record<K, PackageFinancing>> {
+  const keys = Object.keys(totals) as K[];
   try {
     const packages = Object.fromEntries(
-      PACKAGE_KEYS.map((key) => [key, { system_cost: prices.totals[key], subsidy: prices.subsidy }]),
+      keys.map((key) => [key, { system_cost: totals[key], subsidy }]),
     );
     const res = await fetch(ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ capacity_kw: prices.sizeKW, tenure_years: EMI_YEARS, packages }),
+      body: JSON.stringify({ capacity_kw: sizeKW, tenure_years: EMI_YEARS, packages }),
       cache: "no-store",
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const body: { packages: Record<string, EngineBreakdown> } = await res.json();
 
-    const result = {} as QuotationFinancing;
-    for (const key of PACKAGE_KEYS) {
+    const result = {} as Record<K, PackageFinancing>;
+    for (const key of keys) {
       const p = body.packages[key];
       if (!p) throw new Error(`missing package ${key}`);
       result[key] = {
@@ -63,6 +69,13 @@ export async function getQuotationFinancing(prices: PackagePrices): Promise<Quot
     return result;
   } catch (error) {
     console.error("Failed to fetch quotation EMI; using the local fallback:", error);
-    return localFinancing(prices);
+    const result = {} as Record<K, PackageFinancing>;
+    for (const key of keys) result[key] = localPackageFinancing(totals[key], subsidy);
+    return result;
   }
+}
+
+/** Financing for the three tier packages. */
+export async function getQuotationFinancing(prices: PackagePrices): Promise<QuotationFinancing> {
+  return getPackagesFinancing(prices.sizeKW, prices.subsidy, prices.totals);
 }
