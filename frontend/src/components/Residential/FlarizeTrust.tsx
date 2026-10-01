@@ -56,7 +56,7 @@ const FlarizeTrust = () => {
     <section className="relative z-10 container mx-auto px-4 py-10 pb-6 md:py-20 xl:py-16 max-w-7xl flex flex-col items-center h-full gap-10">
       {/* Heading */}
       <div className="w-full max-w-4xl mx-auto text-center">
-        <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-[#123532]">
+        <h2 className="text-[36px] font-semibold leading-[1.08] tracking-[-0.03em] text-[#123532] md:text-[44px]">
           Why Homeowners Trust Flarize
         </h2>
       </div>
@@ -71,10 +71,10 @@ const FlarizeTrust = () => {
             <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-white/20">
               <Icon className="text-white" size={24} strokeWidth={1.75} />
             </div>
-            <h3 className="text-white text-xl font-semibold leading-snug mb-3">
+            <h3 className="mb-3 text-[20px] font-semibold leading-[28px] text-white">
               {title}
             </h3>
-            <p className="text-[#A9B6B3] text-sm md:text-[15px] font-normal leading-relaxed">
+            <p className="text-[12px] font-normal leading-[18px] text-[#A9B6B3] md:text-[14px] md:leading-[22px]">
               {desc}
             </p>
           </div>
@@ -83,7 +83,7 @@ const FlarizeTrust = () => {
 
       {/* CTA buttons */}
       <div className="rounded-2xl bg-[#FDF6E3] px-6 py-6 md:px-10 md:py-8">
-        <p className="text-sm md:text-base leading-relaxed text-[#171717]">
+        <p className="text-[14px] leading-[22px] text-[#171717] md:text-[16px] md:leading-[24px]">
           <span className="font-semibold">Who does the actual work?</span>{" "}
           Installation partners verified by Flarize and anchored by Golden Ray
           Renewable Energy — the same crew with 8+ years of solar work on Kerala
@@ -100,7 +100,8 @@ const FlarizeTrust = () => {
           ButtonBg="bg-[#F7BA41]"
           Buttontext="text-[#272218]"
           ButtonHover="hover:bg-yellow-500"
-          className="w-full sm:w-auto"
+          className="w-full px-4 py-3 sm:w-auto md:px-10"
+
         />
       </div>
 

@@ -17,21 +17,20 @@ export default function ResidentialHero() {
             {/* The head term this page ranks for lives in the H1 — the highest
                 weighted on-page signal. The old "Power Your Home with Smarter
                 Solar Decisions" carried no keyword at all. */}
-            <h1 className="text-4xl md:text-5xl font-semibold  leading-tight text-[#171717]">
+            <h1 className="text-[40px] font-semibold leading-[1.08] tracking-[-0.03em] text-[#171717] md:text-[48px]">
               Solar Panels for Your Kerala Home —{" "}
                 <span className="text-[#F18627]">
                   Priced Honestly
                 </span>
             </h1>
             <p
-              className="mt-5 text-base md:text-xl font-normal  leading-snug text-[#444444]"
+              className="mt-5 text-[14px] font-normal leading-[22px] text-[#444444] md:text-[16px]"
             >
               Thinking about solar but not sure who to trust? Get connected with certified residential solar experts across Kerala. Receive three tailored proposals, complete subsidy assistance, KSEB documentation, and one accountable team managing your project from start to finish.
             </p>
-                      
-            {/* Stacked full-width on phones (same as every other CTA pair on
-                this page), side by side from sm */}
-            <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center md:justify-start lg:gap-4 lg:text-lg">
+
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-start">
+
               <LinkingButton
                 content="Book a Free Consultation"
                 ButtonLink="/contactus"

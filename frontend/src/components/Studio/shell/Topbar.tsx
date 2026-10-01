@@ -33,7 +33,7 @@ function crumbsFor(pathname: string): Crumb[] {
   const nested: [RegExp, string, string][] = [
     [/^\/studio\/faqs\/([^/]+)$/, "FAQs", "/studio/faqs"],
     [/^\/studio\/pages\/([^/]+)$/, "Pages", "/studio/pages"],
-    [/^\/studio\/careers\/positions\/([^/]+)$/, "Job Positions", "/studio/careers/positions"],
+    [/^\/studio\/careers\/positions\/([^/]+)$/, "Job positions", "/studio/careers/positions"],
   ];
   for (const [re, parent, href] of nested) {
     const m = pathname.match(re);
@@ -54,7 +54,7 @@ function crumbsFor(pathname: string): Crumb[] {
     "/studio/careers/positions": "Job Positions",
     "/studio/careers/applications": "Applications",
     "/studio/careers/departments": "Departments",
-    "/studio/careers/page": "Career Page",
+    "/studio/careers/page": "Career page",
     "/studio/templates": "Templates",
     "/studio/media": "Media",
     "/studio/taxonomy": "Authors & taxonomy",
@@ -116,11 +116,25 @@ export default function Topbar() {
       </nav>
 
       {/* Actions */}
-      <div className="ml-auto flex flex-none items-center gap-[9px]">
+      <div className="ml-auto flex flex-none items-center gap-[9px] max-md:gap-2">
         <button
           onClick={() => toast("Preview opens the live site in a new tab")}
-          className="inline-flex items-center gap-[7px] transition-colors hover:bg-[rgba(7,74,77,0.06)] max-md:hidden"
-          style={{ height: 42, padding: "0 14px", borderRadius: 12, border: "none", background: "transparent", color: studioColors.teal, fontFamily: "var(--font-switzer)", fontSize: 13.5, fontWeight: 600, cursor: "pointer" }}
+          className="inline-flex items-center justify-center gap-[7px] transition-colors hover:bg-[rgba(7,74,77,0.06)]"
+          style={{
+            width: 182,
+            height: 42,
+            padding: "12px 16px",
+            borderRadius: 12,
+            border: `1px solid ${studioColors.teal}`,
+            background: "transparent",
+            color: studioColors.teal,
+            fontFamily: "var(--font-switzer)",
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: "pointer",
+            boxSizing: "border-box",
+            lineHeight: 1,
+          }}
         >
           Preview site
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -130,7 +144,21 @@ export default function Topbar() {
         <button
           onClick={() => router.push("/studio/entries/new")}
           className="inline-flex items-center justify-center transition-[filter] hover:brightness-[.96]"
-          style={{ height: 42, padding: "0 16px", borderRadius: 12, border: "none", background: studioColors.gold, color: studioColors.goldInk, fontFamily: "var(--font-switzer)", fontSize: 13.5, fontWeight: 600, cursor: "pointer" }}
+          style={{
+            width: 182,
+            height: 42,
+            padding: "12px 16px",
+            borderRadius: 12,
+            border: "none",
+            background: studioColors.gold,
+            color: studioColors.goldInk,
+            fontFamily: "var(--font-switzer)",
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: "pointer",
+            boxSizing: "border-box",
+            lineHeight: 1,
+          }}
         >
           + New entry
         </button>

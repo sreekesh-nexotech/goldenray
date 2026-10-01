@@ -8,8 +8,9 @@ import ProjectCard from "@/components/Projects/Project-card";
 import { Project } from "@/data/Mock-projects";
 import { mockProjects } from "@/data/Mock-projects";
 
+
 // "Commercial" is hidden until there are commercial projects to show; an old
-// ?category=commercial link falls back to "All Projects".
+
 const CATEGORIES = ["All Projects", "Residential"] as const;
 type Category = (typeof CATEGORIES)[number];
 

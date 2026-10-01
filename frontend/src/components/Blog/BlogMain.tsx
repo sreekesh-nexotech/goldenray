@@ -437,6 +437,7 @@ export default function BlogMain({ articles, categories }: BlogMainProps) {
         )}
       </div>
 
+
       {SHOW_NEWSLETTER && <BlogNewsletter />}
       <BlogCta />
     </div>

@@ -5,6 +5,7 @@ import React from "react";
 import { SALES_PHONE, whatsappLink } from "@/data/contact";
 
 const FloatingChatButton = () => {
+
   const whatsappUrl = whatsappLink(
     SALES_PHONE,
     "Hello, I saw your advertisement and I’m interested in learning more. Could you please share more details?",

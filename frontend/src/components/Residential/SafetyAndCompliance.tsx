@@ -41,10 +41,10 @@ const SafetyAndCompliance = () => {
                   aria-hidden="true"
                 />
               </span>
-              <h3 className="mt-3 text-sm md:text-base font-bold leading-snug text-black">
+              <h3 className="mt-3 text-[16px] font-semibold leading-[24px] text-black md:text-[20px]">
                 {title}
               </h3>
-              <p className="mt-1 text-sm md:text-base font-normal leading-relaxed text-[#444444]">
+              <p className="mt-1 text-[12px] font-normal leading-[18px] text-[#444444] md:text-[14px] md:leading-[22px]">
                 {desc}
               </p>
             </div>

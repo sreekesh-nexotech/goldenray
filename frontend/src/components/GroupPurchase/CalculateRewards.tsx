@@ -173,6 +173,7 @@ const CalculateRewards = () => {
 
           {/* CTA */}
           <div className="mt-8 flex justify-center">
+
             <Link
               href="#reserve"
               className="btn bg-[#F7BA41] px-16 text-[#272218] hover:bg-yellow-500"

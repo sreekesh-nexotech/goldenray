@@ -44,7 +44,7 @@ function KeralaClimateScoreBadge({ score }: { score: number }) {
         height={20}
         className="w-4 h-4 object-contain"
       />
-      <span className="font-semibold">Kerala Inverter Rating:</span>
+      <span className="font-semibold">Kerala Inverter rating:</span>
       <span className="font-semibold">{score}/100</span>
     </div>
   );

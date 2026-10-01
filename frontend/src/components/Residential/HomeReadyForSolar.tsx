@@ -32,7 +32,7 @@ const HomeReadyForSolar = () => {
         <div className="flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
           {/* Left: heading + checklist */}
           <div className="w-full lg:w-[58%]">
-            <h2 className="text-[32px] md:text-5xl font-semibold leading-tight text-[#123532]">
+            <h2 className="text-[36px] font-semibold leading-[1.08] tracking-[-0.03em] text-[#123532] md:text-[44px]">
               Is Your Home Ready for Solar?
             </h2>
 
@@ -47,10 +47,10 @@ const HomeReadyForSolar = () => {
                     />
                   </span>
                   <div>
-                    <h3 className="text-sm md:text-base font-semibold leading-snug text-[#123532]">
+                    <h3 className="text-[16px] font-semibold leading-[24px] text-[#123532] md:text-[18px]">
                       {title}
                     </h3>
-                    <p className="mt-1 text-xs md:text-sm font-normal leading-relaxed text-[#444444]">
+                    <p className="mt-1 text-[12px] font-normal leading-[18px] text-[#444444] md:text-[14px] md:leading-[22px]">
                       {desc}
                     </p>
                   </div>

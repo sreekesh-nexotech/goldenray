@@ -25,6 +25,7 @@ const StartEarning = () => {
         />
 
         <a
+
           href={whatsappLink(
             PARTNER_MANAGER_PHONE,
             "Hi, I'd like to talk to the partner manager about the Flarize referral program.",
@@ -33,6 +34,7 @@ const StartEarning = () => {
           rel="noopener noreferrer"
           className="btn border border-[#074A4D] flex items-center gap-2 bg-transparent text-[#074A4D] hover:bg-[#eeeeee] transition-all duration-200"
         >
+
           Talk to Partner Manager
         </a>
       </div>

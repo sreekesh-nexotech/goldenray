@@ -1102,6 +1102,7 @@ export default function ComparisonTable({
         {columnCount >= 2 && (
           <>
             <div className="mt-6 text-center">
+
               <Link
                 href="/contactus"
                 className="btn w-full sm:w-auto bg-[#F7BA41] text-[#272218] hover:bg-[#E5A930]"
