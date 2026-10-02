@@ -222,6 +222,39 @@ export function isAuthenticated(): boolean {
   return readCookie(STUDIO_REFRESH_COOKIE) !== null;
 }
 
+/**
+ * When the stored refresh token stops being accepted (ms since epoch), read
+ * from its `exp` claim. Null when signed out or the token can't be decoded.
+ * Past this moment no call can succeed, so the Studio sends the user to sign in.
+ */
+export function sessionExpiresAt(): number | null {
+  const refresh = readCookie(STUDIO_REFRESH_COOKIE);
+  if (!refresh) return null;
+  try {
+    const part = refresh.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const { exp } = JSON.parse(atob(part)) as { exp?: number };
+    return typeof exp === "number" ? exp * 1000 : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The session is over: drop the tokens and go to the sign-in screen, keeping
+ * the current page in ?next= so signing in lands the user back where they were.
+ * A full navigation (not the router) so no screen keeps stale state or keeps
+ * firing requests. Every API path funnels a dead session through here, so a
+ * screen never just sits there failing to load.
+ */
+export function endStudioSession(): void {
+  clearTokens();
+  if (typeof window === "undefined") return;
+  const { pathname, search } = window.location;
+  if (!pathname.startsWith("/studio") || pathname === "/studio/login") return;
+  const next = pathname === "/studio" ? "" : `?next=${encodeURIComponent(pathname + search)}`;
+  window.location.replace(`/studio/login${next}`);
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Token access for other services                                            */
 /* -------------------------------------------------------------------------- */
@@ -306,7 +339,10 @@ function refreshTokens(): Promise<string> {
 
 async function doRefresh(): Promise<string> {
   const refresh = readCookie(STUDIO_REFRESH_COOKIE);
-  if (!refresh) throw new StudioApiError(401, "Your session has expired — please sign in again");
+  if (!refresh) {
+    endStudioSession();
+    throw new StudioApiError(401, "Your session has expired — please sign in again");
+  }
   try {
     const tokens = await request<StudioTokens>("auth/refresh/", {
       method: "POST",
@@ -328,7 +364,7 @@ async function doRefresh(): Promise<string> {
         const access = readCookie(STUDIO_ACCESS_COOKIE);
         if (access) return access;
       }
-      clearTokens();
+      endStudioSession();
       throw new StudioApiError(401, "Your session has expired — please sign in again");
     }
     if (err instanceof StudioApiError) {
@@ -349,7 +385,13 @@ async function authRequest<T>(
   } catch (err) {
     if (!(err instanceof StudioApiError) || err.status !== 401) throw err;
     const fresh = await refreshTokens();
-    return request<T>(endpoint, { ...init, token: fresh });
+    try {
+      return await request<T>(endpoint, { ...init, token: fresh });
+    } catch (retryErr) {
+      // A brand-new token still refused (e.g. the account was deactivated).
+      if (retryErr instanceof StudioApiError && retryErr.status === 401) endStudioSession();
+      throw retryErr;
+    }
   }
 }
 

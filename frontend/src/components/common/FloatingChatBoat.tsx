@@ -8,7 +8,7 @@ const FloatingChatButton = () => {
 
   const whatsappUrl = whatsappLink(
     SALES_PHONE,
-    "Hello, I saw your advertisement and I’m interested in learning more. Could you please share more details?",
+    "Hi! I was checking out your website and I’m interested in going solar. Could you share some more details? 😊",
   );
 
   return (

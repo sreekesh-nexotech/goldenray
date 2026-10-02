@@ -20,14 +20,15 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
 import type { Role } from "@/types/studio";
 import {
+  endStudioSession,
   getConfig,
   getDashboard,
   getMe,
+  isAuthenticated,
   isSessionExpired,
-  logout,
+  sessionExpiresAt,
   type StudioAction,
   type StudioConfig,
   type StudioDashboard,
@@ -83,7 +84,6 @@ function uiRole(apiRole: StudioMe["role"]): Role {
 }
 
 export function StudioProvider({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
   const [role, setRole] = useState<Role>("Author");
   const [tips, setTips] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -113,8 +113,7 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
         if (isSessionExpired(err)) {
           // Session expired / revoked — drop it and go sign in again. A 403 or
           // a server hiccup falls through to the error banner instead.
-          logout();
-          router.replace("/studio/login");
+          endStudioSession();
           return;
         }
         setShellError(err instanceof Error ? err.message : "Failed to load the studio");
@@ -125,7 +124,42 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [router]);
+  }, []);
+
+  // Send the user to sign in the moment the login lifetime runs out, even if
+  // they're idle on a screen that won't make another call. Re-checked when the
+  // tab regains focus: timers are throttled in background tabs and a laptop
+  // may have slept past the deadline. Signing out in another tab (cookie gone)
+  // is caught the same way.
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const check = () => {
+      clearTimeout(timer);
+      const expiresAt = sessionExpiresAt();
+      if (expiresAt === null) {
+        if (!isAuthenticated()) endStudioSession();
+        return; // undecodable token — the API's 401 path still covers it
+      }
+      const left = expiresAt - Date.now();
+      if (left <= 0) {
+        endStudioSession();
+        return;
+      }
+      // setTimeout overflows past ~24.8 days; re-check at most daily.
+      timer = setTimeout(check, Math.min(left, 24 * 60 * 60 * 1000));
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") check();
+    };
+    check();
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", check);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", check);
+    };
+  }, []);
 
   const toast = useCallback((msg: string, kind: ToastKind = "success") => {
     const id = ++toastSeq;

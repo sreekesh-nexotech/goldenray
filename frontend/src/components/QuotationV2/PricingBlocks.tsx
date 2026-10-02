@@ -11,6 +11,13 @@
  */
 import type { CSSProperties } from "react";
 
+import {
+  HYBRID_KEYS,
+  HYBRID_OPTION_NAMES,
+  HYBRID_RECOMMENDED,
+  type HybridKey,
+} from "@/components/QuotationV2/hybrid";
+
 type Language = "English" | "Malayalam";
 
 interface TierPricing {
@@ -33,6 +40,8 @@ interface PricingData {
   premium: TierPricing;
   smart: TierPricing;
   basic: TierPricing;
+  /** A hybrid quote's battery options; the cards show these instead of tiers. */
+  hybrid: (Record<HybridKey, TierPricing> & { subtitle: string }) | null;
   grossCost: string;
   downPayment: string;
   financed: string;
@@ -167,6 +176,30 @@ const PACKAGES: { key: "premium" | "smart" | "basic"; name: string; recommended?
   { key: "basic", name: "Essential" },
 ];
 
+interface CardSpec {
+  key: string;
+  /** May break onto a second line ("Hybrid System\n(With Battery)"). */
+  name: string;
+  subtitle: string;
+  tier: TierPricing;
+  recommended?: boolean;
+}
+
+/** The three cards: tiers on an on-grid quote, battery options on a hybrid. */
+function cardsFor(data: PricingData): CardSpec[] {
+  const { hybrid } = data;
+  if (hybrid) {
+    return HYBRID_KEYS.map((key) => ({
+      key,
+      name: HYBRID_OPTION_NAMES[key],
+      subtitle: hybrid.subtitle,
+      tier: hybrid[key],
+      recommended: key === HYBRID_RECOMMENDED,
+    }));
+  }
+  return PACKAGES.map((pkg) => ({ ...pkg, subtitle: data.systemDescription, tier: data[pkg.key] }));
+}
+
 export function PackageCards({ data, language }: { data: PricingData; language: Language }) {
   return (
     <div
@@ -181,24 +214,24 @@ export function PackageCards({ data, language }: { data: PricingData; language: 
         flexShrink: 0,
       }}
     >
-      {PACKAGES.map((pkg) => (
-        <PackageCard key={pkg.key} pkg={pkg} data={data} l={labelsFor(language)} />
+      {cardsFor(data).map((card) => (
+        <PackageCard key={card.key} card={card} data={data} l={labelsFor(language)} />
       ))}
     </div>
   );
 }
 
 function PackageCard({
-  pkg,
+  card,
   data,
   l,
 }: {
-  pkg: (typeof PACKAGES)[number];
+  card: CardSpec;
   data: PricingData;
   l: (typeof LABELS)[Language];
 }) {
-  const tier = data[pkg.key];
-  const featured = pkg.recommended;
+  const { tier } = card;
+  const featured = card.recommended;
   const breakdownRow = row({ lineHeight: "36px" });
 
   return (
@@ -238,8 +271,8 @@ function PackageCard({
         }}
       >
         {/* Name + system */}
-        <span style={text(24, 700, INK, { lineHeight: "30px", whiteSpace: "nowrap" })}>
-          {pkg.name}
+        <span style={text(24, 700, INK, { lineHeight: "30px", whiteSpace: "pre" })}>
+          {card.name}
         </span>
         <span
           style={text(18, 400, featured ? "rgb(22,101,52)" : GREY, {
@@ -247,7 +280,7 @@ function PackageCard({
             marginTop: 2,
           })}
         >
-          {data.systemDescription}
+          {card.subtitle}
         </span>
 
         {/* Total system cost */}

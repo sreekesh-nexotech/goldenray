@@ -181,6 +181,8 @@ export default function Page12Summary({
               headline={`${data.sizeLabel} — Recommended Package`}
             />
           </div>
+          {/* The hybrid upsell; a hybrid quote is already that system. */}
+          {!data.hybrid && (
           <div
             style={{
               position: "relative",
@@ -329,6 +331,7 @@ export default function Page12Summary({
               </div>
             </div>
           </div>
+          )}
           <OfferBanner offer={data.offer} language="English" />
           <div
             style={{
