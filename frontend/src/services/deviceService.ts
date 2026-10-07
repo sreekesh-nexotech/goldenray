@@ -10,8 +10,13 @@ export async function getDeviceTypes(): Promise<DeviceType[]> {
   }
 
   try {
-    const data = await apiCall<DeviceType[]>("device-types/", "GET");
-    return data;
+    const data = await apiCall<{ results: DeviceType[] }>(
+      "reference/device-types/?page_size=200",
+      "GET",
+      null,
+      { publicApi: true }
+    );
+    return data.results;
   } catch (error) {
     console.error("Error fetching device types:", error);
     return []; // Fallback to empty array to prevent component crash

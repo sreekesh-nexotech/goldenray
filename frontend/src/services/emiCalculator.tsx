@@ -76,13 +76,23 @@ export interface EMIConfigResponse {
   banks: EMIBank[];
 }
 
+// The public v1 API identifies rows by `uid` (a string); `id` carries it so the
+// components can key on one field. The Studio admin keeps the numeric types above.
+export type PublicEMISystemSize = Omit<EMISystemSize, 'id'> & { id: string };
+export type PublicEMIBank = Omit<EMIBank, 'id'> & { id: string };
+export interface PublicEMIConfigResponse {
+  settings: EMISettings;
+  system_sizes: PublicEMISystemSize[];
+  banks: PublicEMIBank[];
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Calculation                                                                */
 /* -------------------------------------------------------------------------- */
 
 export interface EMICalculatorPayload {
-  /** Preferred selector — the id of a configured system size. */
-  size_id?: number;
+  /** Preferred selector — the id of a configured system size (sent as size_uid on v1). */
+  size_id?: number | string;
   capacity_kw?: number;
   tenure_years?: number;
   /** Customer adjustment; clamped to the band floor, ignored on locked bands. */
@@ -99,7 +109,8 @@ export interface EMICalculatorPayload {
 
 export interface EMICalculatorResponse {
   system: {
-    size_id: number | null;
+    size_id?: number | null;
+    size_uid?: string | null;
     label: string | null;
     capacity_kw: number;
     price_per_kw: number;
@@ -138,7 +149,8 @@ export interface EMICalculatorResponse {
     min_rate: number;
     is_locked: boolean;
     requested_rate: number | null;
-    rule_id: number | null;
+    rule_id?: number | null;
+    rule_uid?: string | null;
     rule_label: string | null;
     /** Cheaper band reachable by paying more upfront; null when already on the lowest. */
     unlock: {
@@ -168,27 +180,29 @@ export interface EMICalculatorResponse {
   interest_rate: number;
 }
 
-const EMI_CALCULATOR_ENDPOINT = 'emi-calculator/';
-const EMI_CONFIG_ENDPOINT = 'emi-calculator/config/';
+const EMI_CALCULATOR_ENDPOINT = 'calculators/emi/';
+const EMI_CONFIG_ENDPOINT = 'calculators/emi/config/';
+// Studio admin still runs against the old backend (numeric ids).
+const LEGACY_EMI_CALCULATOR_ENDPOINT = 'emi-calculator/';
 
 /** GET the admin-managed configuration that drives the calculator UI. */
-export async function getEMIConfig(): Promise<EMIConfigResponse> {
-  const response = await apiCall<EMIConfigResponse>(EMI_CONFIG_ENDPOINT);
+export async function getEMIConfig(): Promise<PublicEMIConfigResponse> {
+  const response = await apiCall<{
+    settings: EMISettings;
+    system_sizes: (Omit<EMISystemSize, 'id'> & { uid: string })[];
+    banks: (Omit<EMIBank, 'id'> & { uid: string })[];
+  }>(EMI_CONFIG_ENDPOINT, 'GET', null, { publicApi: true });
   if (!response || !Array.isArray(response.system_sizes)) {
     throw new Error('Invalid EMI calculator configuration received');
   }
-  return response;
+  return {
+    settings: response.settings,
+    system_sizes: response.system_sizes.map((r) => ({ ...r, id: r.uid })),
+    banks: response.banks.map((r) => ({ ...r, id: r.uid })),
+  };
 }
 
-export async function calculateEMI(
-  payload: EMICalculatorPayload
-): Promise<EMICalculatorResponse> {
-  const response = await apiCall<EMICalculatorResponse>(
-    EMI_CALCULATOR_ENDPOINT,
-    'POST',
-    payload
-  );
-
+function assertEmiResponse(response: EMICalculatorResponse | undefined): EMICalculatorResponse {
   if (!response) {
     throw new Error('No response received from the EMI calculator API');
   }
@@ -197,4 +211,25 @@ export async function calculateEMI(
     throw new Error('Invalid or missing financial data in EMI calculator response');
   }
   return response;
+}
+
+export async function calculateEMI(
+  payload: EMICalculatorPayload
+): Promise<EMICalculatorResponse> {
+  const { size_id, ...rest } = payload;
+  const body = size_id === undefined ? rest : { ...rest, size_uid: String(size_id) };
+  return assertEmiResponse(
+    await apiCall<EMICalculatorResponse>(EMI_CALCULATOR_ENDPOINT, 'POST', body, {
+      publicApi: true,
+    })
+  );
+}
+
+/** Studio preview: the same calculation against the old backend's numeric size ids. */
+export async function calculateEMILegacy(
+  payload: EMICalculatorPayload
+): Promise<EMICalculatorResponse> {
+  return assertEmiResponse(
+    await apiCall<EMICalculatorResponse>(LEGACY_EMI_CALCULATOR_ENDPOINT, 'POST', payload)
+  );
 }

@@ -1,12 +1,23 @@
 // src/utils/fetchApi.ts
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL, PUBLIC_API_BASE_URL } from "../config";
 
 // Optional caching controls, forwarded to the Next.js fetch layer.
 // `revalidate` opts the request into the Next.js Data Cache (ISR) for the
 // given number of seconds. Leave undefined for the default `no-store` behavior
 // (correct for mutations / per-request data).
+//
+// `publicApi` targets the new platform backend (/api/public/v1/). `idempotencyKey`
+// is sent as the Idempotency-Key header so a retried public POST replays the first
+// response instead of creating a duplicate.
 export interface FetchApiOptions {
   revalidate?: number;
+  publicApi?: boolean;
+  idempotencyKey?: string;
+}
+
+// Fresh Idempotency-Key (the backend accepts 8-128 characters).
+export function newIdempotencyKey(): string {
+  return globalThis.crypto.randomUUID();
 }
 
 export async function fetchApi<T>(
@@ -17,13 +28,19 @@ export async function fetchApi<T>(
 ): Promise<T> {
   // Use relative URL for proxying (uncomment if using next.config.js proxy)
   // const url = `/api/${endpoint}`;
-  const url = `${API_BASE_URL}${endpoint}`; // Direct backend URL
+  const base = init?.publicApi ? PUBLIC_API_BASE_URL : API_BASE_URL;
+  const url = `${base}${endpoint}`; // Direct backend URL
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (init?.idempotencyKey) {
+    headers["Idempotency-Key"] = init.idempotencyKey;
+  }
 
   const options: RequestInit = {
     method,
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers,
     // credentials: "include", // Uncomment only if credentials are required
   };
 

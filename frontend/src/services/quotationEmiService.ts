@@ -1,10 +1,10 @@
 // src/services/quotationEmiService.ts
 //
 // The quotation's EMI figures, from the same backend engine as the
-// /emi-calculator page (goldenray/utils/emi.py). The quotation sends its own
+// /emi-calculator page (the platform's EMI engine, public API v1). The quotation sends its own
 // package prices and the subsidy it applies; the engine answers with the
 // calculator's down payment, rate band, loan, EMI and daily amount for each.
-import { API_BASE_URL } from "@/config";
+import { PUBLIC_API_BASE_URL } from "@/config";
 import {
   EMI_YEARS,
   localPackageFinancing,
@@ -16,7 +16,7 @@ import {
 // Capped so a request that hangs (e.g. the PDF renderer inside the server
 // reaching the public API) falls back to defaults instead of stalling the page.
 const TIMEOUT_MS = 8000;
-const ENDPOINT = `${API_BASE_URL}emi-calculator/quotation/`;
+const ENDPOINT = `${PUBLIC_API_BASE_URL}calculators/emi/quotation/`;
 
 interface EngineBreakdown {
   down_payment_percent: number;

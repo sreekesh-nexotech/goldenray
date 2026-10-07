@@ -16,6 +16,11 @@ COPY . .
 ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
+# New platform backend (flarize-backend/goldenray-backend): the anonymous website
+# API under /api/public/v1/ (calculators, EMI, BOM quote, quotation data).
+ARG NEXT_PUBLIC_PUBLIC_API_BASE_URL=http://localhost:8000/api/public/v1/
+ENV NEXT_PUBLIC_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_PUBLIC_API_BASE_URL
+
 # Content Studio admin API (blog CMS), called directly from the browser like
 # the main API above — must be a browser-reachable URL, baked at build time.
 ARG NEXT_PUBLIC_ADMIN_API_BASE_URL=http://localhost:8009/admin-api/

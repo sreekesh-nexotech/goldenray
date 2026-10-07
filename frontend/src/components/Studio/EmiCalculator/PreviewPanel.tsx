@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { SelectField } from "../shared/primitives";
 import { studioColors, studioFonts } from "../shared/format";
 import {
-  calculateEMI,
+  calculateEMILegacy,
   type EMICalculatorResponse,
   type EMISettings,
   type EMISystemSize,
@@ -70,7 +70,7 @@ export default function PreviewPanel({
     if (!sizeId) return;
     let cancelled = false;
     setLoading(true);
-    calculateEMI({
+    calculateEMILegacy({
       size_id: Number(sizeId),
       tenure_years: Number(tenure),
       down_payment_percent: Number(downPaymentPercent),

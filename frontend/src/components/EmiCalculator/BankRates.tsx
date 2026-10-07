@@ -9,7 +9,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import LinkingButton from "../ui/LinkingButton";
-import { getEMIConfig, type EMIBank } from "@/services/emiCalculator";
+import { getEMIConfig, type PublicEMIBank as EMIBank } from "@/services/emiCalculator";
 
 // ─── filter options ────────────────────────────────────────────────────────────
 const LOAN_OPTIONS = [

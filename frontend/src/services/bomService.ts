@@ -5,14 +5,11 @@
 // The customer-facing Solar Calculator has no configuration-selection step, so
 // we derive a sensible default configuration (on-grid, "value"/recommended tier,
 // residential PM Surya Ghar subsidy) and ask the already-migrated Django BOM
-// engine (`/bom/api/calculate/`) to generate the real line items + pricing for
+// engine (`POST /api/public/v1/bom/quote/`) to generate the real line items + pricing for
 // the system size the calculator computed.
-import { API_BASE_URL } from "@/config";
+import { PUBLIC_API_BASE_URL } from "@/config";
 
-// The BOM app is mounted at `/bom/` on the backend, not under `/api/`.
-// API_BASE_URL is e.g. "http://127.0.0.1:8000/api/" → derive ".../bom/".
-const BOM_BASE_URL = API_BASE_URL.replace(/api\/?$/, "bom/");
-const BOM_CALCULATE_ENDPOINT = "api/calculate/";
+const BOM_QUOTE_URL = `${PUBLIC_API_BASE_URL}bom/quote/`;
 
 // ── Shape consumed by Page7Content ──────────────────────────────────────────
 export interface QuotationBomLine {
@@ -37,7 +34,7 @@ export interface QuotationBom {
   tierLabel: string;
 }
 
-// ── Raw backend response (`BomCalculateView.compute()`) ─────────────────────
+// ── Raw backend response (public BOM quote; no cost breakdown or totals) ────
 interface BomApiLine {
   name: string;
   qty: number;
@@ -108,7 +105,7 @@ interface BomRun {
 /** One run of the BOM engine, or null if it is unavailable / unseeded. */
 async function runBom({ sysType, sizeKey, kw, batConfig, customerName, salesPerson }: BomRun): Promise<QuotationBom | null> {
   try {
-    const res = await fetch(`${BOM_BASE_URL}${BOM_CALCULATE_ENDPOINT}`, {
+    const res = await fetch(BOM_QUOTE_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -15,9 +15,9 @@ import LinkingButton from "../ui/LinkingButton";
 import {
   calculateEMI,
   getEMIConfig,
-  type EMIBank,
+  type PublicEMIBank as EMIBank,
   type EMICalculatorResponse,
-  type EMIConfigResponse,
+  type PublicEMIConfigResponse as EMIConfigResponse,
 } from "@/services/emiCalculator";
 
 function fmt(n: number) {
@@ -64,7 +64,7 @@ export default function Calculator() {
   // Customer selections. `null` price/down-payment overrides mean "use the
   // policy default" — that is how they reset when the size changes, instead
   // of carrying the previous selection across.
-  const [sizeId, setSizeId] = useState<number | null>(null);
+  const [sizeId, setSizeId] = useState<string | null>(null);
   const [tenure, setTenure] = useState(5);
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
   const [downPaymentOverride, setDownPaymentOverride] = useState<number | null>(null);
@@ -185,7 +185,7 @@ export default function Calculator() {
   /* ---- handlers ---- */
   // Changing the system size re-derives the price, down payment and rate
   // from policy rather than carrying the previous selection across.
-  const handleSizeChange = useCallback((id: number) => {
+  const handleSizeChange = useCallback((id: string) => {
     setSizeId(id);
     setPriceOverride(null);
     setDownPaymentOverride(null);

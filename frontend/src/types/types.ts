@@ -191,8 +191,8 @@ export interface PincodeValidationResponse {
 export interface DeviceType {
   name: string;
   show_in_ui: boolean;
-  updated_at: string; 
-  created_at: string; 
+  updated_at?: string;
+  created_at?: string;
   url?:string;
 }
 
