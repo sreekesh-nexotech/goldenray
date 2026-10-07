@@ -20,8 +20,10 @@ export async function getInstallationStats(
 ): Promise<InstallationStats> {
   try {
     const response = await apiCall<InstallationStats>(
-      `installation-stats/?pincode=${pincode}`,
-      "GET"
+      `installations/stats/?pincode=${encodeURIComponent(pincode)}`,
+      "GET",
+      null,
+      { publicApi: true }
     );
     return response;
   } catch (error) {

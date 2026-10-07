@@ -1,14 +1,15 @@
 // src/services/careerApplicationService.ts
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL, PUBLIC_API_BASE_URL } from "../config";
+import { newIdempotencyKey } from "../utils/fetchApi";
 import { getStudioAccessToken, refreshStudioAccessToken } from "./studioService";
 
 export interface JobApplicationData {
   // Which opening this application is for. Defaults to "General application"
   // — the general form sends no position, and a posting page sends its title.
   position?: string;
-  // The Studio posting answered, when there is one (§6.14): its CMS id plus a
-  // snapshot of the title and department at submission time.
-  position_id?: number | null;
+  // The posting answered, when there is one: its uid plus a snapshot of the
+  // title and department at submission time.
+  position_id?: string | null;
   position_title?: string;
   department_name?: string;
 
@@ -47,13 +48,12 @@ export interface JobApplicationData {
 }
 
 export interface JobApplicationResponse {
+  uid: string;
+  display_position: string;
+  created_at: string;
   message: string;
-  status: "success" | "error";
-  data?: {
-    id: number;
-    created_at: string;
-    [key: string]: unknown;
-  };
+  // Error envelope of the platform API ({code, message, errors}).
+  code?: string;
   errors?: Record<string, string[]>;
 }
 
@@ -105,8 +105,9 @@ export async function submitJobApplication(
   fd.append("website", data.website ?? ""); // honeypot
 
   try {
-    const response = await fetch(`${API_BASE_URL}job-applications/`, {
+    const response = await fetch(`${PUBLIC_API_BASE_URL}job-applications/`, {
       method: "POST",
+      headers: { "Idempotency-Key": newIdempotencyKey() },
       body: fd,
     });
 

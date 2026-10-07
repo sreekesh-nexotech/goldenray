@@ -15,6 +15,7 @@ import { isGtmEnabled } from "@/utils/gtm";
 import { GTM_ID, GA_MEASUREMENT_ID } from "@/config";
 
 import JsonLD from "@/components/JsonLD"; 
+import PhoneVerificationHost from "@/components/ui/PhoneVerificationHost";
 import { organizationSchema } from "@/data/jsonld"; 
 
 /* -------------------- Fonts -------------------- */
@@ -195,6 +196,8 @@ export default function RootLayout({
         </Suspense>
 
         <ConditionalLayout>{children}</ConditionalLayout>
+        {/* One-time-code dialog behind the public lead forms (services/phoneVerification.ts) */}
+        <PhoneVerificationHost />
       </body>
     </html>
   );

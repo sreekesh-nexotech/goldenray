@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { submitContactForm } from "@/services/basicContactService";
+import { requestPhoneVerification } from "@/services/phoneVerification";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
 import {
   assembleQuotationData,
@@ -97,13 +98,27 @@ export default function CustomerDetailsPopup({
 
     if (!validateForm()) return;
 
+    // The platform only stores an enquiry for a verified number. Ask for the
+    // one-time code first; if the customer skips or cancels it they still get
+    // their PDF, just without the enquiry being captured.
+    let verificationToken: string | undefined;
+    try {
+      verificationToken = await requestPhoneVerification(
+        customerName.trim(),
+        phoneNumber.trim(),
+      );
+    } catch {
+      verificationToken = undefined;
+    }
+
     setIsGenerating(true);
 
     // Capture the request in the Studio's Enquiries inbox. Fire-and-forget: a
     // failure here must never stop the customer getting their PDF.
-    submitContactForm({
+    if (verificationToken) submitContactForm({
       name: customerName.trim(),
       phone_number: phoneNumber.trim(),
+      verification_token: verificationToken,
       source: "quotation",
       details: {
         Address: address.trim(),

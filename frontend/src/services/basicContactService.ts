@@ -1,6 +1,8 @@
 // golden-ray/frontend/src/services/basicContactService.ts
 import { API_BASE_URL } from "../config";
 import { apiCall } from "./apiService";
+import { newIdempotencyKey } from "../utils/fetchApi";
+import { requestPhoneVerification } from "./phoneVerification";
 import { getStudioAccessToken, refreshStudioAccessToken } from "./studioService";
 
 /** Which website form an enquiry came from — mirrors LeadCollectionHome.Source. */
@@ -20,6 +22,8 @@ export interface ContactFormData {
   name: string;
   phone_number: string;
   source: EnquirySource;
+  /** A token from an earlier verification; when absent the customer is asked for a code. */
+  verification_token?: string;
   /** Site path the form was submitted from; defaults to the current page. */
   page?: string;
   /** Any extra fields the form collects (address, locality, …). */
@@ -47,15 +51,52 @@ export interface ContactEnquiry {
   updated_at: string;
 }
 
+// The platform's `form` enum for each website source (leads/ POST).
+const LEAD_FORM: Record<EnquirySource, string> = {
+  footer: "FOOTER",
+  home_booking: "HOME_BOOKING",
+  contact_page: "CONTACT_PAGE",
+  group_purchase: "GROUP_PURCHASE",
+  quotation: "QUOTATION",
+  quote_request: "QUOTE_REQUEST",
+  referral_partner: "REFERRAL_PARTNER",
+  warranty_service: "WARRANTY_SERVICE",
+  career_application: "OTHER",
+  other: "OTHER",
+};
+
+interface LeadApiResponse {
+  uid: string;
+  number: string;
+  message?: string;
+}
+
+/**
+ * Submit an enquiry to the platform (POST /api/public/v1/leads/). The backend
+ * only accepts a lead whose phone number was verified with a one-time code, so
+ * the customer is asked for one first (unless a token is passed in).
+ */
 export async function submitContactForm(data: ContactFormData): Promise<ContactResponse> {
   try {
     const page =
       data.page ?? (typeof window !== "undefined" ? window.location.pathname : "");
-    const response = await apiCall<ContactResponse>("lead-collection-home/", "POST", {
-      ...data,
-      page,
-    });
-    return response;
+    const phone = data.phone_number.replace(/\s+/g, "");
+    const verificationToken =
+      data.verification_token ?? (await requestPhoneVerification(data.name, phone));
+    const response = await apiCall<LeadApiResponse>(
+      "leads/",
+      "POST",
+      {
+        form: LEAD_FORM[data.source] ?? "OTHER",
+        name: data.name,
+        phone,
+        page,
+        details: data.details ?? {},
+        verification_token: verificationToken,
+      },
+      { publicApi: true, idempotencyKey: newIdempotencyKey() }
+    );
+    return { message: response.message ?? "Request received", status: "success" };
   } catch (error) {
     console.error("Error submitting contact form!", error);
     throw error;

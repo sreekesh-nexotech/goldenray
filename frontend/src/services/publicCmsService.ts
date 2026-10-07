@@ -1,17 +1,17 @@
 // src/services/publicCmsService.ts
 //
-// Read-only delivery calls against the CMS's public API (the same host the
-// blog reads from, see BLOG_API_BASE_URL). These are what make the Phase 1
-// Studio modules visible on the website: FAQs (§6.4), Open Positions and job
+// Read-only delivery calls against the platform's public API
+// (/api/public/v1/, see PUBLIC_API_BASE_URL). These are what make the Studio
+// modules visible on the website: FAQs (§6.4), Open Positions and job
 // pages (§6.11), and the maintained page slots + SEO (§6.2, §6.16).
 //
 // Every function resolves to `null` on any failure rather than throwing. The
 // callers all hold a built-in fallback (the copy the site shipped with), and a
 // CMS outage must degrade to that copy, not to an error page.
 
-import { BLOG_API_BASE_URL } from "../config";
+import { PUBLIC_API_BASE_URL } from "../config";
 
-const BASE = BLOG_API_BASE_URL.replace(/\/$/, "");
+const BASE = PUBLIC_API_BASE_URL.replace(/\/$/, "");
 
 /** ISR window for server-side callers; client callers pass no-store. */
 const REVALIDATE_SECONDS = 60;
@@ -31,7 +31,8 @@ async function getJson<T>(path: string, init: RequestInit = {}): Promise<T | nul
 /* -------------------------------------------------------------------------- */
 
 export interface PublicFaq {
-  id: number;
+  /** The record's uid. */
+  id: string;
   question: string;
   /** Plain text or light HTML, exactly as the editor stored it. */
   answer: string;
@@ -52,9 +53,9 @@ export interface PublicFaqResponse {
 
 /** Published FAQs for one page (and optionally one section), in display order. */
 export function fetchPublicFaqs(route: string, section?: string): Promise<PublicFaqResponse | null> {
-  const qs = new URLSearchParams({ page: route });
+  const qs = new URLSearchParams({ route });
   if (section) qs.set("section", section);
-  return getJson<PublicFaqResponse>(`/faqs?${qs.toString()}`, { cache: "no-store" });
+  return getJson<PublicFaqResponse>(`/faqs/?${qs.toString()}`, { cache: "no-store" });
 }
 
 /* -------------------------------------------------------------------------- */
@@ -62,7 +63,8 @@ export function fetchPublicFaqs(route: string, section?: string): Promise<Public
 /* -------------------------------------------------------------------------- */
 
 export interface PublicJobCard {
-  id: number;
+  /** The posting's id; sent back as the application's position_id. */
+  uid: string;
   slug: string;
   title: string;
   department: string | null;
@@ -101,7 +103,7 @@ export interface PublicJobDetailResponse {
 
 /** Open (published) positions — what the public Open Positions list shows. */
 export function fetchPublicJobPositions(): Promise<PublicJobListResponse | null> {
-  return getJson<PublicJobListResponse>("/job-positions", { cache: "no-store" });
+  return getJson<PublicJobListResponse>("/job-positions/", { cache: "no-store" });
 }
 
 /**
@@ -109,7 +111,7 @@ export function fetchPublicJobPositions(): Promise<PublicJobListResponse | null>
  * back with `is_open: false`, a draft/archived/unknown slug as null.
  */
 export function fetchPublicJobPosition(slug: string): Promise<PublicJobDetailResponse | null> {
-  return getJson<PublicJobDetailResponse>(`/job-positions/${encodeURIComponent(slug)}`, {
+  return getJson<PublicJobDetailResponse>(`/job-positions/${encodeURIComponent(slug)}/`, {
     next: { revalidate: REVALIDATE_SECONDS },
   });
 }
@@ -149,7 +151,7 @@ export interface PublicPageContent {
 /** The maintained overrides for one route. Server-side; ISR'd. */
 export async function fetchPageContent(route: string): Promise<PublicPageContent | null> {
   const res = await getJson<{ data: PublicPageContent }>(
-    `/page-content?route=${encodeURIComponent(route)}`,
+    `/pages/?route=${encodeURIComponent(route)}`,
     { next: { revalidate: REVALIDATE_SECONDS } }
   );
   return res?.data ?? null;
