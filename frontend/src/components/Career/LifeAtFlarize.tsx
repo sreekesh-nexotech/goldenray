@@ -1,25 +1,25 @@
 import Image from "next/image";
 
 const largeImage = {
-  src: "/images/career/Container%20(2).png",
+  src: "https://golden-ray.b-cdn.net/Career%20page/IMG_20260207_095455.jpg",
   alt: "Flarize team on a Kerala houseboat during a field visit",
 };
 
 const gridImages = [
   {
-    src: "/images/career/AB6AXuBId2AJrz-fQ5FBcUdK8DVSfI-BZmnK_1YB6fej3edKiwA8rRPWzLZ6jC7EqWrFrFjczW3S8sBYCIm9qn0QQgYkZhySeEYyZyZcCT0LiO1xZqd_uCVeLEZBm6HvkcmXW8X0ftm9xJUcdR_fW-j1f3ZC0WRIYPGGaTbIjeSA2rkMIyXFNqoa5JNOSCh09XKKIfQOP4ur1FHysqfK1YNVycLyRpLRKdhwUe3cyiWyly5j.png",
+    src: "https://golden-ray.b-cdn.net/Career%20page/IMG_20260207_123122.jpg",
     alt: "Engineer inspecting a rooftop solar panel during a site visit",
   },
   {
-    src: "/images/career/AB6AXuC34ERaLQbcLtT2-2AehIL3Uz7vvSctuYWsiwvaD09g0XQvv56KRloOxsTwO8RGeVj9sTPLdmDHI8s_oqSPfrw0HngxmD1qcnSoBP-Kon4u178FqdoNS-oBnJEN57TMFpeHfKDlto6cnbbfqrEjKT_QF0z1ndst5cDnlGc4GQjMEUfzoqhhTaSzeKlgGXwCnBlA1ofkstGjsOoWmHZl-iz1VxZPaFXtCx_x5yCH4GGr.png",
+    src: "https://golden-ray.b-cdn.net/Career%20page/IMG_20260207_132232.jpg",
     alt: "The Flarize team gathered in the workshop",
   },
   {
-    src: "/images/career/AB6AXuDDx_Stu3awgcJOkSpwt5NCRCeIlb7KQpoku-wPVsik3aITgkXwBDjPx36g4G0S96KC4cp9TC9BJ0mY9pk9ntBZILBL9o-LGao4LrOq7Y6SZb9vTeYTU6GHhAuXA_TXDG28RuMDBecTClvkUKSrqDj8Yz-NR8IRW9LNDEM3p3C-EG8tQZJ_lWiEfIC5U73Q75ApQQyrCt2qgiHVy4OROLMFkurO9BYrdk5SGOgo6uSb.png",
+    src: "https://golden-ray.b-cdn.net/Career%20page/IMG_20260207_135532.jpg",
     alt: "Product planning session mapping ideas on a sticky-note board",
   },
   {
-    src: "/images/career/Container%20(3).png",
+    src: "https://golden-ray.b-cdn.net/Career%20page/IMG_5687%20(1).JPG",
     alt: "Team members walking outside the office at sunset",
   },
 ];
@@ -47,7 +47,7 @@ export default function LifeAtFlarize() {
               alt={largeImage.alt}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover object-center"
+              className="object-cover object-[17%_center]"
             />
           </div>
 
