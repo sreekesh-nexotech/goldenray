@@ -10,33 +10,33 @@ interface Partner {
 const partners: Partner[] = [
   {
     title: "Advisor Partners",
-    desc: "Already went solar with Flarize? Help neighbours do the same and earn rewards as a Flarize Advisor. You lived the whole journey — your word converts faster than any ad we could run.",
-    icon: "https://golden-ray.b-cdn.net/images/healthicons_construction-worker.png",
+    desc: "Already went solar with Flarize? Help neighbours do the same and earn rewards as a Flarize Advisor. You lived the whole journey - your word converts faster than any ad we could run.",
+    icon: "https://golden-ray.b-cdn.net/icons/fluent-emoji-high-contrast_rescue-workers-helmet.png",
   },
   {
     title: "Electrician Partners",
-    desc: "You're already on the roof and inside the home. Refer the solar job to Flarize, stay on as the trusted local hand, and earn on every install — no sourcing panels, chasing subsidy, or carrying risk.",
-    icon: "https://golden-ray.b-cdn.net/images/healthicons_construction-worker (5).png",
+    desc: "You're already on the roof and inside the home. Refer the solar job to Flarize, stay on as the trusted local hand, and earn on every install - no sourcing panels, chasing subsidy, or carrying risk.",
+    icon: "https://golden-ray.b-cdn.net/icons/Frame.png",
   },
   {
     title: "Real Estate Partners",
-    desc: "Every property and design conversation can include solar. You make the introduction; Flarize closes, installs and supports it — your client only ever sees a job done right.",
-    icon: "https://golden-ray.b-cdn.net/images/healthicons_construction-worker (1).png",
+    desc: "Every property and design conversation can include solar. You make the introduction; Flarize closes, installs and supports it - your client only ever sees a job done right.",
+    icon: "https://golden-ray.b-cdn.net/icons/Vector-1.png",
   },
   {
     title: "Community Partners",
-    desc: "Help your community adopt solar together. Group installs across apartments and colonies mean more neighbours powered — and one accountable team standing behind every home.",
-    icon: "https://golden-ray.b-cdn.net/images/healthicons_construction-worker (2).png",
+    desc: "Help your community adopt solar together. Group installs across apartments and colonies mean more neighbours powered - and one accountable team standing behind every home.",
+    icon: "https://golden-ray.b-cdn.net/icons/Vector.png",
   },
   {
     title: "Creator Partners",
-    desc: "Turn your audience into verified solar installs. You earn on completed installations, not on clicks or impressions — and Flarize protects the trust you built with your followers.",
-    icon: "https://golden-ray.b-cdn.net/images/healthicons_construction-worker (3).png",
+    desc: "Turn your audience into verified solar installs. You earn on completed installations, not on clicks or impressions - and Flarize protects the trust you built with your followers.",
+    icon: "https://golden-ray.b-cdn.net/icons/Vector-3.png",
   },
   {
     title: "Builders & Developers",
     desc: "Offer solar as a premium add-on for new constructions. Earn on every unit that installs.",
-    icon: "https://golden-ray.b-cdn.net/images/healthicons_construction-worker (4).png",
+    icon: "https://golden-ray.b-cdn.net/icons/Vector-2.png",
   },
 ];
 

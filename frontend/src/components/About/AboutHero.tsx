@@ -42,7 +42,7 @@ export default function AboutUsHero() {
             href="#team"
             className="btn-m inline-flex items-center justify-center px-8 py-4 rounded-lg bg-[#F7BA41] text-[#272218] font-semibold text-base transition-colors hover:bg-yellow-500"
           >
-            Meet our team
+            Meet Our team
           </Link>
           <Link
             href="/career"
@@ -88,7 +88,7 @@ export default function AboutUsHero() {
               href="#team"
               className="btn-m inline-flex items-center justify-center min-w-[300px] px-8 py-4 rounded-lg bg-[#F7BA41] text-[#272218] font-semibold text-lg transition-colors hover:bg-yellow-500"
             >
-              Meet the Our Team
+              Meet Our Team
             </Link>
             <Link
               href="/career"

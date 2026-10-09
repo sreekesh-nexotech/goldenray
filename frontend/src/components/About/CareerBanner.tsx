@@ -6,7 +6,7 @@ export default function CareerBanner() {
     <section className="py-16">
       <div className="relative max-w-full mx-auto aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] overflow-hidden flex items-center justify-center">
         <Image
-          src="https://golden-ray.b-cdn.net/About%20us/f6e7954ac38b29096c6d713f04250af8caadedb4.jpg"
+          src="https://golden-ray.b-cdn.net/About%20us/Why%20Flarize%20Exists.JPG"
           alt="The Flarize team collaborating in the office"
           fill
           sizes="100vw"

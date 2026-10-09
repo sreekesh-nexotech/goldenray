@@ -84,6 +84,12 @@ module.exports = {
     "/privacy": {
       priority: 0.8,
     },
+    "/cookie-policy": {
+      priority: 0.8,
+    },
+    "/legal-policy": {
+      priority: 0.8,
+    },
     "/terms": {
       priority: 0.8,
     },

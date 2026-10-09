@@ -31,9 +31,8 @@ const resourceLinks = [
 ];
 
 const legalLinks = [
-  // NOTE: no dedicated cookie/legal-policy pages exist yet — placeholder hrefs.
-  { label: "Cookie Policy", href: "#" },
-  { label: "Legal Policy", href: "#" },
+  { label: "Cookie Policy", href: "/cookie-policy" },
+  { label: "Legal Policy", href: "/legal-policy" },
   { label: "Terms of Service", href: "/terms" },
 ];
 
