@@ -41,15 +41,15 @@ function nextDestination(): string {
 
 export default function SignInScreen() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
   const submit = async () => {
-    const user = username.trim();
+    const user = email.trim();
     if (!user) {
-      setError("Enter your username");
+      setError("Enter your email address");
       return;
     }
     if (!pw) {
@@ -66,7 +66,7 @@ export default function SignInScreen() {
       if (err instanceof StudioApiError) {
         setError(
           err.status === 401
-            ? "Wrong username or password"
+            ? "Wrong email address or password"
             : err.message
         );
       } else {
@@ -105,14 +105,14 @@ export default function SignInScreen() {
         </p>
 
         <div style={{ marginBottom: 14 }}>
-          <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: studioColors.labelGray, marginBottom: 6 }}>Username</label>
+          <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: studioColors.labelGray, marginBottom: 6 }}>Email address</label>
           <input
-            type="text"
-            autoComplete="username"
-            aria-label="Username"
-            placeholder="your.username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            autoComplete="email"
+            aria-label="Email address"
+            placeholder="you@flarize.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             onKeyDown={onKey}
             onFocus={(e) => (e.currentTarget.style.boxShadow = fieldRingFocus)}
             onBlur={(e) => (e.currentTarget.style.boxShadow = fieldRing)}

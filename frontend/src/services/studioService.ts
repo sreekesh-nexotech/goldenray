@@ -418,10 +418,10 @@ export function query(params: object): string {
 /* -------------------------------------------------------------------------- */
 
 /** POST auth/login/ — stores the token pair on success. */
-export async function login(username: string, password: string): Promise<void> {
+export async function login(email: string, password: string): Promise<void> {
   const tokens = await request<StudioTokens>("auth/login/", {
     method: "POST",
-    body: { username, password },
+    body: { email, password },
   });
   saveTokens(tokens);
 }
