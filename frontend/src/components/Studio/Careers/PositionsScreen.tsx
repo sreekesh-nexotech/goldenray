@@ -72,7 +72,7 @@ export default function PositionsScreen() {
     setLoadError(null);
     return getPositions({
       search: search || undefined,
-      department: department ? Number(department) : "",
+      department: department || "",
       location: location || undefined,
       employment_type: type,
       status,

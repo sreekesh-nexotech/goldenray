@@ -118,7 +118,7 @@ export default function PositionEditorScreen({ id }: { id: string }) {
   const body = () => ({
     title: form.title.trim(),
     slug: form.slug.trim(),
-    department: Number(form.department),
+    department: form.department,
     location: form.location.trim(),
     employment_type: form.employment_type,
     experience_required: form.experience_required,

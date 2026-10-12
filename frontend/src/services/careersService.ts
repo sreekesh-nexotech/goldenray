@@ -83,7 +83,7 @@ export interface Position extends PositionListItem {
 export interface PositionWrite {
   title: string;
   slug: string;
-  department: number;
+  department: string;
   location: string;
   employment_type: EmploymentType;
   experience_required?: string;
@@ -102,7 +102,7 @@ export interface PositionWrite {
 
 export interface PositionFilters {
   search?: string;
-  department?: number | "";
+  department?: string | "";
   location?: string;
   employment_type?: EmploymentType | "";
   status?: PositionStatus | "";
