@@ -1,0 +1,190 @@
+// src/services/bomStaffService.ts
+//
+// Client for the staff BOM calculator on the new platform backend
+// (`/api/v1/bom/quote/`, `/api/v1/bom/quote-options/`).
+//
+// There is no separate sign-in: it sends the Content Studio access token. The
+// platform verifies that token (shared signing key), maps its e-mail to a
+// platform account, and authorises from that account's platform role —
+// `bom.view` for the calculator; the cost breakdown/totals additionally need
+// `pricing_internal.view`. A Studio user with no matching platform account (or
+// without `bom.view`) gets an error, not data.
+
+import { STAFF_API_BASE_URL } from "@/config";
+import { getStudioAccessToken, refreshStudioAccessToken } from "./studioService";
+
+/* -------------------------------------------------------------------------- */
+/*  Shapes                                                                     */
+/* -------------------------------------------------------------------------- */
+
+export type BomSystemType = "ongrid" | "hybrid" | "upgrade";
+export type BomTier = "base" | "value" | "premium";
+export type BomStructureType = "flatRoof" | "elevated" | "sheetRoof";
+export type BomSubsidyType = "none" | "residential" | "ghs";
+export type BomAmountType = "percent" | "flat";
+
+export interface BomQuoteRequest {
+  sys_type: BomSystemType;
+  size: string;
+  tier: BomTier;
+  bat_config?: string;
+  dist_km?: number;
+  structure_type?: BomStructureType;
+  subsidy_type?: BomSubsidyType;
+  ghs_houses?: number;
+  selected_offer_id?: string | null;
+  custom_discount?: { type: BomAmountType; value: number } | null;
+  margin_type?: BomAmountType;
+  margin_val?: number;
+  upgrade_from_kw?: number;
+  upgrade_to_kw?: number;
+  upgrade_sections?: Record<string, boolean>;
+}
+
+export interface BomQuoteLine {
+  pos: number;
+  name: string;
+  brand: string;
+  qty: number;
+  unit: string;
+  unit_price: number;
+  amount: number;
+  gst_pct: number;
+  gst_amt: number;
+  section: string;
+  is_variable: boolean;
+}
+
+export interface BomCostBreakdown {
+  install: number;
+  service: number;
+  transport: number;
+  misc: number;
+  office: number;
+  structure_base: number;
+  structure_extra: number;
+  structure_labor: number;
+  structure_repair: number;
+  cost_total: number;
+}
+
+export interface BomTotals {
+  material_ex_gst: number;
+  gst_5: number;
+  gst_12: number;
+  gst_18: number;
+  material_with_gst: number;
+  subtotal: number;
+  margin: number;
+  grand_total: number;
+}
+
+export interface BomQuotePricing {
+  market_rate: number;
+  customer_price: number;
+  discount_amt: number;
+  discount_label: string;
+  final_price: number;
+  subsidy_amt: number;
+  subsidy_label: string;
+  price_after_subsidy: number;
+}
+
+export interface BomOffer {
+  offer_id: string;
+  name: string;
+  offer_type: string;
+  value: number;
+}
+
+export interface BomQuoteResponse {
+  bom_lines: BomQuoteLine[];
+  /** Present only for callers holding `pricing_internal.view`. */
+  cost_breakdown?: BomCostBreakdown;
+  totals?: BomTotals;
+  pricing: BomQuotePricing;
+  // Upgrade quotes carry additional keys; the standard shape is typed here.
+  meta: Record<string, unknown>;
+  available_offers: BomOffer[];
+}
+
+export interface BomSizeOption {
+  key: string;
+  label: string;
+}
+
+export interface BomSystemOptions {
+  name: string;
+  sizes: BomSizeOption[];
+  three_phase_sizes: string[];
+  tiers: BomTier[];
+  battery_configs: string[];
+}
+
+export interface BomQuoteOptions {
+  system_types: Partial<Record<BomSystemType, BomSystemOptions>>;
+  structure_types: BomStructureType[];
+  subsidy_types: BomSubsidyType[];
+}
+
+export class BomApiError extends Error {
+  status: number;
+  code: string | null;
+  fieldErrors: Record<string, string[]>;
+  constructor(status: number, message: string, code: string | null = null, fieldErrors: Record<string, string[]> = {}) {
+    super(message);
+    this.status = status;
+    this.code = code;
+    this.fieldErrors = fieldErrors;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Requests                                                                   */
+/* -------------------------------------------------------------------------- */
+
+async function parse<T>(res: Response): Promise<T> {
+  if (res.ok) return (await res.json()) as T;
+  let body: { code?: string; message?: string; errors?: Record<string, string[]> } = {};
+  try {
+    body = await res.json();
+  } catch {
+    /* non-JSON error body */
+  }
+  throw new BomApiError(res.status, body.message || `Request failed (${res.status})`, body.code ?? null, body.errors ?? {});
+}
+
+async function request<T>(path: string, init: { method: string; body?: unknown }): Promise<T> {
+  const send = (token: string | null) =>
+    fetch(`${STAFF_API_BASE_URL}${path}`, {
+      method: init.method,
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token ?? ""}` },
+      body: init.body === undefined ? undefined : JSON.stringify(init.body),
+    });
+  let res = await send(getStudioAccessToken());
+  if (res.status === 401) {
+    // The Studio token may simply have expired: rotate it once and retry.
+    try {
+      res = await send(await refreshStudioAccessToken());
+    } catch {
+      throw new BomApiError(401, "Your Studio session expired. Sign in again.", "session_expired");
+    }
+    if (res.status === 401) {
+      throw new BomApiError(
+        401,
+        "Your Studio account has no matching Flarize platform account (same e-mail). Ask an admin to create one.",
+        "no_platform_account",
+      );
+    }
+  }
+  return parse<T>(res);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Endpoints                                                                  */
+/* -------------------------------------------------------------------------- */
+
+export const getBomQuoteOptions = () => request<BomQuoteOptions>("bom/quote-options/", { method: "GET" });
+
+export const runBomQuote = (body: BomQuoteRequest) =>
+  request<BomQuoteResponse>("bom/quote/", { method: "POST", body });

@@ -16,6 +16,15 @@ const defaultPublicApiBaseUrl = isDevelopment
 export const PUBLIC_API_BASE_URL: string =
 	process.env.NEXT_PUBLIC_PUBLIC_API_BASE_URL || defaultPublicApiBaseUrl;
 
+// New platform backend: the authenticated staff API (RS256 JWT, module.action
+// RBAC). Used by the Studio's BOM calculator, which keeps its own session
+// separate from the CMS sign-in. Override with NEXT_PUBLIC_STAFF_API_BASE_URL.
+const defaultStaffApiBaseUrl = isDevelopment
+	? "http://127.0.0.1:8000/api/v1/"
+	: "https://flarize.com/api/v1/";
+export const STAFF_API_BASE_URL: string =
+	process.env.NEXT_PUBLIC_STAFF_API_BASE_URL || defaultStaffApiBaseUrl;
+
 // Blog CMS delivery API (Strapi-compatible). The prod CMS is proxied under
 // flarize.com/studio-api (nginx → CMS container); the blog reads /api there.
 // Dev uses the local CMS. Override with NEXT_PUBLIC_BLOG_API_BASE_URL if needed.
