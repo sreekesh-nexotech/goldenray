@@ -3,7 +3,7 @@
 // src/components/Studio/Admin/RolesMatrixScreen.tsx
 //
 // Roles & Permissions (§6.17): a role list on the left, the module × action
-// matrix on the right. The grid is rendered from GET auth/permission-registry/
+// matrix on the right. The grid is rendered from GET roles/registry/
 // so it cannot drift from what the API enforces — a cell that is not allowed
 // for a module simply is not drawn.
 
@@ -14,7 +14,7 @@ import { ConfirmDialog, Modal, ModalTitle } from "../shared/overlays";
 import { slugify, studioColors, studioFonts } from "../shared/format";
 import { ErrorBox } from "../shared/listing";
 import { createRole, deleteRole, getPermissionRegistry, getRoles, roleModuleCount, updateRole, type PermissionRegistry, type StudioRole } from "@/services/adminService";
-import type { StudioAction, StudioModule, StudioPermissionMap } from "@/services/studioService";
+import type { StudioAction, StudioModule, StudioPermissionMap, StudioScope, StudioScopeMap } from "@/services/studioService";
 
 export default function RolesMatrixScreen() {
   const { tips, toast, can } = useStudio();
@@ -27,6 +27,10 @@ export default function RolesMatrixScreen() {
   const [roles, setRoles] = useState<StudioRole[] | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draft, setDraft] = useState<StudioPermissionMap>({});
+  // Record scopes ({module: "all"|"owned"|…}). The backend keeps a scope only
+  // for a module the role actually permits, so this draft is kept in step with
+  // `draft` on every grant and revoke (accounts/registry.py normalise_scopes).
+  const [scopeDraft, setScopeDraft] = useState<StudioScopeMap>({});
   const [meta, setMeta] = useState({ name: "", description: "" });
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -34,6 +38,10 @@ export default function RolesMatrixScreen() {
 
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState("");
+  // Slug tracks the name until the user edits it, then stays put.
+  const [newSlug, setNewSlug] = useState("");
+  const [slugTouched, setSlugTouched] = useState(false);
+  const [newDesc, setNewDesc] = useState("");
   const [newError, setNewError] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -56,13 +64,41 @@ export default function RolesMatrixScreen() {
   useEffect(() => {
     if (!selected) return;
     setDraft(JSON.parse(JSON.stringify(selected.permissions)));
+    setScopeDraft(JSON.parse(JSON.stringify(selected.scopes ?? {})));
     setMeta({ name: selected.name, description: selected.description });
     setDirty(false);
   }, [selected]);
 
+  /** The registry's spec for one module (groups are only a display grouping). */
+  /** `{all: "All records", owned: "Own records", …}` from the registry. */
+  const scopeLabels: Record<string, string> = Object.fromEntries(
+    (registry?.scopes ?? []).map((sc) => [sc.key, sc.label]),
+  );
+
+  /** Pairs the server refuses on the caller's own record (attendance.edit, …). */
+  const selfDenied = (m: StudioModule, a: StudioAction) =>
+    Boolean(registry?.self_action_denied?.some((x) => x.module === m && x.action === a));
+
+  const moduleSpec = (m: StudioModule) =>
+    registry?.groups.flatMap((g) => g.modules).find((x) => x.key === m);
+
   const has = (m: StudioModule, a: StudioAction) => Boolean(draft[m]?.includes(a));
+
+  /** Keep `scopeDraft` consistent with a module's permitted/not state. */
+  const syncScope = (m: StudioModule, permitted: boolean) =>
+    setScopeDraft((sc) => {
+      const next = { ...sc };
+      if (!permitted) {
+        delete next[m]; // the server drops scopes for unpermitted modules
+      } else if (next[m] === undefined) {
+        next[m] = moduleSpec(m)?.default_scope ?? "all";
+      }
+      return next;
+    });
+
   const toggle = (m: StudioModule, a: StudioAction) => {
     if (!canManage) return;
+    let permitted = true;
     setDraft((d) => {
       const cur = new Set(d[m] ?? []);
       if (cur.has(a)) cur.delete(a);
@@ -73,19 +109,31 @@ export default function RolesMatrixScreen() {
       const next = { ...d };
       if (cur.size) next[m] = Array.from(cur);
       else delete next[m];
+      permitted = cur.size > 0;
       return next;
     });
+    syncScope(m, permitted);
     setDirty(true);
   };
   const toggleModule = (m: StudioModule, allowed: StudioAction[]) => {
     if (!canManage) return;
+    let permitted = true;
     setDraft((d) => {
       const all = (d[m]?.length ?? 0) === allowed.length;
       const next = { ...d };
       if (all) delete next[m];
       else next[m] = [...allowed];
+      permitted = !all;
       return next;
     });
+    syncScope(m, permitted);
+    setDirty(true);
+  };
+
+  /** Set the record scope for one module. */
+  const setScope = (m: StudioModule, value: StudioScope) => {
+    if (!canManage) return;
+    setScopeDraft((sc) => ({ ...sc, [m]: value }));
     setDirty(true);
   };
 
@@ -93,7 +141,7 @@ export default function RolesMatrixScreen() {
     if (!selected) return;
     setSaving(true);
     try {
-      await updateRole(selected.uid, { ...meta, permissions: draft, expected_version: selected.version });
+      await updateRole(selected.uid, { ...meta, permissions: draft, scopes: scopeDraft, expected_version: selected.version });
       toast("Role saved");
       await load();
     } catch (err) {
@@ -109,9 +157,17 @@ export default function RolesMatrixScreen() {
       return;
     }
     try {
-      const r = await createRole({ name: newName.trim(), slug: slugify(newName), description: "", permissions: { dashboard: ["view"] } });
+      const r = await createRole({
+        name: newName.trim(),
+        slug: (slugTouched ? newSlug : slugify(newName)).trim(),
+        description: newDesc.trim(),
+        permissions: { dashboard: ["view"] },
+      });
       setCreating(false);
       setNewName("");
+      setNewSlug("");
+      setSlugTouched(false);
+      setNewDesc("");
       toast("Role created");
       await load();
       setSelectedId(r.uid);
@@ -211,7 +267,7 @@ export default function RolesMatrixScreen() {
                   </div>
                 </div>
                 <div style={{ fontSize: 11.5, color: studioColors.faintGray }}>
-                  What this role may do is set entirely by the permission grid below.
+                  What this role may do is set by the permission grid below — and, for modules that offer a choice, by its record scope.
                 </div>
               </div>
             </Card>
@@ -231,7 +287,8 @@ export default function RolesMatrixScreen() {
                   </thead>
                   <tbody>
                     {registry.groups.map((g) => (
-                      <GroupRows key={g.label || "top"} group={g} actions={registry.actions} has={has} toggle={toggle} toggleModule={toggleModule} canManage={canManage} />
+                      <GroupRows key={g.label || "top"} group={g} actions={registry.actions} has={has} toggle={toggle} toggleModule={toggleModule}
+                        scopeOf={(m) => scopeDraft[m]} setScope={setScope} scopeLabels={scopeLabels} selfDenied={selfDenied} canManage={canManage} />
                     ))}
                   </tbody>
                 </table>
@@ -247,6 +304,21 @@ export default function RolesMatrixScreen() {
           <div>
             <FieldLabel>Role name</FieldLabel>
             <TextInput value={newName} onChange={setNewName} placeholder="Marketing Editor" />
+          </div>
+          <div>
+            <FieldLabel>Slug</FieldLabel>
+            <TextInput
+              value={slugTouched ? newSlug : slugify(newName)}
+              onChange={(v) => { setSlugTouched(true); setNewSlug(v); }}
+              placeholder="marketing-editor"
+            />
+            <div style={{ fontSize: 11.5, color: studioColors.faintGray, marginTop: 4 }}>
+              Fixed once the role exists. Filled in from the name unless you change it.
+            </div>
+          </div>
+          <div>
+            <FieldLabel>Description</FieldLabel>
+            <TextInput value={newDesc} onChange={setNewDesc} placeholder="What this role is for" />
           </div>
           <div style={{ fontSize: 12.5, color: studioColors.mutedGray }}>It starts with Dashboard only — grant modules in the matrix afterwards.</div>
           {newError && <div style={{ fontSize: 12.5, color: studioColors.danger }}>{newError}</div>}
@@ -270,6 +342,10 @@ function GroupRows({
   has,
   toggle,
   toggleModule,
+  scopeOf,
+  setScope,
+  scopeLabels,
+  selfDenied,
   canManage,
 }: {
   group: PermissionRegistry["groups"][number];
@@ -277,6 +353,13 @@ function GroupRows({
   has: (m: StudioModule, a: StudioAction) => boolean;
   toggle: (m: StudioModule, a: StudioAction) => void;
   toggleModule: (m: StudioModule, allowed: StudioAction[]) => void;
+  /** Current record scope for a module, or undefined when not permitted. */
+  scopeOf: (m: StudioModule) => StudioScope | undefined;
+  setScope: (m: StudioModule, value: StudioScope) => void;
+  /** `{key,label}` for every scope in the registry's vocabulary. */
+  scopeLabels: Record<string, string>;
+  /** Module/action pairs the server refuses on your own record. */
+  selfDenied: (m: StudioModule, a: StudioAction) => boolean;
   canManage: boolean;
 }) {
   return (
@@ -294,12 +377,33 @@ function GroupRows({
         return (
           <tr key={m.key} style={{ boxShadow: "inset 0 -1px 0 rgba(229,231,235,.7)" }}>
             <td style={{ padding: "9px 16px" }}>
-              <button type="button" onClick={() => toggleModule(m.key, m.actions)} disabled={!canManage} className="text-left" style={{ border: "none", background: "transparent", cursor: canManage ? "pointer" : "default", padding: 0, fontFamily: "var(--font-switzer)" }}>
+              <button type="button" onClick={() => toggleModule(m.key, m.actions)} disabled={!canManage} className="text-left" title={m.description} style={{ border: "none", background: "transparent", cursor: canManage ? "pointer" : "default", padding: 0, fontFamily: "var(--font-switzer)" }}>
                 <div style={{ fontWeight: 600, color: studioColors.tealDeep, fontSize: 13.5 }}>{m.label}</div>
                 <div style={{ fontSize: 11, color: studioColors.faintGray, fontFamily: studioFonts.mono }}>
                   {m.key} · {all ? "all" : `${granted}/${m.actions.length}`}
                 </div>
               </button>
+              {/* Record scope: only modules with a real choice, and only while
+                  the role permits the module (the server drops the rest). */}
+              {m.scopes.length > 1 && granted > 0 && (
+                <div className="flex items-center" style={{ gap: 6, marginTop: 5 }}>
+                  <span style={{ fontSize: 10.5, color: studioColors.faintGray, textTransform: "uppercase", letterSpacing: ".06em" }}>Records</span>
+                  <select
+                    value={scopeOf(m.key) ?? m.default_scope}
+                    disabled={!canManage}
+                    aria-label={`Record scope for ${m.label}`}
+                    onChange={(e) => setScope(m.key, e.target.value as StudioScope)}
+                    style={{ fontFamily: "var(--font-switzer)", fontSize: 11.5, padding: "3px 7px", borderRadius: 8, border: "none", boxShadow: `inset 0 0 0 1.5px ${studioColors.inputRing}`, background: "#ffffff", color: studioColors.tealDeep, cursor: canManage ? "pointer" : "default" }}
+                  >
+                    {m.scopes.map((sc) => (
+                      <option key={sc} value={sc}>{scopeLabels[sc] ?? sc}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {m.permission_only && granted > 0 && (
+                <div style={{ fontSize: 10.5, color: studioColors.faintGray, marginTop: 4 }}>No record scope — permission only.</div>
+              )}
             </td>
             {actions.map((a) => {
               const allowed = m.actions.includes(a.key);
@@ -312,6 +416,7 @@ function GroupRows({
                     role="checkbox"
                     aria-checked={on}
                     aria-label={`${a.label} ${m.label}`}
+                    title={selfDenied(m.key, a.key) ? `${a.label} is refused on your own record` : undefined}
                     disabled={!canManage}
                     onClick={() => toggle(m.key, a.key)}
                     className="transition-colors"

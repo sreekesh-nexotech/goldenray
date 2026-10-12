@@ -82,7 +82,7 @@ const newBlockKey = () => `b_${++blockSeq}`;
 
 export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const router = useRouter();
-  const { tips, toast, config, role, can } = useStudio();
+  const { tips, toast, config, can } = useStudio();
   const isNew = entryId === "new";
   const canPublish = can("blogs", "publish");
   const canCreate = can("blogs", "create");
@@ -1030,9 +1030,9 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 4h6v6M20 4 11 13" /></svg>
               </a>
             )}
-            {role === "Author" && (
+            {!canPublish && (
               <div style={{ marginTop: 12, padding: "9px 11px", background: "rgba(248,242,225,.85)", borderRadius: 10, fontSize: 11.5, color: studioColors.bodyGray, lineHeight: 1.5 }}>
-                Authors can’t publish — an Editor reviews this draft and takes it live.
+                You can’t publish — someone with publishing rights reviews this draft and takes it live.
               </div>
             )}
           </Card>

@@ -4,8 +4,6 @@
 //
 // Client state for the Content Studio:
 //  - session data loaded once from the admin API (`me`, `config`, `dashboard`)
-//  - `role`    — the "Preview as" role that drives capability gating visuals,
-//                initialised from the signed-in user's real role
 //  - `tips`    — whether the amber explainer tips are shown
 //  - `toast()` — transient bottom-right notifications
 //
@@ -20,7 +18,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import type { Role } from "@/types/studio";
 import {
   endStudioSession,
   getConfig,
@@ -28,7 +25,6 @@ import {
   getMe,
   isSessionExpired,
   type StudioAction,
-  type StudioPermissionMap,
   type StudioConfig,
   type StudioDashboard,
   type StudioMe,
@@ -45,8 +41,6 @@ interface Toast {
 }
 
 interface StudioContextValue {
-  role: Role;
-  setRole: (r: Role) => void;
   tips: boolean;
   setTips: (v: boolean) => void;
   toasts: Toast[];
@@ -86,22 +80,7 @@ const StudioCtx = createContext<StudioContextValue | null>(null);
 
 let toastSeq = 0;
 
-/**
- * Presentation role for the shell badge. The platform has no fixed role enum —
- * roles are data — so this is derived from what the user may actually do:
- * managing roles/users is an admin, publishing is an editor, anything else is
- * an author. The real gating is always `can()`, never this label.
- */
-function uiRole(permissions: StudioPermissionMap): Role {
-  const holds = (module: StudioModule, action: StudioAction) =>
-    Boolean(permissions?.[module]?.includes(action));
-  if (holds("roles", "manage") || holds("users", "manage") || holds("settings", "edit")) return "Admin";
-  if (holds("blogs", "publish") || holds("pages", "publish") || holds("faqs", "publish")) return "Editor";
-  return "Author";
-}
-
 export function StudioProvider({ children }: { children: React.ReactNode }) {
-  const [role, setRole] = useState<Role>("Author");
   const [tips, setTips] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [me, setMe] = useState<StudioMe | null>(null);
@@ -122,7 +101,6 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
         ]);
         if (cancelled) return;
         setMe(meData);
-        setRole(uiRole(meData.permissions));
         setConfig(configData);
         setDashboard(dashData);
       } catch (err) {
@@ -191,8 +169,8 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ role, setRole, tips, setTips, toasts, toast, me, config, dashboard, shellLoading, shellError, can, scope }),
-    [role, tips, toasts, toast, me, config, dashboard, shellLoading, shellError, can, scope]
+    () => ({ tips, setTips, toasts, toast, me, config, dashboard, shellLoading, shellError, can, scope }),
+    [tips, toasts, toast, me, config, dashboard, shellLoading, shellError, can, scope]
   );
 
   return <StudioCtx.Provider value={value}>{children}</StudioCtx.Provider>;

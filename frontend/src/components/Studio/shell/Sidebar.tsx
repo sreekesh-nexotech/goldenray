@@ -363,7 +363,7 @@ function hostOf(url: string): string {
 export default function Sidebar() {
   const pathname = usePathname() || "";
   const router = useRouter();
-  const { role, toast, me, config, dashboard, can } = useStudio();
+  const { toast, me, config, dashboard, can } = useStudio();
   const [open, setOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
 
@@ -468,7 +468,7 @@ export default function Sidebar() {
         </div>
         <div className="min-w-0 leading-tight">
           <div className="truncate" style={{ fontSize: 12.5, fontWeight: 600, color: "#ffffff" }}>{displayName}</div>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,.55)" }}>{role}</div>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,.55)" }}>{me?.role?.name ?? "No role"}</div>
         </div>
         <button
           onClick={() => setConfirmLogout(true)}

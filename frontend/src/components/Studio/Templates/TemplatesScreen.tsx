@@ -119,7 +119,7 @@ type AddModal = { kind: "group" | "attr" } | null;
 type ConfirmDelete = { kind: "group" | "attr"; index: number } | null;
 
 export default function TemplatesScreen() {
-  const { tips, toast, role, can } = useStudio();
+  const { tips, toast, can } = useStudio();
   // The API splits these three ways (blog/views/schema.py):
   const canCreate = can("blogs", "create");   // new / duplicate template, add group or slot
   const canEditTpl = can("blogs", "edit");    // rename a template or a field
@@ -433,7 +433,7 @@ export default function TemplatesScreen() {
             <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
           </svg>
           <div>
-            Read-only — only <b>Admins</b> change structure. You&#8217;re previewing as <b>{role}</b>.
+            Read-only — changing the blog&#8217;s structure needs create or edit rights on the blogs module.
           </div>
         </div>
       )}
