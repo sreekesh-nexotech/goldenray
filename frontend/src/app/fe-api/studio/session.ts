@@ -14,7 +14,7 @@
 // 30-second grace revokes the whole session. Two browser tabs each holding
 // their own copy is exactly that pattern. One holder, one rotation.
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { STAFF_API_BASE_URL } from "@/config";
 
 /** HttpOnly, so the middleware can gate /studio but scripts cannot read it. */
@@ -75,13 +75,37 @@ async function assertOk(res: Response): Promise<Response> {
   throw new StudioSessionError(res.status, await readBody(res), res.headers.get("Retry-After"));
 }
 
-const secureCookies = process.env.NODE_ENV === "production";
+async function cookieOptions(maxAge: number) {
+  let secure = process.env.NODE_ENV === "production";
+  if (process.env.COOKIE_SECURE === "false") {
+    secure = false;
+  } else {
+    try {
+      const h = await headers();
+      const proto = h.get("x-forwarded-proto");
+      if (proto) {
+        secure = proto === "https";
+      } else {
+        const origin = h.get("origin") || "";
+        const referer = h.get("referer") || "";
+        const host = h.get("x-forwarded-host") || h.get("host") || "";
+        if (origin.startsWith("http://") || referer.startsWith("http://")) {
+          secure = false;
+        } else if (origin.startsWith("https://") || referer.startsWith("https://")) {
+          secure = true;
+        } else if (host.includes("localhost") || host.includes("127.0.0.1") || /^\d+\.\d+\.\d+\.\d+/.test(host)) {
+          secure = false;
+        }
+      }
+    } catch {
+      /* fallback to NODE_ENV default */
+    }
+  }
 
-function cookieOptions(maxAge: number) {
   return {
     httpOnly: true,
     sameSite: "lax" as const,
-    secure: secureCookies,
+    secure,
     path: "/",
     maxAge,
   };
@@ -89,14 +113,17 @@ function cookieOptions(maxAge: number) {
 
 export async function storeTokens(tokens: TokenPair): Promise<void> {
   const jar = await cookies();
-  jar.set(STUDIO_REFRESH_COOKIE, tokens.refresh, cookieOptions(REFRESH_MAX_AGE));
-  jar.set(STUDIO_ACCESS_COOKIE, tokens.access, cookieOptions(ACCESS_MAX_AGE));
+  const refreshOpts = await cookieOptions(REFRESH_MAX_AGE);
+  const accessOpts = await cookieOptions(ACCESS_MAX_AGE);
+  jar.set(STUDIO_REFRESH_COOKIE, tokens.refresh, refreshOpts);
+  jar.set(STUDIO_ACCESS_COOKIE, tokens.access, accessOpts);
 }
 
 export async function clearTokens(): Promise<void> {
   const jar = await cookies();
-  jar.set(STUDIO_REFRESH_COOKIE, "", cookieOptions(0));
-  jar.set(STUDIO_ACCESS_COOKIE, "", cookieOptions(0));
+  const clearOpts = await cookieOptions(0);
+  jar.set(STUDIO_REFRESH_COOKIE, "", clearOpts);
+  jar.set(STUDIO_ACCESS_COOKIE, "", clearOpts);
 }
 
 export async function readRefreshToken(): Promise<string | null> {

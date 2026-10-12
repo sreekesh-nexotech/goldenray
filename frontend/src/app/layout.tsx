@@ -1,7 +1,6 @@
 /* src/app/layout.tsx */
 import "@/styles/globals.css";
 
-import { DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import type { Metadata } from "next";
 import Script from "next/script";
@@ -20,9 +19,17 @@ import { organizationSchema } from "@/data/jsonld";
 
 /* -------------------- Fonts -------------------- */
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const dmSans = localFont({
+  src: [
+    {
+      path: "../../public/fonts/dm-sans/DMSans-Variable.woff2",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/dm-sans/DMSans-Italic-Variable.woff2",
+      style: "italic",
+    },
+  ],
   variable: "--font-dm-sans",
   display: "swap",
 });

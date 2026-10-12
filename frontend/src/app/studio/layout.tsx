@@ -4,11 +4,10 @@
 // it as --font-inter, and marks the whole surface noindex (admin app).
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const inter = localFont({
+  src: "../../../public/fonts/inter/Inter-Variable.woff2",
   variable: "--font-inter",
   display: "swap",
 });
