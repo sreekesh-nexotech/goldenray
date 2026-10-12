@@ -1,9 +1,8 @@
 // golden-ray/frontend/src/services/basicContactService.ts
-import { API_BASE_URL } from "../config";
 import { apiCall } from "./apiService";
 import { newIdempotencyKey } from "../utils/fetchApi";
 import { requestPhoneVerification } from "./phoneVerification";
-import { getStudioAccessToken, refreshStudioAccessToken } from "./studioService";
+import { studioRequest, type Paginated } from "./studioService";
 
 /** Which website form an enquiry came from — mirrors LeadCollectionHome.Source. */
 export type EnquirySource =
@@ -39,7 +38,9 @@ export interface ContactResponse {
 
 /** A stored enquiry row as returned by GET lead-collection-home/. */
 export interface ContactEnquiry {
-  id: number;
+  uid: string;
+  /** Human-readable lead reference assigned by the platform (e.g. "L-00123"). */
+  number: string;
   name: string;
   phone_number: string;
   source: EnquirySource;
@@ -47,6 +48,22 @@ export interface ContactEnquiry {
   page: string;
   details: Record<string, string | number | boolean>;
   /** ISO-8601 UTC timestamp of when the enquiry was submitted. */
+  created_at: string;
+  updated_at: string;
+}
+
+/** One row of `GET /api/v1/leads/`. */
+interface PlatformLead {
+  uid: string;
+  number: string;
+  form: string;
+  status: string;
+  name: string;
+  phone: string;
+  email: string | null;
+  message: string | null;
+  payload: Record<string, string | number | boolean> | null;
+  page: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -115,33 +132,35 @@ export function contactErrorMessage(error: unknown): string {
   return "We couldn't submit your request. Please try again, or call us directly.";
 }
 
+/** Reverse of LEAD_FORM: the platform's `form` back to a website source. */
+const FORM_SOURCE: Record<string, EnquirySource> = Object.entries(LEAD_FORM).reduce(
+  (acc, [source, form]) => {
+    acc[form] = source as EnquirySource;
+    return acc;
+  },
+  {} as Record<string, EnquirySource>,
+);
+
 /**
  * Every enquiry captured by the footer / home contact forms, newest first
- * (the API already orders by `-created_at`). Feeds the Content Studio
- * Enquiries screen.
+ * (`GET /api/v1/leads/` already orders by `-created_at`). Feeds the Content
+ * Studio Enquiries screen, and needs the `leads` module.
  *
- * Reading the queue needs a Studio token granting `leads` (§6.8); the backend
- * verifies it with the key shared with the CMS. A 401 gets one refresh-and-
- * retry, matching careerApplicationService.
+ * The platform's lead is a richer record than the old `lead_collection_home`
+ * row, so it is mapped back onto the shape the screen renders.
  */
 export async function getContactEnquiries(): Promise<ContactEnquiry[]> {
-  const send = (token: string | null) =>
-    fetch(`${API_BASE_URL}lead-collection-home/`, {
-      cache: "no-store",
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
-  let response = await send(getStudioAccessToken());
-  if (response.status === 401) response = await send(await refreshStudioAccessToken());
-  if (!response.ok) {
-    let detail = `Request failed (${response.status})`;
-    try {
-      const data = await response.json();
-      if (typeof data?.detail === "string") detail = data.detail;
-    } catch {
-      /* keep the generic message */
-    }
-    throw new Error(detail);
-  }
-  const rows = (await response.json()) as ContactEnquiry[];
-  return Array.isArray(rows) ? rows : [];
+  const page = await studioRequest<Paginated<PlatformLead>>("leads/?page_size=200");
+  return page.results.map((row) => ({
+    uid: row.uid,
+    number: row.number,
+    name: row.name,
+    phone_number: row.phone,
+    source: FORM_SOURCE[row.form] ?? "footer",
+    source_label: row.form,
+    page: row.page ?? "",
+    details: row.payload ?? {},
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  }));
 }

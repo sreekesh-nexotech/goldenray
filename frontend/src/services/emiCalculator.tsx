@@ -31,7 +31,8 @@ export interface EMISettings {
 }
 
 export interface EMISystemSize {
-  id: number;
+  /** Platform uid (uuid). Rows are addressed by uid everywhere. */
+  uid: string;
   label: string;
   capacity_kw: string;
   price_per_kw: string;
@@ -47,7 +48,8 @@ export interface EMISystemSize {
 }
 
 export interface EMIBank {
-  id: number;
+  /** Platform uid (uuid). */
+  uid: string;
   name: string;
   abbr: string;
   slug: string;
@@ -78,8 +80,9 @@ export interface EMIConfigResponse {
 
 // The public v1 API identifies rows by `uid` (a string); `id` carries it so the
 // components can key on one field. The Studio admin keeps the numeric types above.
-export type PublicEMISystemSize = Omit<EMISystemSize, 'id'> & { id: string };
-export type PublicEMIBank = Omit<EMIBank, 'id'> & { id: string };
+// The rows are already uid-keyed, so the public shapes are the same shapes.
+export type PublicEMISystemSize = EMISystemSize;
+export type PublicEMIBank = EMIBank;
 export interface PublicEMIConfigResponse {
   settings: EMISettings;
   system_sizes: PublicEMISystemSize[];
@@ -182,23 +185,20 @@ export interface EMICalculatorResponse {
 
 const EMI_CALCULATOR_ENDPOINT = 'calculators/emi/';
 const EMI_CONFIG_ENDPOINT = 'calculators/emi/config/';
-// Studio admin still runs against the old backend (numeric ids).
-const LEGACY_EMI_CALCULATOR_ENDPOINT = 'emi-calculator/';
-
 /** GET the admin-managed configuration that drives the calculator UI. */
 export async function getEMIConfig(): Promise<PublicEMIConfigResponse> {
   const response = await apiCall<{
     settings: EMISettings;
-    system_sizes: (Omit<EMISystemSize, 'id'> & { uid: string })[];
-    banks: (Omit<EMIBank, 'id'> & { uid: string })[];
+    system_sizes: EMISystemSize[];
+    banks: EMIBank[];
   }>(EMI_CONFIG_ENDPOINT, 'GET', null, { publicApi: true });
   if (!response || !Array.isArray(response.system_sizes)) {
     throw new Error('Invalid EMI calculator configuration received');
   }
   return {
     settings: response.settings,
-    system_sizes: response.system_sizes.map((r) => ({ ...r, id: r.uid })),
-    banks: response.banks.map((r) => ({ ...r, id: r.uid })),
+    system_sizes: response.system_sizes,
+    banks: response.banks,
   };
 }
 
@@ -222,14 +222,5 @@ export async function calculateEMI(
     await apiCall<EMICalculatorResponse>(EMI_CALCULATOR_ENDPOINT, 'POST', body, {
       publicApi: true,
     })
-  );
-}
-
-/** Studio preview: the same calculation against the old backend's numeric size ids. */
-export async function calculateEMILegacy(
-  payload: EMICalculatorPayload
-): Promise<EMICalculatorResponse> {
-  return assertEmiResponse(
-    await apiCall<EMICalculatorResponse>(LEGACY_EMI_CALCULATOR_ENDPOINT, 'POST', payload)
   );
 }

@@ -16,16 +16,17 @@ import { getSeoOverview, type SeoOverview, type SeoOverviewRow, type SeoRecordKi
 import type { SeoStatus } from "@/services/faqService";
 import type { StudioModule } from "@/services/studioService";
 
-const KIND_LABEL: Record<SeoRecordKind, string> = { page: "Page", faq: "FAQ", job: "Job" };
+const KIND_LABEL: Record<SeoRecordKind, string> = { page: "Page", faq: "FAQ", job: "Job", blog: "Blog" };
 const COLS = 6;
 
 /** The module that owns each record kind — where its SEO is actually edited. */
-const KIND_MODULE: Record<SeoRecordKind, StudioModule> = { page: "pages", faq: "faqs", job: "job_positions" };
+const KIND_MODULE: Record<SeoRecordKind, StudioModule> = { page: "pages", faq: "faqs", job: "job_positions", blog: "blogs" };
 
 function editorHref(r: SeoOverviewRow): string {
-  if (r.kind === "page") return `/studio/pages/${r.id}`;
-  if (r.kind === "faq") return `/studio/faqs/${r.id}`;
-  return `/studio/careers/positions/${r.id}`;
+  if (r.kind === "page") return `/studio/pages/${r.uid}`;
+  if (r.kind === "faq") return `/studio/faqs/${r.uid}`;
+  if (r.kind === "blog") return `/studio/entries/${r.uid}`;
+  return `/studio/careers/positions/${r.uid}`;
 }
 
 export default function SeoOverviewScreen() {
@@ -106,7 +107,7 @@ export default function SeoOverviewScreen() {
           const openable = can(KIND_MODULE[r.kind]);
           return (
           <tr
-            key={`${r.kind}-${r.id}`}
+            key={`${r.kind}-${r.uid}`}
             className={openable ? "cursor-pointer transition-colors hover:bg-[rgba(7,74,77,0.03)]" : undefined}
             title={openable ? undefined : "Edited from a module your role does not include"}
             onClick={openable ? () => router.push(editorHref(r)) : undefined}

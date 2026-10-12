@@ -15,12 +15,16 @@ import type { StudioRole } from "@/services/adminService";
 const fieldRing = `inset 0 0 0 1px ${studioColors.inputRing},0 1px 2px rgba(10,13,18,.05)`;
 const fieldRingFocus = "inset 0 0 0 1.5px #074A4D,0 1px 2px rgba(10,13,18,.05)";
 
+/**
+ * The platform creates the account **without** a password and e-mails an
+ * invitation link, so there is nothing to share by hand. E-mail is the login,
+ * and the role is identified by its uid.
+ */
 export interface NewUserPayload {
-  username: string;
-  password: string;
-  /** Phase 1 role id (§6.17); the server derives the legacy role from it. */
-  access_role: number;
-  email?: string;
+  email: string;
+  role: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 export function InviteModal({
@@ -35,17 +39,17 @@ export function InviteModal({
   onCreate: (payload: NewUserPayload) => Promise<void>;
   roles: StudioRole[];
 }) {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [role, setRole] = useState<string>("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
   const reset = () => {
-    setUsername("");
     setEmail("");
-    setPassword("");
+    setFirstName("");
+    setLastName("");
     setRole("");
     setError("");
   };
@@ -56,12 +60,8 @@ export function InviteModal({
   };
 
   const submit = async () => {
-    if (!username.trim()) {
-      setError("Enter a username");
-      return;
-    }
-    if (!password) {
-      setError("Enter a password");
+    if (!email.trim()) {
+      setError("Enter a work e-mail address");
       return;
     }
     if (!role) {
@@ -72,10 +72,10 @@ export function InviteModal({
     setBusy(true);
     try {
       await onCreate({
-        username: username.trim(),
-        password,
-        access_role: Number(role),
-        email: email.trim() || undefined,
+        email: email.trim(),
+        role,
+        first_name: firstName.trim() || undefined,
+        last_name: lastName.trim() || undefined,
       });
       reset();
     } catch (err) {
@@ -89,30 +89,32 @@ export function InviteModal({
     <Modal open={open} onClose={cancel} ariaLabel="Add user" width={460}>
       <ModalTitle>Add a user</ModalTitle>
       <p style={{ fontSize: 12.5, color: studioColors.bodyGray, margin: "4px 0 16px", lineHeight: 1.5 }}>
-        Creates an internal account for the Flarize content studio — share the credentials with them directly.
+        Creates an internal account for the Flarize content studio. They receive an
+        invitation e-mail and set their own password — nothing to share by hand.
       </p>
 
       <div style={{ marginBottom: 14 }}>
-        <FieldLabel>Username</FieldLabel>
-        <TextInput value={username} onChange={setUsername} placeholder="ravi.kumar" style={{ borderRadius: 12 }} />
-      </div>
-
-      <div style={{ marginBottom: 14 }}>
-        <FieldLabel
-          suffix={
-            <span style={{ fontFamily: studioFonts.mono, fontSize: 10.5, color: studioColors.faintGray, fontWeight: 400 }}>
-              optional
-            </span>
-          }
-        >
-          Work email
-        </FieldLabel>
+        <FieldLabel>Work email</FieldLabel>
         <TextInput value={email} onChange={setEmail} type="email" placeholder="name@flarize.com" style={{ borderRadius: 12 }} />
       </div>
 
-      <div style={{ marginBottom: 14 }}>
-        <FieldLabel>Password</FieldLabel>
-        <TextInput value={password} onChange={setPassword} type="password" placeholder="••••••••" style={{ borderRadius: 12 }} />
+      <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr", marginBottom: 14 }}>
+        <div>
+          <FieldLabel
+            suffix={
+              <span style={{ fontFamily: studioFonts.mono, fontSize: 10.5, color: studioColors.faintGray, fontWeight: 400 }}>
+                optional
+              </span>
+            }
+          >
+            First name
+          </FieldLabel>
+          <TextInput value={firstName} onChange={setFirstName} placeholder="Ravi" style={{ borderRadius: 12 }} />
+        </div>
+        <div>
+          <FieldLabel>Last name</FieldLabel>
+          <TextInput value={lastName} onChange={setLastName} placeholder="Kumar" style={{ borderRadius: 12 }} />
+        </div>
       </div>
 
       <div style={{ marginBottom: 20 }}>
@@ -142,7 +144,7 @@ export function InviteModal({
           >
             <option value="">Choose a role…</option>
             {roles.map((r) => (
-              <option key={r.id} value={r.id}>
+              <option key={r.uid} value={r.uid}>
                 {r.name}
                 {r.description ? ` — ${r.description.slice(0, 48)}${r.description.length > 48 ? "…" : ""}` : ""}
               </option>

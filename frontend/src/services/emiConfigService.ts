@@ -2,19 +2,11 @@
 //
 // Authoring client for the EMI calculator's configuration.
 //
-// Unlike the rest of the Studio, these endpoints live on the *main* goldenray
-// backend (API_BASE_URL) rather than the CMS — that is where the calculator and
-// its models are. Authorisation still uses the Studio's JWT: the goldenray
-// service verifies it with a signing key shared with the CMS, so the same
-// sign-in covers both. Tokens are read from studioService rather than
-// duplicated here.
+// These rows live on the platform staff API under `emi/` (banks, interest
+// rules, subsidy rules, system sizes and the settings singleton) and are
+// reached through the Studio's BFF, sharing its session.
 
-import { API_BASE_URL } from "@/config";
-import {
-  StudioApiError,
-  getStudioAccessToken,
-  refreshStudioAccessToken,
-} from "./studioService";
+import { StudioApiError, studioRequest, type Paginated } from "./studioService";
 import type { EMIBank, EMISettings, EMISystemSize } from "./emiCalculator";
 
 /* -------------------------------------------------------------------------- */
@@ -22,7 +14,7 @@ import type { EMIBank, EMISettings, EMISystemSize } from "./emiCalculator";
 /* -------------------------------------------------------------------------- */
 
 export interface EMISubsidyRule {
-  id: number;
+  uid: string;
   label: string;
   /** Null means the band is open-ended on that side. */
   min_kw: string | null;
@@ -33,7 +25,7 @@ export interface EMISubsidyRule {
 }
 
 export interface EMIInterestRateRule {
-  id: number;
+  uid: string;
   label: string;
   min_kw: string | null;
   max_kw: string | null;
@@ -53,86 +45,41 @@ export interface EMIInterestRateRule {
 }
 
 /** Payloads are partial: the API accepts PATCH-style updates on every model. */
-export type EMISystemSizeInput = Partial<Omit<EMISystemSize, "id" | "system_cost">>;
-export type EMISubsidyRuleInput = Partial<Omit<EMISubsidyRule, "id">>;
-export type EMIInterestRateRuleInput = Partial<Omit<EMIInterestRateRule, "id">>;
-export type EMIBankInput = Partial<Omit<EMIBank, "id">>;
+export type EMISystemSizeInput = Partial<Omit<EMISystemSize, "id" | "uid" | "system_cost">>;
+export type EMISubsidyRuleInput = Partial<Omit<EMISubsidyRule, "uid">>;
+export type EMIInterestRateRuleInput = Partial<Omit<EMIInterestRateRule, "uid">>;
+export type EMIBankInput = Partial<Omit<EMIBank, "id" | "uid">>;
 export type EMISettingsInput = Partial<Omit<EMISettings, "updated_at">>;
 
 /* -------------------------------------------------------------------------- */
 /*  Request plumbing                                                           */
 /* -------------------------------------------------------------------------- */
-
-async function request<T>(
-  path: string,
-  init: { method?: string; body?: object; token?: string | null } = {}
-): Promise<T> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (init.token) headers.Authorization = `Bearer ${init.token}`;
-
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    method: init.method ?? "GET",
-    headers,
-    body: init.body ? JSON.stringify(init.body) : undefined,
-  });
-
-  if (!res.ok) {
-    let detail = `Request failed (${res.status})`;
-    try {
-      const data = await res.json();
-      // DRF sends {"detail": "..."} or a field map like {"rate": ["..."]}.
-      if (typeof data?.detail === "string") detail = data.detail;
-      else if (typeof data?.error === "string") detail = data.error;
-      else if (data && typeof data === "object") {
-        const [field, messages] = Object.entries(data)[0] ?? [];
-        if (Array.isArray(messages) && typeof messages[0] === "string") {
-          detail = field ? `${field}: ${messages[0]}` : messages[0];
-        }
-      }
-    } catch {
-      /* non-JSON body — keep the generic message */
-    }
-    throw new StudioApiError(res.status, detail);
-  }
-
-  if (res.status === 204) return undefined as T;
-  return res.json() as Promise<T>;
-}
-
-/** Attach the Studio token; on a 401 refresh once and retry. */
-async function authRequest<T>(
-  path: string,
-  init: { method?: string; body?: object } = {}
-): Promise<T> {
-  const token = getStudioAccessToken();
-  try {
-    return await request<T>(path, { ...init, token });
-  } catch (err) {
-    if (!(err instanceof StudioApiError) || err.status !== 401) throw err;
-    const fresh = await refreshStudioAccessToken();
-    return request<T>(path, { ...init, token: fresh });
-  }
-}
+//
+// These rows live on the platform staff API (`/api/v1/emi/*`) and are reached
+// through the Studio's BFF like every other Studio call, so the session and its
+// refresh are shared with studioService rather than duplicated here.
 
 /* -------------------------------------------------------------------------- */
-/*  Generic CRUD over the emi-admin router                                     */
+/*  Generic CRUD over the emi router                                           */
 /* -------------------------------------------------------------------------- */
 
 function crud<TRow, TInput extends object>(resource: string) {
-  const base = `emi-admin/${resource}/`;
+  const base = `emi/${resource}/`;
   return {
-    list: () => authRequest<TRow[]>(base),
-    create: (body: TInput) => authRequest<TRow>(base, { method: "POST", body }),
-    update: (id: number, body: TInput) =>
-      authRequest<TRow>(`${base}${id}/`, { method: "PATCH", body }),
-    remove: (id: number) =>
-      authRequest<void>(`${base}${id}/`, { method: "DELETE" }),
+    list: async () => (await studioRequest<Paginated<TRow>>(base)).results,
+    create: (body: TInput) => studioRequest<TRow>(base, { method: "POST", body }),
+    update: (uid: string, body: TInput) =>
+      studioRequest<TRow>(`${base}${uid}/`, { method: "PATCH", body }),
+    remove: (uid: string) =>
+      studioRequest<void>(`${base}${uid}/`, { method: "DELETE" }),
   };
 }
 
+// Platform paths: `subsidy-rules` and `interest-rules` (the old backend called
+// them `subsidies` and `interest-rates`).
 export const systemSizes = crud<EMISystemSize, EMISystemSizeInput>("system-sizes");
-export const subsidyRules = crud<EMISubsidyRule, EMISubsidyRuleInput>("subsidies");
-export const interestRules = crud<EMIInterestRateRule, EMIInterestRateRuleInput>("interest-rates");
+export const subsidyRules = crud<EMISubsidyRule, EMISubsidyRuleInput>("subsidy-rules");
+export const interestRules = crud<EMIInterestRateRule, EMIInterestRateRuleInput>("interest-rules");
 export const banks = crud<EMIBank, EMIBankInput>("banks");
 
 /* -------------------------------------------------------------------------- */
@@ -140,11 +87,11 @@ export const banks = crud<EMIBank, EMIBankInput>("banks");
 /* -------------------------------------------------------------------------- */
 
 export function getSettings(): Promise<EMISettings> {
-  return authRequest<EMISettings>("emi-admin/settings/");
+  return studioRequest<EMISettings>("emi/settings/");
 }
 
 export function updateSettings(body: EMISettingsInput): Promise<EMISettings> {
-  return authRequest<EMISettings>("emi-admin/settings/", { method: "PATCH", body });
+  return studioRequest<EMISettings>("emi/settings/", { method: "PATCH", body });
 }
 
 /** Everything the Studio screen needs, in one round trip. */

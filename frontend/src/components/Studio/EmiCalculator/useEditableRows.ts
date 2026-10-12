@@ -7,78 +7,81 @@
 // until a row is explicitly saved, so a half-typed rate never reaches the
 // public calculator.
 //
-// New rows get a negative temporary id until the API returns a real one.
+// New rows get a temporary client-side uid (prefixed "new:") until the API
+// returns the real record; platform ids are uuid strings, never numbers.
 
 import { useCallback, useRef, useState } from "react";
 
 export interface RowApi<TRow, TInput> {
   create: (body: TInput) => Promise<TRow>;
-  update: (id: number, body: TInput) => Promise<TRow>;
-  remove: (id: number) => Promise<void>;
+  update: (uid: string, body: TInput) => Promise<TRow>;
+  remove: (uid: string) => Promise<void>;
 }
 
-export function isNewRow(id: number): boolean {
-  return id < 0;
+const NEW_ROW_PREFIX = "new:";
+
+export function isNewRow(uid: string): boolean {
+  return uid.startsWith(NEW_ROW_PREFIX);
 }
 
-export function useEditableRows<TRow extends { id: number }, TInput extends object>(
+export function useEditableRows<TRow extends { uid: string }, TInput extends object>(
   initial: TRow[],
   api: RowApi<TRow, TInput>,
   toInput: (row: TRow) => TInput,
   notify: { success: (msg: string) => void; error: (msg: string) => void }
 ) {
   const [rows, setRows] = useState<TRow[]>(initial);
-  // Server-side truth per id, for dirty-checking and Discard.
-  const [saved, setSaved] = useState<Map<number, TRow>>(
-    () => new Map(initial.map((r) => [r.id, r]))
+  // Server-side truth per uid, for dirty-checking and Discard.
+  const [saved, setSaved] = useState<Map<string, TRow>>(
+    () => new Map(initial.map((r) => [r.uid, r]))
   );
-  const [busyId, setBusyId] = useState<number | null>(null);
-  const tempId = useRef(-1);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const tempId = useRef(0);
 
   const isDirty = useCallback(
     (row: TRow) => {
-      if (isNewRow(row.id)) return true; // unsaved rows are always dirty
-      const base = saved.get(row.id);
+      if (isNewRow(row.uid)) return true; // unsaved rows are always dirty
+      const base = saved.get(row.uid);
       return !base || JSON.stringify(base) !== JSON.stringify(row);
     },
     [saved]
   );
 
-  const patch = useCallback((id: number, changes: Partial<TRow>) => {
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...changes } : r)));
+  const patch = useCallback((uid: string, changes: Partial<TRow>) => {
+    setRows((prev) => prev.map((r) => (r.uid === uid ? { ...r, ...changes } : r)));
   }, []);
 
-  const add = useCallback((blank: Omit<TRow, "id">) => {
-    const id = tempId.current--;
-    setRows((prev) => [...prev, { ...blank, id } as TRow]);
+  const add = useCallback((blank: Omit<TRow, "uid">) => {
+    const uid = `${NEW_ROW_PREFIX}${tempId.current++}`;
+    setRows((prev) => [...prev, { ...blank, uid } as TRow]);
   }, []);
 
   const discard = useCallback(
-    (id: number) => {
-      if (isNewRow(id)) {
-        setRows((prev) => prev.filter((r) => r.id !== id));
+    (uid: string) => {
+      if (isNewRow(uid)) {
+        setRows((prev) => prev.filter((r) => r.uid !== uid));
         return;
       }
-      const base = saved.get(id);
-      if (base) setRows((prev) => prev.map((r) => (r.id === id ? base : r)));
+      const base = saved.get(uid);
+      if (base) setRows((prev) => prev.map((r) => (r.uid === uid ? base : r)));
     },
     [saved]
   );
 
   const save = useCallback(
-    async (id: number) => {
-      const row = rows.find((r) => r.id === id);
+    async (uid: string) => {
+      const row = rows.find((r) => r.uid === uid);
       if (!row) return;
-      setBusyId(id);
+      setBusyId(uid);
       try {
         const body = toInput(row);
-        const result = isNewRow(id) ? await api.create(body) : await api.update(id, body);
-        // Swap the temp id for the real record the API returned.
-        setRows((prev) => prev.map((r) => (r.id === id ? result : r)));
+        const result = isNewRow(uid) ? await api.create(body) : await api.update(uid, body);
+        // Swap the temp uid for the real record the API returned.
+        setRows((prev) => prev.map((r) => (r.uid === uid ? result : r)));
         setSaved((prev) => {
           const next = new Map(prev);
-          next.delete(id);
-          next.set(result.id, result);
+          next.delete(uid);
+          next.set(result.uid, result);
           return next;
         });
         notify.success("Saved");
@@ -92,18 +95,18 @@ export function useEditableRows<TRow extends { id: number }, TInput extends obje
   );
 
   const remove = useCallback(
-    async (id: number) => {
-      if (isNewRow(id)) {
-        setRows((prev) => prev.filter((r) => r.id !== id));
+    async (uid: string) => {
+      if (isNewRow(uid)) {
+        setRows((prev) => prev.filter((r) => r.uid !== uid));
         return;
       }
-      setBusyId(id);
+      setBusyId(uid);
       try {
-        await api.remove(id);
-        setRows((prev) => prev.filter((r) => r.id !== id));
+        await api.remove(uid);
+        setRows((prev) => prev.filter((r) => r.uid !== uid));
         setSaved((prev) => {
           const next = new Map(prev);
-          next.delete(id);
+          next.delete(uid);
           return next;
         });
         notify.success("Deleted");

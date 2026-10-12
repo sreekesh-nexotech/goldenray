@@ -9,11 +9,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useStudio } from "../shared/StudioContext";
-import { Card, CardHeader, CardTitle, DangerButton, FieldLabel, GhostButton, GoldButton, PageHeader, SelectField, TextInput, TipBanner } from "../shared/primitives";
+import { Card, CardHeader, CardTitle, DangerButton, FieldLabel, GhostButton, GoldButton, PageHeader, TextInput, TipBanner } from "../shared/primitives";
 import { ConfirmDialog, Modal, ModalTitle } from "../shared/overlays";
 import { slugify, studioColors, studioFonts } from "../shared/format";
 import { ErrorBox } from "../shared/listing";
-import { createRole, deleteRole, getPermissionRegistry, getRoles, updateRole, type PermissionRegistry, type StudioRole } from "@/services/adminService";
+import { createRole, deleteRole, getPermissionRegistry, getRoles, roleModuleCount, updateRole, type PermissionRegistry, type StudioRole } from "@/services/adminService";
 import type { StudioAction, StudioModule, StudioPermissionMap } from "@/services/studioService";
 
 export default function RolesMatrixScreen() {
@@ -24,9 +24,9 @@ export default function RolesMatrixScreen() {
 
   const [registry, setRegistry] = useState<PermissionRegistry | null>(null);
   const [roles, setRoles] = useState<StudioRole[] | null>(null);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draft, setDraft] = useState<StudioPermissionMap>({});
-  const [meta, setMeta] = useState({ name: "", description: "", legacy_role: "author" as StudioRole["legacy_role"] });
+  const [meta, setMeta] = useState({ name: "", description: "" });
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -42,7 +42,7 @@ export default function RolesMatrixScreen() {
       .then(([reg, rs]) => {
         setRegistry(reg);
         setRoles(rs.results);
-        setSelectedId((cur) => cur ?? rs.results[0]?.id ?? null);
+        setSelectedId((cur) => cur ?? rs.results[0]?.uid ?? null);
       })
       .catch((err) => setLoadError(err instanceof Error ? err.message : "Failed to load roles"));
   }, []);
@@ -50,12 +50,12 @@ export default function RolesMatrixScreen() {
     void load();
   }, [load]);
 
-  const selected = useMemo(() => roles?.find((r) => r.id === selectedId) ?? null, [roles, selectedId]);
+  const selected = useMemo(() => roles?.find((r) => r.uid === selectedId) ?? null, [roles, selectedId]);
 
   useEffect(() => {
     if (!selected) return;
     setDraft(JSON.parse(JSON.stringify(selected.permissions)));
-    setMeta({ name: selected.name, description: selected.description, legacy_role: selected.legacy_role });
+    setMeta({ name: selected.name, description: selected.description });
     setDirty(false);
   }, [selected]);
 
@@ -92,7 +92,7 @@ export default function RolesMatrixScreen() {
     if (!selected) return;
     setSaving(true);
     try {
-      await updateRole(selected.id, { ...meta, permissions: draft });
+      await updateRole(selected.uid, { ...meta, permissions: draft, expected_version: selected.version });
       toast("Role saved");
       await load();
     } catch (err) {
@@ -108,12 +108,12 @@ export default function RolesMatrixScreen() {
       return;
     }
     try {
-      const r = await createRole({ name: newName.trim(), slug: slugify(newName), description: "", permissions: { dashboard: ["view"] }, legacy_role: "author" });
+      const r = await createRole({ name: newName.trim(), slug: slugify(newName), description: "", permissions: { dashboard: ["view"] } });
       setCreating(false);
       setNewName("");
       toast("Role created");
       await load();
-      setSelectedId(r.id);
+      setSelectedId(r.uid);
     } catch (err) {
       setNewError(err instanceof Error ? err.message : "Could not create role");
     }
@@ -122,7 +122,7 @@ export default function RolesMatrixScreen() {
   const remove = async () => {
     if (!selected) return;
     try {
-      await deleteRole(selected.id);
+      await deleteRole(selected.uid);
       toast("Role deleted");
       setSelectedId(null);
       await load();
@@ -158,12 +158,12 @@ export default function RolesMatrixScreen() {
           <div className="flex flex-col" style={{ padding: 6 }}>
             {roles === null && <div style={{ padding: 12, fontSize: 13, color: studioColors.mutedGray }}>Loading…</div>}
             {roles?.map((r) => {
-              const active = r.id === selectedId;
+              const active = r.uid === selectedId;
               return (
                 <button
-                  key={r.id}
+                  key={r.uid}
                   type="button"
-                  onClick={() => setSelectedId(r.id)}
+                  onClick={() => setSelectedId(r.uid)}
                   className="text-left transition-colors"
                   style={{ border: "none", borderRadius: 10, padding: "10px 12px", cursor: "pointer", background: active ? "rgba(7,74,77,.08)" : "transparent", fontFamily: "var(--font-switzer)" }}
                 >
@@ -172,7 +172,7 @@ export default function RolesMatrixScreen() {
                     {r.is_system && <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", color: studioColors.faintGray }}>Built-in</span>}
                   </div>
                   <div style={{ fontSize: 11.5, color: studioColors.faintGray, marginTop: 2 }}>
-                    {r.module_count} module{r.module_count === 1 ? "" : "s"} · {r.user_count} user{r.user_count === 1 ? "" : "s"}
+                    {roleModuleCount(r)} module{roleModuleCount(r) === 1 ? "" : "s"} · {r.user_count} user{r.user_count === 1 ? "" : "s"}
                   </div>
                 </button>
               );
@@ -199,7 +199,7 @@ export default function RolesMatrixScreen() {
                 </div>
               </CardHeader>
               <div style={{ padding: 16 }} className="grid gap-3" >
-                <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr 180px" }}>
+                <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr" }}>
                   <div>
                     <FieldLabel>Name</FieldLabel>
                     <TextInput value={meta.name} onChange={(v) => { setMeta({ ...meta, name: v }); setDirty(true); }} />
@@ -208,17 +208,9 @@ export default function RolesMatrixScreen() {
                     <FieldLabel>Description</FieldLabel>
                     <TextInput value={meta.description} onChange={(v) => { setMeta({ ...meta, description: v }); setDirty(true); }} />
                   </div>
-                  <div>
-                    <FieldLabel>Token role</FieldLabel>
-                    <SelectField value={meta.legacy_role} onChange={(v) => { setMeta({ ...meta, legacy_role: v as StudioRole["legacy_role"] }); setDirty(true); }}>
-                      <option value="admin">admin</option>
-                      <option value="editor">editor</option>
-                      <option value="author">author</option>
-                    </SelectField>
-                  </div>
                 </div>
                 <div style={{ fontSize: 11.5, color: studioColors.faintGray }}>
-                  Token role is what the main backend reads for EMI and application changes: <code>editor</code> or above can write there.
+                  What this role may do is set entirely by the permission grid below.
                 </div>
               </div>
             </Card>
@@ -238,7 +230,7 @@ export default function RolesMatrixScreen() {
                   </thead>
                   <tbody>
                     {registry.groups.map((g) => (
-                      <GroupRows key={g.title || "top"} group={g} actions={registry.actions} has={has} toggle={toggle} toggleModule={toggleModule} canManage={canManage} />
+                      <GroupRows key={g.label || "top"} group={g} actions={registry.actions} has={has} toggle={toggle} toggleModule={toggleModule} canManage={canManage} />
                     ))}
                   </tbody>
                 </table>
@@ -288,10 +280,10 @@ function GroupRows({
 }) {
   return (
     <>
-      {group.title && (
+      {group.label && (
         <tr>
           <td colSpan={actions.length + 1} style={{ padding: "10px 16px 4px", fontSize: 10.5, fontWeight: 600, letterSpacing: ".1em", textTransform: "uppercase", color: studioColors.teal }}>
-            {group.title}
+            {group.label}
           </td>
         </tr>
       )}

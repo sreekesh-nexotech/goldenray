@@ -18,11 +18,11 @@ import {
   getUsers,
   createUser,
   patchUser,
-  deleteUser,
+  deactivateUser,
+  reactivateUser,
   isAuthError,
   StudioApiError,
   type StudioUser,
-  type StudioApiRole,
 } from "@/services/studioService";
 import { getRoles, type StudioRole } from "@/services/adminService";
 
@@ -38,8 +38,6 @@ const matrixTd = { ...tdStyle, padding: "13px 16px" } as const;
 const roleOptions: Role[] = ["Admin", "Editor", "Author"];
 
 
-const apiRoleLabel: Record<StudioApiRole, string> = { admin: "Admin", editor: "Editor", author: "Author" };
-
 const rolePreviewNotes: Record<Role, string> = {
   Admin: "Admins manage structure, publish and delete.",
   Editor: "Editors write, publish and delete — but not structure.",
@@ -54,7 +52,7 @@ const rolePermissions: { role: Role; sub: string; cells: boolean[] }[] = [
 
 /** Display name for a user row. */
 function displayName(u: StudioUser): string {
-  return [u.first_name, u.last_name].filter(Boolean).join(" ") || u.username;
+  return u.full_name || [u.first_name, u.last_name].filter(Boolean).join(" ") || u.email;
 }
 
 const activePill = { label: "Active", bg: "#C3E0BD", ink: "#0A6B31" };
@@ -118,7 +116,7 @@ function MemberRow({
   busy: boolean;
   /** Phase 1 roles (§6.17); the select assigns one of these. */
   roles: StudioRole[];
-  onRoleChange: (accessRoleId: number) => void;
+  onRoleChange: (roleUid: string) => void;
   onDeactivate: () => void;
   onReactivate: () => void;
 }) {
@@ -161,7 +159,7 @@ function MemberRow({
                 </span>
               )}
             </div>
-            <div style={{ fontSize: 11.5, color: studioColors.faintGray }}>{user.email || user.username}</div>
+            <div style={{ fontSize: 11.5, color: studioColors.faintGray }}>{user.email}</div>
           </div>
         </div>
       </td>
@@ -169,14 +167,14 @@ function MemberRow({
         {editable ? (
           <div style={{ maxWidth: 150 }}>
             <SelectField
-              value={user.access_role ? String(user.access_role) : ""}
+              value={user.role?.uid ?? ""}
               ariaLabel={`Role for ${name}`}
-              onChange={(v) => v && onRoleChange(Number(v))}
+              onChange={(v) => v && onRoleChange(v)}
               style={{ fontSize: 13, padding: "8px 30px 8px 11px", borderRadius: 10 }}
             >
-              {!user.access_role && <option value="">Legacy: {apiRoleLabel[user.role]}</option>}
+              {!user.role && <option value="">No role</option>}
               {roles.map((r) => (
-                <option key={r.id} value={r.id}>
+                <option key={r.uid} value={r.uid}>
                   {r.name}
                 </option>
               ))}
@@ -184,7 +182,7 @@ function MemberRow({
           </div>
         ) : (
           <span style={{ fontSize: 13, color: studioColors.bodyGray, fontWeight: 500 }}>
-            {user.access_role_name ?? `Legacy: ${apiRoleLabel[user.role]}`}
+            {user.role?.name ?? "No role"}
           </span>
         )}
       </td>
@@ -263,7 +261,7 @@ export default function RolesScreen() {
   const [forbidden, setForbidden] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
-  const [busyId, setBusyId] = useState<number | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
   const [confirmUser, setConfirmUser] = useState<StudioUser | null>(null);
   const [deactivating, setDeactivating] = useState(false);
 
@@ -281,20 +279,21 @@ export default function RolesScreen() {
     };
   }, []);
 
-  const replaceUser = (u: StudioUser) => setUsers((prev) => prev?.map((x) => (x.id === u.id ? u : x)) ?? prev);
+  const replaceUser = (u: StudioUser) => setUsers((prev) => prev?.map((x) => (x.uid === u.uid ? u : x)) ?? prev);
 
   useEffect(() => {
     getRoles().then((p) => setRoles(p.results)).catch(() => {});
   }, []);
 
-  const changeRole = async (u: StudioUser, accessRoleId: number) => {
-    setBusyId(u.id);
+  const changeRole = async (u: StudioUser, roleUid: string) => {
+    setBusyId(u.uid);
     try {
-      // The server derives the legacy `role` claim from the granted role, so
-      // the token the other service reads stays in step automatically.
-      const updated = await patchUser(u.id, { access_role: accessRoleId });
+      // Permissions come from the role, so changing it is the whole change;
+      // `expected_version` makes a concurrent edit a 409 rather than a silent
+      // overwrite.
+      const updated = await patchUser(u.uid, { role: roleUid, expected_version: u.version });
       replaceUser(updated);
-      toast(`Role updated to ${updated.access_role_name ?? apiRoleLabel[updated.role]}`);
+      toast(`Role updated to ${updated.role?.name ?? "no role"}`);
     } catch (err) {
       toast(err instanceof StudioApiError ? `Update failed: ${err.message}` : "Update failed", "error");
     } finally {
@@ -306,8 +305,8 @@ export default function RolesScreen() {
     if (!confirmUser) return;
     setDeactivating(true);
     try {
-      await deleteUser(confirmUser.id);
-      replaceUser({ ...confirmUser, is_active: false });
+      const updated = await deactivateUser(confirmUser.uid, confirmUser.version);
+      replaceUser(updated);
       toast(`${displayName(confirmUser)} deactivated`);
       setConfirmUser(null);
     } catch (err) {
@@ -318,9 +317,10 @@ export default function RolesScreen() {
   };
 
   const reactivate = async (u: StudioUser) => {
-    setBusyId(u.id);
+    setBusyId(u.uid);
     try {
-      const updated = await patchUser(u.id, { is_active: true });
+      // `is_active` is read-only on the user resource; reactivating is an action.
+      const updated = await reactivateUser(u.uid, u.version);
       replaceUser(updated);
       toast(`${displayName(u)} reactivated`);
     } catch (err) {
@@ -334,7 +334,7 @@ export default function RolesScreen() {
     try {
       const created = await createUser(payload);
       setUsers((prev) => [...(prev ?? []), created]);
-      toast(`${created.username} added`);
+      toast(`${created.email} invited`);
       setInviteOpen(false);
     } catch (err) {
       // Re-throw with the API's message so the modal shows it inline.
@@ -454,14 +454,14 @@ export default function RolesScreen() {
               </thead>
               <tbody>
                 {users.map((u) => {
-                  const self = me?.id === u.id;
+                  const self = me?.user.uid === u.uid;
                   return (
                     <MemberRow
-                      key={u.id}
+                      key={u.uid}
                       user={u}
                       self={self}
                       editable={isAdmin && !self}
-                      busy={busyId === u.id}
+                      busy={busyId === u.uid}
                       roles={roles}
                       onRoleChange={(v) => changeRole(u, v)}
                       onDeactivate={() => setConfirmUser(u)}

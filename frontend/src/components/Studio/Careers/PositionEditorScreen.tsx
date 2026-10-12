@@ -89,17 +89,17 @@ export default function PositionEditorScreen({ id }: { id: string }) {
     getDepartments().then((p) => setDepartments(p.results.filter((d) => d.is_active))).catch(() => {});
   }, []);
 
-  const refreshPreview = (pid: number) => previewPosition(pid).then(setPreview).catch(() => setPreview(null));
+  const refreshPreview = (pid: string) => previewPosition(pid).then(setPreview).catch(() => setPreview(null));
 
   const load = useCallback(() => {
     if (isNew) return;
     setLoadError(null);
-    getPosition(Number(id))
+    getPosition(String(id))
       .then((p) => {
         setPosition(p);
         setForm(toForm(p));
         setDirty(false);
-        void refreshPreview(p.id);
+        void refreshPreview(p.uid);
       })
       .catch((err) => setLoadError(err instanceof Error ? err.message : "Failed to load position"));
   }, [id, isNew]);
@@ -148,13 +148,13 @@ export default function PositionEditorScreen({ id }: { id: string }) {
     setFormError(null);
     setSaving(true);
     try {
-      const saved = isNew ? await createPosition(body()) : await updatePosition(Number(id), body());
+      const saved = isNew ? await createPosition(body()) : await updatePosition(String(id), body());
       setPosition(saved);
       setForm(toForm(saved));
       setDirty(false);
       toast(isNew ? "Position created" : "Saved");
-      if (isNew) router.replace(`/studio/careers/positions/${saved.id}`);
-      else void refreshPreview(saved.id);
+      if (isNew) router.replace(`/studio/careers/positions/${saved.uid}`);
+      else void refreshPreview(saved.uid);
       return saved;
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Could not save");
@@ -164,17 +164,17 @@ export default function PositionEditorScreen({ id }: { id: string }) {
     }
   };
 
-  const workflow = async (fn: (id: number) => Promise<Position>, done: string) => {
+  const workflow = async (fn: (uid: string, expectedVersion?: number) => Promise<Position>, done: string) => {
     const current = dirty || isNew ? await save() : position;
     if (!current) return;
     setSaving(true);
     try {
-      const next = await fn(current.id);
+      const next = await fn(current.uid, current.version);
       setPosition(next);
       setForm(toForm(next));
       setDirty(false);
       toast(done);
-      void refreshPreview(next.id);
+      void refreshPreview(next.uid);
     } catch (err) {
       setFormError(err instanceof StudioApiError && err.errors?.length ? err.errors.join(" ") : err instanceof Error ? err.message : "Action failed");
     } finally {
@@ -270,7 +270,7 @@ export default function PositionEditorScreen({ id }: { id: string }) {
                   <SelectField value={form.department} onChange={(v) => patch({ department: v })}>
                     <option value="">Choose…</option>
                     {departments.map((d) => (
-                      <option key={d.id} value={d.id}>
+                      <option key={d.uid} value={d.uid}>
                         {d.name}
                       </option>
                     ))}

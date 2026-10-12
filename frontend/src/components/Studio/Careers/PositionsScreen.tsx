@@ -40,7 +40,7 @@ export default function PositionsScreen() {
   const [count, setCount] = useState(0);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [appCounts, setAppCounts] = useState<Record<number, number>>({});
+  const [appCounts, setAppCounts] = useState<Record<string, number>>({});
 
   const [search, setSearch] = useState("");
   const [department, setDepartment] = useState("");
@@ -58,7 +58,7 @@ export default function PositionsScreen() {
       // One fetch for the whole list; grouped by the snapshotted position id.
       getCareerApplications()
         .then((apps) => {
-          const counts: Record<number, number> = {};
+          const counts: Record<string, number> = {};
           for (const a of apps as (typeof apps[number] & { position_id?: number | null })[]) {
             if (a.position_id) counts[a.position_id] = (counts[a.position_id] ?? 0) + 1;
           }
@@ -117,13 +117,13 @@ export default function PositionsScreen() {
   };
 
   const menuItems = (row: PositionListItem): MenuItem[] => {
-    const items: MenuItem[] = [{ label: can("job_positions", "edit") ? "Edit" : "View", onClick: () => router.push(`/studio/careers/positions/${row.id}`) }];
-    if (row.status !== "archived") items.push({ label: "Preview", note: "public job page", onClick: () => router.push(`/studio/careers/positions/${row.id}?preview=1`) });
+    const items: MenuItem[] = [{ label: can("job_positions", "edit") ? "Edit" : "View", onClick: () => router.push(`/studio/careers/positions/${row.uid}`) }];
+    if (row.status !== "archived") items.push({ label: "Preview", note: "public job page", onClick: () => router.push(`/studio/careers/positions/${row.uid}?preview=1`) });
     if (can("job_positions", "publish")) {
-      if (row.status === "published") items.push({ label: "Unpublish", note: "back to draft", onClick: () => act("Unpublish", () => unpublishPosition(row.id), "Unpublished") });
-      else if (row.status === "draft" || row.status === "closed") items.push({ label: "Publish", note: "live on the careers page", onClick: () => act("Publish", () => publishPosition(row.id), "Published") });
+      if (row.status === "published") items.push({ label: "Unpublish", note: "back to draft", onClick: () => act("Unpublish", () => unpublishPosition(row.uid), "Unpublished") });
+      else if (row.status === "draft" || row.status === "closed") items.push({ label: "Publish", note: "live on the careers page", onClick: () => act("Publish", () => publishPosition(row.uid), "Published") });
     }
-    if (can("job_positions", "edit") && row.status === "published") items.push({ label: "Close", note: "stop accepting applications", onClick: () => act("Close", () => closePosition(row.id), "Closed") });
+    if (can("job_positions", "edit") && row.status === "published") items.push({ label: "Close", note: "stop accepting applications", onClick: () => act("Close", () => closePosition(row.uid), "Closed") });
     if (can("job_positions", "archive") && row.status !== "archived") items.push({ label: "Archive", color: studioColors.danger, onClick: () => setConfirmArchive(row) });
     return items;
   };
@@ -146,7 +146,7 @@ export default function PositionsScreen() {
         <FilterSelect value={department} onChange={(v) => { setDepartment(v); setPageNo(1); }} ariaLabel="Filter by department" width={170}>
           <option value="">All departments</option>
           {departments.map((d) => (
-            <option key={d.id} value={d.id}>
+            <option key={d.uid} value={d.uid}>
               {d.name}
             </option>
           ))}
@@ -202,7 +202,7 @@ export default function PositionsScreen() {
           </StateRow>
         )}
         {rows?.map((row) => (
-          <tr key={row.id} className="cursor-pointer transition-colors hover:bg-[rgba(7,74,77,0.03)]" onClick={() => router.push(`/studio/careers/positions/${row.id}`)}>
+          <tr key={row.uid} className="cursor-pointer transition-colors hover:bg-[rgba(7,74,77,0.03)]" onClick={() => router.push(`/studio/careers/positions/${row.uid}`)}>
             <Td>
               <div style={{ fontWeight: 600, color: studioColors.tealDeep }}>{row.title}</div>
               <div style={{ fontSize: 11, color: studioColors.faintGray, fontFamily: studioFonts.mono }}>/career/{row.slug}</div>
@@ -213,7 +213,7 @@ export default function PositionsScreen() {
             <Td>
               <Pill status={row.status} size="sm" />
             </Td>
-            <Td style={{ textAlign: "right", fontFamily: studioFonts.num, fontVariantNumeric: "tabular-nums" }}>{appCounts[row.id] ?? 0}</Td>
+            <Td style={{ textAlign: "right", fontFamily: studioFonts.num, fontVariantNumeric: "tabular-nums" }}>{appCounts[row.uid] ?? 0}</Td>
             <Td>
               <span style={{ fontSize: 12.5, fontFamily: studioFonts.num }}>{fmtDate(row.updated_at)}</span>
             </Td>
@@ -253,7 +253,7 @@ export default function PositionsScreen() {
         onConfirm={async () => {
           const row = confirmArchive;
           setConfirmArchive(null);
-          if (row) await act("Archive", () => archivePosition(row.id), "Archived");
+          if (row) await act("Archive", () => archivePosition(row.uid), "Archived");
         }}
       >
         It leaves the careers page and the lists here. Applications already received for it are kept.

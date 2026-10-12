@@ -10,8 +10,6 @@
 // `pricing_internal.view`. A Studio user with no matching platform account (or
 // without `bom.view`) gets an error, not data.
 
-import { STAFF_API_BASE_URL } from "@/config";
-import { getStudioAccessToken, refreshStudioAccessToken } from "./studioService";
 
 /* -------------------------------------------------------------------------- */
 /*  Shapes                                                                     */
@@ -154,28 +152,26 @@ async function parse<T>(res: Response): Promise<T> {
   throw new BomApiError(res.status, body.message || `Request failed (${res.status})`, body.code ?? null, body.errors ?? {});
 }
 
+/**
+ * One call to the staff API through the Studio's BFF, which holds the token and
+ * does the refresh-and-retry. The Studio now signs in to the platform directly,
+ * so the old CMS-token bridge (and its "no matching platform account" case) is
+ * gone: a 401 here simply means the session is over.
+ */
 async function request<T>(path: string, init: { method: string; body?: unknown }): Promise<T> {
-  const send = (token: string | null) =>
-    fetch(`${STAFF_API_BASE_URL}${path}`, {
+  let res: Response;
+  try {
+    res = await fetch(`/fe-api/studio/proxy/${path}`, {
       method: init.method,
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token ?? ""}` },
+      headers: { "Content-Type": "application/json" },
       body: init.body === undefined ? undefined : JSON.stringify(init.body),
+      cache: "no-store",
     });
-  let res = await send(getStudioAccessToken());
+  } catch {
+    throw new BomApiError(0, "Can’t reach the server — check your connection and try again.", "network_error");
+  }
   if (res.status === 401) {
-    // The Studio token may simply have expired: rotate it once and retry.
-    try {
-      res = await send(await refreshStudioAccessToken());
-    } catch {
-      throw new BomApiError(401, "Your Studio session expired. Sign in again.", "session_expired");
-    }
-    if (res.status === 401) {
-      throw new BomApiError(
-        401,
-        "Your Studio account has no matching Flarize platform account (same e-mail). Ask an admin to create one.",
-        "no_platform_account",
-      );
-    }
+    throw new BomApiError(401, "Your Studio session expired. Sign in again.", "session_expired");
   }
   return parse<T>(res);
 }

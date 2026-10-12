@@ -34,14 +34,10 @@ const defaultBlogApiBaseUrl = isDevelopment
 export const BLOG_API_BASE_URL: string =
 	process.env.NEXT_PUBLIC_BLOG_API_BASE_URL || defaultBlogApiBaseUrl;
 
-// Content Studio admin API (JWT auth + authoring) — the same Django CMS that
-// serves the blog delivery API, proxied at flarize.com/studio-api/admin-api in
-// prod. Override with NEXT_PUBLIC_ADMIN_API_BASE_URL if needed.
-const defaultAdminApiBaseUrl = isDevelopment
-	? "http://127.0.0.1:8009/admin-api/"
-	: "https://flarize.com/studio-api/admin-api/";
-export const ADMIN_API_BASE_URL: string =
-	process.env.NEXT_PUBLIC_ADMIN_API_BASE_URL || defaultAdminApiBaseUrl;
+// The Content Studio's authoring API used to be the Django CMS at
+// /studio-api/admin-api/. It now runs on the platform staff API (/api/v1/),
+// reached server-side through the BFF in src/app/fe-api/studio/, so there is no
+// browser-facing admin base URL any more. See STAFF_API_BASE_URL above.
 
 // Canonical production origin. Every absolute URL the site emits — canonical
 // tags, Open Graph, JSON-LD, sitemap — must be built from this constant so the

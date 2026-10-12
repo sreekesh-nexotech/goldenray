@@ -30,19 +30,19 @@ import {
 /*  Sort + status option tables (mapped to server query params)                */
 /* -------------------------------------------------------------------------- */
 
-type SortKey = "recent" | "title" | "published";
-type StatusKey = "any" | "published" | "draft";
+type SortKey = "recent" | "title" | "PUBLISHED";
+type StatusKey = "any" | "PUBLISHED" | "DRAFT";
 
 const SORTS: { key: SortKey; label: string; long: string; ordering: string }[] = [
   { key: "recent", label: "Recently edited", long: "recently edited", ordering: "-updated_at" },
   { key: "title", label: "Title A–Z", long: "title A–Z", ordering: "title" },
-  { key: "published", label: "Recently published", long: "recently published", ordering: "-published_at" },
+  { key: "PUBLISHED", label: "Recently published", long: "recently published", ordering: "-published_at" },
 ];
 
 const STATUSES: { key: StatusKey; label: string }[] = [
   { key: "any", label: "Any status" },
-  { key: "published", label: "Published" },
-  { key: "draft", label: "Draft" },
+  { key: "PUBLISHED", label: "Published" },
+  { key: "DRAFT", label: "Draft" },
 ];
 
 /** DRF page size (settings.REST_FRAMEWORK.PAGE_SIZE). */
@@ -117,10 +117,10 @@ function CheckBox({
 type MenuState =
   | { kind: "sort"; top: number; left: number }
   | { kind: "status"; top: number; left: number }
-  | { kind: "row"; id: number; top: number; left: number }
+  | { kind: "row"; id: string; top: number; left: number }
   | null;
 
-type ConfirmState = { ids: number[]; titles: string[] } | null;
+type ConfirmState = { ids: string[]; titles: string[] } | null;
 
 const chevron = (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -134,7 +134,7 @@ export default function EntriesListScreen() {
   const { canPublish, canDelete } = useCapabilities();
 
   const [colls, setColls] = useState<StudioCollection[] | null>(null);
-  const [activeColl, setActiveColl] = useState<number | null>(null);
+  const [activeColl, setActiveColl] = useState<string | null>(null);
   const [rows, setRows] = useState<StudioEntryListItem[] | null>(null);
   const [total, setTotal] = useState(0);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -144,7 +144,7 @@ export default function EntriesListScreen() {
   const [search, setSearch] = useState(""); // debounced copy of q
   const [statusKey, setStatusKey] = useState<StatusKey>("any");
   const [sortKey, setSortKey] = useState<SortKey>("recent");
-  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(1);
   const [menu, setMenu] = useState<MenuState>(null);
   const [confirmDelete, setConfirmDelete] = useState<ConfirmState>(null);
@@ -160,7 +160,7 @@ export default function EntriesListScreen() {
       .then((p) => {
         if (cancelled) return;
         setColls(p.results);
-        setActiveColl((cur) => cur ?? p.results[0]?.id ?? null);
+        setActiveColl((cur) => cur ?? p.results[0]?.uid ?? null);
       })
       .catch((err) => !cancelled && setLoadError(err instanceof Error ? err.message : "Failed to load collections"));
     return () => {
@@ -234,15 +234,15 @@ export default function EntriesListScreen() {
     setSelected(new Set());
   }, [activeColl]);
 
-  const collection = colls?.find((c) => c.id === activeColl) ?? null;
+  const collection = colls?.find((c) => c.uid === activeColl) ?? null;
   const pageRows = rows ?? [];
-  const pageIds = pageRows.map((r) => r.id);
+  const pageIds = pageRows.map((r) => r.uid);
   const selCount = selected.size;
   const hasSel = selCount > 0;
   const allChecked = pageIds.length > 0 && pageIds.every((id) => selected.has(id));
   const someChecked = pageIds.some((id) => selected.has(id));
 
-  const toggleRow = (id: number) => {
+  const toggleRow = (id: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
@@ -270,7 +270,7 @@ export default function EntriesListScreen() {
   /* --- workflow actions ---------------------------------------------------- */
 
   /** Run an action over many ids, toast a summary, refresh the list. */
-  const runBulk = async (ids: number[], run: (id: number) => Promise<unknown>, verb: string) => {
+  const runBulk = async (ids: string[], run: (uid: string) => Promise<unknown>, verb: string) => {
     setWorking(true);
     const results = await Promise.allSettled(ids.map((id) => run(id)));
     const failed = results.filter((r) => r.status === "rejected") as PromiseRejectedResult[];
@@ -285,13 +285,13 @@ export default function EntriesListScreen() {
     setWorking(false);
   };
 
-  const doPublish = (ids: number[]) => runBulk(ids, publishEntry, "Published");
-  const doUnpublish = (ids: number[]) => runBulk(ids, unpublishEntry, "Unpublished");
+  const doPublish = (ids: string[]) => runBulk(ids, publishEntry, "Published");
+  const doUnpublish = (ids: string[]) => runBulk(ids, unpublishEntry, "Unpublished");
 
   const doDuplicate = async (entry: StudioEntryListItem) => {
     setWorking(true);
     try {
-      await duplicateEntry(entry.id);
+      await duplicateEntry(entry.uid);
       toast(`Duplicated “${entry.title}” as a draft`);
       await load();
     } catch (err) {
@@ -324,7 +324,7 @@ export default function EntriesListScreen() {
     setMenu({ kind, top: r.bottom + 6, left });
   };
 
-  const openRowMenu = (e: React.MouseEvent, id: number) => {
+  const openRowMenu = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     const left = Math.min(e.clientX, window.innerWidth - 216 - 8);
     const top = Math.min(e.clientY, window.innerHeight - 160);
@@ -348,21 +348,21 @@ export default function EntriesListScreen() {
       }));
     }
     // row actions
-    const entry = pageRows.find((e) => e.id === menu.id);
+    const entry = pageRows.find((e) => e.uid === menu.id);
     if (!entry) return [];
     const items: MenuItem[] = [{ label: "Duplicate", onClick: () => void doDuplicate(entry) }];
     if (canPublish) {
-      const isLive = entry.status === "published";
+      const isLive = entry.status === "PUBLISHED";
       items.push({
         label: isLive ? "Unpublish" : "Publish",
-        onClick: () => void (isLive ? doUnpublish([entry.id]) : doPublish([entry.id])),
+        onClick: () => void (isLive ? doUnpublish([entry.uid]) : doPublish([entry.uid])),
       });
     }
     if (canDelete) {
       items.push({
         label: "Delete",
         color: studioColors.danger,
-        onClick: () => setConfirmDelete({ ids: [entry.id], titles: [entry.title] }),
+        onClick: () => setConfirmDelete({ ids: [entry.uid], titles: [entry.title] }),
       });
     }
     return items;
@@ -418,12 +418,12 @@ export default function EntriesListScreen() {
       {/* Collection tabs */}
       <div className="mb-3.5 flex flex-wrap gap-1.5">
         {(colls ?? []).map((c) => {
-          const active = c.id === activeColl;
+          const active = c.uid === activeColl;
           return (
             <button
-              key={c.id}
+              key={c.uid}
               type="button"
-              onClick={() => setActiveColl(c.id)}
+              onClick={() => setActiveColl(c.uid)}
               className="inline-flex items-center gap-1.5"
               style={{
                 padding: "6px 13px",
@@ -483,7 +483,7 @@ export default function EntriesListScreen() {
                 onClick={() =>
                   setConfirmDelete({
                     ids: [...selected],
-                    titles: pageRows.filter((r) => selected.has(r.id)).map((r) => r.title),
+                    titles: pageRows.filter((r) => selected.has(r.uid)).map((r) => r.title),
                   })
                 }
                 danger
@@ -587,31 +587,31 @@ export default function EntriesListScreen() {
             </thead>
             <tbody>
               {pageRows.map((e) => {
-                const checked = selected.has(e.id);
+                const checked = selected.has(e.uid);
                 const pill = statusPill(e.status);
                 return (
                   <tr
-                    key={e.id}
-                    onClick={() => router.push(`/studio/entries/${e.id}`)}
+                    key={e.uid}
+                    onClick={() => router.push(`/studio/entries/${e.uid}`)}
                     className="cursor-pointer hover:bg-[rgba(248,242,225,0.5)]"
                   >
                     <td style={{ padding: "12px 8px 12px 16px", borderBottom: "1px solid rgba(229,231,235,.7)" }}>
-                      <CheckBox checked={checked} onToggle={() => toggleRow(e.id)} ariaLabel={`Select ${e.title}`} />
+                      <CheckBox checked={checked} onToggle={() => toggleRow(e.uid)} ariaLabel={`Select ${e.title}`} />
                     </td>
                     <td style={cellStyle}>
                       <div style={{ fontWeight: 600, color: "#123532", fontSize: 13.5 }}>{e.title}</div>
                       <div style={{ fontFamily: studioFonts.mono, fontSize: 11, color: "#898989", marginTop: 2 }}>{e.slug}</div>
                     </td>
                     <td style={{ ...cellStyle, fontSize: 12.5, color: "#5B5B5B" }}>
-                      {e.template_slug ? (
+                      {e.template?.slug ? (
                         <span style={{ fontFamily: studioFonts.mono, fontSize: 11.5, background: "rgba(248,242,225,.9)", padding: "2px 8px", borderRadius: 6 }}>
-                          {e.template_slug}
+                          {e.template?.slug}
                         </span>
                       ) : (
                         "—"
                       )}
                     </td>
-                    <td style={{ ...cellStyle, fontSize: 13, color: "#5B5B5B" }}>{e.author_name ?? "—"}</td>
+                    <td style={{ ...cellStyle, fontSize: 13, color: "#5B5B5B" }}>{e.author?.name ?? "—"}</td>
                     <td style={cellStyle}>
                       <StatusPill pill={pill} />
                     </td>
@@ -621,7 +621,7 @@ export default function EntriesListScreen() {
                         type="button"
                         aria-label={`Actions for ${e.title}`}
                         aria-haspopup="menu"
-                        onClick={(ev) => openRowMenu(ev, e.id)}
+                        onClick={(ev) => openRowMenu(ev, e.uid)}
                         className="grid place-items-center hover:bg-[rgba(248,242,225,0.95)] hover:text-[#123532]"
                         style={{ border: "none", background: "none", cursor: "pointer", color: "#898989", padding: "5px 7px", borderRadius: 8 }}
                       >

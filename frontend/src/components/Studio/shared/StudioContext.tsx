@@ -26,10 +26,9 @@ import {
   getConfig,
   getDashboard,
   getMe,
-  isAuthenticated,
   isSessionExpired,
-  sessionExpiresAt,
   type StudioAction,
+  type StudioPermissionMap,
   type StudioConfig,
   type StudioDashboard,
   type StudioMe,
@@ -76,10 +75,17 @@ const StudioCtx = createContext<StudioContextValue | null>(null);
 
 let toastSeq = 0;
 
-/** API role → presentation role ("admin" → "Admin"). */
-function uiRole(apiRole: StudioMe["role"]): Role {
-  if (apiRole === "admin") return "Admin";
-  if (apiRole === "editor") return "Editor";
+/**
+ * Presentation role for the shell badge. The platform has no fixed role enum —
+ * roles are data — so this is derived from what the user may actually do:
+ * managing roles/users is an admin, publishing is an editor, anything else is
+ * an author. The real gating is always `can()`, never this label.
+ */
+function uiRole(permissions: StudioPermissionMap): Role {
+  const holds = (module: StudioModule, action: StudioAction) =>
+    Boolean(permissions?.[module]?.includes(action));
+  if (holds("roles", "manage") || holds("users", "manage") || holds("settings", "edit")) return "Admin";
+  if (holds("blogs", "publish") || holds("pages", "publish") || holds("faqs", "publish")) return "Editor";
   return "Author";
 }
 
@@ -105,7 +111,7 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
         ]);
         if (cancelled) return;
         setMe(meData);
-        setRole(uiRole(meData.role));
+        setRole(uiRole(meData.permissions));
         setConfig(configData);
         setDashboard(dashData);
       } catch (err) {
@@ -126,36 +132,30 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Send the user to sign in the moment the login lifetime runs out, even if
-  // they're idle on a screen that won't make another call. Re-checked when the
-  // tab regains focus: timers are throttled in background tabs and a laptop
-  // may have slept past the deadline. Signing out in another tab (cookie gone)
-  // is caught the same way.
+  // Send the user to sign in once the session is really over, even if they're
+  // idle on a screen that won't make another call.
+  //
+  // The token now lives in an HttpOnly cookie, so its expiry can't be read
+  // here any more (and shouldn't be — the server is the authority). Instead,
+  // when the tab comes back to the foreground we ask the API who we are: a 401
+  // means the session is gone, which also covers signing out in another tab and
+  // a laptop that slept past the deadline. `getMe` routes through the BFF, so a
+  // merely-expired access token is refreshed transparently and this stays quiet.
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | undefined;
+    let cancelled = false;
     const check = () => {
-      clearTimeout(timer);
-      const expiresAt = sessionExpiresAt();
-      if (expiresAt === null) {
-        if (!isAuthenticated()) endStudioSession();
-        return; // undecodable token — the API's 401 path still covers it
-      }
-      const left = expiresAt - Date.now();
-      if (left <= 0) {
-        endStudioSession();
-        return;
-      }
-      // setTimeout overflows past ~24.8 days; re-check at most daily.
-      timer = setTimeout(check, Math.min(left, 24 * 60 * 60 * 1000));
+      if (cancelled || document.visibilityState !== "visible") return;
+      getMe().catch((err) => {
+        if (!cancelled && isSessionExpired(err)) endStudioSession();
+      });
     };
     const onVisible = () => {
       if (document.visibilityState === "visible") check();
     };
-    check();
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("focus", check);
     return () => {
-      clearTimeout(timer);
+      cancelled = true;
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("focus", check);
     };
@@ -190,12 +190,13 @@ export function useStudio(): StudioContextValue {
 
 /** Capability checks derived from the previewed role. */
 export function useCapabilities() {
-  const { role } = useStudio();
+  const { role, can } = useStudio();
   return {
     role,
-    canManageStructure: role === "Admin",
-    canPublish: role === "Admin" || role === "Editor",
-    canDelete: role === "Admin" || role === "Editor",
-    isAdmin: role === "Admin",
+    // Collections/templates are the blog's schema: editing them is `blogs.edit`.
+    canManageStructure: can("blogs", "edit"),
+    canPublish: can("blogs", "publish"),
+    canDelete: can("blogs", "archive"),
+    isAdmin: can("roles", "manage") || can("users", "manage"),
   };
 }

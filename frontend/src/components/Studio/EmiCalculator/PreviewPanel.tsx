@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { SelectField } from "../shared/primitives";
 import { studioColors, studioFonts } from "../shared/format";
 import {
-  calculateEMILegacy,
+  calculateEMI,
   type EMICalculatorResponse,
   type EMISettings,
   type EMISystemSize,
@@ -54,7 +54,7 @@ export default function PreviewPanel({
   settings: EMISettings;
 }) {
   const activeSizes = sizes.filter((s) => s.is_active);
-  const [sizeId, setSizeId] = useState<string>(String(activeSizes[0]?.id ?? ""));
+  const [sizeId, setSizeId] = useState<string>(activeSizes[0]?.uid ?? "");
   const [tenure, setTenure] = useState<string>(String(settings.tenure_default_years));
   const [downPaymentPercent, setDownPaymentPercent] = useState<string>(
     String(settings.down_payment_min_percent)
@@ -70,8 +70,8 @@ export default function PreviewPanel({
     if (!sizeId) return;
     let cancelled = false;
     setLoading(true);
-    calculateEMILegacy({
-      size_id: Number(sizeId),
+    calculateEMI({
+      size_id: sizeId,
       tenure_years: Number(tenure),
       down_payment_percent: Number(downPaymentPercent),
       apply_down_payment: downPayment === "on",
@@ -141,7 +141,7 @@ export default function PreviewPanel({
             <Field label="System size">
               <SelectField value={sizeId} onChange={setSizeId} ariaLabel="System size">
                 {activeSizes.map((s) => (
-                  <option key={s.id} value={s.id}>
+                  <option key={s.uid} value={s.uid}>
                     {s.label} — {inr(s.system_cost)}
                   </option>
                 ))}

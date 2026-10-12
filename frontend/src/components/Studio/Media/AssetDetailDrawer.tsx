@@ -33,7 +33,7 @@ export default function AssetDetailDrawer({
   asset: StudioMediaAsset;
   onClose: () => void;
   onUpdated: (asset: StudioMediaAsset) => void;
-  onDeleted: (id: number) => void;
+  onDeleted: (uid: string) => void;
 }) {
   const { toast } = useStudio();
   const [alt, setAlt] = useState(asset.alternative_text);
@@ -61,7 +61,7 @@ export default function AssetDetailDrawer({
   const save = async () => {
     setSaving(true);
     try {
-      const updated = await patchMediaAsset(asset.id, { alternative_text: alt, caption });
+      const updated = await patchMediaAsset(asset.uid, { alternative_text: alt, caption });
       onUpdated(updated);
       toast("Asset updated");
     } catch (err) {
@@ -87,10 +87,10 @@ export default function AssetDetailDrawer({
   const doDelete = async () => {
     setDeleting(true);
     try {
-      await deleteMediaAsset(asset.id);
+      await deleteMediaAsset(asset.uid);
       toast("Asset deleted");
       setConfirmOpen(false);
-      onDeleted(asset.id);
+      onDeleted(asset.uid);
     } catch (err) {
       toast(err instanceof StudioApiError ? `Delete failed: ${err.message}` : "Delete failed", "error");
       setDeleting(false);
@@ -174,10 +174,10 @@ export default function AssetDetailDrawer({
               <span>File size</span>
               <span style={valueInk}>{assetKb(asset)} KB</span>
             </div>
-            {asset.mime && (
+            {asset.mime_type && (
               <div style={detailRow}>
                 <span>Type</span>
-                <span style={{ color: studioColors.tealDeep, fontFamily: studioFonts.mono, fontSize: 11.5 }}>{asset.mime}</span>
+                <span style={{ color: studioColors.tealDeep, fontFamily: studioFonts.mono, fontSize: 11.5 }}>{asset.mime_type}</span>
               </div>
             )}
             <div style={detailRow}>

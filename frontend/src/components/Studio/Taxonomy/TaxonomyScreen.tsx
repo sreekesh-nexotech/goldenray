@@ -233,7 +233,7 @@ export default function TaxonomyScreen() {
                   <div style={{ fontSize: 12.5, color: studioColors.mutedGray }}>No authors yet.</div>
                 )}
                 {authors.map((a) => (
-                  <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div key={a.uid} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <div
                       style={{
                         width: 30,
@@ -329,7 +329,7 @@ export default function TaxonomyScreen() {
                 )}
                 {categories.map((c) => (
                   <span
-                    key={c.id}
+                    key={c.uid}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -380,7 +380,7 @@ export default function TaxonomyScreen() {
                 )}
                 {tags.map((t) => (
                   <span
-                    key={t.id}
+                    key={t.uid}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -420,7 +420,7 @@ export default function TaxonomyScreen() {
           <TaxonomyCard
             title="Badges"
             onAdd={adder(
-              (label) => createBadge({ label }),
+              (name) => createBadge({ name }),
               (b) => setBadges((prev) => [...(prev ?? []), b]),
               "Badge added"
             )}
@@ -433,7 +433,7 @@ export default function TaxonomyScreen() {
                 )}
                 {badges.map((b) => (
                   <span
-                    key={b.id}
+                    key={b.uid}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -447,7 +447,7 @@ export default function TaxonomyScreen() {
                     }}
                   >
                     <span style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor" }} />
-                    {b.label}
+                    {b.name}
                   </span>
                 ))}
                 {adding && (

@@ -230,7 +230,8 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
         label: "Overview",
         href: "/studio/careers",
         icon: I.careers,
-        module: "careers",
+        // No umbrella `careers` module exists; the overview is the postings list.
+        module: "job_positions",
         match: (p) => p === "/studio/careers",
       },
       {
@@ -380,7 +381,9 @@ export default function Sidebar() {
   // that end up empty disappear with their label, so a Sales/Lead user sees
   // Dashboard and Business and nothing else — not a shell full of headings.
   const visible = (item: NavDef) => {
-    if (item.schemaOnly) return Boolean(me?.can_edit_schema);
+    // `can_edit_schema` has no platform equivalent: collections and templates
+    // are the blog's schema, so editing them is `blogs.edit`.
+    if (item.schemaOnly) return can("blogs", "edit");
     if (item.module) return can(item.module);
     return true;
   };
@@ -388,9 +391,7 @@ export default function Sidebar() {
     (s) => s.items.length > 0
   );
 
-  const displayName = me
-    ? [me.first_name, me.last_name].filter(Boolean).join(" ") || me.username
-    : "…";
+  const displayName = me ? me.user.full_name || me.user.email : "…";
 
   // Close the mobile drawer whenever the route changes (a nav link was used).
   useEffect(() => {

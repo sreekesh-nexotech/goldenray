@@ -54,7 +54,7 @@ function slugifyName(text: string): string {
 /* -------------------------------------------------------------------------- */
 
 interface WorkingGroup {
-  id: number;
+  uid: string;
   key: string;
   label: string;
   repeatable: boolean;
@@ -63,7 +63,7 @@ interface WorkingGroup {
 }
 
 interface WorkingAttr {
-  id: number;
+  uid: string;
   key: string;
   label: string;
   type: StudioSlotType;
@@ -125,7 +125,7 @@ export default function TemplatesScreen() {
 
   const [tpls, setTpls] = useState<StudioTemplate[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [activeId, setActiveId] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [groups, setGroups] = useState<WorkingGroup[]>([]);
   const [attrs, setAttrs] = useState<WorkingAttr[]>([]);
   const [busy, setBusy] = useState(false);
@@ -148,7 +148,7 @@ export default function TemplatesScreen() {
   const [fRequired, setFRequired] = useState(false);
   const [formError, setFormError] = useState("");
 
-  const active = tpls?.find((t) => t.id === activeId) ?? null;
+  const active = tpls?.find((t) => t.uid === activeId) ?? null;
 
   // Debounce timers for label PATCHes, keyed per row.
   const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
@@ -161,7 +161,7 @@ export default function TemplatesScreen() {
   const seed = (tpl: StudioTemplate | null) => {
     setGroups(
       (tpl?.image_groups ?? []).map((g) => ({
-        id: g.id,
+        uid: g.uid,
         key: g.key,
         label: g.label,
         repeatable: g.repeatable,
@@ -171,7 +171,7 @@ export default function TemplatesScreen() {
     );
     setAttrs(
       (tpl?.attribute_slots ?? []).map((a) => ({
-        id: a.id,
+        uid: a.uid,
         key: a.key,
         label: a.label,
         type: a.type,
@@ -180,14 +180,14 @@ export default function TemplatesScreen() {
     );
   };
 
-  const load = async (selectId?: number) => {
+  const load = async (selectId?: string) => {
     try {
       const page = await getTemplates();
       setTpls(page.results);
       setLoadError(null);
       const keep = selectId ?? activeId;
-      const next = page.results.find((t) => t.id === keep) ?? page.results[0] ?? null;
-      setActiveId(next ? next.id : null);
+      const next = page.results.find((t) => t.uid === keep) ?? page.results[0] ?? null;
+      setActiveId(next ? next.uid : null);
       seed(next);
     } catch (err) {
       setLoadError(err instanceof Error ? err.message : "Failed to load templates");
@@ -202,7 +202,7 @@ export default function TemplatesScreen() {
         if (cancelled) return;
         setTpls(page.results);
         const first = page.results[0] ?? null;
-        setActiveId(first ? first.id : null);
+        setActiveId(first ? first.uid : null);
         seed(first);
       })
       .catch((err) => !cancelled && setLoadError(err instanceof Error ? err.message : "Failed to load templates"));
@@ -212,13 +212,13 @@ export default function TemplatesScreen() {
   }, []);
 
   /** Switch tabs: reseed the rows from the cached template. */
-  const switchTo = (id: number) => {
-    setActiveId(id);
-    seed(tpls?.find((t) => t.id === id) ?? null);
+  const switchTo = (uid: string) => {
+    setActiveId(uid);
+    seed(tpls?.find((t) => t.uid === uid) ?? null);
   };
 
   /** Re-pull server state after any mutation, with a visible syncing state. */
-  const refresh = async (selectId?: number) => {
+  const refresh = async (selectId?: string) => {
     setRefreshing(true);
     try {
       await load(selectId);
@@ -238,10 +238,10 @@ export default function TemplatesScreen() {
   const editGroupLabel = (i: number, v: string) => {
     const g = groups[i];
     setGroups((prev) => prev.map((x, j) => (j === i ? { ...x, label: v } : x)));
-    const key = `g${g.id}`;
+    const key = `g${g.uid}`;
     clearTimeout(timers.current[key]);
     timers.current[key] = setTimeout(() => {
-      patchImageGroup(g.id, { label: v })
+      patchImageGroup(active!.uid, g.uid, { label: v })
         .then(() => refresh())
         .catch(failAndResync("Rename failed"));
     }, 700);
@@ -251,7 +251,7 @@ export default function TemplatesScreen() {
     const g = groups[i];
     const next = !g.required;
     setGroups((prev) => prev.map((x, j) => (j === i ? { ...x, required: next } : x)));
-    patchImageGroup(g.id, { required: next })
+    patchImageGroup(active!.uid, g.uid, { required: next })
       .then(() => refresh())
       .catch(failAndResync("Update failed"));
   };
@@ -259,7 +259,7 @@ export default function TemplatesScreen() {
   const removeGroup = (i: number) => {
     const g = groups[i];
     setGroups((prev) => prev.filter((_, j) => j !== i));
-    deleteImageGroup(g.id)
+    deleteImageGroup(active!.uid, g.uid)
       .then(() => {
         toast("Image group removed");
         return refresh();
@@ -270,10 +270,10 @@ export default function TemplatesScreen() {
   const editAttrLabel = (i: number, v: string) => {
     const a = attrs[i];
     setAttrs((prev) => prev.map((x, j) => (j === i ? { ...x, label: v } : x)));
-    const key = `a${a.id}`;
+    const key = `a${a.uid}`;
     clearTimeout(timers.current[key]);
     timers.current[key] = setTimeout(() => {
-      patchAttributeSlot(a.id, { label: v })
+      patchAttributeSlot(active!.uid, a.uid, { label: v })
         .then(() => refresh())
         .catch(failAndResync("Rename failed"));
     }, 700);
@@ -283,7 +283,7 @@ export default function TemplatesScreen() {
     const a = attrs[i];
     const next = !a.required;
     setAttrs((prev) => prev.map((x, j) => (j === i ? { ...x, required: next } : x)));
-    patchAttributeSlot(a.id, { required: next })
+    patchAttributeSlot(active!.uid, a.uid, { required: next })
       .then(() => refresh())
       .catch(failAndResync("Update failed"));
   };
@@ -291,7 +291,7 @@ export default function TemplatesScreen() {
   const removeAttr = (i: number) => {
     const a = attrs[i];
     setAttrs((prev) => prev.filter((_, j) => j !== i));
-    deleteAttributeSlot(a.id)
+    deleteAttributeSlot(active!.uid, a.uid)
       .then(() => {
         toast("Attribute removed");
         return refresh();
@@ -319,7 +319,7 @@ export default function TemplatesScreen() {
     setBusy(true);
     try {
       const created = await createTemplate({ name, slug, description: ntDesc.trim() });
-      await refresh(created.id);
+      await refresh(created.uid);
       toast(`Template “${created.name}” created`);
       closeNewTpl();
     } catch (err) {
@@ -333,8 +333,8 @@ export default function TemplatesScreen() {
     if (!active) return;
     setBusy(true);
     try {
-      const copy = await duplicateTemplate(active.id);
-      await refresh(copy.id);
+      const copy = await duplicateTemplate(active.uid, { slug: `${active.slug}-copy` });
+      await refresh(copy.uid);
       toast(`Duplicated as ${copy.slug}`);
     } catch (err) {
       toast(err instanceof StudioApiError ? `Duplicate failed: ${err.message}` : "Duplicate failed", "error");
@@ -363,24 +363,22 @@ export default function TemplatesScreen() {
     setBusy(true);
     try {
       if (addModal.kind === "group") {
-        await createImageGroup({
-          template: active.id,
+        await createImageGroup(active.uid, {
           key: fKey.trim(),
           label: fLabel.trim(),
           repeatable: fRepeatable,
           max_items: null,
           required: fRequired,
-          order: active.image_groups.length,
+          position: active.image_groups.length,
         });
       } else {
-        await createAttributeSlot({
-          template: active.id,
+        await createAttributeSlot(active.uid, {
           key: fKey.trim(),
           label: fLabel.trim(),
           type: fType,
           options: {},
           required: fRequired,
-          order: active.attribute_slots.length,
+          position: active.attribute_slots.length,
         });
       }
       await refresh();
@@ -481,12 +479,12 @@ export default function TemplatesScreen() {
           {/* Template tabs */}
           <div className="mb-4 flex flex-wrap items-center gap-1.5">
             {tpls.map((t) => {
-              const isActive = t.id === activeId;
+              const isActive = t.uid === activeId;
               return (
                 <button
-                  key={t.id}
+                  key={t.uid}
                   type="button"
-                  onClick={() => switchTo(t.id)}
+                  onClick={() => switchTo(t.uid)}
                   className="inline-flex items-center transition-colors"
                   style={{
                     padding: "6px 13px",
@@ -511,9 +509,9 @@ export default function TemplatesScreen() {
                   Saving…
                 </span>
               )}
-              {typeof active?.entries_count === "number" && (
+              {typeof active?.entry_count === "number" && (
                 <span>
-                  used by <b style={{ color: studioColors.tealDeep, fontFamily: "'Inter',var(--font-switzer)" }}>{active.entries_count}</b> entries
+                  used by <b style={{ color: studioColors.tealDeep, fontFamily: "'Inter',var(--font-switzer)" }}>{active.entry_count}</b> entries
                 </span>
               )}
             </span>
@@ -539,7 +537,7 @@ export default function TemplatesScreen() {
               <FieldTableHeader />
               {groups.map((g, i) => (
                 <FieldRow
-                  key={g.id}
+                  key={g.uid}
                   label={g.label}
                   keyName={g.key}
                   chip={groupChip(g)}
@@ -573,7 +571,7 @@ export default function TemplatesScreen() {
               <FieldTableHeader />
               {attrs.map((a, i) => (
                 <FieldRow
-                  key={a.id}
+                  key={a.uid}
                   label={a.label}
                   keyName={a.key}
                   chip={attrChip(a)}

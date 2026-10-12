@@ -22,26 +22,26 @@ import {
   type StudioCollection,
 } from "@/services/studioService";
 
-/** Display name for an asset: the file's basename. */
+/** Display name for an asset: the uploaded file's name. */
 export function assetName(a: StudioMediaAsset): string {
-  return a.file?.split("/").pop() || `asset-${a.id}`;
+  return a.original_filename || `asset-${a.uid}`;
 }
 
 /** Human file size in KB. */
 export function assetKb(a: StudioMediaAsset): number {
-  return Math.max(1, Math.round((a.size || 0) / 1024));
+  return Math.max(1, Math.round((a.size_bytes || 0) / 1024));
 }
 
 export default function MediaScreen() {
   const { tips, toast } = useStudio();
   const [q, setQ] = useState("");
   const [search, setSearch] = useState(""); // debounced copy of q
-  const [collFilter, setCollFilter] = useState<number | "">(""); // "" = All media
+  const [collFilter, setCollFilter] = useState<string>(""); // "" = All media
   const [colls, setColls] = useState<StudioCollection[]>([]);
   const [items, setItems] = useState<StudioMediaAsset[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
   // Collection chips (best-effort — the grid works without them).
@@ -64,7 +64,7 @@ export default function MediaScreen() {
   // Load the grid whenever a filter changes.
   const load = async () => {
     try {
-      const page = await getMediaAssets({ collection: collFilter, search });
+      const page = await getMediaAssets({ folder: collFilter, search });
       setItems(page.results);
       setLoadError(null);
     } catch (err) {
@@ -73,7 +73,7 @@ export default function MediaScreen() {
   };
   useEffect(() => {
     let cancelled = false;
-    getMediaAssets({ collection: collFilter, search })
+    getMediaAssets({ folder: collFilter, search })
       .then((page) => {
         if (cancelled) return;
         setItems(page.results);
@@ -96,7 +96,7 @@ export default function MediaScreen() {
     let ok = 0;
     for (const file of list) {
       try {
-        await uploadMediaAsset(file, collFilter !== "" ? { collection: collFilter } : undefined);
+        await uploadMediaAsset(file, collFilter !== "" ? { folder: collFilter } : undefined);
         ok += 1;
       } catch (err) {
         toast(
@@ -112,7 +112,7 @@ export default function MediaScreen() {
     setUploading(false);
   };
 
-  const selected = items?.find((a) => a.id === selectedId) ?? null;
+  const selected = items?.find((a) => a.uid === selectedId) ?? null;
 
   return (
     <section style={{ animation: "flzFade .22s ease", maxWidth: 1080, margin: "0 auto" }}>
@@ -183,7 +183,7 @@ export default function MediaScreen() {
           />
         </div>
 
-        {[{ id: "" as const, label: "All media" }, ...colls.map((c) => ({ id: c.id, label: c.plural_name }))].map((f) => {
+        {[{ id: "", label: "All media" }, ...colls.map((c) => ({ id: c.api_uid, label: c.plural_name }))].map((f) => {
           const active = collFilter === f.id;
           return (
             <button
@@ -226,9 +226,9 @@ export default function MediaScreen() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(168px,1fr))", gap: 14 }}>
             {items.map((a) => (
               <button
-                key={a.id}
+                key={a.uid}
                 type="button"
-                onClick={() => setSelectedId(a.id)}
+                onClick={() => setSelectedId(a.uid)}
                 className="hover:shadow-[inset_0_0_0_1px_#074A4D]"
                 style={{
                   textAlign: "left",
@@ -303,10 +303,10 @@ export default function MediaScreen() {
         <AssetDetailDrawer
           asset={selected}
           onClose={() => setSelectedId(null)}
-          onUpdated={(updated) => setItems((prev) => prev?.map((a) => (a.id === updated.id ? updated : a)) ?? prev)}
-          onDeleted={(id) => {
+          onUpdated={(updated) => setItems((prev) => prev?.map((a) => (a.uid === updated.uid ? updated : a)) ?? prev)}
+          onDeleted={(uid) => {
             setSelectedId(null);
-            setItems((prev) => prev?.filter((a) => a.id !== id) ?? prev);
+            setItems((prev) => prev?.filter((a) => a.uid !== uid) ?? prev);
           }}
         />
       )}

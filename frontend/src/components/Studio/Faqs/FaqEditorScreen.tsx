@@ -52,20 +52,20 @@ interface Form {
   page: string;
   section: string;
   category: string;
-  display_order: string;
+  sort_order: string;
   seo: SeoValues;
 }
 
-const EMPTY: Form = { question: "", answer: "", page: "", section: "", category: "", display_order: "", seo: { ...EMPTY_SEO, schema_type: "FAQPage" } };
+const EMPTY: Form = { question: "", answer: "", page: "", section: "", category: "", sort_order: "", seo: { ...EMPTY_SEO, schema_type: "FAQPage" } };
 
 function toForm(f: Faq): Form {
   return {
     question: f.question,
     answer: f.answer,
-    page: String(f.page),
+    page: f.page?.uid ?? "",
     section: f.section,
     category: f.category ? String(f.category) : "",
-    display_order: String(f.display_order),
+    sort_order: String(f.sort_order),
     seo: {
       seo_title: f.seo_title,
       meta_description: f.meta_description,
@@ -95,19 +95,19 @@ export default function FaqEditorScreen({ id }: { id: string }) {
   const readOnly = !can("faqs", isNew ? "create" : "edit");
 
   useEffect(() => {
-    getPages().then((p) => setPages(p.results.filter((x) => x.status !== "archived"))).catch(() => {});
+    getPages().then((p) => setPages(p.results.filter((x) => x.status !== "ARCHIVED"))).catch(() => {});
     getFaqCategories().then((c) => setCategories(c.results.filter((x) => x.is_active))).catch(() => {});
   }, []);
 
   const load = useCallback(() => {
     if (isNew) return;
     setLoadError(null);
-    getFaq(Number(id))
+    getFaq(String(id))
       .then((f) => {
         setFaq(f);
         setForm(toForm(f));
         setDirty(false);
-        previewFaq(f.id).then(setPreview).catch(() => setPreview(null));
+        previewFaq(f.uid).then(setPreview).catch(() => setPreview(null));
       })
       .catch((err) => setLoadError(err instanceof Error ? err.message : "Failed to load FAQ"));
   }, [id, isNew]);
@@ -129,7 +129,7 @@ export default function FaqEditorScreen({ id }: { id: string }) {
     try {
       const created = await createFaqCategory({ name, slug: slugify(name) });
       setCategories((prev) => [...prev, created].sort((a, b) => a.name.localeCompare(b.name)));
-      patch({ category: String(created.id) });
+      patch({ category: created.uid });
       toast(`Category "${created.name}" added`);
     } catch (err) {
       toast(err instanceof Error ? err.message : "Could not add the category", "error");
@@ -139,10 +139,10 @@ export default function FaqEditorScreen({ id }: { id: string }) {
   const body = () => ({
     question: form.question.trim(),
     answer: form.answer,
-    page: Number(form.page),
+    page: form.page || null,
     section: form.section.trim(),
-    category: form.category ? Number(form.category) : null,
-    display_order: form.display_order === "" ? undefined : Number(form.display_order),
+    category: form.category || null,
+    sort_order: form.sort_order === "" ? undefined : Number(form.sort_order),
     ...form.seo,
   });
 
@@ -161,13 +161,13 @@ export default function FaqEditorScreen({ id }: { id: string }) {
     setFormError(null);
     setSaving(true);
     try {
-      const saved = isNew ? await createFaq(body()) : await updateFaq(Number(id), body());
+      const saved = isNew ? await createFaq(body()) : await updateFaq(String(id), body());
       setFaq(saved);
       setForm(toForm(saved));
       setDirty(false);
       toast(isNew ? "FAQ created" : "Saved");
-      if (isNew) router.replace(`/studio/faqs/${saved.id}`);
-      else previewFaq(saved.id).then(setPreview).catch(() => {});
+      if (isNew) router.replace(`/studio/faqs/${saved.uid}`);
+      else previewFaq(saved.uid).then(setPreview).catch(() => {});
       return saved;
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Could not save");
@@ -177,18 +177,18 @@ export default function FaqEditorScreen({ id }: { id: string }) {
     }
   };
 
-  const workflow = async (fn: (id: number) => Promise<Faq>, done: string) => {
+  const workflow = async (fn: (uid: string, expectedVersion?: number) => Promise<Faq>, done: string) => {
     // Always persist edits first so the workflow acts on what the author sees.
     const current = dirty || isNew ? await save() : faq;
     if (!current) return;
     setSaving(true);
     try {
-      const next = await fn(current.id);
+      const next = await fn(current.uid, current.version);
       setFaq(next);
       setForm(toForm(next));
       setDirty(false);
       toast(done);
-      previewFaq(next.id).then(setPreview).catch(() => {});
+      previewFaq(next.uid).then(setPreview).catch(() => {});
     } catch (err) {
       const msg = err instanceof StudioApiError && err.errors?.length ? err.errors.join(" ") : err instanceof Error ? err.message : "Action failed";
       setFormError(msg);
@@ -198,7 +198,7 @@ export default function FaqEditorScreen({ id }: { id: string }) {
   };
 
   const siteUrl = config?.site_url ?? "";
-  const pageRoute = pages.find((p) => String(p.id) === form.page)?.route ?? faq?.page_route ?? "";
+  const pageRoute = pages.find((p) => String(p.uid) === form.page)?.route ?? faq?.page?.route ?? "";
   const publishBlockers = faq?.publish_errors ?? [];
 
   if (loadError) return <ErrorBox message={loadError} onRetry={load} />;
@@ -217,8 +217,8 @@ export default function FaqEditorScreen({ id }: { id: string }) {
           </div>
           {faq && (
             <div style={{ fontSize: 12.5, color: studioColors.mutedGray }}>
-              Created {fmtDate(faq.created_at)}{faq.created_by_name ? ` by ${faq.created_by_name}` : ""} · Updated {fmtDate(faq.updated_at)}
-              {faq.updated_by_name ? ` by ${faq.updated_by_name}` : ""}
+              Created {fmtDate(faq.created_at)}{faq.created_by?.full_name ? ` by ${faq.created_by?.full_name}` : ""} · Updated {fmtDate(faq.updated_at)}
+              {faq.updated_by?.full_name ? ` by ${faq.updated_by?.full_name}` : ""}
             </div>
           )}
         </div>
@@ -275,8 +275,8 @@ export default function FaqEditorScreen({ id }: { id: string }) {
                   <SelectField value={form.page} onChange={(v) => patch({ page: v })}>
                     <option value="">Choose a page…</option>
                     {pages.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name} — {p.route}
+                      <option key={p.uid} value={p.uid}>
+                        {p.title} — {p.route}
                       </option>
                     ))}
                   </SelectField>
@@ -292,7 +292,7 @@ export default function FaqEditorScreen({ id }: { id: string }) {
                   <SelectField value={form.category} onChange={(v) => (v === NEW_CATEGORY ? void addCategory() : patch({ category: v }))}>
                     <option value="">None</option>
                     {categories.map((c) => (
-                      <option key={c.id} value={c.id}>
+                      <option key={c.uid} value={c.uid}>
                         {c.name}
                       </option>
                     ))}
@@ -301,7 +301,7 @@ export default function FaqEditorScreen({ id }: { id: string }) {
                 </div>
                 <div>
                   <FieldLabel suffix={<KeyTag>0 = first</KeyTag>}>Display order</FieldLabel>
-                  <TextInput value={form.display_order} onChange={(v) => patch({ display_order: v.replace(/[^\d]/g, "") })} placeholder="Added to the end if blank" mono />
+                  <TextInput value={form.sort_order} onChange={(v) => patch({ sort_order: v.replace(/[^\d]/g, "") })} placeholder="Added to the end if blank" mono />
                 </div>
               </div>
               <div style={{ fontSize: 12, color: studioColors.faintGray }}>
@@ -330,8 +330,8 @@ export default function FaqEditorScreen({ id }: { id: string }) {
               )}
               {isNew && <div style={{ fontSize: 12.5, color: studioColors.mutedGray }}>Save first; publishing becomes available once the record exists.</div>}
               <div className="flex flex-wrap gap-2">
-                {!isNew && faq && can("faqs", "publish") && faq.status !== "archived" && (
-                  faq.status === "published" ? (
+                {!isNew && faq && can("faqs", "publish") && faq.status !== "ARCHIVED" && (
+                  faq.status === "PUBLISHED" ? (
                     <GhostButton onClick={() => workflow(unpublishFaq, "Unpublished — back to draft")} disabled={saving}>Unpublish</GhostButton>
                   ) : (
                     <GoldButton onClick={() => workflow(publishFaq, "Published")} disabled={saving || (publishBlockers.length > 0 && !dirty)}>
@@ -339,10 +339,10 @@ export default function FaqEditorScreen({ id }: { id: string }) {
                     </GoldButton>
                   )
                 )}
-                {!isNew && faq && faq.status === "archived" && can("faqs", "edit") && (
+                {!isNew && faq && faq.status === "ARCHIVED" && can("faqs", "edit") && (
                   <GhostButton onClick={() => workflow(restoreFaq, "Restored as a draft")} disabled={saving}>Restore</GhostButton>
                 )}
-                {!isNew && faq && faq.status !== "archived" && can("faqs", "archive") && (
+                {!isNew && faq && faq.status !== "ARCHIVED" && can("faqs", "archive") && (
                   <DangerButton onClick={() => setConfirmArchive(true)} disabled={saving} style={{ marginLeft: "auto" }}>Archive</DangerButton>
                 )}
               </div>

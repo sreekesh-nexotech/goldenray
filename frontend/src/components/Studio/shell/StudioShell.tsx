@@ -35,7 +35,9 @@ const ROUTE_MODULES: [string, StudioModule][] = [
   ["/studio/careers/applications", "applications"],
   ["/studio/careers/departments", "departments"],
   ["/studio/careers/page", "career_page"],
-  ["/studio/careers", "careers"],
+  // The registry has no umbrella `careers` module; the overview screen is
+  // really the postings list, so it is gated on `job_positions`.
+  ["/studio/careers", "job_positions"],
   ["/studio/users", "users"],
   ["/studio/roles", "roles"],
   ["/studio/settings", "settings"],
@@ -75,7 +77,7 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
           This screen isn&apos;t part of your role
         </div>
         <div style={{ fontSize: 13.5, color: studioColors.bodyGray, lineHeight: 1.5 }}>
-          Your account ({me.access_role_name ?? me.role}) doesn&apos;t include this module. Ask a Super Admin to
+          Your account ({me.role?.name ?? ""}) doesn&apos;t include this module. Ask a Super Admin to
           extend your role if you need it.
         </div>
         <Link href="/studio/dashboard" style={{ display: "inline-block", marginTop: 14, fontSize: 13, fontWeight: 600, color: studioColors.tealDeep }}>

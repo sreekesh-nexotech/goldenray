@@ -156,6 +156,8 @@ export default function CollectionsScreen() {
         api_uid: slugify(plural),
         singular_name: singular.trim(),
         plural_name: plural.trim(),
+        // The platform requires the collection's public route prefix.
+        path_prefix: `/${slugify(plural)}`,
       });
       setColls((c) => [...(c ?? []), created]);
       toast("Collection created");
@@ -205,7 +207,7 @@ export default function CollectionsScreen() {
       ) : (
         <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(min(280px,100%),1fr))", gap: 14 }}>
           {colls.map((coll, i) => (
-            <CollectionCardButton key={coll.id} coll={coll} index={i} onOpen={() => router.push("/studio/entries")} />
+            <CollectionCardButton key={coll.uid} coll={coll} index={i} onOpen={() => router.push("/studio/entries")} />
           ))}
         </div>
       )}

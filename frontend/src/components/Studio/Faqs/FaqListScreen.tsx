@@ -61,7 +61,7 @@ export default function FaqListScreen() {
 
   const [menu, setMenu] = useState<{ row: FaqListItem; top: number; left: number } | null>(null);
   const [confirmArchive, setConfirmArchive] = useState<FaqListItem | null>(null);
-  const [busyId, setBusyId] = useState<number | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   // Lookups for the filter selects — loaded once.
   useEffect(() => {
@@ -73,12 +73,12 @@ export default function FaqListScreen() {
     setLoadError(null);
     return getFaqs({
       search: search || undefined,
-      page_id: pageId ? Number(pageId) : "",
-      category: category ? Number(category) : "",
+      page_uid: pageId || "",
+      category: category || "",
       status,
       page: pageNo,
       // Archived rows only show when the status filter asks for them.
-      include_archived: status === "archived",
+      include_archived: status === "ARCHIVED",
     })
       .then((p) => {
         setRows(p.results);
@@ -113,14 +113,14 @@ export default function FaqListScreen() {
   const move = async (row: FaqListItem, dir: -1 | 1) => {
     if (!rows) return;
     const section = rows.filter((r) => r.section === row.section && r.page === row.page);
-    const idx = section.findIndex((r) => r.id === row.id);
+    const idx = section.findIndex((r) => r.uid === row.uid);
     const swap = idx + dir;
     if (swap < 0 || swap >= section.length) return;
-    const order = section.map((r) => r.id);
+    const order = section.map((r) => r.uid);
     [order[idx], order[swap]] = [order[swap], order[idx]];
-    setBusyId(row.id);
+    setBusyId(row.uid);
     try {
-      await reorderFaqs(row.page, row.section, order);
+      await reorderFaqs(row.page?.uid ?? "", row.section, order);
       await load();
     } catch (err) {
       toast(err instanceof Error ? err.message : "Could not reorder", "error");
@@ -147,23 +147,23 @@ export default function FaqListScreen() {
 
   const menuItems = (row: FaqListItem): MenuItem[] => {
     const items: MenuItem[] = [];
-    if (can("faqs", "edit")) items.push({ label: "Edit", onClick: () => router.push(`/studio/faqs/${row.id}`) });
-    else items.push({ label: "View", onClick: () => router.push(`/studio/faqs/${row.id}`) });
+    if (can("faqs", "edit")) items.push({ label: "Edit", onClick: () => router.push(`/studio/faqs/${row.uid}`) });
+    else items.push({ label: "View", onClick: () => router.push(`/studio/faqs/${row.uid}`) });
     if (can("faqs", "publish")) {
-      if (row.status === "published")
-        items.push({ label: "Unpublish", note: "back to draft", onClick: () => act("Unpublish", () => unpublishFaq(row.id), "Unpublished") });
-      else if (row.status === "draft")
-        items.push({ label: "Publish", note: "live on the site", onClick: () => act("Publish", () => publishFaq(row.id), "Published") });
+      if (row.status === "PUBLISHED")
+        items.push({ label: "Unpublish", note: "back to draft", onClick: () => act("Unpublish", () => unpublishFaq(row.uid), "Unpublished") });
+      else if (row.status === "DRAFT")
+        items.push({ label: "Publish", note: "live on the site", onClick: () => act("Publish", () => publishFaq(row.uid), "Published") });
     }
-    if (row.status === "archived") {
-      if (can("faqs", "edit")) items.push({ label: "Restore", note: "as a draft", onClick: () => act("Restore", () => restoreFaq(row.id), "Restored") });
+    if (row.status === "ARCHIVED") {
+      if (can("faqs", "edit")) items.push({ label: "Restore", note: "as a draft", onClick: () => act("Restore", () => restoreFaq(row.uid), "Restored") });
     } else if (can("faqs", "archive")) {
       items.push({ label: "Archive", color: studioColors.danger, onClick: () => setConfirmArchive(row) });
     }
     return items;
   };
 
-  const activePage = useMemo(() => pages.find((p) => String(p.id) === pageId), [pages, pageId]);
+  const activePage = useMemo(() => pages.find((p) => String(p.uid) === pageId), [pages, pageId]);
 
   return (
     <>
@@ -190,24 +190,24 @@ export default function FaqListScreen() {
         <FilterSelect value={pageId} onChange={(v) => { setPageId(v); setPageNo(1); }} ariaLabel="Filter by page" width={200}>
           <option value="">All pages</option>
           {pages.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
+            <option key={p.uid} value={p.uid}>
+              {p.title}
             </option>
           ))}
         </FilterSelect>
         <FilterSelect value={category} onChange={(v) => { setCategory(v); setPageNo(1); }} ariaLabel="Filter by category" width={160}>
           <option value="">All categories</option>
           {categories.map((c) => (
-            <option key={c.id} value={c.id}>
+            <option key={c.uid} value={c.uid}>
               {c.name}
             </option>
           ))}
         </FilterSelect>
         <FilterSelect value={status} onChange={(v) => { setStatus(v as FaqStatus | ""); setPageNo(1); }} ariaLabel="Filter by status" width={140}>
           <option value="">Active</option>
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-          <option value="archived">Archived</option>
+          <option value="DRAFT">Draft</option>
+          <option value="PUBLISHED">Published</option>
+          <option value="ARCHIVED">Archived</option>
         </FilterSelect>
       </Toolbar>
 
@@ -247,13 +247,13 @@ export default function FaqListScreen() {
           const showSection = reorderable && row.section !== prevSection;
           return (
             <FaqRow
-              key={row.id}
+              key={row.uid}
               row={row}
               showSection={showSection}
               reorderable={reorderable}
-              busy={busyId === row.id}
+              busy={busyId === row.uid}
               onMove={(d) => move(row, d)}
-              onOpen={() => router.push(`/studio/faqs/${row.id}`)}
+              onOpen={() => router.push(`/studio/faqs/${row.uid}`)}
               onMenu={(top, left) => setMenu({ row, top, left })}
             />
           );
@@ -278,7 +278,7 @@ export default function FaqListScreen() {
         onConfirm={async () => {
           const row = confirmArchive;
           setConfirmArchive(null);
-          if (row) await act("Archive", () => archiveFaq(row.id), "Archived");
+          if (row) await act("Archive", () => archiveFaq(row.uid), "Archived");
         }}
       >
         It comes off the website but stays here, and can be restored as a draft later.
@@ -327,16 +327,16 @@ function FaqRow({
           </div>
         </Td>
         <Td>
-          <div style={{ fontSize: 13 }}>{row.page_name}</div>
-          <div style={{ fontSize: 11, color: studioColors.faintGray }}>{row.page_route}{row.section ? ` · ${row.section}` : ""}</div>
+          <div style={{ fontSize: 13 }}>{row.page?.title}</div>
+          <div style={{ fontSize: 11, color: studioColors.faintGray }}>{row.page?.route}{row.section ? ` · ${row.section}` : ""}</div>
         </Td>
-        <Td>{row.category_name ?? <span style={{ color: studioColors.faintGray }}>—</span>}</Td>
+        <Td>{row.category?.name ?? <span style={{ color: studioColors.faintGray }}>—</span>}</Td>
         <Td>
           <Pill status={row.status} size="sm" />
         </Td>
         <Td>
           <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-            <span style={{ width: 22, textAlign: "right", fontVariantNumeric: "tabular-nums", color: studioColors.mutedGray, fontSize: 12.5 }}>{row.display_order + 1}</span>
+            <span style={{ width: 22, textAlign: "right", fontVariantNumeric: "tabular-nums", color: studioColors.mutedGray, fontSize: 12.5 }}>{row.sort_order + 1}</span>
             {reorderable && (
               <>
                 <OrderBtn dir={-1} disabled={busy} onClick={() => onMove(-1)} />
@@ -347,7 +347,7 @@ function FaqRow({
         </Td>
         <Td>
           <div style={{ fontSize: 12.5 }}>{fmtDate(row.updated_at)}</div>
-          {row.updated_by_name && <div style={{ fontSize: 11, color: studioColors.faintGray }}>{row.updated_by_name}</div>}
+          {row.updated_by?.full_name && <div style={{ fontSize: 11, color: studioColors.faintGray }}>{row.updated_by?.full_name}</div>}
         </Td>
         <Td>
           <button

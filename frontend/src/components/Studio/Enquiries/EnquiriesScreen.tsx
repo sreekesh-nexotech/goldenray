@@ -346,13 +346,13 @@ export default function EnquiriesScreen() {
                   const valid = !Number.isNaN(r.ts);
                   const d = valid ? new Date(r.ts) : null;
                   return (
-                    <tr key={r.id} className="hover:bg-[rgba(248,242,225,0.5)]">
+                    <tr key={r.uid} className="hover:bg-[rgba(248,242,225,0.5)]">
                       <td style={cellStyle}>
                         <div style={{ fontWeight: 600, color: studioColors.tealDeep, fontSize: 13.5 }}>
                           {r.name?.trim() || "—"}
                         </div>
                         <div style={{ fontFamily: studioFonts.mono, fontSize: 11, color: studioColors.faintGray, marginTop: 2 }}>
-                          #{r.id}
+                          {r.number}
                         </div>
                       </td>
                       <td style={cellStyle}>

@@ -74,7 +74,7 @@ type Row = CareerApplication & { ts: number };
 
 /** Whether a resume / portfolio exists to download. Bytes come via the service. */
 function hasFile(row: Row, kind: "resume" | "portfolio"): boolean {
-  return kind === "resume" ? Boolean(row.resume_download_url || row.resume) : Boolean(row.portfolio_download_url || row.portfolio_file);
+  return kind === "resume" ? row.has_resume : row.has_portfolio;
 }
 
 export default function CareerScreen() {
@@ -157,13 +157,13 @@ export default function CareerScreen() {
     if (!target) return;
     setDeleting(true);
     try {
-      await archiveCareerApplication(target.id);
+      await archiveCareerApplication(target.uid, target.version);
       // Drop it locally rather than refetching — the list is unpaginated and a
       // full reload would flash the whole table for a single-row change.
-      setRows((prev) => (prev ? prev.filter((r) => r.id !== target.id) : prev));
-      setOpen((prev) => (prev?.id === target.id ? null : prev));
+      setRows((prev) => (prev ? prev.filter((r) => r.uid !== target.uid) : prev));
+      setOpen((prev) => (prev?.uid === target.uid ? null : prev));
       setConfirmDelete(null);
-      toast(`Application from ${target.full_name?.trim() || `#${target.id}`} archived`);
+      toast(`Application from ${target.name?.trim() || "this candidate"} archived`);
     } catch (err) {
       toast(err instanceof Error ? err.message : "Couldn’t archive the application", "error");
     } finally {
@@ -173,8 +173,8 @@ export default function CareerScreen() {
 
   /** Patch one row in place after a workflow change in the detail modal. */
   const applyUpdate = (updated: CareerApplication) => {
-    setRows((prev) => (prev ? prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r)) : prev));
-    setOpen((prev) => (prev?.id === updated.id ? { ...prev, ...updated } : prev));
+    setRows((prev) => (prev ? prev.map((r) => (r.uid === updated.uid ? { ...r, ...updated } : r)) : prev));
+    setOpen((prev) => (prev?.uid === updated.uid ? { ...prev, ...updated } : prev));
   };
 
   /* --- derived data -------------------------------------------------------- */
@@ -188,7 +188,7 @@ export default function CareerScreen() {
       total: all.length,
       today: all.filter((r) => r.ts >= dayStart).length,
       week: all.filter((r) => r.ts >= weekStart).length,
-      fresh: all.filter((r) => r.status === "new").length,
+      fresh: all.filter((r) => r.status === "NEW").length,
     };
   }, [all]);
 
@@ -212,14 +212,14 @@ export default function CareerScreen() {
     if (department !== "all") list = list.filter((r) => r.department_name === department);
     if (search) {
       list = list.filter((r) =>
-        [r.full_name, r.email, r.phone, r.display_position, r.department_name, r.location, r.current_company]
+        [r.name, r.email, r.phone_e164, r.display_position, r.department_name, r.location, r.current_company]
           .some((v) => (v || "").toLowerCase().includes(search))
       );
     }
     const sorted = [...list];
     if (sortKey === "newest") sorted.sort((a, b) => b.ts - a.ts);
     else if (sortKey === "oldest") sorted.sort((a, b) => a.ts - b.ts);
-    else sorted.sort((a, b) => a.full_name.localeCompare(b.full_name));
+    else sorted.sort((a, b) => a.name.localeCompare(b.name));
     return sorted;
   }, [all, search, sortKey, position, statusFilter, department]);
 
@@ -448,19 +448,19 @@ export default function CareerScreen() {
                   const d = valid ? new Date(r.ts) : null;
                   return (
                     <tr
-                      key={r.id}
+                      key={r.uid}
                       onClick={() => setOpen(r)}
                       className="cursor-pointer hover:bg-[rgba(248,242,225,0.5)]"
                     >
                       <td style={cellStyle}>
                         <div style={{ fontWeight: 600, color: studioColors.tealDeep, fontSize: 13.5 }}>
-                          {r.full_name?.trim() || "—"}
+                          {r.name?.trim() || "—"}
                         </div>
                         <div style={{ fontSize: 12, color: studioColors.bodyGray, marginTop: 2 }}>
                           {r.email || "—"}
                         </div>
                         <div style={{ fontFamily: studioFonts.mono, fontSize: 11, color: studioColors.faintGray, marginTop: 2 }}>
-                          #{r.id}
+                          #{r.uid}
                           {r.location ? ` · ${r.location}` : ""}
                         </div>
                       </td>
@@ -489,7 +489,7 @@ export default function CareerScreen() {
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              downloadApplicationFile(r.id, "resume").catch((err) => toast(err instanceof Error ? err.message : "Download failed", "error"));
+                              downloadApplicationFile(r.uid, "resume").catch((err) => toast(err instanceof Error ? err.message : "Download failed", "error"));
                             }}
                             style={{ border: "none", background: "transparent", padding: 0, fontSize: 12.5, fontWeight: 600, color: studioColors.teal, cursor: "pointer", fontFamily: "var(--font-switzer)" }}
                           >
@@ -503,7 +503,7 @@ export default function CareerScreen() {
                         {canArchive && !r.archived_at && (
                           <button
                             type="button"
-                            aria-label={`Archive application from ${r.full_name?.trim() || `#${r.id}`}`}
+                            aria-label={`Archive application from ${r.name?.trim() || `#${r.uid}`}`}
                             title="Archive application"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -616,7 +616,7 @@ export default function CareerScreen() {
           <>
             The application from{" "}
             <b style={{ color: studioColors.tealDeep }}>
-              {confirmDelete.full_name?.trim() || `#${confirmDelete.id}`}
+              {confirmDelete.name?.trim() || "this candidate"}
             </b>{" "}
             for {confirmDelete.display_position} leaves the queue. Nothing is deleted — the record, files,
             notes and timeline are kept, and it can be restored from the archived view.
@@ -672,7 +672,7 @@ function ApplicationDetail({
     }
     let cancelled = false;
     setDetailError(null);
-    getCareerApplication(row.id)
+    getCareerApplication(row.uid)
       .then((dt) => !cancelled && setDetail(dt))
       .catch((err) => !cancelled && setDetailError(err instanceof Error ? err.message : "Couldn’t load the timeline"));
     getPositions({ include_archived: false })
@@ -682,6 +682,28 @@ function ApplicationDetail({
       cancelled = true;
     };
   }, [row]);
+
+  /**
+   * Add a note. The API answers with the created note rather than the whole
+   * application, so the detail is re-read to refresh notes and the timeline.
+   */
+  const addNote = async (body: string) => {
+    if (!row) return false;
+    setBusy(true);
+    try {
+      await addApplicationNote(row.uid, body);
+      const dt = await getCareerApplication(row.uid);
+      setDetail(dt);
+      onUpdated(dt);
+      toast("Note added");
+      return true;
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Action failed", "error");
+      return false;
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const run = async (fn: () => Promise<CareerApplicationDetail>, done: string) => {
     setBusy(true);
@@ -709,7 +731,7 @@ function ApplicationDetail({
           <div className="flex items-start justify-between gap-3">
             <div style={{ minWidth: 0 }}>
               <div className="flex flex-wrap items-center gap-2">
-                <ModalTitle>{row.full_name?.trim() || "Application"}</ModalTitle>
+                <ModalTitle>{row.name?.trim() || "Application"}</ModalTitle>
                 <Pill status={current.status ?? "new"} size="sm" />
                 {current.archived_at && <Pill status="archived" size="sm" />}
               </div>
@@ -717,7 +739,7 @@ function ApplicationDetail({
                 {current.display_position}
                 {current.department_name ? ` · ${current.department_name}` : ""}
                 {d ? ` · ${dateFmt.format(d)}, ${timeFmt.format(d)}` : ""}
-                <span style={{ fontFamily: studioFonts.mono, color: studioColors.faintGray }}> · #{row.id}</span>
+                <span style={{ fontFamily: studioFonts.mono, color: studioColors.faintGray }}> · #{row.uid}</span>
               </div>
             </div>
             <button type="button" onClick={onClose} aria-label="Close" style={closeButtonStyle}>
@@ -752,7 +774,7 @@ function ApplicationDetail({
                       style={{ height: 40, padding: "0 14px", fontSize: 13, opacity: nextStatus ? 1 : 0.6 }}
                       onClick={async () => {
                         if (!nextStatus) return;
-                        const ok = await run(() => setApplicationStatus(row.id, nextStatus, statusNote), `Moved to ${APPLICATION_STATUSES.find((st) => st.key === nextStatus)?.label}`);
+                        const ok = await run(() => setApplicationStatus(row.uid, nextStatus, statusNote), `Moved to ${APPLICATION_STATUSES.find((st) => st.key === nextStatus)?.label}`);
                         if (ok) {
                           setNextStatus("");
                           setStatusNote("");
@@ -770,13 +792,13 @@ function ApplicationDetail({
             )}
 
             {/* ── Assign a general application to a posting (§6.14) ────── */}
-            {canEdit && !current.archived_at && !current.position_id && positions.length > 0 && (
+            {canEdit && !current.archived_at && !current.position && positions.length > 0 && (
               <DetailSection title="Link to a position">
                 <div className="grid gap-2" style={{ gridTemplateColumns: "1fr auto", padding: "10px 0" }}>
                   <SelectField value={assignTo} onChange={setAssignTo} ariaLabel="Assign to position">
                     <option value="">Choose a posting…</option>
                     {positions.map((p) => (
-                      <option key={p.id} value={p.id}>
+                      <option key={p.uid} value={p.uid}>
                         {p.title} — {p.department_name}
                       </option>
                     ))}
@@ -785,9 +807,9 @@ function ApplicationDetail({
                     disabled={!assignTo || busy}
                     style={{ height: 40, padding: "0 14px", fontSize: 13 }}
                     onClick={async () => {
-                      const p = positions.find((x) => String(x.id) === assignTo);
+                      const p = positions.find((x) => x.uid === assignTo);
                       if (!p) return;
-                      const ok = await run(() => assignApplication(row.id, { position_id: p.id, position_title: p.title, department_name: p.department_name }), `Linked to ${p.title}`);
+                      const ok = await run(() => assignApplication(row.uid, { position: p.uid, expected_version: row.version }), `Linked to ${p.title}`);
                       if (ok) setAssignTo("");
                     }}
                   >
@@ -809,9 +831,9 @@ function ApplicationDetail({
                 ) : null}
               </DetailRow>
               <DetailRow label="Phone">
-                {row.phone ? (
-                  <a href={`tel:${row.phone}`} style={{ ...linkStyle, fontFamily: studioFonts.mono }}>
-                    {row.phone}
+                {row.phone_e164 ? (
+                  <a href={`tel:${row.phone_e164}`} style={{ ...linkStyle, fontFamily: studioFonts.mono }}>
+                    {row.phone_e164}
                   </a>
                 ) : null}
               </DetailRow>
@@ -844,20 +866,20 @@ function ApplicationDetail({
               <DetailRow label="Notice period">{row.notice_period}</DetailRow>
               <DetailRow label="Heard about us">{row.heard_about_us}</DetailRow>
               <DetailRow label="Availability">{row.availability}</DetailRow>
-              <DetailRow label="Why Flarize?">{row.cover_note && <span style={{ whiteSpace: "pre-line" }}>{row.cover_note}</span>}</DetailRow>
+              <DetailRow label="Why Flarize?">{row.cover_letter && <span style={{ whiteSpace: "pre-line" }}>{row.cover_letter}</span>}</DetailRow>
             </DetailSection>
 
             <DetailSection title="Documents">
               <DetailRow label="Resume">
                 {hasFile(row, "resume") ? (
-                  <button type="button" onClick={() => downloadApplicationFile(row.id, "resume").catch((err) => toast(err instanceof Error ? err.message : "Download failed", "error"))} style={{ ...linkStyle, border: "none", background: "transparent", padding: 0, cursor: "pointer", fontFamily: "var(--font-switzer)", fontSize: 13 }}>
+                  <button type="button" onClick={() => downloadApplicationFile(row.uid, "resume").catch((err) => toast(err instanceof Error ? err.message : "Download failed", "error"))} style={{ ...linkStyle, border: "none", background: "transparent", padding: 0, cursor: "pointer", fontFamily: "var(--font-switzer)", fontSize: 13 }}>
                     Download ↓
                   </button>
                 ) : null}
               </DetailRow>
               <DetailRow label="Portfolio file">
                 {hasFile(row, "portfolio") ? (
-                  <button type="button" onClick={() => downloadApplicationFile(row.id, "portfolio").catch((err) => toast(err instanceof Error ? err.message : "Download failed", "error"))} style={{ ...linkStyle, border: "none", background: "transparent", padding: 0, cursor: "pointer", fontFamily: "var(--font-switzer)", fontSize: 13 }}>
+                  <button type="button" onClick={() => downloadApplicationFile(row.uid, "portfolio").catch((err) => toast(err instanceof Error ? err.message : "Download failed", "error"))} style={{ ...linkStyle, border: "none", background: "transparent", padding: 0, cursor: "pointer", fontFamily: "var(--font-switzer)", fontSize: 13 }}>
                     Download ↓
                   </button>
                 ) : null}
@@ -870,7 +892,7 @@ function ApplicationDetail({
               <div style={{ padding: "8px 0" }} className="flex flex-col gap-2.5">
                 {detail?.notes.length === 0 && <div style={{ fontSize: 12.5, color: studioColors.faintGray }}>No notes yet. Only the hiring team sees these.</div>}
                 {detail?.notes.map((n) => (
-                  <div key={n.id} style={{ padding: "8px 10px", borderRadius: 10, background: "#ffffff", boxShadow: `inset 0 0 0 1px ${studioColors.ring}` }}>
+                  <div key={n.uid} style={{ padding: "8px 10px", borderRadius: 10, background: "#ffffff", boxShadow: `inset 0 0 0 1px ${studioColors.ring}` }}>
                     <div style={{ fontSize: 13, color: studioColors.tealDeep, whiteSpace: "pre-wrap", lineHeight: 1.5 }}>{n.body}</div>
                     <div style={{ fontSize: 11, color: studioColors.faintGray, marginTop: 4 }}>
                       {n.author || "Unknown"} · {fmtDate(n.created_at)}
@@ -886,7 +908,7 @@ function ApplicationDetail({
                         disabled={!noteBody.trim() || busy}
                         style={{ height: 34, padding: "0 12px", fontSize: 12.5 }}
                         onClick={async () => {
-                          const ok = await run(() => addApplicationNote(row.id, noteBody), "Note added");
+                          const ok = await addNote(noteBody);
                           if (ok) setNoteBody("");
                         }}
                       >
@@ -904,18 +926,18 @@ function ApplicationDetail({
                 {!detail && !detailError && <div style={{ fontSize: 12.5, color: studioColors.faintGray }}>Loading…</div>}
                 {detail?.events.length === 0 && <div style={{ fontSize: 12.5, color: studioColors.faintGray }}>Received before the timeline existed.</div>}
                 {detail?.events.map((ev) => (
-                  <div key={ev.id} className="flex items-start gap-2.5" style={{ fontSize: 12.5 }}>
+                  <div key={`${ev.created_at}-${ev.kind}`} className="flex items-start gap-2.5" style={{ fontSize: 12.5 }}>
                     <span style={{ marginTop: 6, width: 6, height: 6, borderRadius: "50%", background: studioColors.teal, flex: "none" }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <span style={{ color: studioColors.tealDeep, fontWeight: 500 }}>{ev.kind_label}</span>
-                      {ev.kind === "status" && (
+                      {ev.kind === "STATUS" && (
                         <span style={{ color: studioColors.bodyGray }}>
                           {" "}
                           {ev.from_status} → <b>{ev.to_status}</b>
                         </span>
                       )}
-                      {ev.detail && ev.kind !== "status" && <span style={{ color: studioColors.bodyGray }}> · {ev.detail}</span>}
-                      {ev.detail && ev.kind === "status" && <div style={{ color: studioColors.bodyGray, fontStyle: "italic" }}>{ev.detail}</div>}
+                      {ev.detail && ev.kind !== "STATUS" && <span style={{ color: studioColors.bodyGray }}> · {ev.detail}</span>}
+                      {ev.detail && ev.kind === "STATUS" && <div style={{ color: studioColors.bodyGray, fontStyle: "italic" }}>{ev.detail}</div>}
                     </div>
                     <span style={{ color: studioColors.faintGray, whiteSpace: "nowrap", fontSize: 11.5 }}>
                       {ev.actor ? `${ev.actor} · ` : ""}
@@ -930,7 +952,7 @@ function ApplicationDetail({
           <div className="flex flex-wrap justify-end gap-2" style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${studioColors.ring}` }}>
             {current.archived_at ? (
               canEdit && (
-                <GhostButton disabled={busy} onClick={() => void run(() => restoreApplication(row.id), "Restored to the queue")}>
+                <GhostButton disabled={busy} onClick={() => void run(() => restoreApplication(row.uid), "Restored to the queue")}>
                   Restore to queue
                 </GhostButton>
               )

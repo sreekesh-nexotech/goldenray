@@ -87,7 +87,7 @@ export default function SystemSizesPanel({
           const cost = Number(row.capacity_kw) * Number(row.price_per_kw);
           return (
             <RowCard
-              key={row.id}
+              key={row.uid}
               title={row.label || "New system size"}
               meta={
                 Number.isFinite(cost) && cost > 0 ? (
@@ -97,17 +97,17 @@ export default function SystemSizesPanel({
                 ) : undefined
               }
               dirty={isDirty(row)}
-              busy={busyId === row.id}
+              busy={busyId === row.uid}
               readOnly={readOnly}
-              onSave={() => save(row.id)}
-              onDiscard={() => discard(row.id)}
-              onDelete={() => remove(row.id)}
+              onSave={() => save(row.uid)}
+              onDiscard={() => discard(row.uid)}
+              onDelete={() => remove(row.uid)}
             >
               <FieldGrid>
                 <TextField
                   label="Tile label"
                   value={str(row.label)}
-                  onChange={(v) => patch(row.id, { label: v })}
+                  onChange={(v) => patch(row.uid, { label: v })}
                   placeholder="3kW"
                   disabled={readOnly}
                   hint="Shown on the size tile."
@@ -115,7 +115,7 @@ export default function SystemSizesPanel({
                 <NumberField
                   label="Capacity"
                   value={str(row.capacity_kw)}
-                  onChange={(v) => patch(row.id, { capacity_kw: v })}
+                  onChange={(v) => patch(row.uid, { capacity_kw: v })}
                   suffix="kW"
                   disabled={readOnly}
                   hint="Drives the subsidy band."
@@ -123,7 +123,7 @@ export default function SystemSizesPanel({
                 <NumberField
                   label="Price per kW"
                   value={str(row.price_per_kw)}
-                  onChange={(v) => patch(row.id, { price_per_kw: v })}
+                  onChange={(v) => patch(row.uid, { price_per_kw: v })}
                   prefix="₹"
                   disabled={readOnly}
                   hint="Default system price = this × capacity."
@@ -131,7 +131,7 @@ export default function SystemSizesPanel({
                 <NumberField
                   label="Price slider minimum"
                   value={str(row.price_min)}
-                  onChange={(v) => patch(row.id, { price_min: nullableNum(v) })}
+                  onChange={(v) => patch(row.uid, { price_min: nullableNum(v) })}
                   prefix="₹"
                   placeholder="default price"
                   disabled={readOnly}
@@ -140,7 +140,7 @@ export default function SystemSizesPanel({
                 <NumberField
                   label="Price slider maximum"
                   value={str(row.price_max)}
-                  onChange={(v) => patch(row.id, { price_max: nullableNum(v) })}
+                  onChange={(v) => patch(row.uid, { price_max: nullableNum(v) })}
                   prefix="₹"
                   placeholder="default price"
                   disabled={readOnly}
@@ -149,7 +149,7 @@ export default function SystemSizesPanel({
                 <NumberField
                   label="Reference monthly bill"
                   value={str(row.monthly_bill_reference)}
-                  onChange={(v) => patch(row.id, { monthly_bill_reference: v })}
+                  onChange={(v) => patch(row.uid, { monthly_bill_reference: v })}
                   prefix="₹"
                   disabled={readOnly}
                   hint="Used for the savings comparison, not the EMI."
@@ -157,14 +157,14 @@ export default function SystemSizesPanel({
                 <NumberField
                   label="Display order"
                   value={str(row.sort_order)}
-                  onChange={(v) => patch(row.id, { sort_order: Number(v) || 0 })}
+                  onChange={(v) => patch(row.uid, { sort_order: Number(v) || 0 })}
                   disabled={readOnly}
                   hint="Lower numbers appear first."
                 />
                 <ToggleField
                   label="Show on the site"
                   checked={row.is_active}
-                  onChange={() => patch(row.id, { is_active: !row.is_active })}
+                  onChange={() => patch(row.uid, { is_active: !row.is_active })}
                   disabled={readOnly}
                   hint="Turn off to hide this size without deleting it."
                 />

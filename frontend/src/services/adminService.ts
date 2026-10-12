@@ -3,54 +3,93 @@
 // Administration clients: Roles & Permissions matrix (§6.17), Settings (§6.18)
 // and the SEO overview (§6.7). Small enough to share one file.
 
-import { studioRequest, query, type Paginated, type StudioAction, type StudioModule, type StudioPermissionMap } from "./studioService";
+import {
+  studioRequest,
+  query,
+  type Paginated,
+  type StudioAction,
+  type StudioModule,
+  type StudioPermissionMap,
+  type StudioScope,
+  type StudioScopeMap,
+} from "./studioService";
 import type { SeoIssue, SeoStatus } from "./faqService";
 
 /* ── Roles & permissions ─────────────────────────────────────────────────── */
 
 export interface StudioRole {
-  id: number;
+  uid: string;
   name: string;
   slug: string;
   description: string;
   permissions: StudioPermissionMap;
-  legacy_role: "admin" | "editor" | "author";
+  /** Record scope per module (`all`, `owned`, `assigned`, `office`, `self`). */
+  scopes: StudioScopeMap;
+  legacy_role: "admin" | "editor" | "author" | null;
   is_system: boolean;
-  sort_order: number;
-  module_count: number;
   user_count: number;
   created_at: string;
   updated_at: string;
+  version: number;
 }
 
-/** GET auth/permission-registry/ — the grid the Roles screen renders. */
+/** How many modules a role grants (the API no longer sends a count). */
+export function roleModuleCount(role: StudioRole): number {
+  return Object.keys(role.permissions ?? {}).length;
+}
+
+/**
+ * GET roles/registry/ — the grid the Roles screen renders.
+ *
+ * Shaped differently from the old CMS registry: a group carries `key` + `label`
+ * (not `title`), each module adds `scopes`, `default_scope`, `description` and
+ * `permission_only`, and the payload gains top-level `scopes` and
+ * `self_action_denied`.
+ */
 export interface PermissionRegistry {
   actions: { key: StudioAction; label: string }[];
+  scopes: { key: StudioScope; label: string }[];
   groups: {
-    title: string;
-    modules: { key: StudioModule; label: string; actions: StudioAction[] }[];
+    key: string;
+    label: string;
+    modules: {
+      key: StudioModule;
+      label: string;
+      actions: StudioAction[];
+      scopes: StudioScope[];
+      default_scope: StudioScope;
+      description?: string;
+      permission_only?: boolean;
+    }[];
   }[];
+  self_action_denied: { module: StudioModule; action: StudioAction }[];
 }
 
 export function getPermissionRegistry(): Promise<PermissionRegistry> {
-  return studioRequest("auth/permission-registry/");
+  return studioRequest("roles/registry/");
 }
 
 export function getRoles(): Promise<Paginated<StudioRole>> {
-  return studioRequest("auth/roles/");
+  return studioRequest("roles/");
 }
 
-export function createRole(body: Pick<StudioRole, "name" | "slug" | "description" | "permissions" | "legacy_role">): Promise<StudioRole> {
-  return studioRequest("auth/roles/", { method: "POST", body });
+/** POST roles/ — `legacy_role` and `sort_order` are not accepted. */
+export function createRole(
+  body: Pick<StudioRole, "name" | "slug"> & Partial<Pick<StudioRole, "description" | "permissions" | "scopes">>,
+): Promise<StudioRole> {
+  return studioRequest("roles/", { method: "POST", body });
 }
 
-export function updateRole(id: number, body: Partial<Pick<StudioRole, "name" | "description" | "permissions" | "legacy_role" | "sort_order">>): Promise<StudioRole> {
-  return studioRequest(`auth/roles/${id}/`, { method: "PATCH", body });
+export function updateRole(
+  uid: string,
+  body: Partial<Pick<StudioRole, "name" | "description" | "permissions" | "scopes">> & { expected_version?: number },
+): Promise<StudioRole> {
+  return studioRequest(`roles/${uid}/`, { method: "PATCH", body });
 }
 
-/** Refused for system roles and for roles still assigned to users. */
-export function deleteRole(id: number): Promise<void> {
-  return studioRequest(`auth/roles/${id}/`, { method: "DELETE" });
+/** Needs `roles.manage`; refused for system roles and roles still in use. */
+export function deleteRole(uid: string): Promise<void> {
+  return studioRequest(`roles/${uid}/`, { method: "DELETE" });
 }
 
 /* ── Settings ────────────────────────────────────────────────────────────── */
@@ -77,21 +116,23 @@ export interface SiteSettings {
   updated_at: string;
 }
 
+// The site settings singleton is the platform's company profile.
 export function getSettings(): Promise<SiteSettings> {
-  return studioRequest("settings/");
+  return studioRequest("company/profile/");
 }
 
 export function updateSettings(body: Partial<SiteSettings>): Promise<SiteSettings> {
-  return studioRequest("settings/", { method: "PATCH", body });
+  return studioRequest("company/profile/", { method: "PATCH", body });
 }
 
 /* ── SEO overview ────────────────────────────────────────────────────────── */
 
-export type SeoRecordKind = "page" | "faq" | "job";
+/** The platform also reports `blog` rows. */
+export type SeoRecordKind = "page" | "faq" | "job" | "blog";
 
 export interface SeoOverviewRow {
   kind: SeoRecordKind;
-  id: number;
+  uid: string;
   label: string;
   path: string;
   record_status: string;
@@ -106,6 +147,11 @@ export interface SeoOverviewRow {
 export interface SeoOverview {
   counts: { error: number; warning: number; ok: number };
   results: SeoOverviewRow[];
+  count: number;
+  next: string | null;
+  previous: string | null;
+  /** Record types contributing to this overview. */
+  kinds: string[];
 }
 
 export function getSeoOverview(filters: { kind?: SeoRecordKind | ""; seo_status?: SeoStatus | "" } = {}): Promise<SeoOverview> {

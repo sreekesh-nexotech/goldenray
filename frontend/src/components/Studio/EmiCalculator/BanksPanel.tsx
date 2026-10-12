@@ -108,7 +108,7 @@ export default function BanksPanel({
 
         {rows.map((row) => (
           <RowCard
-            key={row.id}
+            key={row.uid}
             title={
               <span className="inline-flex items-center gap-2">
                 <span
@@ -151,31 +151,31 @@ export default function BanksPanel({
               </>
             }
             dirty={isDirty(row)}
-            busy={busyId === row.id}
+            busy={busyId === row.uid}
             readOnly={readOnly}
-            onSave={() => save(row.id)}
-            onDiscard={() => discard(row.id)}
-            onDelete={() => remove(row.id)}
+            onSave={() => save(row.uid)}
+            onDiscard={() => discard(row.uid)}
+            onDelete={() => remove(row.uid)}
           >
             <FieldGrid>
               <TextField
                 label="Bank name"
                 value={str(row.name)}
-                onChange={(v) => patch(row.id, { name: v })}
+                onChange={(v) => patch(row.uid, { name: v })}
                 placeholder="State Bank of India"
                 disabled={readOnly}
               />
               <TextField
                 label="Logo initials"
                 value={str(row.abbr)}
-                onChange={(v) => patch(row.id, { abbr: v })}
+                onChange={(v) => patch(row.uid, { abbr: v })}
                 placeholder="SBI"
                 disabled={readOnly}
               />
               <TextField
                 label="Logo colour"
                 value={str(row.logo_bg)}
-                onChange={(v) => patch(row.id, { logo_bg: v })}
+                onChange={(v) => patch(row.uid, { logo_bg: v })}
                 placeholder="#1D4ED8"
                 disabled={readOnly}
                 hint="Hex, e.g. #1D4ED8."
@@ -183,21 +183,21 @@ export default function BanksPanel({
               <NumberField
                 label="Interest rate"
                 value={str(row.interest_rate)}
-                onChange={(v) => patch(row.id, { interest_rate: v })}
+                onChange={(v) => patch(row.uid, { interest_rate: v })}
                 suffix="%"
                 disabled={readOnly}
               />
               <NumberField
                 label="Minimum loan"
                 value={str(row.min_loan)}
-                onChange={(v) => patch(row.id, { min_loan: v })}
+                onChange={(v) => patch(row.uid, { min_loan: v })}
                 prefix="₹"
                 disabled={readOnly}
               />
               <NumberField
                 label="Maximum loan"
                 value={str(row.max_loan)}
-                onChange={(v) => patch(row.id, { max_loan: v })}
+                onChange={(v) => patch(row.uid, { max_loan: v })}
                 prefix="₹"
                 disabled={readOnly}
                 hint="Cards are filtered against this."
@@ -205,21 +205,21 @@ export default function BanksPanel({
               <NumberField
                 label="CIBIL required"
                 value={str(row.cibil_required)}
-                onChange={(v) => patch(row.id, { cibil_required: Number(v) || 0 })}
+                onChange={(v) => patch(row.uid, { cibil_required: Number(v) || 0 })}
                 disabled={readOnly}
                 hint="0 = no published minimum."
               />
               <NumberField
                 label="Processing fee"
                 value={str(row.processing_fee_percent)}
-                onChange={(v) => patch(row.id, { processing_fee_percent: v })}
+                onChange={(v) => patch(row.uid, { processing_fee_percent: v })}
                 suffix="%"
                 disabled={readOnly}
               />
               <TextField
                 label="Fee note"
                 value={str(row.processing_fee_note)}
-                onChange={(v) => patch(row.id, { processing_fee_note: v })}
+                onChange={(v) => patch(row.uid, { processing_fee_note: v })}
                 placeholder="₹500 flat"
                 disabled={readOnly}
                 hint="Overrides the % when set."
@@ -227,42 +227,42 @@ export default function BanksPanel({
               <NumberField
                 label="Approval from"
                 value={str(row.approval_min_days)}
-                onChange={(v) => patch(row.id, { approval_min_days: Number(v) || 0 })}
+                onChange={(v) => patch(row.uid, { approval_min_days: Number(v) || 0 })}
                 suffix="days"
                 disabled={readOnly}
               />
               <NumberField
                 label="Approval up to"
                 value={str(row.approval_max_days)}
-                onChange={(v) => patch(row.id, { approval_max_days: Number(v) || 0 })}
+                onChange={(v) => patch(row.uid, { approval_max_days: Number(v) || 0 })}
                 suffix="days"
                 disabled={readOnly}
               />
               <NumberField
                 label="Maximum tenure"
                 value={str(row.max_tenure_years)}
-                onChange={(v) => patch(row.id, { max_tenure_years: Number(v) || 0 })}
+                onChange={(v) => patch(row.uid, { max_tenure_years: Number(v) || 0 })}
                 suffix="yrs"
                 disabled={readOnly}
               />
               <TextField
                 label="Upfront requirement"
                 value={str(row.upfront_requirement)}
-                onChange={(v) => patch(row.id, { upfront_requirement: v })}
+                onChange={(v) => patch(row.uid, { upfront_requirement: v })}
                 placeholder="10% of project cost"
                 disabled={readOnly}
               />
               <TextField
                 label="Eligibility"
                 value={str(row.eligibility)}
-                onChange={(v) => patch(row.id, { eligibility: v })}
+                onChange={(v) => patch(row.uid, { eligibility: v })}
                 placeholder="CIBIL 700+, salaried or self-employed"
                 disabled={readOnly}
               />
               <NumberField
                 label="Display order"
                 value={str(row.sort_order)}
-                onChange={(v) => patch(row.id, { sort_order: Number(v) || 0 })}
+                onChange={(v) => patch(row.uid, { sort_order: Number(v) || 0 })}
                 disabled={readOnly}
               />
             </FieldGrid>
@@ -277,7 +277,7 @@ export default function BanksPanel({
                   onChange={
                     readOnly
                       ? undefined
-                      : (v) => patch(row.id, { features: v.split("\n") })
+                      : (v) => patch(row.uid, { features: v.split("\n") })
                   }
                   placeholder={"Up to ₹6L loan amount\n5–7 days approval\nZero processing fee"}
                   minHeight={92}
@@ -286,7 +286,7 @@ export default function BanksPanel({
               <TextField
                 label="Best for"
                 value={str(row.best_for)}
-                onChange={(v) => patch(row.id, { best_for: v })}
+                onChange={(v) => patch(row.uid, { best_for: v })}
                 placeholder="Most Kerala homeowners — 3kW, first-time solar buyers"
                 disabled={readOnly}
               />
@@ -294,14 +294,14 @@ export default function BanksPanel({
                 <ToggleField
                   label="Flarize Recommended"
                   checked={row.is_recommended}
-                  onChange={() => patch(row.id, { is_recommended: !row.is_recommended })}
+                  onChange={() => patch(row.uid, { is_recommended: !row.is_recommended })}
                   disabled={readOnly}
                   hint="Pins the card to the top with a gold badge."
                 />
                 <ToggleField
                   label="Show on the site"
                   checked={row.is_active}
-                  onChange={() => patch(row.id, { is_active: !row.is_active })}
+                  onChange={() => patch(row.uid, { is_active: !row.is_active })}
                   disabled={readOnly}
                 />
               </div>

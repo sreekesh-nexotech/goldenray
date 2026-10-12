@@ -36,7 +36,7 @@ export default function PagesScreen() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return (rows ?? []).filter((r) => (!group || r.group === group) && (!q || r.name.toLowerCase().includes(q) || r.route.toLowerCase().includes(q)));
+    return (rows ?? []).filter((r) => (!group || r.group === group) && (!q || r.title.toLowerCase().includes(q) || r.route.toLowerCase().includes(q)));
   }, [rows, search, group]);
 
   return (
@@ -82,10 +82,10 @@ export default function PagesScreen() {
           </StateRow>
         )}
         {filtered.map((r) => (
-          <tr key={r.id} className="cursor-pointer transition-colors hover:bg-[rgba(7,74,77,0.03)]" onClick={() => router.push(`/studio/pages/${r.id}`)}>
+          <tr key={r.uid} className="cursor-pointer transition-colors hover:bg-[rgba(7,74,77,0.03)]" onClick={() => router.push(`/studio/pages/${r.uid}`)}>
             <Td>
               <div className="flex items-center gap-2">
-                <span style={{ fontWeight: 600, color: studioColors.tealDeep }}>{r.name}</span>
+                <span style={{ fontWeight: 600, color: studioColors.tealDeep }}>{r.title}</span>
                 {r.is_protected && <LockedTag />}
               </div>
               {r.group && <div style={{ fontSize: 11, color: studioColors.faintGray }}>{r.group}</div>}

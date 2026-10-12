@@ -59,7 +59,7 @@ export default function PageMaintenanceScreen({
   const load = useCallback(async () => {
     setLoadError(null);
     try {
-      let pageId = id ? Number(id) : null;
+      let pageId = id ? String(id) : null;
       if (!pageId && route) {
         const list = await getPages({ search: route }, mount);
         const hit = list.results.find((p) => p.route === route);
@@ -67,12 +67,12 @@ export default function PageMaintenanceScreen({
           setNotFound(true);
           return;
         }
-        pageId = hit.id;
+        pageId = hit.uid;
       }
       if (!pageId) return;
       const p = await getPage(pageId, mount);
       setPage(p);
-      previewPage(p.id, mount).then(setPreview).catch(() => setPreview(null));
+      previewPage(p.uid, mount).then(setPreview).catch(() => setPreview(null));
     } catch (err) {
       setLoadError(err instanceof Error ? err.message : "Failed to load page");
     }
@@ -97,7 +97,7 @@ export default function PageMaintenanceScreen({
         <div className="min-w-0" style={{ flex: "1 1 320px" }}>
           <div className="flex items-center gap-2.5" style={{ marginBottom: 4 }}>
             <h2 className="font-switzer" style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-.02em", color: studioColors.tealDeep, margin: 0 }}>
-              {page.name}
+              {page.title}
             </h2>
             <Pill status={page.status} />
             {page.is_protected && <LockedTag />}
@@ -132,12 +132,12 @@ export default function PageMaintenanceScreen({
 
       <div className="grid gap-4" style={{ gridTemplateColumns: "minmax(0, 1.5fr) minmax(300px, 1fr)" }}>
         <div className="flex flex-col gap-4">
-          <ImageSlots page={page} mount={mount} canEdit={canEdit} onChanged={(slot) => setPage({ ...page, image_slots: page.image_slots.map((s) => (s.id === slot.id ? slot : s)) })} />
-          <TextSlots page={page} mount={mount} canEdit={canEdit} onChanged={(slot) => setPage({ ...page, text_slots: page.text_slots.map((s) => (s.id === slot.id ? slot : s)) })} />
+          <ImageSlots page={page} mount={mount} canEdit={canEdit} onChanged={(slot) => setPage({ ...page, image_slots: page.image_slots.map((s) => (s.uid === slot.uid ? slot : s)) })} />
+          <TextSlots page={page} mount={mount} canEdit={canEdit} onChanged={(slot) => setPage({ ...page, text_slots: page.text_slots.map((s) => (s.uid === slot.uid ? slot : s)) })} />
         </div>
 
         <div className="flex flex-col gap-4">
-          <PageSeoCard page={page} mount={mount} canEdit={canEdit} siteUrl={siteUrl} onSaved={(seo) => { setPage({ ...page, seo }); previewPage(page.id, mount).then(setPreview).catch(() => {}); }} />
+          <PageSeoCard page={page} mount={mount} canEdit={canEdit} siteUrl={siteUrl} onSaved={(seo) => { setPage({ ...page, seo }); previewPage(page.uid, mount).then(setPreview).catch(() => {}); }} />
           {preview && (
             <Card>
               <CardHeader>
@@ -169,13 +169,14 @@ export default function PageMaintenanceScreen({
 function ImageSlots({ page, mount, canEdit, onChanged }: { page: PageDetail; mount: PagesMount; canEdit: boolean; onChanged: (s: PageImageSlot) => void }) {
   const { toast } = useStudio();
   const [picking, setPicking] = useState<PageImageSlot | null>(null);
-  const [altDraft, setAltDraft] = useState<Record<number, string>>({});
-  const [busy, setBusy] = useState<number | null>(null);
+  const [altDraft, setAltDraft] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState<string | null>(null);
 
-  const save = async (slot: PageImageSlot, body: { asset?: number | null; alt_text?: string }, done: string) => {
-    setBusy(slot.id);
+  const save = async (slot: PageImageSlot, body: { asset?: string | null; alt?: string }, done: string) => {
+    setBusy(slot.uid);
     try {
-      const next = await updateImageSlot(page.id, slot.id, body, mount);
+      // Slots are addressed by their key, not an id.
+      const next = await updateImageSlot(page.uid, slot.key, { ...body, expected_version: slot.version }, mount);
       onChanged(next);
       toast(done);
     } catch (err) {
@@ -203,13 +204,13 @@ function ImageSlots({ page, mount, canEdit, onChanged }: { page: PageDetail; mou
           </div>
         )}
         {page.image_slots.map((slot) => {
-          const alt = altDraft[slot.id] ?? slot.alt_text;
-          const altDirty = alt !== slot.alt_text;
+          const alt = altDraft[slot.uid] ?? slot.alt;
+          const altDirty = alt !== slot.alt;
           return (
-            <div key={slot.id} className="grid gap-3" style={{ gridTemplateColumns: "140px 1fr", padding: 12, borderRadius: 12, boxShadow: `inset 0 0 0 1px ${studioColors.ring}` }}>
+            <div key={slot.uid} className="grid gap-3" style={{ gridTemplateColumns: "140px 1fr", padding: 12, borderRadius: 12, boxShadow: `inset 0 0 0 1px ${studioColors.ring}` }}>
               <div style={{ aspectRatio: "4 / 3", borderRadius: 8, overflow: "hidden", background: "#E5E7EB", display: "grid", placeItems: "center" }}>
-                {slot.asset_url ? (
-                  <img src={slot.asset_url} alt={slot.effective_alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                {slot.asset?.url ? (
+                  <img src={slot.asset?.url} alt={slot.effective_alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                 ) : (
                   <span style={{ fontSize: 10.5, color: studioColors.faintGray, textAlign: "center", padding: 8 }}>Built-in image</span>
                 )}
@@ -221,19 +222,19 @@ function ImageSlots({ page, mount, canEdit, onChanged }: { page: PageDetail; mou
                     <KeyTag>{slot.key}</KeyTag>
                   </div>
                   {slot.guidance && <div style={{ fontSize: 12, color: studioColors.mutedGray, marginTop: 2 }}>{slot.guidance}</div>}
-                  {slot.asset_filename && (
+                  {slot.asset?.uid && (
                     <div style={{ fontSize: 11, color: studioColors.faintGray, fontFamily: studioFonts.mono, marginTop: 2 }}>
-                      {slot.asset_filename}
-                      {slot.asset_width && slot.asset_height ? ` · ${slot.asset_width}×${slot.asset_height}` : ""}
+                      {slot.asset?.uid}
+                      {slot.asset?.width && slot.asset?.height ? ` · ${slot.asset?.width}×${slot.asset?.height}` : ""}
                     </div>
                   )}
                 </div>
                 <div>
                   <FieldLabel>Alt text</FieldLabel>
                   <div className="flex gap-2">
-                    <TextInput value={alt} onChange={(v) => canEdit && setAltDraft({ ...altDraft, [slot.id]: v })} placeholder="Describe the image for accessibility and search" />
+                    <TextInput value={alt} onChange={(v) => canEdit && setAltDraft({ ...altDraft, [slot.uid]: v })} placeholder="Describe the image for accessibility and search" />
                     {altDirty && canEdit && (
-                      <GoldButton onClick={() => save(slot, { alt_text: alt }, "Alt text saved")} disabled={busy === slot.id} style={{ height: 40, padding: "0 12px", fontSize: 12.5 }}>
+                      <GoldButton onClick={() => save(slot, { alt: alt }, "Alt text saved")} disabled={busy === slot.uid} style={{ height: 40, padding: "0 12px", fontSize: 12.5 }}>
                         Save
                       </GoldButton>
                     )}
@@ -241,11 +242,11 @@ function ImageSlots({ page, mount, canEdit, onChanged }: { page: PageDetail; mou
                 </div>
                 {canEdit && (
                   <div className="flex gap-2">
-                    <GhostButton onClick={() => setPicking(slot)} disabled={busy === slot.id} style={{ height: 34, padding: "0 12px", fontSize: 12.5 }}>
+                    <GhostButton onClick={() => setPicking(slot)} disabled={busy === slot.uid} style={{ height: 34, padding: "0 12px", fontSize: 12.5 }}>
                       {slot.asset ? "Replace image" : "Set image"}
                     </GhostButton>
                     {slot.asset && (
-                      <GhostButton onClick={() => save(slot, { asset: null }, "Reverted to the built-in image")} disabled={busy === slot.id} style={{ height: 34, padding: "0 12px", fontSize: 12.5 }}>
+                      <GhostButton onClick={() => save(slot, { asset: null }, "Reverted to the built-in image")} disabled={busy === slot.uid} style={{ height: 34, padding: "0 12px", fontSize: 12.5 }}>
                         Use built-in
                       </GhostButton>
                     )}
@@ -263,7 +264,7 @@ function ImageSlots({ page, mount, canEdit, onChanged }: { page: PageDetail; mou
         onPick={(asset) => {
           const slot = picking;
           setPicking(null);
-          if (slot) void save(slot, { asset: asset.id }, "Image replaced");
+          if (slot) void save(slot, { asset: asset.uid }, "Image replaced");
         }}
       />
     </Card>
@@ -276,18 +277,18 @@ function ImageSlots({ page, mount, canEdit, onChanged }: { page: PageDetail; mou
 
 function TextSlots({ page, mount, canEdit, onChanged }: { page: PageDetail; mount: PagesMount; canEdit: boolean; onChanged: (s: PageTextSlot) => void }) {
   const { toast } = useStudio();
-  const [drafts, setDrafts] = useState<Record<number, string>>({});
-  const [busy, setBusy] = useState<number | null>(null);
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState<string | null>(null);
 
   const save = async (slot: PageTextSlot) => {
-    const value = drafts[slot.id] ?? slot.value;
-    setBusy(slot.id);
+    const value = drafts[slot.uid] ?? slot.value;
+    setBusy(slot.uid);
     try {
-      const next = await updateTextSlot(page.id, slot.id, { value }, mount);
+      const next = await updateTextSlot(page.uid, slot.key, { value, expected_version: slot.version }, mount);
       onChanged(next);
       setDrafts((d) => {
         const rest = { ...d };
-        delete rest[slot.id];
+        delete rest[slot.uid];
         return rest;
       });
       toast("Saved");
@@ -314,22 +315,22 @@ function TextSlots({ page, mount, canEdit, onChanged }: { page: PageDetail; moun
           </div>
         )}
         {page.text_slots.map((slot) => {
-          const value = drafts[slot.id] ?? slot.value;
+          const value = drafts[slot.uid] ?? slot.value;
           const dirty = value !== slot.value;
           const over = slot.max_length ? value.length > slot.max_length : false;
           return (
-            <div key={slot.id}>
+            <div key={slot.uid}>
               <FieldLabel suffix={<KeyTag>{slot.max_length ? `${value.length} / ${slot.max_length}` : slot.key}</KeyTag>}>{slot.label}</FieldLabel>
               {slot.kind === "long_text" ? (
-                <TextArea value={value} onChange={(v) => canEdit && setDrafts({ ...drafts, [slot.id]: v })} minHeight={80} />
+                <TextArea value={value} onChange={(v) => canEdit && setDrafts({ ...drafts, [slot.uid]: v })} minHeight={80} />
               ) : (
-                <TextInput value={value} onChange={(v) => canEdit && setDrafts({ ...drafts, [slot.id]: v })} type={slot.kind === "email" ? "email" : slot.kind === "url" ? "url" : "text"} mono={slot.kind === "url"} />
+                <TextInput value={value} onChange={(v) => canEdit && setDrafts({ ...drafts, [slot.uid]: v })} type={slot.kind === "email" ? "email" : slot.kind === "url" ? "url" : "text"} mono={slot.kind === "url"} />
               )}
               <div className="flex items-center gap-2" style={{ marginTop: 6 }}>
                 {slot.guidance && <span style={{ fontSize: 11.5, color: studioColors.faintGray }}>{slot.guidance}</span>}
                 {over && <span style={{ fontSize: 11.5, color: studioColors.danger }}>Too long for this field.</span>}
                 {dirty && canEdit && (
-                  <GoldButton onClick={() => save(slot)} disabled={busy === slot.id || over} style={{ marginLeft: "auto", height: 32, padding: "0 12px", fontSize: 12.5 }}>
+                  <GoldButton onClick={() => save(slot)} disabled={busy === slot.uid || over} style={{ marginLeft: "auto", height: 32, padding: "0 12px", fontSize: 12.5 }}>
                     Save
                   </GoldButton>
                 )}
@@ -357,7 +358,7 @@ function PageSeoCard({ page, mount, canEdit, siteUrl, onSaved }: { page: PageDet
     schema_type: seo?.schema_type ?? "none",
   };
   const [value, setValue] = useState<SeoValues>(initial);
-  const [ogImage, setOgImage] = useState<{ id: number | null; url: string | null }>({ id: seo?.og_image ?? null, url: seo?.og_image_url ?? null });
+  const [ogImage, setOgImage] = useState<{ uid: string | null; url: string | null }>({ uid: seo?.og_image?.uid ?? null, url: seo?.og_image?.url ?? null });
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const editable = canEdit || can("seo", "edit");
@@ -365,7 +366,7 @@ function PageSeoCard({ page, mount, canEdit, siteUrl, onSaved }: { page: PageDet
   const save = async () => {
     setSaving(true);
     try {
-      const next = await updatePageSeo(page.id, { ...value, og_image: ogImage.id }, mount);
+      const next = await updatePageSeo(page.uid, { ...value, og_image: ogImage.uid, expected_version: seo?.version }, mount);
       onSaved(next);
       setDirty(false);
       toast("SEO saved");
@@ -387,7 +388,7 @@ function PageSeoCard({ page, mount, canEdit, siteUrl, onSaved }: { page: PageDet
         }}
         issues={seo?.seo_issues ?? [{ level: "error", field: "seo_title", message: "No SEO has been set for this page yet." }]}
         status={seo?.seo_status ?? "error"}
-        fallbackTitle={page.name}
+        fallbackTitle={page.title}
         disabled={!editable}
         ogImage={{
           url: ogImage.url,
@@ -396,11 +397,11 @@ function PageSeoCard({ page, mount, canEdit, siteUrl, onSaved }: { page: PageDet
             setDirty(true);
           },
           onClear: () => {
-            setOgImage({ id: null, url: null });
+            setOgImage({ uid: null, url: null });
             setDirty(true);
           },
         }}
-        extra={<SearchPreview url={`${siteUrl}${page.route}`} title={value.seo_title || page.name} description={value.meta_description} />}
+        extra={<SearchPreview url={`${siteUrl}${page.route}`} title={value.seo_title || page.title} description={value.meta_description} />}
       />
       {dirty && editable && (
         <div className="flex justify-end">
