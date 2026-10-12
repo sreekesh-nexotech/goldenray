@@ -40,7 +40,9 @@ const ROUTE_MODULES: [string, StudioModule][] = [
   ["/studio/careers", "job_positions"],
   ["/studio/users", "users"],
   ["/studio/roles", "roles"],
-  ["/studio/settings", "settings"],
+  // The Settings screen edits company/profile/, which is the `company` module.
+  ["/studio/settings", "company"],
+  ["/studio/bom", "bom"],
 ];
 
 function moduleForPath(pathname: string): StudioModule | null {

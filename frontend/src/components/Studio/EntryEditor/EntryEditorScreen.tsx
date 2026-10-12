@@ -11,7 +11,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useStudio, useCapabilities } from "../shared/StudioContext";
+import { useStudio } from "../shared/StudioContext";
 import { DropdownMenu } from "../shared/overlays";
 import {
   TipBanner,
@@ -82,9 +82,13 @@ const newBlockKey = () => `b_${++blockSeq}`;
 
 export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const router = useRouter();
-  const { tips, toast, config } = useStudio();
-  const { canPublish, role } = useCapabilities();
+  const { tips, toast, config, role, can } = useStudio();
   const isNew = entryId === "new";
+  const canPublish = can("blogs", "publish");
+  const canCreate = can("blogs", "create");
+  // The editor had no read-only concept at all: save and autosave were ungated.
+  // A new entry needs `blogs.create`; an existing one `blogs.edit`.
+  const canWrite = can("blogs", isNew ? "create" : "edit");
 
   // Reference data.
   const [colls, setColls] = useState<StudioCollection[]>([]);
@@ -446,6 +450,10 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
    * source of truth; we only sync identity + publish metadata back.
    */
   const persist = async (): Promise<StudioEntryDetail | null> => {
+    if (!canWrite) {
+      toast(isNew ? "You cannot create entries" : "You cannot edit this entry", "error");
+      return null;
+    }
     if (!title.trim()) {
       toast("Give the entry a title", "error");
       return null;
@@ -492,6 +500,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const autoSave = async () => {
     // New entries auto-create once they have the required title + slug;
     // existing ones PATCH. Skip while a slug is known-duplicate.
+    if (!canWrite) return;
     if (!title.trim() || !slug.trim() || slugState.available === false) return;
     const payload = buildPayload();
     if (!payload) return;
@@ -1097,7 +1106,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                   </span>
                 ))}
                 {/* Pick an existing tag (dropdown, like categories) */}
-                {remainingTags.length > 0 && !addingTag && (
+                {canWrite && remainingTags.length > 0 && !addingTag && (
                   <button
                     onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setAddTagAnchor({ top: r.bottom + 4, left: r.left }); }}
                     aria-haspopup="menu"
@@ -1108,8 +1117,8 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                     +
                   </button>
                 )}
-                {/* Type a brand-new tag */}
-                {addingTag ? (
+                {/* Type a brand-new tag — creating one needs blogs.create */}
+                {!canCreate ? null : addingTag ? (
                   <input
                     autoFocus
                     value={tagInput}
@@ -1142,7 +1151,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                   </span>
                 ))}
                 {/* Pick an existing badge */}
-                {remainingBadges.length > 0 && !addingBadge && (
+                {canWrite && remainingBadges.length > 0 && !addingBadge && (
                   <button
                     onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setAddBadgeAnchor({ top: r.bottom + 4, left: r.left }); }}
                     aria-haspopup="menu"
@@ -1153,8 +1162,8 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                     +
                   </button>
                 )}
-                {/* Type a brand-new badge */}
-                {addingBadge ? (
+                {/* Type a brand-new badge — creating one needs blogs.create */}
+                {!canCreate ? null : addingBadge ? (
                   <input
                     autoFocus
                     value={badgeInput}

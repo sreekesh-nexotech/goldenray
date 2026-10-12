@@ -33,6 +33,7 @@ import {
   type StudioDashboard,
   type StudioMe,
   type StudioModule,
+  type StudioScope,
 } from "@/services/studioService";
 
 export type ToastKind = "success" | "error";
@@ -69,6 +70,16 @@ interface StudioContextValue {
    * keeps action buttons hidden rather than briefly visible.
    */
   can: (module: StudioModule, action?: StudioAction) => boolean;
+  /**
+   * The record scope the signed-in user holds on `module`, from `me.scopes`.
+   *
+   * The backend applies this inside `get_queryset()`, so a `leads: owned` user
+   * sees only their own rows and an otherwise-populated list can come back
+   * empty. Screens use this to say *why* a list is empty, never to filter —
+   * the filtering already happened server-side. Defaults to `"all"` (the widest
+   * reading) while `me` is loading or when the module carries no scope.
+   */
+  scope: (module: StudioModule) => StudioScope;
 }
 
 const StudioCtx = createContext<StudioContextValue | null>(null);
@@ -174,9 +185,14 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
     [me]
   );
 
+  const scope = useCallback(
+    (module: StudioModule): StudioScope => me?.scopes?.[module] ?? "all",
+    [me]
+  );
+
   const value = useMemo(
-    () => ({ role, setRole, tips, setTips, toasts, toast, me, config, dashboard, shellLoading, shellError, can }),
-    [role, tips, toasts, toast, me, config, dashboard, shellLoading, shellError, can]
+    () => ({ role, setRole, tips, setTips, toasts, toast, me, config, dashboard, shellLoading, shellError, can, scope }),
+    [role, tips, toasts, toast, me, config, dashboard, shellLoading, shellError, can, scope]
   );
 
   return <StudioCtx.Provider value={value}>{children}</StudioCtx.Provider>;
@@ -188,15 +204,3 @@ export function useStudio(): StudioContextValue {
   return ctx;
 }
 
-/** Capability checks derived from the previewed role. */
-export function useCapabilities() {
-  const { role, can } = useStudio();
-  return {
-    role,
-    // Collections/templates are the blog's schema: editing them is `blogs.edit`.
-    canManageStructure: can("blogs", "edit"),
-    canPublish: can("blogs", "publish"),
-    canDelete: can("blogs", "archive"),
-    isAdmin: can("roles", "manage") || can("users", "manage"),
-  };
-}

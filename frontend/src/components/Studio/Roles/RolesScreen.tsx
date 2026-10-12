@@ -9,7 +9,7 @@
 
 import { useEffect, useState } from "react";
 import type { Role } from "@/types/studio";
-import { useStudio, useCapabilities } from "../shared/StudioContext";
+import { useStudio } from "../shared/StudioContext";
 import { PageHeader, TipBanner, StatusPill, SelectField, GhostButton, thStyle, tdStyle } from "../shared/primitives";
 import { ConfirmDialog } from "../shared/overlays";
 import { initialsOf, studioColors } from "../shared/format";
@@ -103,7 +103,8 @@ function PreviewSegment() {
 function MemberRow({
   user,
   self,
-  editable,
+  canChangeRole,
+  canSetActive,
   busy,
   roles,
   onRoleChange,
@@ -112,7 +113,10 @@ function MemberRow({
 }: {
   user: StudioUser;
   self: boolean;
-  editable: boolean;
+  /** `users.edit` — assigning a role. */
+  canChangeRole: boolean;
+  /** `users.archive` — deactivate / reactivate are actions, not a PATCH. */
+  canSetActive: boolean;
   busy: boolean;
   /** Phase 1 roles (§6.17); the select assigns one of these. */
   roles: StudioRole[];
@@ -164,7 +168,7 @@ function MemberRow({
         </div>
       </td>
       <td style={memberTd}>
-        {editable ? (
+        {canChangeRole ? (
           <div style={{ maxWidth: 150 }}>
             <SelectField
               value={user.role?.uid ?? ""}
@@ -191,12 +195,12 @@ function MemberRow({
       </td>
       <td style={memberTd}>
         <div className="flex justify-end" style={{ gap: 6 }}>
-          {editable && !user.is_active && (
+          {canSetActive && !user.is_active && (
             <GhostButton onClick={onReactivate} disabled={busy} style={{ height: 30, padding: "0 11px", fontSize: 12, borderRadius: 9 }}>
               Reactivate
             </GhostButton>
           )}
-          {editable && user.is_active && (
+          {canSetActive && user.is_active && (
             <button
               type="button"
               onClick={onDeactivate}
@@ -253,8 +257,12 @@ function PermCell({ yes }: { yes: boolean }) {
 /* -------------------------------------------------------------------------- */
 
 export default function RolesScreen() {
-  const { role, tips, toast, me } = useStudio();
-  const { isAdmin } = useCapabilities();
+  const { role, tips, toast, me, can } = useStudio();
+  // accounts/views/users.py maps these three ways; `isAdmin` hid the difference.
+  const canInvite = can("users", "create");
+  const canChangeRole = can("users", "edit");
+  const canSetActive = can("users", "archive");
+  const canSeeUsers = can("users", "view");
 
   const [users, setUsers] = useState<StudioUser[] | null>(null);
   const [roles, setRoles] = useState<StudioRole[]>([]);
@@ -364,7 +372,7 @@ export default function RolesScreen() {
             <span style={{ fontSize: 14, fontWeight: 600, color: studioColors.tealDeep }}>Team members</span>
             {users !== null && <span style={{ fontSize: 12, color: studioColors.faintGray }}> &#183; {memberCount}</span>}
           </div>
-          {isAdmin && !forbidden && (
+          {canInvite && !forbidden && (
             <button
               type="button"
               onClick={() => setInviteOpen(true)}
@@ -396,7 +404,7 @@ export default function RolesScreen() {
 
         {/* Preview-as lock: real admin previewing a lesser role sees the
             view-only state the lesser role would get. */}
-        {!forbidden && !isAdmin && (
+        {!forbidden && !canSeeUsers && (
           <div
             className="flex items-center"
             style={{
@@ -460,7 +468,8 @@ export default function RolesScreen() {
                       key={u.uid}
                       user={u}
                       self={self}
-                      editable={isAdmin && !self}
+                      canChangeRole={canChangeRole && !self}
+                      canSetActive={canSetActive && !self}
                       busy={busyId === u.uid}
                       roles={roles}
                       onRoleChange={(v) => changeRole(u, v)}

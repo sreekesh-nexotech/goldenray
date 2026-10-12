@@ -219,7 +219,7 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
       { key: "emi", label: "EMI Calculator", href: "/studio/emi-calculator", icon: I.emi, module: "emi" },
       { key: "quo", label: "Quotations", href: "/studio/quotations", icon: I.quotations, module: "quotations" },
       // Gated by the new backend (bom.view) on every call; the sign-in is separate from the CMS, so reuse a CMS module for visibility.
-      { key: "bom", label: "BOM Calculator", href: "/studio/bom", icon: I.quotations, module: "quotations" },
+      { key: "bom", label: "BOM Calculator", href: "/studio/bom", icon: I.quotations, module: "bom" },
     ],
   },
   {
@@ -269,7 +269,7 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
     items: [
       { key: "users", label: "Users", href: "/studio/users", icon: I.users, module: "users" },
       { key: "roles", label: "Roles & Permissions", href: "/studio/roles", icon: I.roles, module: "roles" },
-      { key: "settings", label: "Settings", href: "/studio/settings", icon: I.settings, module: "settings" },
+      { key: "settings", label: "Settings", href: "/studio/settings", icon: I.settings, module: "company" },
     ],
   },
   {
@@ -381,9 +381,11 @@ export default function Sidebar() {
   // that end up empty disappear with their label, so a Sales/Lead user sees
   // Dashboard and Business and nothing else — not a shell full of headings.
   const visible = (item: NavDef) => {
-    // `can_edit_schema` has no platform equivalent: collections and templates
-    // are the blog's schema, so editing them is `blogs.edit`.
-    if (item.schemaOnly) return can("blogs", "edit");
+    // The blog-schema screens (collections, templates, taxonomy, the delivery
+    // API docs) are readable with `blogs.view`; the write controls inside them
+    // carry their own `blogs.create` / `edit` / `archive` gates. Gating the nav
+    // on `edit` used to hide them from read-only authors altogether.
+    if (item.schemaOnly) return can("blogs", "view");
     if (item.module) return can(item.module);
     return true;
   };

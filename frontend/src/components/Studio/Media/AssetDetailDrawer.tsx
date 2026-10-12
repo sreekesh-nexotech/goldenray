@@ -35,7 +35,9 @@ export default function AssetDetailDrawer({
   onUpdated: (asset: StudioMediaAsset) => void;
   onDeleted: (uid: string) => void;
 }) {
-  const { toast } = useStudio();
+  const { toast, can } = useStudio();
+  const canEdit = can("media", "edit");
+  const canArchive = can("media", "archive");
   const [alt, setAlt] = useState(asset.alternative_text);
   const [caption, setCaption] = useState(asset.caption);
   const [saving, setSaving] = useState(false);
@@ -225,11 +227,13 @@ export default function AssetDetailDrawer({
             style={{ fontSize: 13 }}
           />
 
-          <div style={{ marginTop: 12 }}>
-            <GoldButton onClick={save} disabled={saving || !dirty} style={{ width: "100%", height: 38 }}>
-              {saving ? "Saving…" : "Save metadata"}
-            </GoldButton>
-          </div>
+          {canEdit && (
+            <div style={{ marginTop: 12 }}>
+              <GoldButton onClick={save} disabled={saving || !dirty} style={{ width: "100%", height: 38 }}>
+                {saving ? "Saving…" : "Save metadata"}
+              </GoldButton>
+            </div>
+          )}
           <div style={{ fontSize: 11.5, color: studioColors.mutedGray, marginTop: 8 }}>
             Metadata only — to replace the image itself, upload a new asset.
           </div>
@@ -257,6 +261,7 @@ export default function AssetDetailDrawer({
           >
             Copy URL
           </button>
+          {canArchive && (
           <button
             type="button"
             onClick={() => setConfirmOpen(true)}
@@ -276,6 +281,7 @@ export default function AssetDetailDrawer({
           >
             Delete
           </button>
+          )}
         </div>
       </div>
 

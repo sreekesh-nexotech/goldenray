@@ -1,6 +1,6 @@
 // src/services/pagesService.ts
 //
-// Website page maintenance (§6.2) — admin-api/pages/ on the CMS. There is no
+// Website page maintenance — pages/ on the platform staff API. There is no
 // create or delete: pages are real routes the site ships, registered by
 // `manage.py seed_pages`. The Studio maintains slots and SEO on what exists.
 

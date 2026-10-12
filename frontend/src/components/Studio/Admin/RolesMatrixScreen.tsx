@@ -18,9 +18,10 @@ import type { StudioAction, StudioModule, StudioPermissionMap } from "@/services
 
 export default function RolesMatrixScreen() {
   const { tips, toast, can } = useStudio();
-  const canManage = can("roles", "manage") || can("roles", "edit");
-  // Deleting a role is the one action the API reserves for `manage`.
-  const canDelete = can("roles", "manage");
+  // accounts/views/roles.py splits these three ways; one boolean hid it.
+  const canCreate = can("roles", "create");                 // POST roles/
+  const canManage = can("roles", "edit");                   // PATCH roles/<uid>/
+  const canDelete = can("roles", "manage");                 // DELETE roles/<uid>/
 
   const [registry, setRegistry] = useState<PermissionRegistry | null>(null);
   const [roles, setRoles] = useState<StudioRole[] | null>(null);
@@ -138,7 +139,7 @@ export default function RolesMatrixScreen() {
       <PageHeader
         title="Roles & Permissions"
         subtitle="What each role can do, per module. Users pick up the matrix of the role they are assigned."
-        actions={canManage ? <GoldButton onClick={() => setCreating(true)}>+ New role</GoldButton> : undefined}
+        actions={canCreate ? <GoldButton onClick={() => setCreating(true)}>+ New role</GoldButton> : undefined}
       />
 
       {tips && (

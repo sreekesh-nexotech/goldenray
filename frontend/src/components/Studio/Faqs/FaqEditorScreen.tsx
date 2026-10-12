@@ -339,7 +339,8 @@ export default function FaqEditorScreen({ id }: { id: string }) {
                     </GoldButton>
                   )
                 )}
-                {!isNew && faq && faq.status === "ARCHIVED" && can("faqs", "edit") && (
+                {/* restore -> archive (faqs/views/faqs.py:52) */}
+                {!isNew && faq && faq.status === "ARCHIVED" && can("faqs", "archive") && (
                   <GhostButton onClick={() => workflow(restoreFaq, "Restored as a draft")} disabled={saving}>Restore</GhostButton>
                 )}
                 {!isNew && faq && faq.status !== "ARCHIVED" && can("faqs", "archive") && (

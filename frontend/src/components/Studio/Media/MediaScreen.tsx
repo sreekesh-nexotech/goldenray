@@ -33,7 +33,9 @@ export function assetKb(a: StudioMediaAsset): number {
 }
 
 export default function MediaScreen() {
-  const { tips, toast } = useStudio();
+  const { tips, toast, can } = useStudio();
+  // media/views/assets.py: upload->create, partial_update->edit, destroy->archive.
+  const canUpload = can("media", "create");
   const [q, setQ] = useState("");
   const [search, setSearch] = useState(""); // debounced copy of q
   const [collFilter, setCollFilter] = useState<string>(""); // "" = All media
@@ -120,9 +122,11 @@ export default function MediaScreen() {
         title="Media library"
         subtitle="Every uploaded image — reused across entries and served by the delivery API."
         actions={
-          <GoldButton onClick={() => fileInput.current?.click()} disabled={uploading}>
-            {uploading ? "Uploading…" : "Upload images"}
-          </GoldButton>
+          canUpload ? (
+            <GoldButton onClick={() => fileInput.current?.click()} disabled={uploading}>
+              {uploading ? "Uploading…" : "Upload images"}
+            </GoldButton>
+          ) : undefined
         }
       />
 
@@ -134,7 +138,7 @@ export default function MediaScreen() {
         multiple
         style={{ display: "none" }}
         onChange={(e) => {
-          if (e.target.files?.length) uploadFiles(e.target.files);
+          if (canUpload && e.target.files?.length) uploadFiles(e.target.files);
           e.target.value = ""; // allow re-picking the same file
         }}
       />
@@ -255,12 +259,13 @@ export default function MediaScreen() {
               </button>
             ))}
 
+            {canUpload && (
             <div
               onClick={() => !uploading && fileInput.current?.click()}
-              onDragOver={(e) => e.preventDefault()}
+              onDragOver={(e) => canUpload && e.preventDefault()}
               onDrop={(e) => {
                 e.preventDefault();
-                if (!uploading && e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
+                if (canUpload && !uploading && e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
               }}
               className="grid place-items-center hover:border-[#074A4D] hover:text-[#074A4D]"
               style={{
@@ -289,11 +294,16 @@ export default function MediaScreen() {
                 </div>
               </div>
             </div>
+            )}
           </div>
 
           {items.length === 0 && (
             <div style={{ padding: "30px 20px 10px", textAlign: "center", color: studioColors.mutedGray, fontSize: 13 }}>
-              {search || collFilter !== "" ? "No assets match this filter." : "No assets yet — upload the first image."}
+              {search || collFilter !== ""
+                ? "No assets match this filter."
+                : canUpload
+                  ? "No assets yet — upload the first image."
+                  : "No assets yet."}
             </div>
           )}
         </>

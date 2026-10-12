@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useStudio, useCapabilities } from "../shared/StudioContext";
+import { useStudio } from "../shared/StudioContext";
 import { PageHeader, GhostButton, TipBanner, FieldLabel, TextInput } from "../shared/primitives";
 import { Modal, ModalTitle } from "../shared/overlays";
 import { studioColors, studioFonts, slugify } from "../shared/format";
@@ -112,8 +112,9 @@ function CollectionCardButton({
 }
 
 export default function CollectionsScreen() {
-  const { tips, toast } = useStudio();
-  const { canManageStructure } = useCapabilities();
+  const { tips, toast, can } = useStudio();
+  // Creating a collection is `blogs.create` (blog/views/schema.py), not `edit`.
+  const canCreate = can("blogs", "create");
   const router = useRouter();
 
   const [colls, setColls] = useState<StudioCollection[] | null>(null);
@@ -175,7 +176,7 @@ export default function CollectionsScreen() {
         title="Collections"
         subtitle="Each collection is a kind of page on the website — same shape inside, its own public API route."
         actions={
-          canManageStructure ? (
+          canCreate ? (
             <GhostButton onClick={() => setModalOpen(true)}>+ New collection</GhostButton>
           ) : undefined
         }
@@ -202,7 +203,7 @@ export default function CollectionsScreen() {
         <div
           style={{ background: "#ffffff", borderRadius: 16, boxShadow: `inset 0 0 0 1px ${studioColors.ring}`, padding: "18px 20px", fontSize: 13.5, color: studioColors.bodyGray }}
         >
-          No collections yet{canManageStructure ? " — create the first one with “+ New collection”." : "."}
+          No collections yet{canCreate ? " — create the first one with “+ New collection”." : "."}
         </div>
       ) : (
         <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(min(280px,100%),1fr))", gap: 14 }}>

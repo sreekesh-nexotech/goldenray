@@ -1,4 +1,3 @@
-const isDevelopment = process.env.NODE_ENV !== "production";
 const defaultApiBaseUrl = "http://62.171.151.149:47063/api/";
 
 export const API_BASE_URL: string =
@@ -19,14 +18,8 @@ const defaultStaffApiBaseUrl = "http://62.171.151.149:47063/api/v1/";
 export const STAFF_API_BASE_URL: string =
 	process.env.NEXT_PUBLIC_STAFF_API_BASE_URL || defaultStaffApiBaseUrl;
 
-// Blog CMS delivery API (Strapi-compatible). The prod CMS is proxied under
-// flarize.com/studio-api (nginx → CMS container); the blog reads /api there.
-// Dev uses the local CMS. Override with NEXT_PUBLIC_BLOG_API_BASE_URL if needed.
-const defaultBlogApiBaseUrl = isDevelopment
-	? "http://127.0.0.1:8009/api"
-	: "https://flarize.com/studio-api/api";
-export const BLOG_API_BASE_URL: string =
-	process.env.NEXT_PUBLIC_BLOG_API_BASE_URL || defaultBlogApiBaseUrl;
+// The blog's delivery API is now the platform's public surface
+// (PUBLIC_API_BASE_URL + `content/`), so there is no separate CMS base URL.
 
 // The Content Studio's authoring API used to be the Django CMS at
 // /studio-api/admin-api/. It now runs on the platform staff API (/api/v1/),

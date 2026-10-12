@@ -348,7 +348,7 @@ function TextSlots({ page, mount, canEdit, onChanged }: { page: PageDetail; moun
 /* -------------------------------------------------------------------------- */
 
 function PageSeoCard({ page, mount, canEdit, siteUrl, onSaved }: { page: PageDetail; mount: PagesMount; canEdit: boolean; siteUrl: string; onSaved: (seo: NonNullable<PageDetail["seo"]>) => void }) {
-  const { toast, can } = useStudio();
+  const { toast } = useStudio();
   const seo = page.seo;
   const initial: SeoValues = {
     seo_title: seo?.seo_title ?? "",
@@ -361,7 +361,9 @@ function PageSeoCard({ page, mount, canEdit, siteUrl, onSaved }: { page: PageDet
   const [ogImage, setOgImage] = useState<{ uid: string | null; url: string | null }>({ uid: seo?.og_image?.uid ?? null, url: seo?.og_image?.url ?? null });
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
-  const editable = canEdit || can("seo", "edit");
+  // pages/<uid>/seo/ is gated on the page module's own `edit`; `seo.edit`
+  // governs seo/metadata/ and seo/redirects/, a different surface.
+  const editable = canEdit;
 
   const save = async () => {
     setSaving(true);

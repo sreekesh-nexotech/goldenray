@@ -10,7 +10,7 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
-import { useStudio, useCapabilities } from "../shared/StudioContext";
+import { useStudio } from "../shared/StudioContext";
 import { PageHeader, TipBanner, StatusPill } from "../shared/primitives";
 import { DropdownMenu, ConfirmDialog, type MenuItem } from "../shared/overlays";
 import { statusPill, studioColors, studioFonts } from "../shared/format";
@@ -130,8 +130,10 @@ const chevron = (
 
 export default function EntriesListScreen() {
   const router = useRouter();
-  const { tips, toast } = useStudio();
-  const { canPublish, canDelete } = useCapabilities();
+  const { tips, toast, can } = useStudio();
+  const canCreate = can("blogs", "create");
+  const canPublish = can("blogs", "publish");
+  const canDelete = can("blogs", "archive");
 
   const [colls, setColls] = useState<StudioCollection[] | null>(null);
   const [activeColl, setActiveColl] = useState<string | null>(null);
@@ -350,7 +352,9 @@ export default function EntriesListScreen() {
     // row actions
     const entry = pageRows.find((e) => e.uid === menu.id);
     if (!entry) return [];
-    const items: MenuItem[] = [{ label: "Duplicate", onClick: () => void doDuplicate(entry) }];
+    const items: MenuItem[] = canCreate
+      ? [{ label: "Duplicate", onClick: () => void doDuplicate(entry) }]
+      : [];
     if (canPublish) {
       const isLive = entry.status === "PUBLISHED";
       items.push({
@@ -403,6 +407,7 @@ export default function EntriesListScreen() {
               Sort: {sortDef.label}
               {chevron}
             </button>
+            {canCreate && (
             <button
               type="button"
               onClick={() => router.push("/studio/entries/new")}
@@ -411,6 +416,7 @@ export default function EntriesListScreen() {
             >
               + New entry
             </button>
+            )}
           </>
         }
       />
@@ -675,6 +681,7 @@ export default function EntriesListScreen() {
                 Clear filters
               </button>
             ) : (
+              canCreate ? (
               <button
                 type="button"
                 onClick={() => router.push("/studio/entries/new")}
@@ -695,6 +702,7 @@ export default function EntriesListScreen() {
               >
                 + New entry
               </button>
+              ) : null
             )}
           </div>
         )}

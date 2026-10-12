@@ -951,7 +951,8 @@ function ApplicationDetail({
 
           <div className="flex flex-wrap justify-end gap-2" style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${studioColors.ring}` }}>
             {current.archived_at ? (
-              canEdit && (
+              /* restore -> applications.archive (careers/views/applications.py:70) */
+              canArchive && (
                 <GhostButton disabled={busy} onClick={() => void run(() => restoreApplication(row.uid), "Restored to the queue")}>
                   Restore to queue
                 </GhostButton>

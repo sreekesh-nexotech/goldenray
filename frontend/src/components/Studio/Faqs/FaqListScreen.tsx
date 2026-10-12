@@ -156,7 +156,8 @@ export default function FaqListScreen() {
         items.push({ label: "Publish", note: "live on the site", onClick: () => act("Publish", () => publishFaq(row.uid), "Published") });
     }
     if (row.status === "ARCHIVED") {
-      if (can("faqs", "edit")) items.push({ label: "Restore", note: "as a draft", onClick: () => act("Restore", () => restoreFaq(row.uid), "Restored") });
+      // faqs/views/faqs.py maps restore -> archive, not edit.
+      if (can("faqs", "archive")) items.push({ label: "Restore", note: "as a draft", onClick: () => act("Restore", () => restoreFaq(row.uid), "Restored") });
     } else if (can("faqs", "archive")) {
       items.push({ label: "Archive", color: studioColors.danger, onClick: () => setConfirmArchive(row) });
     }

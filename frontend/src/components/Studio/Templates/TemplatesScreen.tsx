@@ -8,7 +8,7 @@
 // groups/slots, and Duplicate deep-copies the template server-side.
 
 import { useEffect, useRef, useState } from "react";
-import { useStudio, useCapabilities } from "../shared/StudioContext";
+import { useStudio } from "../shared/StudioContext";
 import {
   PageHeader,
   TipBanner,
@@ -119,9 +119,12 @@ type AddModal = { kind: "group" | "attr" } | null;
 type ConfirmDelete = { kind: "group" | "attr"; index: number } | null;
 
 export default function TemplatesScreen() {
-  const { tips, toast } = useStudio();
-  const { canManageStructure, role } = useCapabilities();
-  const readOnly = !canManageStructure;
+  const { tips, toast, role, can } = useStudio();
+  // The API splits these three ways (blog/views/schema.py):
+  const canCreate = can("blogs", "create");   // new / duplicate template, add group or slot
+  const canEditTpl = can("blogs", "edit");    // rename a template or a field
+  const canArchive = can("blogs", "archive"); // remove a group or slot
+  const readOnly = !canEditTpl;
 
   const [tpls, setTpls] = useState<StudioTemplate[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -397,7 +400,7 @@ export default function TemplatesScreen() {
         title="Templates"
         subtitle="Set structure once — every entry using the template inherits its image groups and attributes."
         actions={
-          canManageStructure ? (
+          canCreate ? (
             <div className="flex items-center" style={{ gap: 8 }}>
               {active && (
                 <GhostButton style={{ height: 38, padding: "0 15px" }} onClick={duplicate} disabled={busy}>
@@ -413,7 +416,7 @@ export default function TemplatesScreen() {
       />
 
       {/* Role lock banner */}
-      {!canManageStructure && (
+      {!canEditTpl && !canCreate && (
         <div
           className="mb-3.5 flex items-center gap-2.5"
           style={{
@@ -464,7 +467,7 @@ export default function TemplatesScreen() {
             A template defines the image groups and attribute fields an entry can hold. Create one to start
             structuring your blog entries.
           </div>
-          {canManageStructure ? (
+          {canCreate ? (
             <GoldButton style={{ height: 38, padding: "0 16px" }} onClick={() => setNewTplOpen(true)}>
               + Create your first template
             </GoldButton>
@@ -543,13 +546,13 @@ export default function TemplatesScreen() {
                   chip={groupChip(g)}
                   required={g.required}
                   readOnly={readOnly}
-                  canEdit={canManageStructure}
+                  canEdit={canArchive}
                   onLabel={(v) => editGroupLabel(i, v)}
                   onToggle={() => toggleGroupReq(i)}
                   onRemove={() => setConfirmDelete({ kind: "group", index: i })}
                 />
               ))}
-              {canManageStructure && (
+              {canCreate && (
                 <AddButton label="+ Add image group" onClick={() => setAddModal({ kind: "group" })} />
               )}
             </div>
@@ -577,13 +580,13 @@ export default function TemplatesScreen() {
                   chip={attrChip(a)}
                   required={a.required}
                   readOnly={readOnly}
-                  canEdit={canManageStructure}
+                  canEdit={canArchive}
                   onLabel={(v) => editAttrLabel(i, v)}
                   onToggle={() => toggleAttrReq(i)}
                   onRemove={() => setConfirmDelete({ kind: "attr", index: i })}
                 />
               ))}
-              {canManageStructure && (
+              {canCreate && (
                 <AddButton label="+ Add attribute" onClick={() => setAddModal({ kind: "attr" })} />
               )}
             </div>

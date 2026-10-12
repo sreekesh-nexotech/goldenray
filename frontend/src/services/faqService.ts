@@ -1,6 +1,6 @@
 // src/services/faqService.ts
 //
-// FAQ module client (§6.4, §6.5) — admin-api/faqs/ and admin-api/faq-categories/
+// FAQ module client — faqs/ and faq-categories/ on the platform staff API
 // on the CMS. Shares the Studio session via studioRequest.
 
 import { studioRequest, query, type Paginated } from "./studioService";
