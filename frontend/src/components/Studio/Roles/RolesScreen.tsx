@@ -301,11 +301,17 @@ export default function RolesScreen() {
     try {
       const created = await createUser(payload);
       setUsers((prev) => [...(prev ?? []), created]);
-      toast(`${created.email} invited`);
+      // Only the no-password branch sends mail, so don't claim an invite that never went out.
+      toast(payload.password ? `${created.email} created` : `${created.email} invited`);
       setInviteOpen(false);
     } catch (err) {
-      // Re-throw with the API's message so the modal shows it inline.
-      throw new Error(err instanceof StudioApiError ? err.message : "Couldn’t create the user");
+      // Re-throw with the API's message so the modal shows it inline. A rejected
+      // password comes back as a field error, which carries the actual rule
+      // (too common, too similar to the e-mail) that the generic message omits.
+      if (err instanceof StudioApiError) {
+        throw new Error(err.fieldError("password") ?? err.errors?.[0] ?? err.message);
+      }
+      throw new Error("Couldn’t create the user");
     }
   };
 

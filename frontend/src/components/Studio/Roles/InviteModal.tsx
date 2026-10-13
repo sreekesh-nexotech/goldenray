@@ -2,9 +2,17 @@
 
 // src/components/Studio/Roles/InviteModal.tsx
 //
-// Add-a-user modal for the Roles & access screen. POSTs auth/users/ via the
-// parent's onCreate handler (admin only): username + password are required,
-// email is optional, role picks the access level.
+// Add-a-user modal for the Roles & access screen. POSTs users/ via the parent's
+// onCreate handler, gated on `users.create`.
+//
+// Two ways to give the new account a password, matching the platform's two
+// branches in `accounts.services.users.create_user`:
+//
+//  - "Email an invitation" (default) — no password is sent; the server stores an
+//    unusable one, sets must_reset_password and mails a single-use link.
+//  - "Set a password now" — the password is sent and stored, no invitation goes
+//    out, and the account can sign in straight away. The fallback for when mail
+//    is not deliverable (a console-only EMAIL_BACKEND, or no SMTP relay yet).
 
 import { useState } from "react";
 import { Modal, ModalTitle, ModalActions } from "../shared/overlays";
@@ -16,15 +24,56 @@ const fieldRing = `inset 0 0 0 1px ${studioColors.inputRing},0 1px 2px rgba(10,1
 const fieldRingFocus = "inset 0 0 0 1.5px #074A4D,0 1px 2px rgba(10,13,18,.05)";
 
 /**
- * The platform creates the account **without** a password and e-mails an
- * invitation link, so there is nothing to share by hand. E-mail is the login,
- * and the role is identified by its uid.
+ * E-mail is the login and the role is identified by its uid. `password` is
+ * optional: left out, the platform e-mails an invitation link instead.
  */
 export interface NewUserPayload {
   email: string;
   role: string;
   first_name?: string;
   last_name?: string;
+  password?: string;
+}
+
+/** Mirrors the server's AUTH_PASSWORD_VALIDATORS so the obvious rejects never cost a round-trip. */
+const MIN_PASSWORD_LENGTH = 10;
+
+/** One of the two password routes: a radio with a title and a one-line consequence. */
+function ModeChoice({
+  checked,
+  onSelect,
+  title,
+  hint,
+}: {
+  checked: boolean;
+  onSelect: () => void;
+  title: string;
+  hint: string;
+}) {
+  return (
+    <label
+      className="flex cursor-pointer items-start"
+      style={{
+        gap: 9,
+        padding: "10px 12px",
+        borderRadius: 12,
+        background: checked ? "rgba(173,214,216,.22)" : "#ffffff",
+        boxShadow: checked ? "inset 0 0 0 1.5px #074A4D" : fieldRing,
+      }}
+    >
+      <input
+        type="radio"
+        name="flz-new-user-password-mode"
+        checked={checked}
+        onChange={onSelect}
+        style={{ accentColor: "#074A4D", marginTop: 2, cursor: "pointer", flex: "none" }}
+      />
+      <span style={{ minWidth: 0 }}>
+        <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: studioColors.tealDeep }}>{title}</span>
+        <span style={{ display: "block", fontSize: 11.5, color: studioColors.bodyGray, lineHeight: 1.45, marginTop: 1 }}>{hint}</span>
+      </span>
+    </label>
+  );
 }
 
 export function InviteModal({
@@ -43,6 +92,10 @@ export function InviteModal({
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState<string>("");
+  const [mode, setMode] = useState<"invite" | "password">("invite");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [reveal, setReveal] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -51,6 +104,10 @@ export function InviteModal({
     setFirstName("");
     setLastName("");
     setRole("");
+    setMode("invite");
+    setPassword("");
+    setConfirm("");
+    setReveal(false);
     setError("");
   };
 
@@ -68,6 +125,19 @@ export function InviteModal({
       setError("Choose a role");
       return;
     }
+    if (mode === "password") {
+      // Catch the cheap cases here; the server is still the authority on the
+      // full policy (common passwords, similarity to the e-mail) and its
+      // field error is surfaced verbatim by the catch below.
+      if (password.length < MIN_PASSWORD_LENGTH) {
+        setError(`The password needs at least ${MIN_PASSWORD_LENGTH} characters`);
+        return;
+      }
+      if (password !== confirm) {
+        setError("The two passwords do not match");
+        return;
+      }
+    }
     setError("");
     setBusy(true);
     try {
@@ -76,6 +146,7 @@ export function InviteModal({
         role,
         first_name: firstName.trim() || undefined,
         last_name: lastName.trim() || undefined,
+        password: mode === "password" ? password : undefined,
       });
       reset();
     } catch (err) {
@@ -89,8 +160,7 @@ export function InviteModal({
     <Modal open={open} onClose={cancel} ariaLabel="Add user" width={460}>
       <ModalTitle>Add a user</ModalTitle>
       <p style={{ fontSize: 12.5, color: studioColors.bodyGray, margin: "4px 0 16px", lineHeight: 1.5 }}>
-        Creates an internal account for the Flarize content studio. They receive an
-        invitation e-mail and set their own password — nothing to share by hand.
+        Creates an internal account for the Flarize content studio.
       </p>
 
       <div style={{ marginBottom: 14 }}>
@@ -158,6 +228,73 @@ export function InviteModal({
         </div>
       </div>
 
+      <div style={{ marginBottom: mode === "password" ? 14 : 20 }}>
+        <FieldLabel>Password</FieldLabel>
+        <div role="radiogroup" aria-label="How the account gets its password" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <ModeChoice
+            checked={mode === "invite"}
+            onSelect={() => {
+              setMode("invite");
+              setError("");
+            }}
+            title="Email an invitation"
+            hint="They set their own password from a single-use link. Needs working e-mail delivery."
+          />
+          <ModeChoice
+            checked={mode === "password"}
+            onSelect={() => {
+              setMode("password");
+              setError("");
+            }}
+            title="Set a password now"
+            hint="No e-mail is sent. Share the password yourself — use this when mail is not deliverable."
+          />
+        </div>
+      </div>
+
+      {mode === "password" && (
+        <div style={{ marginBottom: 20 }}>
+          <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr" }}>
+            <div>
+              <FieldLabel>New password</FieldLabel>
+              <TextInput
+                value={password}
+                onChange={setPassword}
+                type={reveal ? "text" : "password"}
+                placeholder="At least 10 characters"
+                ariaLabel="New password"
+                style={{ borderRadius: 12 }}
+              />
+            </div>
+            <div>
+              <FieldLabel>Confirm</FieldLabel>
+              <TextInput
+                value={confirm}
+                onChange={setConfirm}
+                type={reveal ? "text" : "password"}
+                placeholder="Repeat it"
+                ariaLabel="Confirm password"
+                style={{ borderRadius: 12 }}
+              />
+            </div>
+          </div>
+          <div className="flex items-center" style={{ justifyContent: "space-between", marginTop: 8, gap: 10 }}>
+            <label className="flex items-center" style={{ gap: 6, fontSize: 12, color: studioColors.bodyGray, cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={reveal}
+                onChange={(e) => setReveal(e.target.checked)}
+                style={{ accentColor: "#074A4D", cursor: "pointer" }}
+              />
+              Show password
+            </label>
+            <span style={{ fontSize: 11.5, color: studioColors.faintGray, textAlign: "right" }}>
+              They can change it later from their own profile.
+            </span>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div role="alert" style={{ fontSize: 12, fontWeight: 500, color: studioColors.danger, marginBottom: 12 }}>
           {error}
@@ -169,7 +306,7 @@ export function InviteModal({
           Cancel
         </GhostButton>
         <GoldButton onClick={submit} disabled={busy} style={{ height: 36, padding: "0 15px", fontSize: 13 }}>
-          {busy ? "Creating…" : "Create user"}
+          {busy ? "Creating…" : mode === "invite" ? "Send invitation" : "Create user"}
         </GoldButton>
       </ModalActions>
     </Modal>

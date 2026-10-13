@@ -33,7 +33,15 @@ export function useEditableRows<TRow extends { uid: string }, TInput extends obj
   initial: TRow[],
   api: RowApi<TRow, TInput>,
   toInput: (row: TRow) => TInput,
-  notify: { success: (msg: string) => void; error: (msg: string) => void }
+  notify: { success: (msg: string) => void; error: (msg: string) => void },
+  /**
+   * Turns a failed write into the message shown to the user. Supplied by the
+   * caller because what a failure *means* depends on the endpoint: on a
+   * versioned resource a 409 is "someone else saved first, reload", which is
+   * advice the default `err.message` cannot give.
+   */
+  describeError: (err: unknown) => string = (err) =>
+    err instanceof Error ? err.message : "Could not save"
 ) {
   const [rows, setRows] = useState<TRow[]>(initial);
   // Server-side truth per uid, for dirty-checking and Discard.
@@ -91,13 +99,26 @@ export function useEditableRows<TRow extends { uid: string }, TInput extends obj
         });
         notify.success("Saved");
       } catch (err) {
-        notify.error(err instanceof Error ? err.message : "Could not save");
+        notify.error(describeError(err));
       } finally {
         setBusyId(null);
       }
     },
-    [rows, api, toInput, notify]
+    [rows, api, toInput, notify, describeError]
   );
+
+  /**
+   * Replace a row with a server response, and make that the new clean baseline.
+   *
+   * For writes that go somewhere other than `save` -- a workflow action like
+   * approving an offer, which returns the updated row. Without resetting the
+   * baseline too the row would read as dirty forever, offering a Save that has
+   * nothing to save.
+   */
+  const replace = useCallback((next: TRow) => {
+    setRows((prev) => prev.map((r) => (r.uid === next.uid ? next : r)));
+    setSaved((prev) => new Map(prev).set(next.uid, next));
+  }, []);
 
   const remove = useCallback(
     async (uid: string) => {
@@ -116,13 +137,13 @@ export function useEditableRows<TRow extends { uid: string }, TInput extends obj
         });
         notify.success("Deleted");
       } catch (err) {
-        notify.error(err instanceof Error ? err.message : "Could not delete");
+        notify.error(describeError(err));
       } finally {
         setBusyId(null);
       }
     },
-    [api, notify]
+    [api, notify, describeError]
   );
 
-  return { rows, isDirty, patch, add, discard, save, remove, busyId };
+  return { rows, isDirty, patch, add, discard, save, remove, replace, busyId };
 }

@@ -15,9 +15,36 @@ export interface FetchApiOptions {
   idempotencyKey?: string;
 }
 
-// Fresh Idempotency-Key (the backend accepts 8-128 characters).
+// Fresh Idempotency-Key, matching the backend's `^[A-Za-z0-9_\-:.]{8,128}$`.
+//
+// `crypto.randomUUID()` only exists in a **secure context** (HTTPS, or
+// localhost). The staging site is served over plain HTTP, where it is
+// undefined — calling it threw `crypto.randomUUID is not a function` and took
+// down every public form that sends an idempotency key, before the request was
+// even made. `crypto.getRandomValues()` has no such restriction, so it is the
+// first fallback; `Math.random()` is the last resort, since a duplicate key
+// only costs a replayed response, while throwing costs the whole submission.
 export function newIdempotencyKey(): string {
-  return globalThis.crypto.randomUUID();
+  const cryptoApi = globalThis.crypto;
+
+  if (typeof cryptoApi?.randomUUID === "function") {
+    return cryptoApi.randomUUID();
+  }
+
+  const hex = (bytes: Uint8Array) =>
+    Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+
+  if (typeof cryptoApi?.getRandomValues === "function") {
+    return hex(cryptoApi.getRandomValues(new Uint8Array(16)));
+  }
+
+  // No Web Crypto at all (very old browsers). Still 32 chars, still unique
+  // enough for a replay window: the key is not a security token.
+  return (
+    Date.now().toString(16).padStart(12, "0") +
+    Array.from({ length: 10 }, () => Math.floor(Math.random() * 16).toString(16)).join("") +
+    Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, "0")
+  ).slice(0, 32);
 }
 
 export async function fetchApi<T>(

@@ -43,6 +43,12 @@ const ROUTE_MODULES: [string, StudioModule][] = [
   // The Settings screen edits company/profile/, which is the `company` module.
   ["/studio/settings", "company"],
   ["/studio/bom", "bom"],
+  // The BOM admin screen spans catalog, bom and offers. It is gated here on the
+  // least of those -- `catalog`, which its first tab needs -- and the screen then
+  // hides each tab the role cannot read. Note `/studio/bom-admin` does not match
+  // the `/studio/bom` prefix above (the match requires a following slash), so
+  // without this entry the route would have no gate at all.
+  ["/studio/bom-admin", "catalog"],
 ];
 
 function moduleForPath(pathname: string): StudioModule | null {

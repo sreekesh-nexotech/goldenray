@@ -220,6 +220,7 @@ const SECTIONS: { title: string; items: NavDef[] }[] = [
       { key: "quo", label: "Quotations", href: "/studio/quotations", icon: I.quotations, module: "quotations" },
       // Gated by the new backend (bom.view) on every call; the sign-in is separate from the CMS, so reuse a CMS module for visibility.
       { key: "bom", label: "BOM Calculator", href: "/studio/bom", icon: I.quotations, module: "bom" },
+      { key: "bom-admin", label: "BOM Admin", href: "/studio/bom-admin", icon: I.settings, module: "catalog" },
     ],
   },
   {
