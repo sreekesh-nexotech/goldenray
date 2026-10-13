@@ -24,6 +24,7 @@ import {
   categories as categoriesApi,
   components as componentsApi,
   fixedItems as fixedItemsApi,
+  costConfig as costConfigApi,
   offers as offersApi,
   structureItems as structureItemsApi,
   structureTemplates as structureTemplatesApi,
@@ -31,6 +32,7 @@ import {
   tubeWeights as tubeWeightsApi,
   type BomTemplateRow,
   type CatalogCategory,
+  type CostConfigBody,
   type CatalogComponent,
   type FixedItemRow,
   type OfferRow,
@@ -42,14 +44,20 @@ import type { StudioAction, StudioModule } from "@/services/studioService";
 import CatalogTab from "./CatalogTab";
 import StructureRatesTab from "./StructureRatesTab";
 import FixedPricesTab from "./FixedPricesTab";
+import CostsTab from "./CostsTab";
 import OffersTab from "./OffersTab";
 
-type TabKey = "catalog" | "structure" | "fixed" | "offers";
+type TabKey = "catalog" | "structure" | "fixed" | "costs" | "offers";
 
 const TABS: { key: TabKey; label: string; module: StudioModule }[] = [
   { key: "catalog", label: "Catalog", module: "catalog" },
   { key: "structure", label: "Structure & tubes", module: "bom" },
   { key: "fixed", label: "Fixed prices", module: "bom" },
+  // Cost config lives under `pricing`, not `bom`: it is already gated there
+  // (`pricing.edit` to write, with margin keys additionally needing
+  // `pricing_internal.view`), which is why the port needed no new permission
+  // module for it.
+  { key: "costs", label: "Cost rates", module: "pricing" },
   { key: "offers", label: "Offers", module: "offers" },
 ];
 
@@ -125,6 +133,11 @@ export default function BomAdminScreen() {
     }, [])
   );
 
+  const costs = useLoaded<CostConfigBody>(
+    tab === "costs",
+    useCallback(() => costConfigApi.get(), [])
+  );
+
   const offerRows = useLoaded<OfferRow[]>(
     tab === "offers",
     useCallback(() => offersApi.list(), [])
@@ -150,8 +163,8 @@ export default function BomAdminScreen() {
       <div>
         <PageHeader title="BOM Admin" subtitle="The data behind the BOM calculator." />
         <p style={{ fontSize: 13.5, color: studioColors.mutedGray }}>
-          Your role does not include any of these areas. Ask an Admin for the catalog, BOM or
-          offers permission.
+          Your role does not include any of these areas. Ask an Admin for the catalog, BOM,
+          pricing or offers permission.
         </p>
       </div>
     );
@@ -238,6 +251,12 @@ export default function BomAdminScreen() {
               notify={notify}
             />
           )}
+        </Loaded>
+      )}
+
+      {tab === "costs" && (
+        <Loaded state={costs}>
+          {(data) => <CostsTab initial={data} readOnly={!canEdit("pricing")} notify={notify} />}
         </Loaded>
       )}
 

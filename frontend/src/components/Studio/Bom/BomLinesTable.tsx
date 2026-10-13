@@ -6,6 +6,11 @@
 // is a picking list -- item, quantity, unit and nothing else -- because the warehouse
 // should not be handed our prices (Golden-Ray-BOM calls these `quotation` and `dispatch`,
 // App.jsx:3049).
+//
+// In dispatch mode the price fields are not merely hidden here, they are absent: the
+// screen re-quotes with `mode=dispatch` and the server strips them. So this component
+// never has a price to leak, and the column gating below is the second of two locks
+// rather than the only one.
 
 import { useMemo } from "react";
 import type { BomQuoteLine, BomQuoteResponse } from "@/services/bomStaffService";

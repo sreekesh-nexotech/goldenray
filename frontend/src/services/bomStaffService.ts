@@ -34,6 +34,12 @@ export interface BomQuoteRequest {
   size: string;
   tier: BomTier;
   bat_config?: string;
+  /**
+   * `dispatch` asks the server for the warehouse picking list: no prices on the lines,
+   * no `pricing` block, no offers. Stripping happens there rather than here, so a
+   * machine on the warehouse floor is never sent a price it must not display.
+   */
+  mode?: "quotation" | "dispatch";
   dist_km?: number;
   structure_type?: BomStructureType;
   subsidy_type?: BomSubsidyType;
@@ -293,3 +299,46 @@ export const runBomBillSizing = (body: BomBillSizingRequest) =>
 
 export const runBomQuote = (body: BomQuoteRequest) =>
   request<BomQuoteResponse>("bom/quote/", { method: "POST", body });
+
+/**
+ * The BOM as a CSV download, rendered by the server.
+ *
+ * Not assembled in the browser, for the same reason dispatch mode strips there: the
+ * picking list must contain no prices, and a client that built the sheet from a priced
+ * response would have had the prices in the first place. One request, one document.
+ */
+export async function downloadBomCsv(body: BomQuoteRequest & { mode?: "quotation" | "dispatch" }): Promise<void> {
+  let res: Response;
+  try {
+    res = await fetch("/fe-api/studio/proxy/bom/quote/csv/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      cache: "no-store",
+    });
+  } catch {
+    throw new BomApiError(0, "Can’t reach the server — check your connection and try again.", "network_error");
+  }
+  if (!res.ok) {
+    if (res.status === 401) throw new BomApiError(401, "Your Studio session expired. Sign in again.", "session_expired");
+    // The error body is JSON even though the success body is a file.
+    return parse<never>(res);
+  }
+
+  // The filename the server chose, so the sheet is named the same however it is fetched.
+  const disposition = res.headers.get("Content-Disposition") ?? "";
+  const match = /filename="?([^";]+)"?/.exec(disposition);
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  try {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = match?.[1] ?? "bom.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } finally {
+    // Without this the blob is held for the life of the document.
+    URL.revokeObjectURL(url);
+  }
+}

@@ -20,6 +20,7 @@ import { useStudio } from "../shared/StudioContext";
 import { studioColors } from "../shared/format";
 import {
   BomApiError,
+  downloadBomCsv,
   getBomQuoteOptions,
   runBomQuote,
   type BomQuoteOptions,
@@ -115,7 +116,7 @@ function Calculator() {
     const timer = setTimeout(async () => {
       setLoading(true);
       try {
-        const out = await runBomQuote(toRequest(inputs));
+        const out = await runBomQuote({ ...toRequest(inputs), mode });
         if (mine === seq.current) {
           setResult(out);
           setError("");
@@ -130,9 +131,21 @@ function Calculator() {
       }
     }, 350);
     return () => clearTimeout(timer);
-  }, [inputs, options, fail]);
+  }, [inputs, options, mode, fail]);
 
   const offers = useMemo(() => result?.available_offers ?? [], [result]);
+
+  const [exporting, setExporting] = useState(false);
+  const exportCsv = useCallback(async () => {
+    setExporting(true);
+    try {
+      await downloadBomCsv({ ...toRequest(inputs), mode });
+    } catch (e) {
+      fail(e);
+    } finally {
+      setExporting(false);
+    }
+  }, [inputs, mode, fail]);
 
   // A selected offer that stops applying (the tier changed, say) would otherwise keep
   // being sent and silently ignored.
@@ -200,6 +213,27 @@ function Calculator() {
                 Recalculating…
               </span>
             )}
+            <button
+              type="button"
+              onClick={exportCsv}
+              disabled={exporting || !result}
+              className="ml-auto"
+              style={{
+                appearance: "none",
+                border: `1px solid ${studioColors.ring}`,
+                background: "#fff",
+                color: studioColors.tealDeep,
+                borderRadius: 10,
+                padding: "7px 13px",
+                fontFamily: "var(--font-switzer)",
+                fontSize: 12.5,
+                fontWeight: 600,
+                cursor: exporting || !result ? "not-allowed" : "pointer",
+                opacity: exporting || !result ? 0.55 : 1,
+              }}
+            >
+              {exporting ? "Preparing…" : mode === "dispatch" ? "Download picking list" : "Download CSV"}
+            </button>
           </div>
 
           {result && (

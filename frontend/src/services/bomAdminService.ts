@@ -449,3 +449,92 @@ export const OFFER_TRANSITIONS: Record<
   EXPIRED: [{ action: "archive", label: "Archive", permission: "archive" }],
   ARCHIVED: [],
 };
+
+/* -------------------------------------------------------------------------- */
+/*  5. Cost config (installation, service, transport, structure rates, margin) */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * One configurable cost key.
+ *
+ * `internal` keys are margin data: without `pricing_internal.view` the API
+ * returns them with `value: null` and `hidden: true` rather than omitting them,
+ * so the screen can say "you may not see this" instead of implying the key does
+ * not exist.
+ */
+export interface CostKeySpec {
+  key: string;
+  group: string;
+  kind: "money" | "integer" | "fraction" | "document";
+  description: string;
+  internal: boolean;
+}
+
+export interface CostRow {
+  uid: string;
+  key: string;
+  value: unknown;
+  hidden: boolean;
+  effective_from: string;
+  effective_to: string | null;
+  note: string;
+  version: number;
+}
+
+export interface CostConfigBody {
+  keys: CostKeySpec[];
+  current: CostRow[];
+}
+
+/**
+ * Cost config is **append-only and dated**: a save writes a new effective row
+ * and closes the previous one, rather than overwriting a value. So the history
+ * of what a quote was priced against survives, and `effective_from` cannot be
+ * backdated before the current row or set in the future.
+ *
+ * It is also a **batch** PUT. That is the point: the source tool writes each
+ * cost field as the cursor leaves it, so changing the GP and GI rates together
+ * is two writes that can half-succeed, leaving the two tiers priced against
+ * different vintages. One call, one effective date.
+ *
+ * `current_uid` is the staleness check — the uid of the row the client saw. It
+ * is per entry rather than per request because each key has its own current row.
+ */
+export const costConfig = {
+  get: () => studioRequest<CostConfigBody>("pricing/cost-config/"),
+  put: (body: {
+    entries: { key: string; value: unknown; current_uid?: string | null }[];
+    effective_from?: string;
+    note?: string;
+  }) =>
+    studioRequest<{ written: CostRow[]; current: CostRow[] }>("pricing/cost-config/", {
+      method: "PUT",
+      body,
+    }),
+};
+
+/**
+ * The cost keys the BOM calculator reads, in the order the source tool shows
+ * them. Every one maps to an existing registry key — the port needed no new
+ * configuration, only an editor for it.
+ */
+export const BOM_COST_KEYS: { key: string; label: string; hint?: string }[] = [
+  { key: "install_rate", label: "Installation", hint: "Per kW." },
+  { key: "service_rate_year", label: "Service", hint: "Per year." },
+  { key: "service_years", label: "Service years" },
+  { key: "transport_rate_per_km", label: "Transport", hint: "Per km, for the whole distance." },
+  {
+    key: "transport_base_km",
+    label: "Distance included",
+    hint: "Beyond this, the extra-km rate is added on top of the market rate — not into the cost.",
+  },
+  { key: "transport_extra_rate_per_km", label: "Extra distance", hint: "Per km beyond the included distance." },
+  { key: "miscellaneous", label: "Miscellaneous", hint: "Per project." },
+  { key: "office_per_project", label: "Office", hint: "Per project." },
+  { key: "elevated_structure_rate", label: "Elevated structure" },
+  { key: "sheet_structure_rate", label: "Sheet-roof structure" },
+  { key: "gp_rate_per_kg", label: "GP tube", hint: "Per kg. Base tier." },
+  { key: "gi_rate_per_kg", label: "GI tube", hint: "Per kg. Value and premium tiers." },
+  { key: "structure_labor", label: "Structure labour", hint: "Per project." },
+  { key: "structure_repair_pct", label: "Structure repair", hint: "A fraction: 0.1 is 10%." },
+];
