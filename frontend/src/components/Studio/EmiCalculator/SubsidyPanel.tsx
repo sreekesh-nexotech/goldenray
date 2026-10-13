@@ -17,8 +17,8 @@ import {
   inr,
   nullableNum,
   str,
-} from "./shared";
-import { useEditableRows } from "./useEditableRows";
+} from "../shared/rows";
+import { useEditableRows } from "../shared/useEditableRows";
 
 const toInput = (row: EMISubsidyRule): EMISubsidyRuleInput => ({
   label: row.label,

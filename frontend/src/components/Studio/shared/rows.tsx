@@ -1,14 +1,20 @@
 "use client";
 
-// src/components/Studio/EmiCalculator/shared.tsx
+// src/components/Studio/shared/rows.tsx
 //
-// Small form pieces shared by the EMI calculator panels. They wrap the studio
-// primitives so every panel gets the same label/hint/spacing treatment and the
-// same "edited → Save / Discard" affordance on a row.
+// Form pieces for the Studio's row editors -- the admin grids where a list of
+// records is edited one row at a time. They wrap the studio primitives so every
+// such panel gets the same label/hint/spacing treatment and the same
+// "edited -> Save / Discard" affordance.
+//
+// Shared by the EMI calculator and the BOM admin tabs. Promoted here from
+// EmiCalculator/ when the BOM editors needed the same `RowCard` dirty-ring UX:
+// a second copy would have let the two drift, and "is this row saved?" is
+// exactly the question a user must never get a different answer to.
 
 import type { CSSProperties, ReactNode } from "react";
-import { FieldLabel, GhostButton, GoldButton, Switch, TextInput } from "../shared/primitives";
-import { studioColors } from "../shared/format";
+import { FieldLabel, GhostButton, GoldButton, Switch, TextInput } from "./primitives";
+import { studioColors } from "./format";
 
 /* -------------------------------------------------------------------------- */
 /*  Fields                                                                     */

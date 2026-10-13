@@ -1,11 +1,16 @@
 "use client";
 
-// src/components/Studio/EmiCalculator/useEditableRows.ts
+// src/components/Studio/shared/useEditableRows.ts
 //
-// Row-level edit state for the EMI calculator panels: edit in place, then Save
+// Row-level edit state for the Studio's admin grids: edit in place, then Save
 // or Discard that one row. Each panel owns its own list; nothing is written
 // until a row is explicitly saved, so a half-typed rate never reaches the
-// public calculator.
+// public calculator -- the reason this is explicit Save rather than the
+// per-field `onBlur` PUT the source BOM tool uses.
+//
+// `toInput` is supplied by the caller, which is where a versioned endpoint
+// threads its `expected_version` through: the platform's CRUD rows carry a
+// `version`, and a PATCH that omits it silently overwrites a concurrent edit.
 //
 // New rows get a temporary client-side uid (prefixed "new:") until the API
 // returns the real record; platform ids are uuid strings, never numbers.

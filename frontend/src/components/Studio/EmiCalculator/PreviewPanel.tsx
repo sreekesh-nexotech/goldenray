@@ -13,7 +13,7 @@ import {
   type EMISettings,
   type EMISystemSize,
 } from "@/services/emiCalculator";
-import { Field, PanelIntro, inr } from "./shared";
+import { Field, PanelIntro, inr } from "../shared/rows";
 
 function Line({
   label,
