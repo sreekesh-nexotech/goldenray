@@ -43,6 +43,12 @@ export interface BomQuoteRequest {
   margin_val?: number;
   upgrade_from_kw?: number;
   upgrade_to_kw?: number;
+  /**
+   * The phase of the system AFTER the upgrade. Chosen, not derived from the target size:
+   * a customer moving to 5 kW may stay single-phase or move to three, and the choice
+   * changes the inverter, the ACDB, the AC cable run and whether a new meter is needed.
+   */
+  upgrade_phase?: "1P" | "3P";
   upgrade_sections?: Record<string, boolean>;
 }
 

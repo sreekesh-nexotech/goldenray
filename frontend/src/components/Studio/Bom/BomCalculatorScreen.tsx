@@ -28,6 +28,7 @@ import {
 import ConfigPanel, { CommercialPanel } from "./ConfigPanel";
 import BomLinesTable, { type BomMode } from "./BomLinesTable";
 import PricingPanel, { CostPanel } from "./PricingPanel";
+import UpgradePanel from "./UpgradePanel";
 import { Step } from "./shared";
 import { DEFAULT_INPUTS, sizeForSystemType, toRequest, type BomInputs } from "./inputs";
 
@@ -159,6 +160,15 @@ function Calculator() {
       <div className="grid gap-4 lg:grid-cols-[380px_1fr]">
         <div className="flex min-w-0 flex-col gap-4" style={{ alignSelf: "start" }}>
           <ConfigPanel inputs={inputs} options={options} set={set} />
+          {inputs.sysType === "upgrade" && (
+            <UpgradePanel
+              inputs={inputs}
+              set={set}
+              // The engine reports the panel count it actually derived from the chosen
+              // module's wattage, which beats recomputing it here off an assumed 550 W.
+              newPanels={typeof result?.meta?.new_panels === "number" ? result.meta.new_panels : null}
+            />
+          )}
           <Step n="3" title="Review and finalise">
             <CommercialPanel inputs={inputs} set={set} offers={offers} canSeeMargin={canSeeCost} />
           </Step>

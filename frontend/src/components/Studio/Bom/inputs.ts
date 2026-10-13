@@ -36,7 +36,36 @@ export interface BomInputs {
   marginVal: string;
   upgradeFrom: string;
   upgradeTo: string;
+  upgradePhase: HousePhase;
+  upgradeSections: UpgradeSections;
 }
+
+/**
+ * What an upgrade covers. Each toggle decides whether that part of the system is
+ * replaced, so they are the difference between quoting a panel top-up and quoting a
+ * rebuild.
+ *
+ * `hybridInv` is not a seventh component but a substitution: it replaces the on-grid
+ * inverter, which is why selecting it hides `inverter` and is what makes `battery`
+ * meaningful.
+ */
+export interface UpgradeSections {
+  panels: boolean;
+  structure: boolean;
+  inverter: boolean;
+  hybridInv: boolean;
+  battery: boolean;
+  wiring: boolean;
+}
+
+export const DEFAULT_SECTIONS: UpgradeSections = {
+  panels: true,
+  structure: true,
+  inverter: true,
+  hybridInv: false,
+  battery: false,
+  wiring: true,
+};
 
 export const DEFAULT_INPUTS: BomInputs = {
   sysType: "ongrid",
@@ -55,7 +84,22 @@ export const DEFAULT_INPUTS: BomInputs = {
   marginVal: "20",
   upgradeFrom: "3",
   upgradeTo: "5",
+  upgradePhase: "1P",
+  upgradeSections: DEFAULT_SECTIONS,
 };
+
+/**
+ * Hybrid inverters below 5 kW exist only as single-phase (three-phase starts at 8 kW), so
+ * a 3P pick there is not honoured. The backend forces it back; saying so here keeps the
+ * screen from showing a choice that will be silently overridden.
+ */
+export function upgradePhaseIsForced(sections: UpgradeSections, toKw: number): boolean {
+  return sections.hybridInv && toKw <= 5;
+}
+
+export function effectiveUpgradePhase(phase: HousePhase, sections: UpgradeSections, toKw: number): HousePhase {
+  return upgradePhaseIsForced(sections, toKw) ? "1P" : phase;
+}
 
 /** kW of a size key: `5sp` and `5tp` are both 5 kW, one single- and one three-phase. */
 export function sizeKw(key: string): number {
@@ -126,9 +170,22 @@ export function toRequest(i: BomInputs): BomQuoteRequest {
     margin_val: Number(i.marginVal) || 0,
   };
   if (i.sysType === "upgrade") {
+    const toKw = Number(i.upgradeTo) || 5;
     request.upgrade_from_kw = Number(i.upgradeFrom) || 3;
-    request.upgrade_to_kw = Number(i.upgradeTo) || 5;
-    request.size = String(request.upgrade_to_kw);
+    request.upgrade_to_kw = toKw;
+    request.size = String(toKw);
+    request.upgrade_phase = effectiveUpgradePhase(i.upgradePhase, i.upgradeSections, toKw);
+    // The API spells the hybrid-inverter section `hybrid_inv`.
+    request.upgrade_sections = {
+      panels: i.upgradeSections.panels,
+      structure: i.upgradeSections.structure,
+      // Selecting a hybrid inverter replaces the on-grid one rather than adding to it,
+      // so the two are never both on (App.jsx:1833).
+      inverter: i.upgradeSections.hybridInv ? false : i.upgradeSections.inverter,
+      hybrid_inv: i.upgradeSections.hybridInv,
+      battery: i.upgradeSections.hybridInv && i.upgradeSections.battery,
+      wiring: i.upgradeSections.wiring,
+    };
   }
   return request;
 }

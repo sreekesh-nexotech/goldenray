@@ -21,6 +21,10 @@ export default function PricingPanel({ result }: { result: BomQuoteResponse }) {
 
   const hasDiscount = p.discount_amt > 0;
   const hasSubsidy = p.subsidy_amt > 0;
+  // The list price can sit above the price-list rate when the sales person has swapped in
+  // costlier parts. Showing the drift, rather than only the result, is what lets them see
+  // they have moved off the configuration the rate was set for.
+  const drift = Math.round(p.customer_price - p.market_rate);
 
   return (
     <Card>
@@ -29,6 +33,14 @@ export default function PricingPanel({ result }: { result: BomQuoteResponse }) {
       </CardHeader>
       <div className="flex flex-col gap-3 p-4">
         <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Stat label="Price list rate" value={inr(p.market_rate)} tone="muted" />
+          {drift !== 0 && (
+            <Stat
+              label={drift > 0 ? "Component upgrades" : "Component savings"}
+              value={`${drift > 0 ? "+" : "−"} ${inr(Math.abs(drift))}`}
+              tone={drift > 0 ? "danger" : "positive"}
+            />
+          )}
           <Stat label="List price" value={inr(p.customer_price)} />
           {hasDiscount && (
             <Stat label={p.discount_label || "Discount"} value={`− ${inr(p.discount_amt)}`} tone="positive" />
