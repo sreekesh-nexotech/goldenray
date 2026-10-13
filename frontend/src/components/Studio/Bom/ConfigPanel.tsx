@@ -214,6 +214,43 @@ export default function ConfigPanel({
                 <TextInput type="number" value={inputs.ghsHouses} onChange={(v) => set("ghsHouses", v)} ariaLabel="Number of houses" />
               </Field>
             )}
+
+            {/* Premium replaces the string inverter with one micro-inverter per panel, so
+                the brand decides a whole accessory set. Hybrid is always Enphase -- its
+                battery and system controller are Enphase parts -- so the choice is not
+                offered there rather than being offered and ignored. */}
+            {inputs.tier === "premium" && inputs.sysType === "ongrid" && (
+              <Field label="Micro-inverter" hint="each brand brings its own accessories">
+                <SelectField
+                  value={inputs.microBrand}
+                  onChange={(v) => set("microBrand", v as BomInputs["microBrand"])}
+                  ariaLabel="Micro-inverter brand"
+                >
+                  <option value="enphase">Enphase</option>
+                  <option value="hoymiles">Hoymiles</option>
+                </SelectField>
+              </Field>
+            )}
+
+            {inputs.tier === "premium" && inputs.sysType === "ongrid" && inputs.microBrand === "hoymiles" && (
+              <Field label="Zero export" hint={inputs.zeroExport ? "DTU Pro — blocks export to the grid" : "DTU Lite — monitoring only"}>
+                <SelectField
+                  value={inputs.zeroExport ? "yes" : "no"}
+                  onChange={(v) => set("zeroExport", v === "yes")}
+                  ariaLabel="Zero export required"
+                >
+                  <option value="yes">Required</option>
+                  <option value="no">Not required</option>
+                </SelectField>
+              </Field>
+            )}
+
+            {inputs.tier === "premium" && inputs.sysType === "hybrid" && (
+              <p style={{ fontSize: 11.5, color: studioColors.mutedGray, gridColumn: "1 / -1", margin: 0 }}>
+                Hybrid premium uses Enphase throughout — the battery and system controller are
+                Enphase parts, so the brand is not a choice here.
+              </p>
+            )}
           </div>
         </Card>
       </Step>

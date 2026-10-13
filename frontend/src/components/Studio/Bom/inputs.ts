@@ -10,6 +10,7 @@
 
 import type {
   BomAmountType,
+  BomMicroBrand,
   BomModuleDcr,
   BomQuoteRequest,
   BomStructureType,
@@ -38,7 +39,32 @@ export interface BomInputs {
   upgradeTo: string;
   upgradePhase: HousePhase;
   upgradeSections: UpgradeSections;
+  /** Premium only: which micro-inverter brand, and whether the gateway blocks export. */
+  microBrand: BomMicroBrand;
+  zeroExport: boolean;
+  /** Cable the site needed beyond the standard run, in metres. 0 means none. */
+  extraDcCable: string;
+  extraAcCable: string;
+  armouredCable: string;
+  /** Upgrade-ready: the size the inverter and balance-of-system are built for. */
+  futureSize: string;
+  futureOpts: FutureOpts;
 }
+
+/**
+ * Which parts of an upgrade-ready build are sized for the larger future system.
+ *
+ * Switched off means "size it for the panels going in today" — never "leave it out". The
+ * house still needs a DCDB; it just needs the smaller one.
+ */
+export interface FutureOpts {
+  structure: boolean;
+  db: boolean;
+  cables: boolean;
+  meter: boolean;
+}
+
+export const DEFAULT_FUTURE_OPTS: FutureOpts = { structure: true, db: true, cables: true, meter: true };
 
 /**
  * What an upgrade covers. Each toggle decides whether that part of the system is
@@ -86,6 +112,13 @@ export const DEFAULT_INPUTS: BomInputs = {
   upgradeTo: "5",
   upgradePhase: "1P",
   upgradeSections: DEFAULT_SECTIONS,
+  microBrand: "enphase",
+  zeroExport: true,
+  extraDcCable: "0",
+  extraAcCable: "0",
+  armouredCable: "0",
+  futureSize: "",
+  futureOpts: DEFAULT_FUTURE_OPTS,
 };
 
 /**
@@ -159,6 +192,8 @@ export function toRequest(i: BomInputs): BomQuoteRequest {
     tier: i.tier,
     bat_config: i.batConfig,
     module_dcr: i.moduleDcr,
+    micro_brand: i.microBrand,
+    zero_export: i.zeroExport,
     dist_km: Number(i.distKm) || 0,
     structure_type: i.structure,
     // Non-DCR modules forfeit PM Surya Ghar, so the scheme is not sent at all rather
@@ -169,6 +204,26 @@ export function toRequest(i: BomInputs): BomQuoteRequest {
     margin_type: i.marginType,
     margin_val: Number(i.marginVal) || 0,
   };
+  // Extra cable is site-specific, so only non-zero lengths are sent -- an empty add-on
+  // should not appear on the bill at all.
+  const extraCable = (
+    [
+      ["dc_cable", i.extraDcCable],
+      ["ac_cable", i.extraAcCable],
+      ["armoured_cable", i.armouredCable],
+    ] as const
+  )
+    .map(([category, qty]) => ({ category, qty: Number(qty) || 0 }))
+    .filter((row) => row.qty > 0);
+  if (extraCable.length) request.extra_cable = extraCable;
+
+  // Upgrade-ready only applies to a new install, and only when the future size is
+  // genuinely larger -- otherwise it is not an upgrade path.
+  if (i.sysType !== "upgrade" && i.futureSize && sizeKw(i.futureSize) > sizeKw(i.size)) {
+    request.future_size = i.futureSize;
+    request.future_opts = { ...i.futureOpts };
+  }
+
   if (i.sysType === "upgrade") {
     const toKw = Number(i.upgradeTo) || 5;
     request.upgrade_from_kw = Number(i.upgradeFrom) || 3;

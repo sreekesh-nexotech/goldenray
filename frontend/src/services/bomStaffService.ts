@@ -26,6 +26,8 @@ export type BomAmountType = "percent" | "flat";
  * (hybrid only) which price list the quote reads.
  */
 export type BomModuleDcr = "dcr" | "ndcr";
+/** Micro-inverter brand, premium tier only. */
+export type BomMicroBrand = "enphase" | "hoymiles";
 
 export interface BomQuoteRequest {
   sys_type: BomSystemType;
@@ -41,6 +43,26 @@ export interface BomQuoteRequest {
   custom_discount?: { type: BomAmountType; value: number } | null;
   margin_type?: BomAmountType;
   margin_val?: number;
+  /**
+   * Cable the site needed beyond the standard run. Charged over the price-list rate,
+   * since the rate assumes a standard install.
+   */
+  extra_cable?: { category: "dc_cable" | "ac_cable" | "armoured_cable"; qty: number; component?: string }[];
+  /**
+   * Premium tier only. Premium replaces the string inverter with one micro-inverter per
+   * panel, and the two brands carry different accessory sets. Ignored on hybrid, which is
+   * always Enphase because the battery and system controller are Enphase parts.
+   */
+  micro_brand?: BomMicroBrand;
+  /**
+   * Premium Hoymiles only: whether the gateway has to enforce zero export (required on
+   * some KSEB connections). Chooses the DTU Pro over the cheaper DTU Lite.
+   */
+  zero_export?: boolean;
+  /** Upgrade-ready: panels at `size` now, inverter and balance-of-system for this size. */
+  future_size?: string;
+  /** Which parts are built for the future size. Anything off is sized for today's panels. */
+  future_opts?: { structure?: boolean; db?: boolean; cables?: boolean; meter?: boolean };
   upgrade_from_kw?: number;
   upgrade_to_kw?: number;
   /**
@@ -131,6 +153,8 @@ export interface BomQuoteResponse {
   // Upgrade quotes carry additional keys; the standard shape is typed here.
   meta: Record<string, unknown>;
   available_offers: BomOffer[];
+  /** The installer's string/MPPT layout. Absent when the specs needed are not recorded. */
+  string_config?: BomStringConfig | null;
 }
 
 export interface BomSizeOption {
@@ -207,7 +231,65 @@ async function request<T>(path: string, init: { method: string; body?: unknown }
 /*  Endpoints                                                                  */
 /* -------------------------------------------------------------------------- */
 
+export interface BomStringWarning {
+  code: string;
+  /** `critical` blocks installation: the layout can damage hardware or not produce. */
+  severity: "critical" | "warning" | "info";
+  message: string;
+}
+
+export interface BomStringConfig {
+  is_micro?: boolean;
+  micro_count?: number;
+  message?: string;
+  is_optimizer?: boolean;
+  max_string_length?: number | null;
+  panels_per_string: number;
+  total_strings: number;
+  mppt_count: number;
+  empty_slots: number;
+  string_voc_cold: number;
+  string_vmp_hot: number;
+  string_vmp_stc: number;
+  mppt_allocation: { mppt: number; strings: number; panels: number; label: string | null }[];
+  dc_cable_recommended_m: number;
+  warnings: BomStringWarning[];
+  /** False when any warning is `critical` — the layout must not be installed as drawn. */
+  is_valid: boolean;
+}
+
+export interface BomBillSizing {
+  bi_monthly_bill: number;
+  bi_monthly_units: number;
+  monthly_units: number;
+  exact_kw: number;
+  recommended_size: string | null;
+  recommended_kw: number | null;
+  /** A single-phase house needing more than 5 kW must apply to KSEB before installing. */
+  phase_upgrade_needed: boolean;
+  monthly_savings: number;
+  annual_savings: number;
+  payback_years: number | null;
+  average_unit_rate: number;
+  bill_breakdown: { energy_charge: number; fixed_charge: number; duty: number; meter_rent: number; total: number };
+}
+
+export interface BomBillSizingRequest {
+  sys_type?: "ongrid" | "hybrid";
+  bill: number;
+  /** KSEB bills bi-monthly; reading a monthly figure as bi-monthly halves the answer. */
+  frequency?: "monthly" | "bimonthly";
+  house_phase?: "1P" | "3P";
+}
+
 export const getBomQuoteOptions = () => request<BomQuoteOptions>("bom/quote-options/", { method: "GET" });
+
+/**
+ * A bill becomes a recommended size, through the same KSEB tariff slabs the BOM tool
+ * uses — not the public calculator's bill-range table, which answers differently.
+ */
+export const runBomBillSizing = (body: BomBillSizingRequest) =>
+  request<BomBillSizing>("bom/bill-sizing/", { method: "POST", body });
 
 export const runBomQuote = (body: BomQuoteRequest) =>
   request<BomQuoteResponse>("bom/quote/", { method: "POST", body });

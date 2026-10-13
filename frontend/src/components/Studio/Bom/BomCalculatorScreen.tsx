@@ -28,9 +28,12 @@ import {
 import ConfigPanel, { CommercialPanel } from "./ConfigPanel";
 import BomLinesTable, { type BomMode } from "./BomLinesTable";
 import PricingPanel, { CostPanel } from "./PricingPanel";
+import StringConfigPanel from "./StringConfigPanel";
 import UpgradePanel from "./UpgradePanel";
+import AddOnsPanel from "./AddOnsPanel";
+import BillHelper from "./BillHelper";
 import { Step } from "./shared";
-import { DEFAULT_INPUTS, sizeForSystemType, toRequest, type BomInputs } from "./inputs";
+import { DEFAULT_INPUTS, phaseAwareSize, sizeForSystemType, toRequest, type BomInputs } from "./inputs";
 
 export default function BomCalculatorScreen() {
   return (
@@ -159,7 +162,22 @@ function Calculator() {
 
       <div className="grid gap-4 lg:grid-cols-[380px_1fr]">
         <div className="flex min-w-0 flex-col gap-4" style={{ alignSelf: "start" }}>
+          {inputs.sysType !== "upgrade" && (
+            <BillHelper
+              sysType={inputs.sysType}
+              housePhase={inputs.housePhase}
+              onApply={(size) =>
+                // Accepting a suggestion must not leave an impossible configuration: a
+                // 3Φ-only size on a single-phase house is corrected, as a manual pick is.
+                setInputs((prev) => ({
+                  ...prev,
+                  size: phaseAwareSize(size, prev.housePhase, sys?.sizes.map((s) => s.key) ?? [size]),
+                }))
+              }
+            />
+          )}
           <ConfigPanel inputs={inputs} options={options} set={set} />
+          <AddOnsPanel inputs={inputs} options={options} set={set} />
           {inputs.sysType === "upgrade" && (
             <UpgradePanel
               inputs={inputs}
@@ -188,6 +206,8 @@ function Calculator() {
             <>
               {mode === "quotation" && <PricingPanel result={result} />}
               {mode === "quotation" && canSeeCost && <CostPanel result={result} />}
+              {/* Shown in both modes: the installer reads it off the dispatch list too. */}
+              <StringConfigPanel config={result.string_config} />
               <BomLinesTable result={result} mode={mode} />
             </>
           )}
