@@ -2,114 +2,109 @@
 
 // src/components/Studio/Bom/BomCalculatorScreen.tsx
 //
-// Internal BOM calculator: pick system type/size/tier and commercial inputs,
-// get the bill of materials with pricing from the platform's staff API. Cost
-// breakdown and margin appear only when the API returns them
-// (`pricing_internal.view`).
+// The internal BOM calculator: configure a system, get its bill of materials and pricing
+// from the platform's staff API.
+//
+// A thin orchestrator over the panels in this folder, following the shape of
+// Studio/EmiCalculator -- load once, keep the form in one state object, render
+// error/loading/content in that order, and let each panel take what it needs. The flow is
+// ported from Golden-Ray-BOM (App.jsx), which numbers its steps; the numbering is kept so
+// a sales person reads the same sequence in either tool.
+//
+// Nothing here computes a price. Every number on screen comes from the engine, so the
+// Studio and the public website quote can never disagree.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Card, CardHeader, CardTitle, FieldLabel, PageHeader, SelectField, TextInput, thStyle, tdStyle } from "../shared/primitives";
+import { PageHeader, TipBanner } from "../shared/primitives";
+import { useStudio } from "../shared/StudioContext";
+import { studioColors } from "../shared/format";
 import {
   BomApiError,
   getBomQuoteOptions,
   runBomQuote,
-  type BomAmountType,
   type BomQuoteOptions,
-  type BomQuoteRequest,
   type BomQuoteResponse,
-  type BomStructureType,
-  type BomSubsidyType,
-  type BomSystemType,
-  type BomTier,
 } from "@/services/bomStaffService";
-
-const inr = (n: number) => `₹${Math.round(n || 0).toLocaleString("en-IN")}`;
-const SYSTEM_LABEL: Record<BomSystemType, string> = { ongrid: "On-grid", hybrid: "Hybrid", upgrade: "Upgrade" };
-
-interface Inputs {
-  sysType: BomSystemType;
-  size: string;
-  tier: BomTier;
-  batConfig: string;
-  distKm: string;
-  structure: BomStructureType;
-  subsidy: BomSubsidyType;
-  ghsHouses: string;
-  offerId: string;
-  marginType: BomAmountType;
-  marginVal: string;
-  upgradeFrom: string;
-  upgradeTo: string;
-}
-
-const DEFAULTS: Inputs = {
-  sysType: "ongrid", size: "3", tier: "base", batConfig: "0", distKm: "100", structure: "flatRoof", subsidy: "none",
-  ghsHouses: "1", offerId: "", marginType: "percent", marginVal: "20", upgradeFrom: "3", upgradeTo: "5",
-};
-
-function toRequest(i: Inputs): BomQuoteRequest {
-  const req: BomQuoteRequest = {
-    sys_type: i.sysType,
-    size: i.size,
-    tier: i.tier,
-    bat_config: i.batConfig,
-    dist_km: Number(i.distKm) || 0,
-    structure_type: i.structure,
-    subsidy_type: i.subsidy,
-    ghs_houses: Math.max(1, Math.floor(Number(i.ghsHouses) || 1)),
-    selected_offer_id: i.offerId || null,
-    margin_type: i.marginType,
-    margin_val: Number(i.marginVal) || 0,
-  };
-  if (i.sysType === "upgrade") {
-    req.upgrade_from_kw = Number(i.upgradeFrom) || 3;
-    req.upgrade_to_kw = Number(i.upgradeTo) || 5;
-    req.size = String(req.upgrade_to_kw);
-  }
-  return req;
-}
+import ConfigPanel, { CommercialPanel } from "./ConfigPanel";
+import BomLinesTable, { type BomMode } from "./BomLinesTable";
+import PricingPanel, { CostPanel } from "./PricingPanel";
+import { Step } from "./shared";
+import { DEFAULT_INPUTS, sizeForSystemType, toRequest, type BomInputs } from "./inputs";
 
 export default function BomCalculatorScreen() {
   return (
     <div>
-      <PageHeader title="BOM Calculator" subtitle="Bill of materials and pricing from the Flarize platform. Internal use only." />
+      <PageHeader
+        title="BOM Calculator"
+        subtitle="Bill of materials and pricing from the Flarize platform. Internal use only."
+      />
       <Calculator />
     </div>
   );
 }
 
 function Calculator() {
+  const { can, tips } = useStudio();
   const [options, setOptions] = useState<BomQuoteOptions | null>(null);
-  const [inputs, setInputs] = useState<Inputs>(DEFAULTS);
+  const [inputs, setInputs] = useState<BomInputs>(DEFAULT_INPUTS);
   const [result, setResult] = useState<BomQuoteResponse | null>(null);
+  const [mode, setMode] = useState<BomMode>("quotation");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const seq = useRef(0);
 
+  // Commercials are gated on the permission the API actually enforces: `pricing_internal`
+  // is what makes it send cost_breakdown and totals at all. Asking up front means the
+  // margin control is hidden rather than appearing and then doing nothing.
+  const canSeeCost = can("pricing_internal", "view");
+
   const fail = useCallback((e: unknown) => {
-    if (e instanceof BomApiError && e.status === 403) return setError("Your platform role does not include the BOM calculator (bom.view).");
+    if (e instanceof BomApiError && e.status === 403) {
+      return setError("Your platform role does not include the BOM calculator (bom.view).");
+    }
     setError(e instanceof Error ? e.message : "Something went wrong.");
   }, []);
 
   useEffect(() => {
-    getBomQuoteOptions().then(setOptions).catch(fail);
+    let live = true;
+    getBomQuoteOptions()
+      .then((next) => live && setOptions(next))
+      .catch((e) => live && fail(e));
+    return () => {
+      live = false;
+    };
   }, [fail]);
 
   const sys = options?.system_types[inputs.sysType === "upgrade" ? "ongrid" : inputs.sysType];
-  const set = <K extends keyof Inputs>(key: K, value: Inputs[K]) => setInputs((prev) => ({ ...prev, [key]: value }));
 
-  // Keep size/tier/battery valid for the chosen system type.
+  const set = useCallback(<K extends keyof BomInputs>(key: K, value: BomInputs[K]) => {
+    setInputs((prev) => {
+      if (prev[key] === value) return prev;
+      const next = { ...prev, [key]: value };
+      // Hybrid and on-grid list different sizes, so a type change can leave a size the
+      // new template has never heard of. Remap instead of resetting, so the configuration
+      // the user built survives.
+      if (key === "sysType") next.size = sizeForSystemType(prev.size, next.sysType, prev.housePhase);
+      return next;
+    });
+  }, []);
+
+  // Keep size, tier and battery valid for whatever the chosen template actually offers --
+  // the options come from the API, so this cannot be hardcoded.
   useEffect(() => {
     if (!sys || inputs.sysType === "upgrade") return;
-    setInputs((prev) => ({
-      ...prev,
-      size: sys.sizes.some((s) => s.key === prev.size) ? prev.size : sys.sizes[0]?.key ?? prev.size,
-      tier: sys.tiers.includes(prev.tier) ? prev.tier : sys.tiers[0] ?? prev.tier,
-      batConfig: sys.battery_configs.includes(prev.batConfig) ? prev.batConfig : sys.battery_configs[0] ?? "0",
-    }));
+    setInputs((prev) => {
+      const size = sys.sizes.some((s) => s.key === prev.size) ? prev.size : (sys.sizes[0]?.key ?? prev.size);
+      const tier = sys.tiers.includes(prev.tier) ? prev.tier : (sys.tiers[0] ?? prev.tier);
+      const batConfig = sys.battery_configs.includes(prev.batConfig) ? prev.batConfig : (sys.battery_configs[0] ?? "0");
+      if (size === prev.size && tier === prev.tier && batConfig === prev.batConfig) return prev;
+      return { ...prev, size, tier, batConfig };
+    });
   }, [sys, inputs.sysType]);
 
-  // Debounced recalculation; a stale response never overwrites a newer one.
+  // Debounced recalculation. The sequence guard means a slow earlier response can never
+  // overwrite a newer one -- without it, typing a distance leaves the figures showing an
+  // older configuration.
   useEffect(() => {
     if (!options) return;
     const mine = ++seq.current;
@@ -133,214 +128,99 @@ function Calculator() {
     return () => clearTimeout(timer);
   }, [inputs, options, fail]);
 
-  const offers = result?.available_offers ?? [];
-  const sections = useMemo(() => {
-    const groups = new Map<string, BomQuoteResponse["bom_lines"]>();
-    for (const line of result?.bom_lines ?? []) groups.set(line.section, [...(groups.get(line.section) ?? []), line]);
-    return [...groups.entries()];
-  }, [result]);
+  const offers = useMemo(() => result?.available_offers ?? [], [result]);
 
-  if (!options && !error) return <p>Loading options…</p>;
+  // A selected offer that stops applying (the tier changed, say) would otherwise keep
+  // being sent and silently ignored.
+  useEffect(() => {
+    if (inputs.offerId && !offers.some((o) => o.offer_id === inputs.offerId)) {
+      setInputs((prev) => ({ ...prev, offerId: "" }));
+    }
+  }, [offers, inputs.offerId]);
+
+  if (!options && !error) return <p style={{ fontSize: 13.5, color: studioColors.mutedGray }}>Loading options…</p>;
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[340px_1fr]">
-      <Card style={{ padding: 16, alignSelf: "start" }}>
-        <div className="flex flex-col gap-3">
-          <div>
-            <FieldLabel>System type</FieldLabel>
-            <SelectField value={inputs.sysType} onChange={(v) => set("sysType", v as BomSystemType)} ariaLabel="System type">
-              {(["ongrid", "hybrid", "upgrade"] as BomSystemType[]).map((t) => (
-                <option key={t} value={t}>{SYSTEM_LABEL[t]}</option>
-              ))}
-            </SelectField>
-          </div>
-          {inputs.sysType === "upgrade" ? (
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <FieldLabel>From kW</FieldLabel>
-                <TextInput type="number" value={inputs.upgradeFrom} onChange={(v) => set("upgradeFrom", v)} ariaLabel="Upgrade from kW" />
-              </div>
-              <div>
-                <FieldLabel>To kW</FieldLabel>
-                <TextInput type="number" value={inputs.upgradeTo} onChange={(v) => set("upgradeTo", v)} ariaLabel="Upgrade to kW" />
-              </div>
-            </div>
-          ) : (
-            <div>
-              <FieldLabel>Size</FieldLabel>
-              <SelectField value={inputs.size} onChange={(v) => set("size", v)} ariaLabel="Size">
-                {(sys?.sizes ?? []).map((s) => (
-                  <option key={s.key} value={s.key}>{s.label}</option>
-                ))}
-              </SelectField>
-            </div>
-          )}
-          <div>
-            <FieldLabel>Tier</FieldLabel>
-            <SelectField value={inputs.tier} onChange={(v) => set("tier", v as BomTier)} ariaLabel="Tier">
-              {(sys?.tiers ?? ["base", "value", "premium"]).map((t) => (
-                <option key={t} value={t}>{t[0].toUpperCase() + t.slice(1)}</option>
-              ))}
-            </SelectField>
-          </div>
-          {inputs.sysType === "hybrid" && (
-            <div>
-              <FieldLabel>Battery band</FieldLabel>
-              <SelectField value={inputs.batConfig} onChange={(v) => set("batConfig", v)} ariaLabel="Battery band">
-                {(sys?.battery_configs ?? ["0", "1", "2"]).map((b) => (
-                  <option key={b} value={b}>Band {b}</option>
-                ))}
-              </SelectField>
-            </div>
-          )}
-          <div>
-            <FieldLabel>Structure</FieldLabel>
-            <SelectField value={inputs.structure} onChange={(v) => set("structure", v as BomStructureType)} ariaLabel="Structure">
-              {(options?.structure_types ?? []).map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </SelectField>
-          </div>
-          <div>
-            <FieldLabel>Distance (km)</FieldLabel>
-            <TextInput type="number" value={inputs.distKm} onChange={(v) => set("distKm", v)} ariaLabel="Distance in km" />
-          </div>
-          <div>
-            <FieldLabel>Subsidy</FieldLabel>
-            <SelectField value={inputs.subsidy} onChange={(v) => set("subsidy", v as BomSubsidyType)} ariaLabel="Subsidy">
-              {(options?.subsidy_types ?? []).map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </SelectField>
-          </div>
-          {inputs.subsidy === "ghs" && (
-            <div>
-              <FieldLabel>GHS houses</FieldLabel>
-              <TextInput type="number" value={inputs.ghsHouses} onChange={(v) => set("ghsHouses", v)} ariaLabel="GHS houses" />
-            </div>
-          )}
-          <div>
-            <FieldLabel>Offer</FieldLabel>
-            <SelectField value={inputs.offerId} onChange={(v) => set("offerId", v)} ariaLabel="Offer">
-              <option value="">No offer</option>
-              {offers.map((o) => (
-                <option key={o.offer_id} value={o.offer_id}>{o.name}</option>
-              ))}
-            </SelectField>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <FieldLabel>Margin type</FieldLabel>
-              <SelectField value={inputs.marginType} onChange={(v) => set("marginType", v as BomAmountType)} ariaLabel="Margin type">
-                <option value="percent">Percent</option>
-                <option value="flat">Flat ₹</option>
-              </SelectField>
-            </div>
-            <div>
-              <FieldLabel>Margin</FieldLabel>
-              <TextInput type="number" value={inputs.marginVal} onChange={(v) => set("marginVal", v)} ariaLabel="Margin value" />
-            </div>
-          </div>
+    <div className="flex flex-col gap-4">
+      {tips && (
+        <TipBanner>
+          Every figure here comes from the platform quote engine — the same one behind the public
+          website — so this screen and a customer&apos;s quote can never disagree. Switch to the
+          dispatch list to hand the warehouse a picking list with no prices on it.
+        </TipBanner>
+      )}
+
+      {error && (
+        <p role="alert" style={{ color: studioColors.danger, fontSize: 13.5 }}>
+          {error}
+        </p>
+      )}
+
+      <div className="grid gap-4 lg:grid-cols-[380px_1fr]">
+        <div className="flex min-w-0 flex-col gap-4" style={{ alignSelf: "start" }}>
+          <ConfigPanel inputs={inputs} options={options} set={set} />
+          <Step n="3" title="Review and finalise">
+            <CommercialPanel inputs={inputs} set={set} offers={offers} canSeeMargin={canSeeCost} />
+          </Step>
         </div>
-      </Card>
 
-      <div className="flex min-w-0 flex-col gap-4">
-        {error && (
-          <p role="alert" style={{ color: "#b42318", fontSize: 13.5 }}>
-            {error}
-          </p>
-        )}
-        {result && (
-          <>
-            <Card>
-              <CardHeader>
-                <CardTitle>Pricing {loading && "…"}</CardTitle>
-              </CardHeader>
-              <dl className="grid grid-cols-2 gap-3 p-4 text-sm sm:grid-cols-4">
-                <Stat label="Market rate" value={inr(result.pricing.market_rate)} />
-                <Stat label="Customer price" value={inr(result.pricing.customer_price)} />
-                <Stat label={result.pricing.discount_label || "Discount"} value={`− ${inr(result.pricing.discount_amt)}`} />
-                <Stat label="Final price" value={inr(result.pricing.final_price)} />
-                <Stat label={result.pricing.subsidy_label || "Subsidy"} value={`− ${inr(result.pricing.subsidy_amt)}`} />
-                <Stat label="After subsidy" value={inr(result.pricing.price_after_subsidy)} strong />
-              </dl>
-            </Card>
-
-            {result.cost_breakdown && result.totals && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Cost and margin (internal)</CardTitle>
-                </CardHeader>
-                <dl className="grid grid-cols-2 gap-3 p-4 text-sm sm:grid-cols-4">
-                  <Stat label="Material incl. GST" value={inr(result.totals.material_with_gst)} />
-                  <Stat label="Install" value={inr(result.cost_breakdown.install)} />
-                  <Stat label="Service" value={inr(result.cost_breakdown.service)} />
-                  <Stat label="Transport" value={inr(result.cost_breakdown.transport)} />
-                  <Stat label="Misc + office" value={inr(result.cost_breakdown.misc + result.cost_breakdown.office)} />
-                  <Stat label="Structure" value={inr(result.cost_breakdown.structure_base + result.cost_breakdown.structure_extra + result.cost_breakdown.structure_labor + result.cost_breakdown.structure_repair)} />
-                  <Stat label="Margin" value={inr(result.totals.margin)} />
-                  <Stat label="Cost-plus total" value={inr(result.totals.grand_total)} strong />
-                </dl>
-              </Card>
+        <div className="flex min-w-0 flex-col gap-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <ModeToggle mode={mode} onChange={setMode} />
+            {loading && (
+              <span style={{ fontSize: 12, color: studioColors.mutedGray }} aria-live="polite">
+                Recalculating…
+              </span>
             )}
+          </div>
 
-            <Card style={{ overflowX: "auto" }}>
-              <CardHeader>
-                <CardTitle>Bill of materials ({result.bom_lines.length} lines)</CardTitle>
-              </CardHeader>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13.5 }}>
-                <thead>
-                  <tr>
-                    <th style={thStyle}>Item</th>
-                    <th style={thStyle}>Qty</th>
-                    <th style={{ ...thStyle, textAlign: "right" }}>Unit price</th>
-                    <th style={{ ...thStyle, textAlign: "right" }}>GST</th>
-                    <th style={{ ...thStyle, textAlign: "right" }}>Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sections.map(([section, lines]) => (
-                    <SectionRows key={section} section={section} lines={lines} />
-                  ))}
-                </tbody>
-              </table>
-            </Card>
-          </>
-        )}
+          {result && (
+            <>
+              {mode === "quotation" && <PricingPanel result={result} />}
+              {mode === "quotation" && canSeeCost && <CostPanel result={result} />}
+              <BomLinesTable result={result} mode={mode} />
+            </>
+          )}
+          {!result && !error && !loading && (
+            <p style={{ fontSize: 13.5, color: studioColors.mutedGray }}>No quote yet.</p>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-function SectionRows({ section, lines }: { section: string; lines: BomQuoteResponse["bom_lines"] }) {
+/** Quotation or dispatch. Two tabs rather than a switch, so the active one is readable. */
+function ModeToggle({ mode, onChange }: { mode: BomMode; onChange: (mode: BomMode) => void }) {
+  const tabs: { key: BomMode; label: string }[] = [
+    { key: "quotation", label: "Quotation" },
+    { key: "dispatch", label: "Dispatch list" },
+  ];
   return (
-    <>
-      <tr>
-        <td colSpan={5} style={{ ...tdStyle, fontWeight: 600, textTransform: "capitalize", background: "rgba(248,242,225,.35)" }}>
-          {section || "Items"}
-        </td>
-      </tr>
-      {lines.map((l) => (
-        <tr key={`${l.pos}-${l.name}`}>
-          <td style={tdStyle}>
-            {l.name}
-            {l.brand && <span style={{ opacity: 0.6 }}> · {l.brand}</span>}
-          </td>
-          <td style={tdStyle}>{l.qty} {l.unit}</td>
-          <td style={{ ...tdStyle, textAlign: "right" }}>{inr(l.unit_price)}</td>
-          <td style={{ ...tdStyle, textAlign: "right" }}>{l.gst_pct}%</td>
-          <td style={{ ...tdStyle, textAlign: "right" }}>{inr(l.amount)}</td>
-        </tr>
-      ))}
-    </>
-  );
-}
-
-function Stat({ label, value, strong = false }: { label: string; value: string; strong?: boolean }) {
-  return (
-    <div>
-      <dt style={{ fontSize: 11.5, opacity: 0.65 }}>{label}</dt>
-      <dd style={{ fontSize: strong ? 18 : 15, fontWeight: strong ? 700 : 600 }}>{value}</dd>
+    <div role="tablist" aria-label="Output mode" className="flex" style={{ borderBottom: `1px solid ${studioColors.ring}` }}>
+      {tabs.map((tab) => {
+        const active = tab.key === mode;
+        return (
+          <button
+            key={tab.key}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => onChange(tab.key)}
+            style={{
+              padding: "7px 13px",
+              fontSize: 13,
+              fontWeight: active ? 600 : 500,
+              color: active ? studioColors.tealDeep : studioColors.mutedGray,
+              borderBottom: `2px solid ${active ? studioColors.gold : "transparent"}`,
+              marginBottom: -1,
+              background: "none",
+            }}
+          >
+            {tab.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

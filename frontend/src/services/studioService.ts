@@ -45,7 +45,12 @@ export type StudioModule =
   // SALES (the Studio reads leads and quotation content)
   | "leads" | "customers" | "quotations" | "quotation_content"
   // CONFIG (the BOM calculator screen)
-  | "bom" | "packs" | "pricing"
+  | "bom" | "packs" | "pricing" | "market_rates" | "offers" | "catalog"
+  // Permission-only: holds no endpoints of its own, it unlocks fields. `pricing_internal`
+  // is what reveals a quote's cost breakdown and margin, so a screen showing those has to
+  // be able to ask for it rather than inferring from whether the API happened to send
+  // them.
+  | "pricing_internal"
   // ADMIN
   | "company" | "users" | "roles" | "settings" | "audit";
 
@@ -1099,8 +1104,13 @@ export function getUsers(): Promise<Paginated<StudioUser>> {
 }
 
 /**
- * POST users/ — creates the account **without** a password and e-mails an
- * invitation link, so no password is sent. `role` is the role's uid.
+ * POST users/ — creates the account. `role` is the role's uid.
+ *
+ * Omit `password` (the default) and the platform stores an unusable password,
+ * sets `must_reset_password` and e-mails an invitation link. Send one and it is
+ * stored instead, no invitation goes out, and `must_reset_password` stays clear
+ * so the credentials work immediately — the fallback for when e-mail cannot be
+ * delivered. The password is write-only; it never comes back in the response.
  */
 export function createUser(body: {
   email: string;
@@ -1109,6 +1119,8 @@ export function createUser(body: {
   last_name?: string;
   phone_e164?: string;
   title?: string;
+  /** Optional. Must satisfy the server's policy (min 10 chars, not common, not all-numeric, unlike the e-mail). */
+  password?: string;
 }): Promise<StudioUser> {
   return authRequest<StudioUser>("users/", { method: "POST", body });
 }

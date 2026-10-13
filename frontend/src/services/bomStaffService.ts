@@ -20,6 +20,12 @@ export type BomTier = "base" | "value" | "premium";
 export type BomStructureType = "flatRoof" | "elevated" | "sheetRoof";
 export type BomSubsidyType = "none" | "residential" | "ghs";
 export type BomAmountType = "percent" | "flat";
+/**
+ * Module content. It decides three things at once, which is why it is not just a
+ * subsidy toggle: which panels may be offered, whether PM Surya Ghar applies, and
+ * (hybrid only) which price list the quote reads.
+ */
+export type BomModuleDcr = "dcr" | "ndcr";
 
 export interface BomQuoteRequest {
   sys_type: BomSystemType;
@@ -29,6 +35,7 @@ export interface BomQuoteRequest {
   dist_km?: number;
   structure_type?: BomStructureType;
   subsidy_type?: BomSubsidyType;
+  module_dcr?: BomModuleDcr;
   ghs_houses?: number;
   selected_offer_id?: string | null;
   custom_discount?: { type: BomAmountType; value: number } | null;
@@ -68,10 +75,24 @@ export interface BomCostBreakdown {
 
 export interface BomTotals {
   material_ex_gst: number;
+  /**
+   * Per-category GST buckets. Zero under the composite regime, where the whole bill is
+   * taxed once — there they are written only by custom items. Kept because the
+   * quotations snapshots and packs read them.
+   */
   gst_5: number;
   gst_12: number;
   gst_18: number;
+  /** GST on the material, whichever regime produced it. */
+  gst_total: number;
   material_with_gst: number;
+  /**
+   * Composite regime only: the cost the margin is taken on, and the single GST charge on
+   * (cost + profit). Null under the per-line regime, where margin is taken on a
+   * GST-inclusive subtotal.
+   */
+  pre_gst_subtotal: number | null;
+  gst_on_sale: number | null;
   subtotal: number;
   margin: number;
   grand_total: number;
