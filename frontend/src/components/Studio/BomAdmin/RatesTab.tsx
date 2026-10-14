@@ -31,6 +31,7 @@ import { GhostButton, GoldButton } from "../shared/primitives";
 import { studioColors } from "../shared/format";
 import { EmptyRow, PanelIntro, TextField, inr } from "../shared/rows";
 import {
+  deletableReason,
   rateSets,
   saveErrorMessage,
   toRateInput,
@@ -133,6 +134,28 @@ export default function RatesTab({
     }
   }, [set, notify, load]);
 
+  const remove = useCallback(
+    async (target: MarketRateSet) => {
+      setBusy(true);
+      try {
+        await rateSets.remove(target.uid, target.version);
+        setSets((prev) => prev.filter((s) => s.uid !== target.uid));
+        // Deleting the open set leaves the grid showing prices that no longer exist.
+        if (target.uid === openUid) {
+          setRates(null);
+          setSaved(null);
+          setOpenUid("");
+        }
+        notify.success("Price list deleted");
+      } catch (err) {
+        notify.error(saveErrorMessage(err));
+      } finally {
+        setBusy(false);
+      }
+    },
+    [openUid, notify]
+  );
+
   const activate = useCallback(async () => {
     if (!set) return;
     setBusy(true);
@@ -179,6 +202,7 @@ export default function RatesTab({
             canEdit={!readOnly}
             onClone={clone}
             onActivate={activate}
+            onDelete={() => remove(s)}
           />
         ))}
       </div>
@@ -236,6 +260,7 @@ function SetRow({
   canEdit,
   onClone,
   onActivate,
+  onDelete,
 }: {
   set: MarketRateSet;
   open: boolean;
@@ -245,8 +270,10 @@ function SetRow({
   canEdit: boolean;
   onClone: () => void;
   onActivate: () => void;
+  onDelete: () => void;
 }) {
-  const [confirming, setConfirming] = useState(false);
+  const [confirming, setConfirming] = useState<"activate" | "delete" | null>(null);
+  const blocked = deletableReason(set);
   const tone = STATUS_TONE[set.status];
 
   return (
@@ -301,45 +328,103 @@ function SetRow({
             </GhostButton>
           )}
           {canPublish && set.status === "DRAFT" && !confirming && (
-            <GhostButton onClick={() => setConfirming(true)} disabled={busy} style={{ height: 30, fontSize: 12 }}>
+            <GhostButton onClick={() => setConfirming("activate")} disabled={busy} style={{ height: 30, fontSize: 12 }}>
               Activate
             </GhostButton>
+          )}
+          {/* The live list is never deletable; a released one is refused by the server,
+              which knows about releases and this payload does not. */}
+          {canEdit && !blocked && !confirming && (
+            <button
+              type="button"
+              onClick={() => setConfirming("delete")}
+              disabled={busy}
+              style={{
+                height: 30,
+                padding: "0 11px",
+                borderRadius: 10,
+                border: "none",
+                background: "transparent",
+                color: studioColors.danger,
+                fontFamily: "var(--font-switzer)",
+                fontSize: 12,
+                fontWeight: 600,
+                cursor: busy ? "not-allowed" : "pointer",
+              }}
+            >
+              Delete
+            </button>
           )}
         </div>
       </div>
 
-      {confirming && (
-        <div
-          style={{
-            marginTop: 12,
-            padding: "12px 14px",
-            borderRadius: 10,
-            background: "rgba(247,186,65,.14)",
-            color: studioColors.amberInk,
-            fontSize: 12.5,
-            lineHeight: 1.6,
-          }}
-        >
+      {confirming === "activate" && (
+        <Confirm tone="amber" busy={busy} onCancel={() => setConfirming(null)} onConfirm={() => { setConfirming(null); onActivate(); }} label="Yes, make this live" busyLabel="Activating…">
           <strong>Activating changes what customers are quoted.</strong> Every one of these{" "}
           {set.rate_count} prices starts applying immediately, and the price list that is live
           now is retired. Quotes already issued keep their prices.
-          <div className="flex items-center gap-2" style={{ marginTop: 10 }}>
-            <GoldButton
-              onClick={() => {
-                setConfirming(false);
-                onActivate();
-              }}
-              disabled={busy}
-              style={{ height: 32, fontSize: 12 }}
-            >
-              {busy ? "Activating…" : "Yes, make this live"}
-            </GoldButton>
-            <GhostButton onClick={() => setConfirming(false)} disabled={busy} style={{ height: 32, fontSize: 12 }}>
-              Cancel
-            </GhostButton>
-          </div>
-        </div>
+        </Confirm>
       )}
+
+      {confirming === "delete" && (
+        <Confirm tone="danger" busy={busy} onCancel={() => setConfirming(null)} onConfirm={() => { setConfirming(null); onDelete(); }} label="Yes, delete it" busyLabel="Deleting…">
+          <strong>Delete “{set.name}”?</strong> Its {set.rate_count}{" "}
+          {set.rate_count === 1 ? "price goes" : "prices go"} with it. Quotes already issued
+          keep the prices they were given, and the live price list is unaffected — but if
+          this set is the only record of an old price, that record goes too.
+        </Confirm>
+      )}
+    </div>
+  );
+}
+
+/**
+ * An inline confirmation, used for the two actions on a set that are hard to take
+ * back: activating one (it changes what customers are quoted) and deleting one.
+ *
+ * Inline rather than a modal so the set it refers to stays on screen and visibly
+ * named -- "delete which list?" is exactly the question a dialog floating over a
+ * list of near-identical names invites.
+ */
+function Confirm({
+  tone,
+  busy,
+  onConfirm,
+  onCancel,
+  label,
+  busyLabel,
+  children,
+}: {
+  tone: "amber" | "danger";
+  busy: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+  label: string;
+  busyLabel: string;
+  children: React.ReactNode;
+}) {
+  const danger = tone === "danger";
+  return (
+    <div
+      style={{
+        marginTop: 12,
+        padding: "12px 14px",
+        borderRadius: 10,
+        background: danger ? "rgba(214,69,65,.08)" : "rgba(247,186,65,.14)",
+        color: danger ? studioColors.danger : studioColors.amberInk,
+        fontSize: 12.5,
+        lineHeight: 1.6,
+      }}
+    >
+      {children}
+      <div className="flex items-center gap-2" style={{ marginTop: 10 }}>
+        <GoldButton onClick={onConfirm} disabled={busy} style={{ height: 32, fontSize: 12 }}>
+          {busy ? busyLabel : label}
+        </GoldButton>
+        <GhostButton onClick={onCancel} disabled={busy} style={{ height: 32, fontSize: 12 }}>
+          Cancel
+        </GhostButton>
+      </div>
     </div>
   );
 }

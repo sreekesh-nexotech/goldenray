@@ -779,7 +779,30 @@ export const rateSets = {
   /** Makes this set the one quotes are priced from, and retires the previous one. */
   activate: (uid: string, body: { note?: string; expected_version?: number } = {}) =>
     studioRequest<MarketRateSet>(`pricing/market-rate-sets/${uid}/activate/`, { method: "POST", body }),
+
+  /**
+   * Soft-delete a set. The ACTIVE one is refused (`market_rate_set_active`), and so is
+   * any set a `PriceRelease` points at (`market_rate_set_released`) — a release is a
+   * record of what was quoted, so the prices behind it are kept for good.
+   */
+  remove: (uid: string, expectedVersion?: number) =>
+    studioRequest<void>(`pricing/market-rate-sets/${uid}/${query({ expected_version: expectedVersion })}`, {
+      method: "DELETE",
+    }),
 };
+
+/**
+ * Whether this set can be deleted, mirroring `delete_set`.
+ *
+ * Returns the reason rather than a bare false, so the UI can say why instead of
+ * showing a dead control. "Released" is not knowable from the set payload, so a
+ * released set still shows the button and fails on the server with its own
+ * message — better than hiding deletion from every set in case one is released.
+ */
+export function deletableReason(set: MarketRateSet): string | null {
+  if (set.status === "ACTIVE") return "The live price list cannot be deleted. Activate another one first.";
+  return null;
+}
 
 /** A rate row back into the shape `put_rates` accepts. */
 export function toRateInput(rate: MarketRate): MarketRateInput {
