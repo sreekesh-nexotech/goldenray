@@ -538,3 +538,140 @@ export const BOM_COST_KEYS: { key: string; label: string; hint?: string }[] = [
   { key: "structure_labor", label: "Structure labour", hint: "Per project." },
   { key: "structure_repair_pct", label: "Structure repair", hint: "A fraction: 0.1 is 10%." },
 ];
+
+/* -------------------------------------------------------------------------- */
+/*  6. The electricity tariff (`energy.config`)                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The tariff lives in the **same** `CostConfig` registry as the cost rates above, under
+ * the key `energy.config`, validated server-side by `engines.energy.validate_energy_config`.
+ *
+ * It deliberately has no model of its own. A dedicated table would duplicate what
+ * `CostConfig` already provides -- append-only dated rows, an audit trail, a validator and
+ * `pricing.edit` gating -- and would fork where the tariff lives: `engines/energy.py`
+ * reads `cost_config["energy.config"]`, so a second home means two answers to "what is
+ * the current tariff?". The editor is new; the storage is not.
+ */
+
+/** One slab: everything up to `upToUnits` is charged at `ratePerUnit`. */
+export interface TariffSlab {
+  upToUnits: number | null;
+  ratePerUnit: number;
+  note?: string;
+}
+
+/** Fixed charge for a consumption band. Separate tables per connection phase. */
+export interface FixedChargeSlab {
+  upToUnits: number | null;
+  chargeBiMonthly: number;
+  note?: string;
+}
+
+export interface TariffRegion {
+  regionId?: string;
+  regionName?: string;
+  discom?: string;
+  tariffName?: string;
+  tariffVersion?: string;
+  tariffAuthority?: string;
+  tariffOrder?: string;
+  effectivePeriod?: string;
+  tariffCategory?: string;
+  billingPeriod?: string;
+  note?: string;
+  /**
+   * Above this many units the tariff stops being telescopic: the **entire** consumption
+   * is charged at one flat rate from `nonTelescopicSlabs`, not just the excess. Getting
+   * this boundary wrong changes the bill by multiples, not percentages.
+   */
+  nonTelescopicThreshold?: number;
+  electricityDutyPct?: number;
+  electricityDutyBasis?: string;
+  tariffSlabs: TariffSlab[];
+  nonTelescopicSlabs: TariffSlab[];
+  fixedChargeSlabs: { singlePhase: FixedChargeSlab[]; threePhase: FixedChargeSlab[]; note?: string };
+  meterRent: { singlePhaseBiMonthly: number; threePhaseBiMonthly: number; note?: string };
+  yield: { dailyGenPerKw: number; unit?: string; source?: string; note?: string };
+  sizing: { coverageTarget: number; note?: string };
+}
+
+export interface EnergyConfig {
+  configVersion: string;
+  regions: Record<string, TariffRegion>;
+}
+
+export const ENERGY_CONFIG_KEY = "energy.config";
+
+/**
+ * Read the tariff out of a cost-config body.
+ *
+ * Returns null when the key has never been set (which is what the bill helper reports as
+ * "no electricity tariff is configured") and when the value is hidden or malformed --
+ * all three mean "there is nothing here to edit", and a half-built form over a broken
+ * document is worse than an empty state.
+ */
+export function readEnergyConfig(body: CostConfigBody): EnergyConfig | null {
+  const row = body.current.find((r) => r.key === ENERGY_CONFIG_KEY);
+  const value = row?.value as EnergyConfig | undefined;
+  if (!value || typeof value !== "object" || !value.regions) return null;
+  return value;
+}
+
+/**
+ * What the server's validator insists on, checked here first so a mistake is a message
+ * next to the field rather than a 400 after the save.
+ *
+ * Deliberately not a full re-implementation of `validate_energy_config`: this catches the
+ * errors a person actually makes in a form -- an out-of-order slab, a missing rate, a
+ * coverage target typed as 85 instead of 0.85 -- and leaves the schema's own guarantees
+ * to the server, which is the only side that can be authoritative about them.
+ */
+export function validateTariff(region: TariffRegion): string[] {
+  const problems: string[] = [];
+
+  const checkSlabs = (slabs: { upToUnits: number | null }[], label: string) => {
+    if (!slabs.length) {
+      problems.push(`${label}: at least one slab is needed.`);
+      return;
+    }
+    let previous = 0;
+    slabs.forEach((slab, i) => {
+      const last = i === slabs.length - 1;
+      if (slab.upToUnits === null || slab.upToUnits === undefined) {
+        // A null ceiling means "everything above", which only makes sense last.
+        if (!last) problems.push(`${label}: only the final slab may be open-ended.`);
+        return;
+      }
+      if (!(slab.upToUnits > previous)) {
+        problems.push(`${label}: slab ${i + 1} must cover more units than the one before it.`);
+      }
+      previous = slab.upToUnits;
+    });
+  };
+
+  checkSlabs(region.tariffSlabs ?? [], "Telescopic slabs");
+  checkSlabs(region.nonTelescopicSlabs ?? [], "Non-telescopic slabs");
+  checkSlabs(region.fixedChargeSlabs?.singlePhase ?? [], "Fixed charge (single phase)");
+  checkSlabs(region.fixedChargeSlabs?.threePhase ?? [], "Fixed charge (three phase)");
+
+  for (const [slabs, label] of [
+    [region.tariffSlabs ?? [], "Telescopic slabs"],
+    [region.nonTelescopicSlabs ?? [], "Non-telescopic slabs"],
+  ] as [TariffSlab[], string][]) {
+    if (slabs.some((s) => !(s.ratePerUnit > 0))) problems.push(`${label}: every slab needs a rate above zero.`);
+  }
+
+  const coverage = region.sizing?.coverageTarget;
+  if (!(typeof coverage === "number" && coverage > 0 && coverage <= 1)) {
+    problems.push("Coverage target must be a fraction between 0 and 1 — 0.85 for 85%.");
+  }
+  if (!(region.yield?.dailyGenPerKw > 0)) {
+    problems.push("Daily generation per kW must be above zero.");
+  }
+  const duty = region.electricityDutyPct;
+  if (duty !== undefined && !(duty >= 0 && duty <= 100)) {
+    problems.push("Electricity duty must be a percentage between 0 and 100.");
+  }
+  return problems;
+}

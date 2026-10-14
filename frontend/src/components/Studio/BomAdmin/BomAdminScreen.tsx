@@ -45,9 +45,10 @@ import CatalogTab from "./CatalogTab";
 import StructureRatesTab from "./StructureRatesTab";
 import FixedPricesTab from "./FixedPricesTab";
 import CostsTab from "./CostsTab";
+import TariffTab from "./TariffTab";
 import OffersTab from "./OffersTab";
 
-type TabKey = "catalog" | "structure" | "fixed" | "costs" | "offers";
+type TabKey = "catalog" | "structure" | "fixed" | "costs" | "tariff" | "offers";
 
 const TABS: { key: TabKey; label: string; module: StudioModule }[] = [
   { key: "catalog", label: "Catalog", module: "catalog" },
@@ -58,6 +59,9 @@ const TABS: { key: TabKey; label: string; module: StudioModule }[] = [
   // `pricing_internal.view`), which is why the port needed no new permission
   // module for it.
   { key: "costs", label: "Cost rates", module: "pricing" },
+  // Same `pricing` module and the same `CostConfig` storage as the cost rates --
+  // `energy.config` is a key in that registry, not a model of its own.
+  { key: "tariff", label: "Tariff", module: "pricing" },
   { key: "offers", label: "Offers", module: "offers" },
 ];
 
@@ -134,7 +138,7 @@ export default function BomAdminScreen() {
   );
 
   const costs = useLoaded<CostConfigBody>(
-    tab === "costs",
+    tab === "costs" || tab === "tariff",
     useCallback(() => costConfigApi.get(), [])
   );
 
@@ -257,6 +261,13 @@ export default function BomAdminScreen() {
       {tab === "costs" && (
         <Loaded state={costs}>
           {(data) => <CostsTab initial={data} readOnly={!canEdit("pricing")} notify={notify} />}
+        </Loaded>
+      )}
+
+      {/* Shares the costs load: both read the same cost-config body. */}
+      {tab === "tariff" && (
+        <Loaded state={costs}>
+          {(data) => <TariffTab initial={data} readOnly={!canEdit("pricing")} notify={notify} />}
         </Loaded>
       )}
 
