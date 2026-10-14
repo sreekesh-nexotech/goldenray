@@ -16,7 +16,7 @@
 // `bom`, `offers`), so a tab the user cannot read is not shown at all — a tab
 // that opens onto a 403 is worse than a tab that is not there.
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PageHeader, TipBanner } from "../shared/primitives";
 import { useStudio } from "../shared/StudioContext";
 import { studioColors } from "../shared/format";
@@ -288,25 +288,29 @@ interface LoadState<T> {
  */
 function useLoaded<T>(active: boolean, load: () => Promise<T>): LoadState<T> {
   const [state, setState] = useState<LoadState<T>>({ data: null, error: null });
-  const [started, setStarted] = useState(false);
+  // A ref, not state: marking the load as started must not re-render. As state it did,
+  // and the re-render re-ran this effect -- which bailed out on `started` but only after
+  // React had already run the *first* pass's cleanup, flipping its `live` flag to false.
+  // The fetch then resolved into a discarded closure and the tab sat on "Loading..."
+  // forever, with the request visible in the network tab having succeeded. Each endpoint
+  // was also fetched twice, which was the same re-render showing itself.
+  const started = useRef(false);
 
   useEffect(() => {
-    if (!active || started) return;
-    setStarted(true);
-    let live = true;
+    if (!active || started.current) return;
+    started.current = true;
     load()
-      .then((data) => live && setState({ data, error: null }))
+      .then((data) => setState({ data, error: null }))
       .catch((err) =>
-        live &&
         setState({
           data: null,
           error: err instanceof Error ? err.message : "Could not load this tab.",
         })
       );
-    return () => {
-      live = false;
-    };
-  }, [active, started, load]);
+    // No cleanup: this runs once per tab and the result is wanted whenever it lands.
+    // Switching away mid-flight and back must not leave the tab blank, which is exactly
+    // what cancelling the only load it will ever start would do.
+  }, [active, load]);
 
   return state;
 }
