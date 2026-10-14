@@ -26,6 +26,7 @@ import {
   fixedItems as fixedItemsApi,
   costConfig as costConfigApi,
   offers as offersApi,
+  rateSets as rateSetsApi,
   structureItems as structureItemsApi,
   structureTemplates as structureTemplatesApi,
   templates as templatesApi,
@@ -35,6 +36,7 @@ import {
   type CostConfigBody,
   type CatalogComponent,
   type FixedItemRow,
+  type MarketRateSet,
   type OfferRow,
   type StructureItemRow,
   type StructureTemplateRow,
@@ -46,9 +48,10 @@ import StructureRatesTab from "./StructureRatesTab";
 import FixedPricesTab from "./FixedPricesTab";
 import CostsTab from "./CostsTab";
 import TariffTab from "./TariffTab";
+import RatesTab from "./RatesTab";
 import OffersTab from "./OffersTab";
 
-type TabKey = "catalog" | "structure" | "fixed" | "costs" | "tariff" | "offers";
+type TabKey = "catalog" | "structure" | "fixed" | "costs" | "tariff" | "rates" | "offers";
 
 const TABS: { key: TabKey; label: string; module: StudioModule }[] = [
   { key: "catalog", label: "Catalog", module: "catalog" },
@@ -62,6 +65,7 @@ const TABS: { key: TabKey; label: string; module: StudioModule }[] = [
   // Same `pricing` module and the same `CostConfig` storage as the cost rates --
   // `energy.config` is a key in that registry, not a model of its own.
   { key: "tariff", label: "Tariff", module: "pricing" },
+  { key: "rates", label: "Market rates", module: "market_rates" },
   { key: "offers", label: "Offers", module: "offers" },
 ];
 
@@ -142,6 +146,11 @@ export default function BomAdminScreen() {
     useCallback(() => costConfigApi.get(), [])
   );
 
+  const sets = useLoaded<MarketRateSet[]>(
+    tab === "rates",
+    useCallback(() => rateSetsApi.list(), [])
+  );
+
   const offerRows = useLoaded<OfferRow[]>(
     tab === "offers",
     useCallback(() => offersApi.list(), [])
@@ -155,6 +164,10 @@ export default function BomAdminScreen() {
   // Save that turns out to be refused.
   const canEdit = useCallback(
     (module: StudioModule) => (me ? can(module, "edit") : false),
+    [me, can]
+  );
+  const ratesCan = useCallback(
+    (action: StudioAction) => (me ? can("market_rates", action) : false),
     [me, can]
   );
   const offersCan = useCallback(
@@ -268,6 +281,14 @@ export default function BomAdminScreen() {
       {tab === "tariff" && (
         <Loaded state={costs}>
           {(data) => <TariffTab initial={data} readOnly={!canEdit("pricing")} notify={notify} />}
+        </Loaded>
+      )}
+
+      {tab === "rates" && (
+        <Loaded state={sets}>
+          {(data) => (
+            <RatesTab sets={data} readOnly={!canEdit("market_rates")} can={ratesCan} notify={notify} />
+          )}
         </Loaded>
       )}
 

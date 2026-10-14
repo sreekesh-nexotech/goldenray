@@ -675,3 +675,124 @@ export function validateTariff(region: TariffRegion): string[] {
   }
   return problems;
 }
+
+/* -------------------------------------------------------------------------- */
+/*  7. Market rates — the price list                                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Market rates are what a customer is actually quoted when a price exists for
+ * their configuration: the engine uses `market_rate + add-ons + price deltas`
+ * and ignores the cost-plus ladder entirely. So this is the largest single lever
+ * on a quote, and it is versioned accordingly.
+ *
+ * Two platform rules the UI must follow rather than fight:
+ *
+ * 1. **Only DRAFT sets are editable.** An ACTIVE set is what customers are being
+ *    quoted from; changing it in place would rewrite history. To revise prices
+ *    you clone it (`copy_from_uid`), edit the copy, then activate.
+ * 2. **Exactly one set is ACTIVE**, and activating retires the previous one. The
+ *    engine reads only the ACTIVE set, so a DRAFT set -- however complete -- is
+ *    priced as if it did not exist, and every quote falls back to cost-plus.
+ */
+export type RateSetStatus = "DRAFT" | "ACTIVE" | "RETIRED";
+
+export interface MarketRateSet {
+  uid: string;
+  name: string;
+  status: RateSetStatus;
+  activated_at: string | null;
+  retired_at: string | null;
+  note: string;
+  rate_count: number;
+  version: number;
+}
+
+export interface MarketRate {
+  uid: string;
+  /** The Flarize key, e.g. `hybrid_value_0_dcr_up5` — what the price list calls this cell. */
+  key: string;
+  system_type: "ONGRID" | "HYBRID" | "UPGRADE";
+  tier: "" | "BASE" | "VALUE" | "PREMIUM";
+  battery_config: string;
+  size_key: string;
+  size_kw: string | null;
+  phase: string;
+  from_size_key: string;
+  /** HYBRID only: which module content this price is for. Blank on on-grid. */
+  dcr: "" | "dcr" | "ndcr";
+  /** Upgrade-ready: panels at `size_key` now, everything else built for this size. */
+  future_size_key: string;
+  /** `diffBase` rows carry a baseline for price deltas, not a price. */
+  variant: string;
+  customer_price_incl_gst: string;
+  sort_order: number;
+}
+
+/** What `put_rates` accepts. Note it is **replace-all**: see `replaceRates`. */
+export interface MarketRateInput {
+  system_type: string;
+  tier?: string;
+  battery_config?: string;
+  size_key: string;
+  from_size_key?: string;
+  dcr?: string;
+  future_size_key?: string;
+  variant?: string;
+  customer_price_incl_gst: string;
+  sort_order?: number;
+}
+
+export interface ReplaceOutcome {
+  created: number;
+  updated: number;
+  unchanged: number;
+  deleted: number;
+}
+
+export const rateSets = {
+  list: async () =>
+    (await studioRequest<Paginated<MarketRateSet>>(`pricing/market-rate-sets/${query({ page_size: 100 })}`)).results,
+
+  rates: async (uid: string) =>
+    (await studioRequest<Paginated<MarketRate>>(`pricing/market-rate-sets/${uid}/rates/${query({ page_size: 1000 })}`))
+      .results,
+
+  /**
+   * Replace **every** rate in the set.
+   *
+   * `put_rates` upserts what it is given and deletes what it is not, so a caller
+   * that sent only the rows it had edited would silently wipe the rest of the
+   * price list. The whole set goes every time; `replaceRates` exists partly to
+   * make that hard to get wrong by accident.
+   */
+  replaceRates: (uid: string, rates: MarketRateInput[], expectedVersion?: number) =>
+    studioRequest<{ set: MarketRateSet; outcome: ReplaceOutcome }>(`pricing/market-rate-sets/${uid}/rates/`, {
+      method: "PUT",
+      body: { rates, ...(expectedVersion === undefined ? {} : { expected_version: expectedVersion }) },
+    }),
+
+  /** A new DRAFT set. `copy_from_uid` clones an existing set's rates into it. */
+  create: (body: { name: string; note?: string; copy_from_uid?: string }) =>
+    studioRequest<MarketRateSet>("pricing/market-rate-sets/", { method: "POST", body }),
+
+  /** Makes this set the one quotes are priced from, and retires the previous one. */
+  activate: (uid: string, body: { note?: string; expected_version?: number } = {}) =>
+    studioRequest<MarketRateSet>(`pricing/market-rate-sets/${uid}/activate/`, { method: "POST", body }),
+};
+
+/** A rate row back into the shape `put_rates` accepts. */
+export function toRateInput(rate: MarketRate): MarketRateInput {
+  return {
+    system_type: rate.system_type,
+    tier: rate.tier,
+    battery_config: rate.battery_config,
+    size_key: rate.size_key,
+    from_size_key: rate.from_size_key,
+    dcr: rate.dcr,
+    future_size_key: rate.future_size_key,
+    variant: rate.variant,
+    customer_price_incl_gst: rate.customer_price_incl_gst,
+    sort_order: rate.sort_order,
+  };
+}
