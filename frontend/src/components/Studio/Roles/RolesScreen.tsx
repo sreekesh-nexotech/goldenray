@@ -12,6 +12,7 @@ import { useStudio } from "../shared/StudioContext";
 import { PageHeader, TipBanner, StatusPill, SelectField, GhostButton, thStyle, tdStyle } from "../shared/primitives";
 import { ConfirmDialog } from "../shared/overlays";
 import { initialsOf, studioColors } from "../shared/format";
+import EditUserModal from "./EditUserModal";
 import { InviteModal, type NewUserPayload } from "./InviteModal";
 import {
   getUsers,
@@ -52,9 +53,11 @@ function MemberRow({
   canChangeRole,
   canSetActive,
   canForceReset,
+  canEditDetails,
   busy,
   roles,
   onRoleChange,
+  onEdit,
   onDeactivate,
   onReactivate,
   onForceReset,
@@ -67,10 +70,13 @@ function MemberRow({
   canSetActive: boolean;
   /** `users.manage` — force-reset invalidates the user's password. */
   canForceReset: boolean;
+  /** `users.edit` — correcting name, phone, title (e-mail additionally needs manage). */
+  canEditDetails: boolean;
   busy: boolean;
   /** Phase 1 roles (§6.17); the select assigns one of these. */
   roles: StudioRole[];
   onRoleChange: (roleUid: string) => void;
+  onEdit: () => void;
   onDeactivate: () => void;
   onForceReset: () => void;
   onReactivate: () => void;
@@ -154,6 +160,11 @@ function MemberRow({
               Reactivate
             </GhostButton>
           )}
+          {canEditDetails && (
+            <GhostButton onClick={onEdit} disabled={busy} style={{ height: 30, padding: "0 11px", fontSize: 12, borderRadius: 9 }}>
+              Edit
+            </GhostButton>
+          )}
           {canForceReset && user.is_active && (
             <GhostButton onClick={onForceReset} disabled={busy} style={{ height: 30, padding: "0 11px", fontSize: 12, borderRadius: 9 }}>
               Reset password
@@ -165,6 +176,7 @@ function MemberRow({
               onClick={onDeactivate}
               disabled={busy}
               aria-label={`Deactivate ${name}`}
+              title="Suspends the account. They cannot sign in, and can be reactivated."
               className="inline-flex items-center transition-colors hover:bg-[rgba(220,38,38,0.08)]"
               style={{
                 height: 30,
@@ -179,7 +191,7 @@ function MemberRow({
                 cursor: busy ? "default" : "pointer",
               }}
             >
-              Remove
+              Deactivate
             </button>
           )}
         </div>
@@ -214,6 +226,7 @@ export default function RolesScreen() {
   const [confirmUser, setConfirmUser] = useState<StudioUser | null>(null);
   const [deactivating, setDeactivating] = useState(false);
   const [confirmReset, setConfirmReset] = useState<StudioUser | null>(null);
+  const [editing, setEditing] = useState<StudioUser | null>(null);
   const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
@@ -437,7 +450,9 @@ export default function RolesScreen() {
                       canSetActive={canSetActive && !self}
                       busy={busyId === u.uid}
                       roles={roles}
+                      canEditDetails={canChangeRole}
                       onRoleChange={(v) => changeRole(u, v)}
+                      onEdit={() => setEditing(u)}
                       canForceReset={canForceReset && !self}
                       onDeactivate={() => setConfirmUser(u)}
                       onForceReset={() => setConfirmReset(u)}
@@ -485,6 +500,20 @@ export default function RolesScreen() {
           </>
         )}
       </ConfirmDialog>
+
+      {editing && (
+        <EditUserModal
+          user={editing}
+          // The API refuses an e-mail change without `users.manage`, so the field
+          // is read-only rather than offering an edit that would be rejected.
+          canChangeEmail={canForceReset}
+          onSaved={(u) => {
+            replaceUser(u);
+            toast(`${displayName(u)} updated`);
+          }}
+          onClose={() => setEditing(null)}
+        />
+      )}
 
       <InviteModal
         roles={roles} open={inviteOpen} onClose={() => setInviteOpen(false)} onCreate={handleCreate} />
