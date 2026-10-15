@@ -189,7 +189,18 @@ function Calculator() {
               }
             />
           )}
-          <ConfigPanel inputs={inputs} options={options} set={set} />
+          <ConfigPanel
+            inputs={inputs}
+            options={options}
+            set={set}
+            // `meta.bat_config` is what the engine built, which under the composite
+            // regime comes from the package profile rather than from `inputs.batConfig`.
+            // Passing it only when it differs would hide the fact that the package is
+            // the authority even when the two happen to agree.
+            resolvedBattery={
+              typeof result?.meta?.bat_config === "string" ? result.meta.bat_config : null
+            }
+          />
           <AddOnsPanel inputs={inputs} options={options} set={set} />
           {inputs.sysType === "upgrade" && (
             <UpgradePanel

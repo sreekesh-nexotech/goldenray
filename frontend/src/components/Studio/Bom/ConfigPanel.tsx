@@ -43,10 +43,21 @@ export default function ConfigPanel({
   inputs,
   options,
   set,
+  resolvedBattery,
 }: {
   inputs: BomInputs;
   options: BomQuoteOptions | null;
   set: <K extends keyof BomInputs>(key: K, value: BomInputs[K]) => void;
+  /**
+   * The battery band the engine actually built, from `meta.bat_config`.
+   *
+   * The band is a property of the package, not a question for the person quoting: a
+   * hybrid value package carries one battery because that is what the package is. When
+   * the engine reports a band, this shows it instead of offering a choice that would be
+   * overridden. Absent (no quote yet, or a deployment still pricing per line) the select
+   * stays, because there the request really does decide.
+   */
+  resolvedBattery?: string | null;
 }) {
   const sys = options?.system_types[inputs.sysType === "upgrade" ? "ongrid" : inputs.sysType];
   const sizes = sys?.sizes ?? [];
@@ -168,13 +179,35 @@ export default function ConfigPanel({
             </Field>
 
             {inputs.sysType === "hybrid" && (
-              <Field label="Batteries" hint="how many units the customer is taking">
-                <SelectField value={inputs.batConfig} onChange={(v) => set("batConfig", v)} ariaLabel="Battery count">
-                  {(sys?.battery_configs ?? ["0", "1", "2"]).map((b) => (
-                    <option key={b} value={b}>{b === "0" ? "No battery" : `${b} battery`}</option>
-                  ))}
-                </SelectField>
-              </Field>
+              resolvedBattery != null ? (
+                <Field
+                  label="Batteries"
+                  hint={`Set by the ${inputs.tier} package, not chosen here.`}
+                >
+                  <p
+                    style={{
+                      margin: 0,
+                      padding: "9px 11px",
+                      borderRadius: 10,
+                      background: "rgba(0,0,0,.03)",
+                      fontSize: 13,
+                      color: studioColors.tealDeep,
+                    }}
+                  >
+                    {resolvedBattery === "0"
+                      ? "No battery"
+                      : `${resolvedBattery} battery${Number(resolvedBattery) > 1 ? " units" : ""}`}
+                  </p>
+                </Field>
+              ) : (
+                <Field label="Batteries" hint="how many units the customer is taking">
+                  <SelectField value={inputs.batConfig} onChange={(v) => set("batConfig", v)} ariaLabel="Battery count">
+                    {(sys?.battery_configs ?? ["0", "1", "2"]).map((b) => (
+                      <option key={b} value={b}>{b === "0" ? "No battery" : `${b} battery`}</option>
+                    ))}
+                  </SelectField>
+                </Field>
+              )
             )}
 
             <Field label="Roof / structure">
