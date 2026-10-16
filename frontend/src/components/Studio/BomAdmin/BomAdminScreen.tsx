@@ -174,6 +174,13 @@ export default function BomAdminScreen() {
     (action: StudioAction) => (me ? can("offers", action) : false),
     [me, can]
   );
+  // Catalog writes split across three verbs, not one: creating a component is
+  // `create`, editing it is `edit`, and activating it is `approve`. The tab asks
+  // per verb so a control that would 403 is never rendered.
+  const catalogCan = useCallback(
+    (action: StudioAction) => (me ? can("catalog", action) : false),
+    [me, can]
+  );
 
   if (me && visibleTabs.length === 0) {
     return (
@@ -238,6 +245,7 @@ export default function BomAdminScreen() {
               categories={data.categories}
               items={data.components}
               readOnly={!canEdit("catalog")}
+              can={catalogCan}
               notify={notify}
             />
           )}

@@ -21,9 +21,26 @@
 // Prices are not edited here. They live on the pricing side (append-only, with
 // a release lifecycle), and a price field on this screen would imply a write
 // this endpoint does not do.
+//
+// ── Adding things ─────────────────────────────────────────────────────────
+//
+// Products and categories are both created here. Three platform rules shape
+// how, and none of them is guessable from the form:
+//
+// * **Three permissions, not one.** `catalog.create` to add, `catalog.edit` to
+//   change, `catalog.approve` to activate. A button gated on the wrong verb
+//   renders for a role the API then refuses, so each asks for its own.
+// * **A new component is born DRAFT, and a DRAFT is quoted by nobody** -- the
+//   same silent disappearance as having no tier. Creating one is therefore two
+//   steps, and the second is stated rather than implied.
+// * **Panels and inverters cannot be activated without their spec**
+//   (`wattage_w`; `kw` + `inverter_type`), because the BOM builder sizes the
+//   system from them. The spec is left optional at create time and required at
+//   activation, which is where the server draws the line too.
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { studioColors } from "../shared/format";
+import { GhostButton, SelectField } from "../shared/primitives";
 import {
   EmptyRow,
   FieldGrid,
@@ -33,8 +50,11 @@ import {
   TextField,
   str,
 } from "../shared/rows";
-import { useEditableRows } from "../shared/useEditableRows";
+import { isNewRow, useEditableRows } from "../shared/useEditableRows";
 import {
+  BOM_ROLES,
+  CATEGORY_UNITS,
+  categories as categoriesApi,
   components,
   saveErrorMessage,
   versioned,
@@ -43,6 +63,7 @@ import {
   type CatalogComponentInput,
   type CatalogTier,
 } from "@/services/bomAdminService";
+import type { StudioAction } from "@/services/studioService";
 
 interface Notify {
   success: (msg: string) => void;
@@ -50,40 +71,50 @@ interface Notify {
 }
 
 const TIERS: CatalogTier[] = ["BASE", "VALUE", "PREMIUM"];
+const INVERTER_TYPES = ["ONGRID", "HYBRID"] as const;
+
+/** A spec object with nothing filled in — there is no point sending it. */
+function isBlankSpec(spec: object | null | undefined): boolean {
+  if (!spec) return true;
+  return Object.values(spec).every((v) => v === null || v === undefined || v === "");
+}
 
 export default function CatalogTab({
   categories,
   items,
   readOnly,
+  can,
   notify,
 }: {
   categories: CatalogCategory[];
   items: CatalogComponent[];
   readOnly: boolean;
+  /**
+   * `catalog.<verb>`. Creating is its own verb server-side, not `edit`, so a
+   * button gated on `edit` would render for roles that then get a 403 on save.
+   */
+  can: (action: StudioAction) => boolean;
   notify: Notify;
 }) {
-  // Categories that actually hold components come first; the rest stay listed
-  // so an empty category is visibly empty rather than missing.
-  const counts = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const item of items) {
-      const slug = item.category?.slug;
-      if (slug) map.set(slug, (map.get(slug) ?? 0) + 1);
-    }
-    return map;
-  }, [items]);
-
-  const [category, setCategory] = useState(
-    () => categories.find((c) => (counts.get(c.slug) ?? 0) > 0)?.slug ?? categories[0]?.slug ?? ""
-  );
+  // The first category that holds anything, chosen once from the loaded list.
+  // (The live counts below cannot seed this: they depend on `rows`, which the
+  // editing hook owns, and the hook is created further down.)
+  const [category, setCategory] = useState(() => {
+    const held = new Set(items.map((i) => i.category?.slug).filter(Boolean));
+    return categories.find((c) => held.has(c.slug))?.slug ?? categories[0]?.slug ?? "";
+  });
   const [search, setSearch] = useState("");
-
+  const [addingCategory, setAddingCategory] = useState(false);
+  const [busyAction, setBusyAction] = useState<string | null>(null);
+  // Categories created in this session, so the new pill appears without a reload.
+  const [extraCategories, setExtraCategories] = useState<CatalogCategory[]>([]);
+  const allCategories = useMemo(
+    () => [...categories, ...extraCategories],
+    [categories, extraCategories]
+  );
   const api = useMemo(
     () => ({
-      // Components are created through the catalog's own screens, which handle
-      // SKU generation and the category's attribute schema. This editor exists
-      // to correct the specs of components that already exist.
-      create: () => Promise.reject(new Error("Add components from the Catalog screen.")),
+      create: components.create,
       update: components.update,
       remove: (uid: string) => components.remove(uid),
     }),
@@ -92,29 +123,116 @@ export default function CatalogTab({
 
   const toInput = useMemo(
     () =>
-      versioned<CatalogComponent, CatalogComponentInput>((row) => ({
-        name: row.name.trim(),
-        model: row.model,
-        brand_label: row.brand_label,
-        tiers: row.tiers,
-        // Only the spec its category actually has: sending `panel_spec` for an
-        // inverter would be writing to a table that does not exist for it.
-        ...(row.spec_kind === "panel" ? { panel_spec: row.panel_spec } : {}),
-        ...(row.spec_kind === "inverter" ? { inverter_spec: row.inverter_spec } : {}),
-      })),
+      versioned<CatalogComponent, CatalogComponentInput>((row) => {
+        const isNew = isNewRow(row.uid);
+        return {
+          // `category` decides which spec table the row carries, so it is a
+          // create-time choice; changing it later is a move, not an edit.
+          ...(isNew ? { category: row.category?.uid, sku: row.sku.trim() || undefined } : {}),
+          name: row.name.trim(),
+          model: row.model,
+          brand_label: row.brand_label,
+          tiers: row.tiers,
+          // Only the spec its category actually has: sending `panel_spec` for an
+          // inverter would be writing to a table that does not exist for it.
+          // An untouched spec on a new row is omitted rather than sent empty:
+          // the server requires `wattage_w` (panel) and `kw` + `inverter_type`
+          // (inverter) the moment the spec exists, so sending `{}` would fail on
+          // fields the person has not been asked for yet. The row saves as a
+          // draft without a spec, and Activate is what insists on it.
+          ...(row.spec_kind === "panel" && !(isNew && isBlankSpec(row.panel_spec))
+            ? { panel_spec: row.panel_spec }
+            : {}),
+          ...(row.spec_kind === "inverter" && !(isNew && isBlankSpec(row.inverter_spec))
+            ? { inverter_spec: row.inverter_spec }
+            : {}),
+        };
+      }),
     []
   );
 
-  const { rows, isDirty, patch, discard, save, busyId } = useEditableRows<
+  const { rows, isDirty, patch, add, discard, save, replace, busyId } = useEditableRows<
     CatalogComponent,
     CatalogComponentInput
   >(items, api, toInput, notify, saveErrorMessage);
+
+  /**
+   * DRAFT -> ACTIVE. Its own endpoint and its own permission, because it is the
+   * step that makes a component quotable: until it runs, a newly created row is
+   * saved, correct and invisible to every quote.
+   */
+  const activate = useCallback(
+    async (row: CatalogComponent) => {
+      setBusyAction(row.uid);
+      try {
+        const next = await components.activate(row.uid, { expected_version: row.version });
+        replace(next);
+        notify.success("Activated — it can now be quoted.");
+      } catch (err) {
+        notify.error(saveErrorMessage(err));
+      } finally {
+        setBusyAction(null);
+      }
+    },
+    [notify, replace]
+  );
+
+  /** A blank row in the category now selected, so the spec fields match it. */
+  const addComponent = useCallback(() => {
+    const cat = allCategories.find((c) => c.slug === category);
+    if (!cat) {
+      notify.error("Pick a category first.");
+      return;
+    }
+    add({
+      sku: "",
+      name: "",
+      model: "",
+      category: { uid: cat.uid, slug: cat.slug, name: cat.name },
+      brand_label: "",
+      status: "DRAFT",
+      is_public: false,
+      tiers: [],
+      spec_kind: cat.spec_kind,
+      panel_spec: null,
+      inverter_spec: null,
+      effective_gst_rate: null,
+      effective_unit: null,
+      version: 0,
+    } as Omit<CatalogComponent, "uid">);
+  }, [add, allCategories, category, notify]);
+
+  const onCategoryCreated = useCallback(
+    (created: CatalogCategory) => {
+      setExtraCategories((prev) => [...prev, created]);
+      setCategory(created.slug);
+      setAddingCategory(false);
+      notify.success(`Added the ${created.name} type.`);
+    },
+    [notify]
+  );
+
+  // Counted off the live rows rather than the loaded prop, so saving a new
+  // component moves its category's number straight away.
+  const counts = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const row of rows) {
+      const slug = row.category?.slug;
+      if (slug) map.set(slug, (map.get(slug) ?? 0) + 1);
+    }
+    return map;
+  }, [rows]);
 
   const needle = search.trim().toLowerCase();
   const visible = rows.filter(
     (r) =>
       (!category || r.category?.slug === category) &&
-      (!needle || r.name.toLowerCase().includes(needle) || r.sku.toLowerCase().includes(needle))
+      // An unsaved row has no name or SKU to match yet, so a search that was
+      // already typed must not hide the row the person just asked for.
+      (!needle ||
+        isNewRow(r.uid) ||
+        r.name.toLowerCase().includes(needle) ||
+        r.sku.toLowerCase().includes(needle))
   );
 
   return (
@@ -124,8 +242,8 @@ export default function CatalogTab({
         is invisible to every quote. Prices are managed on the pricing side, not here.
       </PanelIntro>
 
-      <div className="flex flex-wrap gap-1" style={{ marginBottom: 12 }}>
-        {categories.map((c) => {
+      <div className="flex flex-wrap items-center gap-1" style={{ marginBottom: 12 }}>
+        {allCategories.map((c) => {
           const n = counts.get(c.slug) ?? 0;
           const active = c.slug === category;
           return (
@@ -152,7 +270,36 @@ export default function CatalogTab({
             </button>
           );
         })}
+        {!readOnly && can("create") && !addingCategory && (
+          <button
+            type="button"
+            onClick={() => setAddingCategory(true)}
+            title="Add a new category"
+            style={{
+              appearance: "none",
+              border: `1px dashed ${studioColors.teal}`,
+              background: "#fff",
+              color: studioColors.teal,
+              borderRadius: 999,
+              padding: "5px 11px",
+              fontFamily: "var(--font-switzer)",
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            + New type
+          </button>
+        )}
       </div>
+
+      {addingCategory && (
+        <NewCategoryForm
+          onCancel={() => setAddingCategory(false)}
+          onCreated={onCategoryCreated}
+          notify={notify}
+        />
+      )}
 
       <div style={{ maxWidth: 320, marginBottom: 14 }}>
         <TextField label="" value={search} onChange={setSearch} placeholder="Search name or SKU…" />
@@ -164,13 +311,20 @@ export default function CatalogTab({
             {needle ? "Nothing matches that search." : "No components in this category."}
           </EmptyRow>
         )}
-        {visible.map((row) => (
+        {visible.map((row) => {
+          const unsaved = isNewRow(row.uid);
+          return (
           <RowCard
             key={row.uid}
-            title={row.name || row.sku}
+            title={row.name || (unsaved ? "New component" : row.sku)}
             meta={
               <>
-                {row.sku}
+                {unsaved ? <em>not saved yet</em> : row.sku}
+                {row.status === "DRAFT" && !unsaved && (
+                  <strong style={{ color: studioColors.amberInk, marginLeft: 8 }}>
+                    draft — not quoted until activated
+                  </strong>
+                )}
                 {row.tiers.length === 0 ? (
                   <strong style={{ color: studioColors.amberInk, marginLeft: 8 }}>no tier — never quoted</strong>
                 ) : (
@@ -179,7 +333,7 @@ export default function CatalogTab({
               </>
             }
             dirty={isDirty(row)}
-            busy={busyId === row.uid}
+            busy={busyId === row.uid || busyAction === row.uid}
             readOnly={readOnly}
             onSave={() => save(row.uid)}
             onDiscard={() => discard(row.uid)}
@@ -218,8 +372,54 @@ export default function CatalogTab({
             {row.spec_kind === "inverter" && (
               <InverterSpecFields row={row} patch={patch} readOnly={readOnly} />
             )}
+
+            {unsaved && (
+              <div style={{ marginTop: 14 }}>
+                <FieldGrid>
+                  <TextField
+                    label="SKU"
+                    value={row.sku}
+                    onChange={(v) => patch(row.uid, { sku: v })}
+                    placeholder="Generated"
+                    hint="Leave blank for the next number in this category. It cannot be changed once the component is active."
+                    disabled={readOnly}
+                  />
+                </FieldGrid>
+                <p style={{ margin: "10px 0 0", fontSize: 11.5, color: studioColors.mutedGray, lineHeight: 1.5 }}>
+                  Saving adds this as a <strong>draft</strong>. Drafts are not quoted — activate it below once the
+                  details are right.
+                </p>
+              </div>
+            )}
+
+            {!unsaved && row.status === "DRAFT" && !readOnly && can("approve") && (
+              <div
+                className="flex flex-wrap items-center gap-2"
+                style={{ marginTop: 16, paddingTop: 14, borderTop: `1px dashed ${studioColors.ring}` }}
+              >
+                <GhostButton
+                  onClick={() => activate(row)}
+                  disabled={busyAction === row.uid || isDirty(row)}
+                  style={{ height: 32, fontSize: 12 }}
+                >
+                  {busyAction === row.uid ? "Working…" : "Activate"}
+                </GhostButton>
+                <span style={{ fontSize: 11.5, color: studioColors.mutedGray, lineHeight: 1.5 }}>
+                  {isDirty(row)
+                    ? "Save your changes first."
+                    : row.spec_kind === "panel" || row.spec_kind === "inverter"
+                      ? "A panel needs its wattage and an inverter its rating before it can be activated."
+                      : "Makes it quotable."}
+                </span>
+              </div>
+            )}
           </RowCard>
-        ))}
+          );
+        })}
+
+        {!readOnly && can("create") && category && (
+          <GhostButton onClick={addComponent}>Add product</GhostButton>
+        )}
       </div>
     </section>
   );
@@ -326,7 +526,7 @@ function PanelSpecFields({ row, patch, readOnly }: { row: CatalogComponent; patc
           value={str(spec.wattage_w)}
           onChange={(v) => set({ wattage_w: v === "" ? null : Number(v) })}
           suffix="W"
-          hint="Also sets the panel count: a 3 kW system is 6 panels at 540 W but 5 at 620 W."
+          hint="Required. Also sets the panel count: a 3 kW system is 6 panels at 540 W but 5 at 620 W."
           disabled={readOnly}
         />
         <NumberField
@@ -439,8 +639,30 @@ function InverterSpecFields({ row, patch, readOnly }: { row: CatalogComponent; p
           value={str(spec.kw)}
           onChange={(v) => set({ kw: v || null })}
           suffix="kW"
+          hint="Required — the BOM builder sizes the system by it."
           disabled={readOnly}
         />
+        <div>
+          <p style={{ margin: "0 0 6px", fontSize: 11.5, fontWeight: 600, color: studioColors.mutedGray }}>
+            Type
+          </p>
+          <SelectField
+            value={spec.inverter_type ?? ""}
+            onChange={(v) => set({ inverter_type: v || null })}
+            ariaLabel="Inverter type"
+            style={readOnly ? { opacity: 0.6, pointerEvents: "none" } : undefined}
+          >
+            <option value="">—</option>
+            {INVERTER_TYPES.map((t) => (
+              <option key={t} value={t}>
+                {t === "ONGRID" ? "On-grid" : "Hybrid"}
+              </option>
+            ))}
+          </SelectField>
+          <p style={{ margin: "6px 0 0", fontSize: 11.5, color: studioColors.mutedGray, lineHeight: 1.5 }}>
+            Required alongside the rating.
+          </p>
+        </div>
         <NumberField
           label="MPPT count"
           value={str(spec.mppt_count)}
@@ -491,5 +713,179 @@ function InverterSpecFields({ row, patch, readOnly }: { row: CatalogComponent; p
         />
       </FieldGrid>
     </SpecSection>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  New category                                                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Adding a type (a category), which is a heavier decision than adding a product
+ * and so is a deliberate form rather than a blank row.
+ *
+ * Two fields are consequential and neither is obvious from its name:
+ *
+ * - **BOM role** decides which spec table the category's components carry. Pick
+ *   Miscellaneous for what is really a panel and the wattage, Voc and Vmp
+ *   fields never appear, so the string engine has nothing to compute a layout
+ *   from. The role is fixed at the point a component exists under it.
+ * - **GST rate is a fraction**, as the API stores it: 0.18, not 18. Typed as
+ *   `18` it is rejected rather than silently applied -- a hundredfold error on
+ *   every line of every quote using the category.
+ */
+function NewCategoryForm({
+  onCancel,
+  onCreated,
+  notify,
+}: {
+  onCancel: () => void;
+  onCreated: (created: CatalogCategory) => void;
+  notify: Notify;
+}) {
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [role, setRole] = useState("MISC");
+  const [gst, setGst] = useState("0.18");
+  const [prefix, setPrefix] = useState("");
+  const [unit, setUnit] = useState("NOS");
+  const [busy, setBusy] = useState(false);
+
+  const autoSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  const effectiveSlug = slug.trim() || autoSlug;
+  const autoPrefix = (name.replace(/[^A-Za-z]/g, "").slice(0, 3) || "GEN").toUpperCase();
+  const effectivePrefix = prefix.trim().toUpperCase() || autoPrefix;
+  const gstNumber = Number(gst);
+  const spec = BOM_ROLES.find((r) => r.value === role)?.spec ?? null;
+
+  // Checked here as well as server-side: a fraction typed as a percentage is
+  // the one mistake that reads as a plausible number in the field.
+  const problem =
+    !name.trim()
+      ? "Give the type a name."
+      : !effectiveSlug
+        ? "Give the type a slug."
+        : !Number.isFinite(gstNumber) || gstNumber < 0 || gstNumber > 1
+          ? "GST is a fraction between 0 and 1 — 0.18 for 18%."
+          : null;
+
+  const submit = async () => {
+    if (problem) {
+      notify.error(problem);
+      return;
+    }
+    setBusy(true);
+    try {
+      const created = await categoriesApi.create({
+        slug: effectiveSlug,
+        name: name.trim(),
+        bom_role: role,
+        gst_rate: gst,
+        unit,
+        sku_prefix: effectivePrefix,
+      });
+      onCreated(created);
+    } catch (err) {
+      notify.error(saveErrorMessage(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        border: `1px solid ${studioColors.ring}`,
+        borderRadius: 14,
+        padding: 16,
+        marginBottom: 14,
+        background: "#fff",
+      }}
+    >
+      <p style={{ margin: "0 0 12px", fontSize: 12.5, fontWeight: 600, color: studioColors.tealDeep }}>
+        New type
+      </p>
+
+      <FieldGrid>
+        <TextField
+          label="Name"
+          value={name}
+          onChange={setName}
+          hint="Shown on the chips above."
+          disabled={busy}
+        />
+        <TextField
+          label="Slug"
+          value={slug}
+          onChange={setSlug}
+          placeholder={autoSlug || "slug"}
+          hint="Derived from the name when blank."
+          disabled={busy}
+        />
+        <TextField
+          label="SKU prefix"
+          value={prefix}
+          onChange={setPrefix}
+          placeholder={autoPrefix}
+          hint={`SKUs become ${effectivePrefix}-0001, ${effectivePrefix}-0002 …`}
+          disabled={busy}
+        />
+        <NumberField
+          label="GST rate"
+          value={gst}
+          onChange={setGst}
+          hint="A fraction: 0.18 is 18%."
+          disabled={busy}
+        />
+      </FieldGrid>
+
+      <div className="flex flex-wrap gap-3" style={{ marginTop: 14 }}>
+        <div style={{ minWidth: 190, flex: "1 1 190px" }}>
+          <p style={{ margin: "0 0 6px", fontSize: 11.5, fontWeight: 600, color: studioColors.mutedGray }}>
+            BOM role
+          </p>
+          <SelectField value={role} onChange={setRole} ariaLabel="BOM role">
+            {BOM_ROLES.map((r) => (
+              <option key={r.value} value={r.value}>
+                {r.label}
+              </option>
+            ))}
+          </SelectField>
+          <p style={{ margin: "6px 0 0", fontSize: 11.5, color: studioColors.mutedGray, lineHeight: 1.5 }}>
+            {spec
+              ? `Its products carry the ${spec} specification, and the quote engine reads it.`
+              : "Its products carry no engineering specification."}
+          </p>
+        </div>
+        <div style={{ minWidth: 190, flex: "1 1 190px" }}>
+          <p style={{ margin: "0 0 6px", fontSize: 11.5, fontWeight: 600, color: studioColors.mutedGray }}>
+            Unit
+          </p>
+          <SelectField value={unit} onChange={setUnit} ariaLabel="Unit">
+            {CATEGORY_UNITS.map((u) => (
+              <option key={u} value={u}>
+                {u}
+              </option>
+            ))}
+          </SelectField>
+        </div>
+      </div>
+
+      <p style={{ margin: "12px 0 0", fontSize: 11.5, color: studioColors.amberInk, lineHeight: 1.5 }}>
+        The BOM role fixes which specification its products carry, so it is worth getting right now.
+      </p>
+
+      <div className="flex flex-wrap items-center gap-2" style={{ marginTop: 14 }}>
+        <GhostButton onClick={submit} disabled={busy || !!problem} style={{ height: 34, fontSize: 12.5 }}>
+          {busy ? "Adding…" : "Add type"}
+        </GhostButton>
+        <GhostButton onClick={onCancel} disabled={busy} style={{ height: 34, fontSize: 12.5 }}>
+          Cancel
+        </GhostButton>
+        {problem && (
+          <span style={{ fontSize: 11.5, color: studioColors.amberInk }}>{problem}</span>
+        )}
+      </div>
+    </div>
   );
 }

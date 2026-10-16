@@ -190,16 +190,43 @@ export interface CatalogComponent extends VersionedRow {
 export type CatalogTier = "BASE" | "VALUE" | "PREMIUM";
 
 export interface CatalogComponentInput {
+  /**
+   * Required on create and never sent on update: a component's category decides
+   * which spec table it carries, so moving one is a different operation from
+   * editing it.
+   */
+  category?: string;
+  /** Blank asks the server for the next `<PREFIX>-0001`; fixed once the row leaves DRAFT. */
+  sku?: string;
   name?: string;
   model?: string;
   brand_label?: string;
   is_public?: boolean;
+  is_premium?: boolean;
   tiers?: CatalogTier[];
   panel_spec?: PanelSpec | null;
   inverter_spec?: InverterSpec | null;
 }
 
-export const components = crud<CatalogComponent, CatalogComponentInput>("catalog/components", { pageSize: 1000 });
+const componentsCrud = crud<CatalogComponent, CatalogComponentInput>("catalog/components", {
+  pageSize: 1000,
+});
+
+/**
+ * Components, plus the two lifecycle steps a newly created one needs.
+ *
+ * A component is born DRAFT, and **a DRAFT component is invisible to every
+ * quote** -- the same silent disappearance as having no tier. So the editor
+ * that creates one has to be able to activate it, which is a separate endpoint
+ * and a separate permission (`catalog.approve`, not `catalog.edit`).
+ */
+export const components = {
+  ...componentsCrud,
+  activate: (uid: string, body: { expected_version?: number; reason?: string } = {}) =>
+    studioRequest<CatalogComponent>(`catalog/components/${uid}/activate/`, { method: "POST", body }),
+  retire: (uid: string, body: { expected_version?: number; reason?: string } = {}) =>
+    studioRequest<CatalogComponent>(`catalog/components/${uid}/retire/`, { method: "POST", body }),
+};
 
 export interface CatalogCategory extends VersionedRow {
   slug: string;
@@ -221,7 +248,43 @@ export interface CatalogCategory extends VersionedRow {
  * about fourteen of the categories the BOM actually uses, so those rows cannot
  * be edited there at all. Reading the list from the API cannot drift that way.
  */
-export const categories = crud<CatalogCategory, never>("catalog/categories");
+/**
+ * What `POST catalog/categories/` accepts.
+ *
+ * `bom_role` is the consequential field: it decides which spec table the
+ * category's components carry (MAIN_PANEL -> panel, MAIN_INVERTER -> inverter,
+ * BATTERY, STRUCTURE), and everything else carries none. Picking the wrong one
+ * means the engineering fields the string engine needs never appear.
+ */
+export interface CatalogCategoryInput {
+  slug: string;
+  name: string;
+  bom_role?: string;
+  /** A fraction, not a percentage: 0.18 is 18 %. */
+  gst_rate: string;
+  hsn_code?: string;
+  unit?: string;
+  sku_prefix: string;
+  sort_order?: number;
+  is_active?: boolean;
+}
+
+/** The BOM roles, and the spec table each one gives its components. */
+export const BOM_ROLES: { value: string; label: string; spec: string | null }[] = [
+  { value: "MAIN_PANEL", label: "Main panel", spec: "panel" },
+  { value: "MAIN_INVERTER", label: "Main inverter", spec: "inverter" },
+  { value: "BATTERY", label: "Battery", spec: "battery" },
+  { value: "STRUCTURE", label: "Structure", spec: "structure" },
+  { value: "PROTECTION", label: "Protection", spec: null },
+  { value: "CABLE", label: "Cable", spec: null },
+  { value: "EARTHING", label: "Earthing", spec: null },
+  { value: "SERVICE", label: "Service", spec: null },
+  { value: "MISC", label: "Miscellaneous", spec: null },
+];
+
+export const CATEGORY_UNITS = ["NOS", "M", "KG", "SET"] as const;
+
+export const categories = crud<CatalogCategory, CatalogCategoryInput>("catalog/categories");
 
 /* -------------------------------------------------------------------------- */
 /*  2. Structure templates, items and tube weights                             */
