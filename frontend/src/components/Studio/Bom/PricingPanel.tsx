@@ -13,6 +13,10 @@ import { inr, PriceNotConfigured, Stat } from "./shared";
 
 export default function PricingPanel({ result }: { result: BomQuoteResponse }) {
   const p = result.pricing;
+  // A dispatch body has no pricing block at all. That reaches here for one render
+  // when the tab is switched back to Quotation, before the refetch lands -- the
+  // result in hand is still the picking list.
+  if (!p) return null;
   // No market rate means no price to quote. `customer_price` still carries a number in
   // that case -- the engine falls back to cost-plus -- and showing it to a sales person
   // as if it were a price is the one mistake this screen must not make, so the rate
@@ -89,7 +93,9 @@ export default function PricingPanel({ result }: { result: BomQuoteResponse }) {
 export function CostPanel({ result }: { result: BomQuoteResponse }) {
   const cost = result.cost_breakdown;
   const totals = result.totals;
-  if (!cost || !totals) return null;
+  // `pricing` joins these: a dispatch body carries none of the three, and this
+  // panel is margin, which must never render from a half-populated body.
+  if (!cost || !totals || !result.pricing) return null;
 
   const structure = cost.structure_base + cost.structure_extra + cost.structure_labor + cost.structure_repair;
   const composite = totals.pre_gst_subtotal !== null;

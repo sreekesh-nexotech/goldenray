@@ -155,10 +155,17 @@ export interface BomQuoteResponse {
   /** Present only for callers holding `pricing_internal.view`. */
   cost_breakdown?: BomCostBreakdown;
   totals?: BomTotals;
-  pricing: BomQuotePricing;
+  /**
+   * Absent in dispatch mode: `dispatch_body()` removes the whole block, along
+   * with `available_offers`, so a warehouse machine is never sent a price.
+   * Optional here because the response genuinely has two shapes -- typing it as
+   * always present is what let `result.pricing.customer_price` reach a dispatch
+   * body and take the page down.
+   */
+  pricing?: BomQuotePricing;
   // Upgrade quotes carry additional keys; the standard shape is typed here.
   meta: Record<string, unknown>;
-  available_offers: BomOffer[];
+  available_offers?: BomOffer[];
   /** The installer's string/MPPT layout. Absent when the specs needed are not recorded. */
   string_config?: BomStringConfig | null;
 }

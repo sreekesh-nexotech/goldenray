@@ -52,7 +52,10 @@ function Calculator() {
   const { can, tips } = useStudio();
   const [options, setOptions] = useState<BomQuoteOptions | null>(null);
   const [inputs, setInputs] = useState<BomInputs>(DEFAULT_INPUTS);
-  const [result, setResult] = useState<BomQuoteResponse | null>(null);
+  // The mode a result was fetched for travels with it. The two modes are different
+  // documents -- a dispatch body has no `pricing` block at all -- so a result from
+  // the other mode must not be rendered while the refetch is in flight.
+  const [result, setResult] = useState<{ body: BomQuoteResponse; mode: BomMode } | null>(null);
   const [mode, setMode] = useState<BomMode>("quotation");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -118,7 +121,7 @@ function Calculator() {
       try {
         const out = await runBomQuote({ ...toRequest(inputs), mode });
         if (mine === seq.current) {
-          setResult(out);
+          setResult({ body: out, mode });
           setError("");
         }
       } catch (e) {
@@ -133,7 +136,10 @@ function Calculator() {
     return () => clearTimeout(timer);
   }, [inputs, options, mode, fail]);
 
-  const offers = useMemo(() => result?.available_offers ?? [], [result]);
+  // Only a result fetched for the mode now showing. Switching tabs therefore renders
+  // "Recalculating…" for one beat rather than a panel built from the other document.
+  const shown = result?.mode === mode ? result.body : null;
+  const offers = useMemo(() => shown?.available_offers ?? [], [shown]);
 
   const [exporting, setExporting] = useState(false);
   const exportCsv = useCallback(async () => {
@@ -198,7 +204,7 @@ function Calculator() {
             // Passing it only when it differs would hide the fact that the package is
             // the authority even when the two happen to agree.
             resolvedBattery={
-              typeof result?.meta?.bat_config === "string" ? result.meta.bat_config : null
+              typeof shown?.meta?.bat_config === "string" ? shown.meta.bat_config : null
             }
           />
           <AddOnsPanel inputs={inputs} options={options} set={set} />
@@ -208,7 +214,7 @@ function Calculator() {
               set={set}
               // The engine reports the panel count it actually derived from the chosen
               // module's wattage, which beats recomputing it here off an assumed 550 W.
-              newPanels={typeof result?.meta?.new_panels === "number" ? result.meta.new_panels : null}
+              newPanels={typeof shown?.meta?.new_panels === "number" ? shown.meta.new_panels : null}
             />
           )}
           <Step n="3" title="Review and finalise">
@@ -227,7 +233,7 @@ function Calculator() {
             <button
               type="button"
               onClick={exportCsv}
-              disabled={exporting || !result}
+              disabled={exporting || !shown}
               className="ml-auto"
               style={{
                 appearance: "none",
@@ -239,24 +245,24 @@ function Calculator() {
                 fontFamily: "var(--font-switzer)",
                 fontSize: 12.5,
                 fontWeight: 600,
-                cursor: exporting || !result ? "not-allowed" : "pointer",
-                opacity: exporting || !result ? 0.55 : 1,
+                cursor: exporting || !shown ? "not-allowed" : "pointer",
+                opacity: exporting || !shown ? 0.55 : 1,
               }}
             >
               {exporting ? "Preparing…" : mode === "dispatch" ? "Download picking list" : "Download CSV"}
             </button>
           </div>
 
-          {result && (
+          {shown && (
             <>
-              {mode === "quotation" && <PricingPanel result={result} />}
-              {mode === "quotation" && canSeeCost && <CostPanel result={result} />}
+              {mode === "quotation" && <PricingPanel result={shown} />}
+              {mode === "quotation" && canSeeCost && <CostPanel result={shown} />}
               {/* Shown in both modes: the installer reads it off the dispatch list too. */}
-              <StringConfigPanel config={result.string_config} />
-              <BomLinesTable result={result} mode={mode} />
+              <StringConfigPanel config={shown.string_config} />
+              <BomLinesTable result={shown} mode={mode} />
             </>
           )}
-          {!result && !error && !loading && (
+          {!shown && !error && !loading && (
             <p style={{ fontSize: 13.5, color: studioColors.mutedGray }}>No quote yet.</p>
           )}
         </div>
