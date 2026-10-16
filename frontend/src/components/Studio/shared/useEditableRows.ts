@@ -64,9 +64,11 @@ export function useEditableRows<TRow extends { uid: string }, TInput extends obj
     setRows((prev) => prev.map((r) => (r.uid === uid ? { ...r, ...changes } : r)));
   }, []);
 
-  const add = useCallback((blank: Omit<TRow, "uid">) => {
+  /** Append a blank row and return its temporary uid, so a caller can scroll to it. */
+  const add = useCallback((blank: Omit<TRow, "uid">): string => {
     const uid = `${NEW_ROW_PREFIX}${tempId.current++}`;
     setRows((prev) => [...prev, { ...blank, uid } as TRow]);
+    return uid;
   }, []);
 
   const discard = useCallback(

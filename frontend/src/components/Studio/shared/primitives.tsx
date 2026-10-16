@@ -441,12 +441,21 @@ export function Switch({
       style={{
         width: 36,
         height: 20,
+        // A switch is a fixed-size control, and these sit in flex rows beside
+        // text that will happily take the space: without the three explicit
+        // sizes it collapses to a sliver as the label wraps.
+        minWidth: 36,
+        flexShrink: 0,
+        flexGrow: 0,
+        boxSizing: "border-box",
+        display: "inline-block",
         borderRadius: 999,
         border: "none",
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.55 : 1,
         position: "relative",
         padding: 0,
+        appearance: "none",
         transition: "background .15s",
         background: checked ? studioColors.teal : "#D5D7DA",
       }}

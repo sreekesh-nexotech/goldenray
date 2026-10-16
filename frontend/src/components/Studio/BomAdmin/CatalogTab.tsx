@@ -42,6 +42,7 @@ import { useCallback, useMemo, useState } from "react";
 import { studioColors } from "../shared/format";
 import { GhostButton, SelectField } from "../shared/primitives";
 import {
+  AddRowButton,
   EmptyRow,
   FieldGrid,
   NumberField,
@@ -184,7 +185,7 @@ export default function CatalogTab({
       notify.error("Pick a category first.");
       return;
     }
-    add({
+    return add({
       sku: "",
       name: "",
       model: "",
@@ -305,6 +306,14 @@ export default function CatalogTab({
         <TextField label="" value={search} onChange={setSearch} placeholder="Search name or SKU…" />
       </div>
 
+      {!readOnly && can("create") && category && (
+        <div style={{ marginBottom: 12 }}>
+          <AddRowButton onAdd={addComponent} emphasis>
+            Add product
+          </AddRowButton>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3">
         {visible.length === 0 && (
           <EmptyRow>
@@ -316,6 +325,7 @@ export default function CatalogTab({
           return (
           <RowCard
             key={row.uid}
+            uid={row.uid}
             title={row.name || (unsaved ? "New component" : row.sku)}
             meta={
               <>
@@ -418,7 +428,7 @@ export default function CatalogTab({
         })}
 
         {!readOnly && can("create") && category && (
-          <GhostButton onClick={addComponent}>Add product</GhostButton>
+          <AddRowButton onAdd={addComponent}>Add product</AddRowButton>
         )}
       </div>
     </section>

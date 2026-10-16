@@ -24,6 +24,7 @@ import { useCallback, useMemo, useState } from "react";
 import { GhostButton } from "../shared/primitives";
 import { studioColors } from "../shared/format";
 import {
+  AddRowButton,
   EmptyRow,
   FieldGrid,
   NumberField,
@@ -131,12 +132,44 @@ export default function OffersTab({
     [notify, replace]
   );
 
+  const addOffer = useCallback(
+    () =>
+      add({
+        code: "",
+        name: "",
+        type: "FLAT",
+        value: "0",
+        status: "DRAFT",
+        status_changed_at: null,
+        applies_to_system: "ALL",
+        applies_to_tier: "ALL",
+        applies_to_size_key: "",
+        starts_on: null,
+        ends_on: null,
+        print_on_quotation: true,
+        stackable: false,
+        description: "",
+        content_version: 1,
+        transitions: [],
+        version: 0,
+      } as Omit<OfferRow, "uid">),
+    [add]
+  );
+
   return (
     <section>
       <PanelIntro title="Offers">
         Discounts the calculator can apply. An offer only comes off a price once it is
         <strong> active</strong> — saving it is not the same as publishing it.
       </PanelIntro>
+
+      {!readOnly && can("create") && (
+        <div style={{ marginBottom: 12 }}>
+          <AddRowButton onAdd={addOffer} emphasis>
+            Add offer
+          </AddRowButton>
+        </div>
+      )}
 
       <div className="flex flex-col gap-3">
         {rows.length === 0 && <EmptyRow>No offers configured.</EmptyRow>}
@@ -286,33 +319,7 @@ export default function OffersTab({
           );
         })}
 
-        {!readOnly && can("create") && (
-          <GhostButton
-            onClick={() =>
-              add({
-                code: "",
-                name: "",
-                type: "FLAT",
-                value: "0",
-                status: "DRAFT",
-                status_changed_at: null,
-                applies_to_system: "ALL",
-                applies_to_tier: "ALL",
-                applies_to_size_key: "",
-                starts_on: null,
-                ends_on: null,
-                print_on_quotation: true,
-                stackable: false,
-                description: "",
-                content_version: 1,
-                transitions: [],
-                version: 0,
-              } as Omit<OfferRow, "uid">)
-            }
-          >
-            Add offer
-          </GhostButton>
-        )}
+        {!readOnly && can("create") && <AddRowButton onAdd={addOffer}>Add offer</AddRowButton>}
       </div>
     </section>
   );

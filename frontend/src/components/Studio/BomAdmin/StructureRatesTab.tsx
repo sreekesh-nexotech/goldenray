@@ -10,10 +10,10 @@
 // why the weights sit in their own section with that stated rather than mixed
 // in among the items.
 
-import { useMemo, useState } from "react";
-import { GhostButton } from "../shared/primitives";
+import { useCallback, useMemo, useState } from "react";
 import { studioColors } from "../shared/format";
 import {
+  AddRowButton,
   FieldGrid,
   NumberField,
   PanelIntro,
@@ -103,6 +103,11 @@ function TubeWeights({
     { tube_size: string; weight_kg: string }
   >(initial, api, toInput, notify, saveErrorMessage);
 
+  const addTube = useCallback(
+    () => add({ tube_size: "", weight_kg: "", version: 0 } as Omit<TubeWeightRow, "uid">),
+    [add]
+  );
+
   return (
     <section>
       <PanelIntro title="Tube weights">
@@ -110,11 +115,20 @@ function TubeWeights({
         the per-kg rate, so a change here moves the structure cost of every quote that
         uses that tube.
       </PanelIntro>
+      {!readOnly && (
+        <div style={{ marginBottom: 12 }}>
+          <AddRowButton onAdd={addTube} emphasis>
+            Add tube size
+          </AddRowButton>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3">
         {rows.length === 0 && <EmptyRow>No tube sizes recorded yet.</EmptyRow>}
         {rows.map((row) => (
           <RowCard
             key={row.uid}
+            uid={row.uid}
             title={row.tube_size || "New tube size"}
             meta={row.weight_kg ? `${row.weight_kg} kg` : undefined}
             dirty={isDirty(row)}
@@ -143,11 +157,7 @@ function TubeWeights({
             </FieldGrid>
           </RowCard>
         ))}
-        {!readOnly && (
-          <GhostButton onClick={() => add({ tube_size: "", weight_kg: "", version: 0 } as Omit<TubeWeightRow, "uid">)}>
-            Add tube size
-          </GhostButton>
-        )}
+        {!readOnly && <AddRowButton onAdd={addTube}>Add tube size</AddRowButton>}
       </div>
     </section>
   );
@@ -203,6 +213,25 @@ function StructureItems({
   const visible = rows.filter((r) => !template || r.template_uid === template);
   const current = templates.find((t) => t.uid === template);
 
+  const addItem = useCallback(() => {
+    if (!current) return;
+    return add({
+      template_uid: current.uid,
+      name: "",
+      item_type: "FIXED",
+      tube_size: "",
+      weight_kg: null,
+      unit_price: null,
+      unit: "nos",
+      length_m_per_kw: null,
+      // The engine needs a rule to compute a quantity from; `fixed: 1`
+      // is the one that is correct before anything else is filled in.
+      qty_rule: { type: "fixed", qty: 1 },
+      sort_order: rows.length,
+      version: 0,
+    } as Omit<StructureItemRow, "uid">);
+  }, [add, current, rows.length]);
+
   return (
     <section>
       <PanelIntro title="Structure items">
@@ -236,11 +265,20 @@ function StructureItems({
         </div>
       )}
 
+      {!readOnly && current && (
+        <div style={{ marginBottom: 12 }}>
+          <AddRowButton onAdd={addItem} emphasis>
+            Add item to {current.name}
+          </AddRowButton>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3">
         {visible.length === 0 && <EmptyRow>No items on this structure template.</EmptyRow>}
         {visible.map((row) => (
           <RowCard
             key={row.uid}
+            uid={row.uid}
             title={row.name || "New item"}
             meta={row.item_type === "TUBE" ? `Tube ${row.tube_size || "—"}` : "Per unit"}
             dirty={isDirty(row)}
@@ -310,27 +348,7 @@ function StructureItems({
           </RowCard>
         ))}
         {!readOnly && current && (
-          <GhostButton
-            onClick={() =>
-              add({
-                template_uid: current.uid,
-                name: "",
-                item_type: "FIXED",
-                tube_size: "",
-                weight_kg: null,
-                unit_price: null,
-                unit: "nos",
-                length_m_per_kw: null,
-                // The engine needs a rule to compute a quantity from; `fixed: 1`
-                // is the one that is correct before anything else is filled in.
-                qty_rule: { type: "fixed", qty: 1 },
-                sort_order: visible.length,
-                version: 0,
-              } as Omit<StructureItemRow, "uid">)
-            }
-          >
-            Add item to {current.name}
-          </GhostButton>
+          <AddRowButton onAdd={addItem}>Add item to {current.name}</AddRowButton>
         )}
       </div>
     </section>

@@ -20,10 +20,10 @@
 //
 // Both are shown with that stated rather than as bare inputs.
 
-import { useMemo, useState } from "react";
-import { GhostButton } from "../shared/primitives";
+import { useCallback, useMemo, useState } from "react";
 import { studioColors } from "../shared/format";
 import {
+  AddRowButton,
   EmptyRow,
   FieldGrid,
   NumberField,
@@ -96,6 +96,31 @@ export default function FixedPricesTab({
   >(items, api, toInput, notify, saveErrorMessage);
 
   const current = templates.find((t) => t.uid === template);
+  /** A blank row in the template now selected. Returns its uid so the page can scroll to it. */
+  const addItem = useCallback(() => {
+    if (!current) return;
+    return add({
+      template_uid: current.uid,
+      component: null,
+      category: null,
+      code: "",
+      name: "",
+      unit_price: null,
+      gst_rate: null,
+      qty: "1",
+      qty_rule: null,
+      // Starts targeted at nothing rather than everything: a new row
+      // defaulting to `{}` would be added to every quote the moment
+      // it was saved, before anyone had set its price.
+      condition: { sizes: [] },
+      section: "",
+      unit: "nos",
+      is_tube: false,
+      sort_order: rows.length,
+      version: 0,
+    } as Omit<FixedItemRow, "uid">);
+  }, [add, current, rows.length]);
+
   const needle = search.trim().toLowerCase();
   const visible = rows.filter(
     (r) =>
@@ -126,6 +151,14 @@ export default function FixedPricesTab({
         </div>
       </div>
 
+      {!readOnly && current && (
+        <div style={{ marginBottom: 12 }}>
+          <AddRowButton onAdd={addItem} emphasis>
+            Add item to {current.name}
+          </AddRowButton>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3">
         {visible.length === 0 && (
           <EmptyRow>{needle ? "Nothing matches that search." : "No fixed items on this template."}</EmptyRow>
@@ -133,6 +166,7 @@ export default function FixedPricesTab({
         {visible.map((row) => (
           <RowCard
             key={row.uid}
+            uid={row.uid}
             title={row.name || "New item"}
             meta={
               <ConditionSummary condition={row.condition} price={row.unit_price} isTube={row.is_tube} />
@@ -207,32 +241,7 @@ export default function FixedPricesTab({
         ))}
 
         {!readOnly && current && (
-          <GhostButton
-            onClick={() =>
-              add({
-                template_uid: current.uid,
-                component: null,
-                category: null,
-                code: "",
-                name: "",
-                unit_price: null,
-                gst_rate: null,
-                qty: "1",
-                qty_rule: null,
-                // Starts targeted at nothing rather than everything: a new row
-                // defaulting to `{}` would be added to every quote the moment
-                // it was saved, before anyone had set its price.
-                condition: { sizes: [] },
-                section: "",
-                unit: "nos",
-                is_tube: false,
-                sort_order: visible.length,
-                version: 0,
-              } as Omit<FixedItemRow, "uid">)
-            }
-          >
-            Add item to {current.name}
-          </GhostButton>
+          <AddRowButton onAdd={addItem}>Add item to {current.name}</AddRowButton>
         )}
       </div>
     </section>

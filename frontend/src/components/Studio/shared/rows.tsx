@@ -183,6 +183,7 @@ export function RowCard({
   onSave,
   onDiscard,
   onDelete,
+  uid,
   children,
 }: {
   title: ReactNode;
@@ -193,11 +194,16 @@ export function RowCard({
   onSave: () => void;
   onDiscard: () => void;
   onDelete?: () => void;
+  /** The row's uid, so a freshly added row can be scrolled to and focused. */
+  uid?: string;
   children: ReactNode;
 }) {
   return (
     <div
+      data-row-uid={uid}
       style={{
+        scrollMarginTop: 80,
+        scrollMarginBottom: 80,
         background: "#ffffff",
         borderRadius: 16,
         boxShadow: dirty
@@ -329,4 +335,80 @@ export function nullableNum(value: string): string | null {
 export function inr(value: string | number): string {
   const n = Number(value);
   return Number.isFinite(n) ? `₹${Math.round(n).toLocaleString("en-IN")}` : "—";
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Adding a row                                                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Scroll a newly added row into view and put the cursor in its first field.
+ *
+ * New rows append to the bottom of a list that is often taller than the
+ * window, so without this the Add button at the top appears to do nothing --
+ * the row exists, several screens down, and the person is left looking at an
+ * unchanged page.
+ *
+ * Deliberately waits two frames: the row is appended by a state update, so it
+ * is not in the DOM when the click handler returns, and one frame is not
+ * always enough once a list re-renders.
+ */
+export function scrollToRow(uid: string): void {
+  const find = () => document.querySelector<HTMLElement>(`[data-row-uid="${CSS.escape(uid)}"]`);
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      const node = find();
+      if (!node) return;
+      node.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Focus the first real input so typing starts immediately. `preventScroll`
+      // keeps the browser from undoing the smooth scroll we just asked for.
+      node.querySelector<HTMLInputElement>("input, select, textarea")?.focus({ preventScroll: true });
+    })
+  );
+}
+
+/**
+ * The "add a row" control, shown above a list as well as below it.
+ *
+ * Above, because a list long enough to need scrolling hides a button that only
+ * sits at the bottom; below, because that is where the new row lands and where
+ * someone finishing one row looks for the next.
+ */
+export function AddRowButton({
+  onAdd,
+  children,
+  emphasis = false,
+}: {
+  /** Returns the new row's uid, which is what makes scrolling to it possible. */
+  onAdd: () => string | void;
+  children: ReactNode;
+  /** The top copy carries the accent; the bottom one is quieter. */
+  emphasis?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        const uid = onAdd();
+        if (typeof uid === "string") scrollToRow(uid);
+      }}
+      className="inline-flex items-center justify-center gap-2 transition-colors hover:bg-[rgba(7,74,77,0.06)]"
+      style={{
+        width: "100%",
+        height: 44,
+        borderRadius: 12,
+        border: emphasis ? "none" : `1px dashed ${studioColors.teal}`,
+        boxShadow: emphasis ? `inset 0 0 0 1.5px ${studioColors.teal}` : "none",
+        background: emphasis ? "rgba(13,110,112,.06)" : "#fff",
+        color: studioColors.teal,
+        fontFamily: "var(--font-switzer)",
+        fontSize: 13,
+        fontWeight: 600,
+        cursor: "pointer",
+      }}
+    >
+      <span aria-hidden style={{ fontSize: 16, lineHeight: 1 }}>+</span>
+      {children}
+    </button>
+  );
 }
