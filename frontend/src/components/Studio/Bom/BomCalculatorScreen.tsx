@@ -34,6 +34,15 @@ import UpgradePanel from "./UpgradePanel";
 import AddOnsPanel from "./AddOnsPanel";
 import BillHelper from "./BillHelper";
 import CustomerPanel, { EMPTY_CUSTOMER, type CustomerDraft } from "./CustomerPanel";
+import {
+  isSetupProblem,
+  quotationErrorMessage,
+  quotations,
+  TO_ROOF_TYPE,
+  TO_SYSTEM_TYPE,
+  TO_TIER,
+  type QuotationRef,
+} from "@/services/bomQuotationService";
 import { Step } from "./shared";
 import { DEFAULT_INPUTS, phaseAwareSize, sizeForSystemType, toRequest, type BomInputs } from "./inputs";
 
@@ -148,8 +157,54 @@ function Calculator() {
   // "Recalculating…" for one beat rather than a panel built from the other document.
   const shown = result?.mode === mode ? result.body : null;
   const offers = useMemo(() => shown?.available_offers ?? [], [shown]);
+  // What this screen is showing the customer, for comparison against whatever the
+  // quotation comes back priced at.
+  const shownPrice = shown?.pricing ? Math.round(shown.pricing.customer_price) : null;
 
   const [exporting, setExporting] = useState(false);
+  const [raising, setRaising] = useState(false);
+  const [raised, setRaised] = useState<{ quotation: QuotationRef; bomPrice: number | null } | null>(null);
+  const [raiseProblem, setRaiseProblem] = useState("");
+  const [raiseIsSetup, setRaiseIsSetup] = useState(false);
+
+  const canRaise = can("quotations", "create");
+  const systemType = TO_SYSTEM_TYPE[inputs.sysType] ?? null;
+
+  /**
+   * Hand the configuration to the quotations module.
+   *
+   * The quotation re-prices through the published PackRelease rather than the
+   * live market rates this screen reads, so the BOM price is kept alongside the
+   * result: if the two differ, the screen says so instead of quietly showing a
+   * different number than the one that was just on screen.
+   */
+  const raiseQuotation = useCallback(async () => {
+    if (!systemType || !customer.uid) return;
+    setRaising(true);
+    setRaiseProblem("");
+    setRaiseIsSetup(false);
+    try {
+      const quotation = await quotations.create({
+        customer_uid: customer.uid,
+        system_type: systemType,
+        tier: TO_TIER[inputs.tier] ?? "BASE",
+        size_key: inputs.size,
+        phase: inputs.housePhase === "3P" ? "3P" : "1P",
+        ...(systemType === "HYBRID" ? { battery_config: inputs.batConfig || "0" } : {}),
+        ...(inputs.futureSize ? { future_size_key: inputs.futureSize } : {}),
+        roof_type: TO_ROOF_TYPE[inputs.structure] ?? "FLAT",
+        distance_km: Number(inputs.distKm) || 0,
+        subsidy_type: inputs.moduleDcr === "dcr" ? inputs.subsidy : "none",
+        ...(inputs.subsidy === "ghs" ? { ghs_houses: Math.max(1, Math.floor(Number(inputs.ghsHouses) || 1)) } : {}),
+      });
+      setRaised({ quotation, bomPrice: shownPrice });
+    } catch (e) {
+      setRaiseProblem(quotationErrorMessage(e));
+      setRaiseIsSetup(isSetupProblem(e));
+    } finally {
+      setRaising(false);
+    }
+  }, [systemType, customer.uid, inputs, shownPrice]);
   const exportCsv = useCallback(async () => {
     setExporting(true);
     try {
@@ -271,6 +326,24 @@ function Calculator() {
             </button>
           </div>
 
+          {mode === "quotation" && canRaise && (
+            <QuotationAction
+              systemType={systemType}
+              sysType={inputs.sysType}
+              customerName={customer.uid ? customer.name : ""}
+              hasQuote={Boolean(shown)}
+              busy={raising}
+              raised={raised}
+              problem={raiseProblem}
+              isSetup={raiseIsSetup}
+              onRaise={raiseQuotation}
+              onDismiss={() => {
+                setRaised(null);
+                setRaiseProblem("");
+              }}
+            />
+          )}
+
           {shown && (
             <>
               {mode === "quotation" && <PricingPanel result={shown} />}
@@ -320,6 +393,159 @@ function ModeToggle({ mode, onChange }: { mode: BomMode; onChange: (mode: BomMod
           </button>
         );
       })}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Raising a quotation                                                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The hand-off to the quotations module, and the several honest ways it can
+ * decline.
+ *
+ * A quotation re-prices through the published PackRelease, which is a different
+ * store from the live market rates this screen reads. When the two disagree the
+ * difference is shown rather than buried: a sales person who saw one number on
+ * screen and sends a document with another has been misled by the tool.
+ *
+ * The refusals are configuration states, not user errors, so each says who can
+ * resolve it instead of rendering a raw 409.
+ */
+function QuotationAction({
+  systemType,
+  sysType,
+  customerName,
+  hasQuote,
+  busy,
+  raised,
+  problem,
+  isSetup,
+  onRaise,
+  onDismiss,
+}: {
+  systemType: "ONGRID" | "HYBRID" | null;
+  sysType: string;
+  customerName: string;
+  hasQuote: boolean;
+  busy: boolean;
+  raised: { quotation: QuotationRef; bomPrice: number | null } | null;
+  problem: string;
+  isSetup: boolean;
+  onRaise: () => void;
+  onDismiss: () => void;
+}) {
+  // Why the button cannot be pressed, in the order a person would hit them.
+  const blocked = !hasQuote
+    ? "Configure a system first."
+    : !systemType
+      ? `An ${sysType} quote extends a system that already exists, so there is no package to raise it against.`
+      : !customerName
+        ? "Add the customer in step 4 and save them first — a quotation is raised for someone."
+        : "";
+
+  return (
+    <div
+      style={{
+        border: `1px solid ${raised ? studioColors.teal : studioColors.ring}`,
+        background: raised ? "rgba(13,110,112,.05)" : "#fff",
+        borderRadius: 14,
+        padding: "13px 16px",
+      }}
+    >
+      {raised ? (
+        <RaisedNotice raised={raised} onDismiss={onDismiss} />
+      ) : (
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={onRaise}
+            disabled={Boolean(blocked) || busy}
+            style={{
+              appearance: "none",
+              border: "none",
+              boxShadow: `inset 0 0 0 1.5px ${studioColors.teal}`,
+              background: blocked ? "#fff" : "rgba(13,110,112,.06)",
+              color: studioColors.teal,
+              borderRadius: 11,
+              padding: "9px 15px",
+              fontFamily: "var(--font-switzer)",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: blocked || busy ? "not-allowed" : "pointer",
+              opacity: blocked || busy ? 0.55 : 1,
+            }}
+          >
+            {busy ? "Creating…" : "Create quotation"}
+          </button>
+          <span
+            style={{
+              fontSize: 11.5,
+              lineHeight: 1.5,
+              color: problem ? (isSetup ? studioColors.amberInk : studioColors.danger) : studioColors.mutedGray,
+              flex: "1 1 240px",
+            }}
+          >
+            {problem ||
+              blocked ||
+              `Raises a numbered draft quotation for ${customerName}, priced from the published price list.`}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** What was created, and whether its price matches what was on screen. */
+function RaisedNotice({
+  raised,
+  onDismiss,
+}: {
+  raised: { quotation: QuotationRef; bomPrice: number | null };
+  onDismiss: () => void;
+}) {
+  const { quotation, bomPrice } = raised;
+  const version = quotation.current_version ?? null;
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <div style={{ flex: "1 1 260px" }}>
+        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: studioColors.tealDeep }}>
+          Quotation {quotation.number || "created"} — {quotation.status?.toLowerCase() || "draft"}
+        </p>
+        <p style={{ margin: "3px 0 0", fontSize: 11.5, color: studioColors.mutedGray, lineHeight: 1.5 }}>
+          {version
+            ? `${version.system_type} ${version.size_key} ${version.tier} ${version.phase}. `
+            : ""}
+          It is a draft: open it in Quotations to issue or send it.
+          {bomPrice !== null && " It was priced from the published price list, which is a separate store from the rates this calculator reads — check the figure before issuing."}
+        </p>
+      </div>
+      <a
+        href="/studio/quotations"
+        style={{
+          fontSize: 12.5,
+          fontWeight: 600,
+          color: studioColors.teal,
+          textDecoration: "underline",
+        }}
+      >
+        Open Quotations
+      </a>
+      <button
+        type="button"
+        onClick={onDismiss}
+        style={{
+          appearance: "none",
+          border: "none",
+          background: "transparent",
+          color: studioColors.mutedGray,
+          fontSize: 12.5,
+          cursor: "pointer",
+        }}
+      >
+        Dismiss
+      </button>
     </div>
   );
 }
