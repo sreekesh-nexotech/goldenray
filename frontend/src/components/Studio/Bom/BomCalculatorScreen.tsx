@@ -33,6 +33,7 @@ import StringConfigPanel from "./StringConfigPanel";
 import UpgradePanel from "./UpgradePanel";
 import AddOnsPanel from "./AddOnsPanel";
 import BillHelper from "./BillHelper";
+import CustomerPanel, { EMPTY_CUSTOMER, type CustomerDraft } from "./CustomerPanel";
 import { Step } from "./shared";
 import { DEFAULT_INPUTS, phaseAwareSize, sizeForSystemType, toRequest, type BomInputs } from "./inputs";
 
@@ -57,6 +58,9 @@ function Calculator() {
   // the other mode must not be rendered while the refetch is in flight.
   const [result, setResult] = useState<{ body: BomQuoteResponse; mode: BomMode } | null>(null);
   const [mode, setMode] = useState<BomMode>("quotation");
+  // Who the quote is for. Deliberately outside `inputs`: it is not a pricing
+  // input, so it must never land in the quote request or retrigger a recompute.
+  const [customer, setCustomer] = useState<CustomerDraft>(EMPTY_CUSTOMER);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const seq = useRef(0);
@@ -65,6 +69,10 @@ function Calculator() {
   // is what makes it send cost_breakdown and totals at all. Asking up front means the
   // margin control is hidden rather than appearing and then doing nothing.
   const canSeeCost = can("pricing_internal", "view");
+  // Customer writes are their own module and their own verbs, so the panel asks
+  // per verb rather than inferring one from the BOM permission.
+  const canSeeCustomers = can("customers", "view");
+  const canAddCustomers = can("customers", "create");
 
   const fail = useCallback((e: unknown) => {
     if (e instanceof BomApiError && e.status === 403) {
@@ -220,6 +228,16 @@ function Calculator() {
           <Step n="3" title="Review and finalise">
             <CommercialPanel inputs={inputs} set={set} offers={offers} canSeeMargin={canSeeCost} />
           </Step>
+          {(canSeeCustomers || canAddCustomers) && (
+            <Step n="4" title="Customer" hint="Needed to raise a quotation, not to price the system.">
+              <CustomerPanel
+                value={customer}
+                onChange={setCustomer}
+                canCreate={canAddCustomers}
+                canSearch={canSeeCustomers}
+              />
+            </Step>
+          )}
         </div>
 
         <div className="flex min-w-0 flex-col gap-4">
