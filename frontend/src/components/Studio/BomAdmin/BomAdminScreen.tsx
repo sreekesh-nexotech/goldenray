@@ -22,7 +22,6 @@ import { useStudio } from "../shared/StudioContext";
 import { studioColors } from "../shared/format";
 import {
   categories as categoriesApi,
-  components as componentsApi,
   fixedItems as fixedItemsApi,
   costConfig as costConfigApi,
   offers as offersApi,
@@ -34,7 +33,6 @@ import {
   type BomTemplateRow,
   type CatalogCategory,
   type CostConfigBody,
-  type CatalogComponent,
   type FixedItemRow,
   type MarketRateSet,
   type OfferRow,
@@ -71,7 +69,7 @@ const TABS: { key: TabKey; label: string; module: StudioModule }[] = [
 
 interface CatalogData {
   categories: CatalogCategory[];
-  components: CatalogComponent[];
+  counts: Record<string, number>;
 }
 interface StructureData {
   templates: StructureTemplateRow[];
@@ -107,16 +105,20 @@ export default function BomAdminScreen() {
     [toast]
   );
 
+  // Only the chips are loaded up front. The components themselves are paged by
+  // the tab, because the catalog outgrew the server's 200-row page cap and a
+  // single request silently returned 200 of 275 -- a complete-looking list
+  // missing the rows someone had just added.
   const catalog = useLoaded<CatalogData>(
     tab === "catalog",
     useCallback(async () => {
-      const [categories, components] = await Promise.all([
+      const [categories, counts] = await Promise.all([
         categoriesApi.list({ is_active: true }),
-        componentsApi.list(),
+        categoriesApi.counts(),
       ]);
       return {
         categories: [...categories].sort((a, b) => a.sort_order - b.sort_order || a.name.localeCompare(b.name)),
-        components,
+        counts: Object.fromEntries(counts.map((row) => [row.slug, row.count])),
       };
     }, [])
   );
@@ -243,7 +245,7 @@ export default function BomAdminScreen() {
           {(data) => (
             <CatalogTab
               categories={data.categories}
-              items={data.components}
+              counts={data.counts}
               readOnly={!canEdit("catalog")}
               can={catalogCan}
               notify={notify}

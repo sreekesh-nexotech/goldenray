@@ -38,7 +38,7 @@
 //   system from them. The spec is left optional at create time and required at
 //   activation, which is where the server draws the line too.
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { studioColors } from "../shared/format";
 import { GhostButton, SelectField } from "../shared/primitives";
 import {
@@ -55,6 +55,7 @@ import { isNewRow, useEditableRows } from "../shared/useEditableRows";
 import {
   BOM_ROLES,
   CATEGORY_UNITS,
+  MAX_PAGE_SIZE,
   categories as categoriesApi,
   components,
   saveErrorMessage,
@@ -82,13 +83,14 @@ function isBlankSpec(spec: object | null | undefined): boolean {
 
 export default function CatalogTab({
   categories,
-  items,
+  counts: initialCounts,
   readOnly,
   can,
   notify,
 }: {
   categories: CatalogCategory[];
-  items: CatalogComponent[];
+  /** Live component count per category slug, for the chips. */
+  counts: Record<string, number>;
   readOnly: boolean;
   /**
    * `catalog.<verb>`. Creating is its own verb server-side, not `edit`, so a
@@ -97,14 +99,22 @@ export default function CatalogTab({
   can: (action: StudioAction) => boolean;
   notify: Notify;
 }) {
-  // The first category that holds anything, chosen once from the loaded list.
-  // (The live counts below cannot seed this: they depend on `rows`, which the
-  // editing hook owns, and the hook is created further down.)
-  const [category, setCategory] = useState(() => {
-    const held = new Set(items.map((i) => i.category?.slug).filter(Boolean));
-    return categories.find((c) => held.has(c.slug))?.slug ?? categories[0]?.slug ?? "";
-  });
+  // The first category that actually holds something.
+  const [category, setCategory] = useState(
+    () => categories.find((c) => (initialCounts[c.slug] ?? 0) > 0)?.slug ?? categories[0]?.slug ?? ""
+  );
   const [search, setSearch] = useState("");
+  // Server-side now: the catalog is larger than one page, so filtering what the
+  // screen happens to hold would search a page rather than the catalog.
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [total, setTotal] = useState(0);
+  const [counts, setCounts] = useState(initialCounts);
+  const [loaded, setLoaded] = useState<CatalogComponent[]>([]);
+  const seq = useRef(0);
   const [addingCategory, setAddingCategory] = useState(false);
   const [busyAction, setBusyAction] = useState<string | null>(null);
   // Categories created in this session, so the new pill appears without a reload.
@@ -152,10 +162,58 @@ export default function CatalogTab({
     []
   );
 
-  const { rows, isDirty, patch, add, discard, save, replace, busyId } = useEditableRows<
+  const { rows, isDirty, patch, add, discard, save, replace, reset, busyId } = useEditableRows<
     CatalogComponent,
     CatalogComponentInput
-  >(items, api, toInput, notify, saveErrorMessage);
+  >(loaded, api, toInput, notify, saveErrorMessage);
+
+  // Search is debounced and sent to the server, so it searches the catalog
+  // rather than the page in hand.
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Any change of what is being looked at starts again at page one; staying on
+  // page 7 of a filter that now has two pages shows an empty list.
+  useEffect(() => {
+    setPage(1);
+  }, [category, debouncedSearch, pageSize]);
+
+  const refresh = useCallback(async () => {
+    const mine = ++seq.current;
+    setLoading(true);
+    try {
+      const result = await components.listPage(page, pageSize, {
+        ...(category ? { category } : {}),
+        ...(debouncedSearch ? { search: debouncedSearch } : {}),
+      });
+      if (mine !== seq.current) return;
+      setLoaded(result.rows);
+      reset(result.rows);
+      setTotal(result.total);
+      setLoadError("");
+    } catch (err) {
+      if (mine !== seq.current) return;
+      setLoadError(saveErrorMessage(err));
+    } finally {
+      if (mine === seq.current) setLoading(false);
+    }
+  }, [page, pageSize, category, debouncedSearch, reset]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  /** Re-read the chips, so a saved or deleted row moves its category's number. */
+  const refreshCounts = useCallback(async () => {
+    try {
+      const rows = await categoriesApi.counts();
+      setCounts(Object.fromEntries(rows.map((row) => [row.slug, row.count])));
+    } catch {
+      // A stale chip is not worth surfacing an error over.
+    }
+  }, []);
 
   /**
    * DRAFT -> ACTIVE. Its own endpoint and its own permission, because it is the
@@ -213,28 +271,10 @@ export default function CatalogTab({
     [notify]
   );
 
-  // Counted off the live rows rather than the loaded prop, so saving a new
-  // component moves its category's number straight away.
-  const counts = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const row of rows) {
-      const slug = row.category?.slug;
-      if (slug) map.set(slug, (map.get(slug) ?? 0) + 1);
-    }
-    return map;
-  }, [rows]);
-
-  const needle = search.trim().toLowerCase();
-  const visible = rows.filter(
-    (r) =>
-      (!category || r.category?.slug === category) &&
-      // An unsaved row has no name or SKU to match yet, so a search that was
-      // already typed must not hide the row the person just asked for.
-      (!needle ||
-        isNewRow(r.uid) ||
-        r.name.toLowerCase().includes(needle) ||
-        r.sku.toLowerCase().includes(needle))
-  );
+  // The server decided what is on this page; the only thing filtered here is a
+  // brand-new unsaved row, which has no name or SKU to have matched a search.
+  const visible = rows;
+  const pages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
     <section>
@@ -245,7 +285,7 @@ export default function CatalogTab({
 
       <div className="flex flex-wrap items-center gap-1" style={{ marginBottom: 12 }}>
         {allCategories.map((c) => {
-          const n = counts.get(c.slug) ?? 0;
+          const n = counts[c.slug] ?? 0;
           const active = c.slug === category;
           return (
             <button
@@ -315,9 +355,13 @@ export default function CatalogTab({
       )}
 
       <div className="flex flex-col gap-3">
-        {visible.length === 0 && (
+        {loadError && (
+          <EmptyRow>{loadError}</EmptyRow>
+        )}
+        {!loadError && loading && visible.length === 0 && <EmptyRow>Loading…</EmptyRow>}
+        {!loadError && !loading && visible.length === 0 && (
           <EmptyRow>
-            {needle ? "Nothing matches that search." : "No components in this category."}
+            {debouncedSearch ? "Nothing matches that search." : "No components in this category."}
           </EmptyRow>
         )}
         {visible.map((row) => {
@@ -345,7 +389,12 @@ export default function CatalogTab({
             dirty={isDirty(row)}
             busy={busyId === row.uid || busyAction === row.uid}
             readOnly={readOnly}
-            onSave={() => save(row.uid)}
+            onSave={async () => {
+              const wasNew = isNewRow(row.uid);
+              await save(row.uid);
+              // A create changes a category's total, so the chip has to catch up.
+              if (wasNew) void refreshCounts();
+            }}
             onDiscard={() => discard(row.uid)}
           >
             <FieldGrid>
@@ -427,10 +476,18 @@ export default function CatalogTab({
           );
         })}
 
-        {!readOnly && can("create") && category && (
-          <AddRowButton onAdd={addComponent}>Add product</AddRowButton>
-        )}
       </div>
+
+      <Pager
+        page={page}
+        pages={pages}
+        total={total}
+        pageSize={pageSize}
+        showing={visible.length}
+        busy={loading}
+        onPage={setPage}
+        onPageSize={setPageSize}
+      />
     </section>
   );
 }
@@ -897,5 +954,116 @@ function NewCategoryForm({
         )}
       </div>
     </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Paging                                                                     */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Page controls, and the count they are paging through.
+ *
+ * The count is the point. The catalog outgrew the server's 200-row cap, and a
+ * request for more is clamped *silently* -- the response still carries the true
+ * total, so 200 of 275 looked like the whole list. Stating "showing 25 of 275"
+ * makes a truncated view impossible to mistake for a complete one.
+ */
+function Pager({
+  page,
+  pages,
+  total,
+  pageSize,
+  showing,
+  busy,
+  onPage,
+  onPageSize,
+}: {
+  page: number;
+  pages: number;
+  total: number;
+  pageSize: number;
+  showing: number;
+  busy: boolean;
+  onPage: (page: number) => void;
+  onPageSize: (size: number) => void;
+}) {
+  const first = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const last = (page - 1) * pageSize + showing;
+
+  return (
+    <div
+      className="flex flex-wrap items-center gap-3"
+      style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${studioColors.ring}` }}
+    >
+      <span style={{ fontSize: 12, color: studioColors.mutedGray }}>
+        {total === 0 ? "No components" : `Showing ${first}–${last} of ${total}`}
+        {busy && " · loading…"}
+      </span>
+
+      <div className="ml-auto flex items-center gap-2">
+        <label style={{ fontSize: 11.5, color: studioColors.mutedGray }} htmlFor="catalog-page-size">
+          Per page
+        </label>
+        <div style={{ width: 86 }}>
+          <SelectField
+            value={String(pageSize)}
+            onChange={(v) => onPageSize(Number(v))}
+            ariaLabel="Rows per page"
+            style={{ padding: "6px 28px 6px 10px", fontSize: 12.5 }}
+          >
+            {[10, 25, 50, 100, MAX_PAGE_SIZE].map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </SelectField>
+        </div>
+
+        <PageButton onClick={() => onPage(page - 1)} disabled={busy || page <= 1}>
+          ‹ Previous
+        </PageButton>
+        <span style={{ fontSize: 12, color: studioColors.tealDeep, fontWeight: 600, minWidth: 76, textAlign: "center" }}>
+          Page {page} of {pages}
+        </span>
+        <PageButton onClick={() => onPage(page + 1)} disabled={busy || page >= pages}>
+          Next ›
+        </PageButton>
+      </div>
+    </div>
+  );
+}
+
+function PageButton({
+  onClick,
+  disabled,
+  children,
+}: {
+  onClick: () => void;
+  disabled: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        appearance: "none",
+        border: "none",
+        boxShadow: `inset 0 0 0 1px ${disabled ? studioColors.ring : studioColors.teal}`,
+        background: "#fff",
+        color: disabled ? studioColors.mutedGray : studioColors.teal,
+        borderRadius: 9,
+        padding: "6px 11px",
+        fontFamily: "var(--font-switzer)",
+        fontSize: 12.5,
+        fontWeight: 600,
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.55 : 1,
+      }}
+    >
+      {children}
+    </button>
   );
 }

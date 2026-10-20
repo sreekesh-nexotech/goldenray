@@ -122,6 +122,19 @@ export function useEditableRows<TRow extends { uid: string }, TInput extends obj
     setSaved((prev) => new Map(prev).set(next.uid, next));
   }, []);
 
+  /**
+   * Swap the whole list for a freshly loaded one, and make it the clean baseline.
+   *
+   * For a paged table: `initial` seeds this hook once, so turning a page would
+   * otherwise keep showing the first page's rows. Unsaved edits on the page
+   * being left are dropped, which is the honest outcome -- the alternative is
+   * carrying invisible dirty rows the person can no longer see to save.
+   */
+  const reset = useCallback((next: TRow[]) => {
+    setRows(next);
+    setSaved(new Map(next.map((r) => [r.uid, r])));
+  }, []);
+
   const remove = useCallback(
     async (uid: string) => {
       if (isNewRow(uid)) {
@@ -147,5 +160,5 @@ export function useEditableRows<TRow extends { uid: string }, TInput extends obj
     [api, notify, describeError]
   );
 
-  return { rows, isDirty, patch, add, discard, save, remove, replace, busyId };
+  return { rows, isDirty, patch, add, discard, save, remove, replace, reset, busyId };
 }

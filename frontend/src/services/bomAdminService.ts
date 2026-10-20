@@ -52,12 +52,27 @@ export interface ComponentRef {
 /*  The CRUD factory                                                           */
 /* -------------------------------------------------------------------------- */
 
+/** One page of a list, with what a pager needs to render itself. */
+export interface Page<TRow> {
+  rows: TRow[];
+  /** Total matching rows on the server, not just this page. */
+  total: number;
+  page: number;
+  pageSize: number;
+  pages: number;
+}
+
 export interface Crud<TRow, TInput> {
   list: (filters?: object) => Promise<TRow[]>;
+  /** One page. Use this wherever a table can exceed the server's 200-row cap. */
+  listPage: (page: number, pageSize: number, filters?: object) => Promise<Page<TRow>>;
   create: (body: TInput) => Promise<TRow>;
   update: (uid: string, body: TInput) => Promise<TRow>;
   remove: (uid: string, expectedVersion?: number) => Promise<void>;
 }
+
+/** The server's hard cap (`flarize/pagination.py`). Asking for more is silently clamped. */
+export const MAX_PAGE_SIZE = 200;
 
 /**
  * One resource's list/create/update/delete, against any staff path.
@@ -65,20 +80,38 @@ export interface Crud<TRow, TInput> {
  * Deliberately not reusing `emiConfigService`'s private `crud()`: that one
  * hardcodes `emi/` and these four resources live in three different apps.
  *
- * `pageSize` asks for the whole list in one request. These are configuration
- * tables -- a few hundred rows at most -- and an editor that silently showed
- * page one of the catalog would be worse than a slow one: the row you came to
- * fix appears not to exist.
+ * **`list` cannot return more than 200 rows.** `StandardPagination` caps
+ * `page_size` at 200 and clamps a larger request *silently* -- the response
+ * still carries the true `count`, so asking for 1000 and receiving 200 of 275
+ * looks like a complete list. That is exactly how a newly created component
+ * could be saved, be refused as a duplicate on a second attempt, and still not
+ * appear on the screen: it was past row 200.
+ *
+ * So `list` is for tables known to be small, and anything that can grow past
+ * the cap uses `listPage` and shows a pager.
  */
 function crud<TRow, TInput extends object>(
   path: string,
   options: { pageSize?: number } = {},
 ): Crud<TRow, TInput> {
   const base = `${path}/`;
-  const pageSize = options.pageSize ?? 500;
+  const pageSize = Math.min(options.pageSize ?? MAX_PAGE_SIZE, MAX_PAGE_SIZE);
   return {
     list: async (filters = {}) =>
       (await studioRequest<Paginated<TRow>>(`${base}${query({ page_size: pageSize, ...filters })}`)).results,
+    listPage: async (page, size, filters = {}) => {
+      const capped = Math.min(Math.max(1, size), MAX_PAGE_SIZE);
+      const body = await studioRequest<Paginated<TRow>>(
+        `${base}${query({ page, page_size: capped, ...filters })}`,
+      );
+      return {
+        rows: body.results,
+        total: body.count,
+        page,
+        pageSize: capped,
+        pages: Math.max(1, Math.ceil(body.count / capped)),
+      };
+    },
     create: (body) => studioRequest<TRow>(base, { method: "POST", body }),
     update: (uid, body) => studioRequest<TRow>(`${base}${uid}/`, { method: "PATCH", body }),
     // DELETE takes the version as a query parameter: there is no body to put it in.
@@ -208,9 +241,7 @@ export interface CatalogComponentInput {
   inverter_spec?: InverterSpec | null;
 }
 
-const componentsCrud = crud<CatalogComponent, CatalogComponentInput>("catalog/components", {
-  pageSize: 1000,
-});
+const componentsCrud = crud<CatalogComponent, CatalogComponentInput>("catalog/components");
 
 /**
  * Components, plus the two lifecycle steps a newly created one needs.
@@ -284,7 +315,25 @@ export const BOM_ROLES: { value: string; label: string; spec: string | null }[] 
 
 export const CATEGORY_UNITS = ["NOS", "M", "KG", "SET"] as const;
 
-export const categories = crud<CatalogCategory, CatalogCategoryInput>("catalog/categories");
+export interface CategoryCount {
+  uid: string;
+  slug: string;
+  count: number;
+}
+
+const categoriesCrud = crud<CatalogCategory, CatalogCategoryInput>("catalog/categories");
+
+export const categories = {
+  ...categoriesCrud,
+  /**
+   * Live component count per category, in one request.
+   *
+   * The chips cannot be counted from the components the screen holds: with
+   * paging that is one page, so every chip would report whatever happened to
+   * land on it.
+   */
+  counts: () => studioRequest<CategoryCount[]>("catalog/categories/counts/"),
+};
 
 /* -------------------------------------------------------------------------- */
 /*  2. Structure templates, items and tube weights                             */
@@ -385,7 +434,7 @@ export interface FixedItemInput {
   sort_order?: number;
 }
 
-export const fixedItems = crud<FixedItemRow, FixedItemInput>("bom/fixed-items", { pageSize: 1000 });
+export const fixedItems = crud<FixedItemRow, FixedItemInput>("bom/fixed-items");
 
 export interface BomTemplateRow extends VersionedRow {
   system_type: string;
