@@ -70,6 +70,10 @@ function Calculator() {
   // Who the quote is for. Deliberately outside `inputs`: it is not a pricing
   // input, so it must never land in the quote request or retrigger a recompute.
   const [customer, setCustomer] = useState<CustomerDraft>(EMPTY_CUSTOMER);
+  // Per-slot part choices, by slot position. Part of the quote request, so a change
+  // re-quotes: swapping a panel moves material, GST and -- where no market rate is
+  // configured -- the customer price, which only the engine can work out.
+  const [picks, setPicks] = useState<Record<number, string>>({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const seq = useRef(0);
@@ -127,6 +131,24 @@ function Calculator() {
     });
   }, [sys, inputs.sysType]);
 
+  // `item_overrides` only when there are any, so an untouched quote sends the same body
+  // it always did -- the 1,029 captured cases pin that request shape.
+  const overrides = useMemo(() => {
+    const rows = Object.entries(picks).map(([pos, component]) => ({ pos: Number(pos), component }));
+    return rows.length ? { item_overrides: rows } : {};
+  }, [picks]);
+
+  const choose = useCallback((pos: number, component: string) => {
+    setPicks((prev) => (prev[pos] === component ? prev : { ...prev, [pos]: component }));
+  }, []);
+
+  // A choice is made against one configuration's slots. Changing the system re-numbers
+  // them, so keeping the picks would silently apply them to different parts; the server
+  // ignores a stale position, but the screen should not pretend the choice survived.
+  useEffect(() => {
+    setPicks({});
+  }, [inputs.sysType, inputs.size, inputs.tier, inputs.housePhase, inputs.batConfig]);
+
   // Debounced recalculation. The sequence guard means a slow earlier response can never
   // overwrite a newer one -- without it, typing a distance leaves the figures showing an
   // older configuration.
@@ -136,7 +158,7 @@ function Calculator() {
     const timer = setTimeout(async () => {
       setLoading(true);
       try {
-        const out = await runBomQuote({ ...toRequest(inputs), mode });
+        const out = await runBomQuote({ ...toRequest(inputs), mode, ...overrides });
         if (mine === seq.current) {
           setResult({ body: out, mode });
           setError("");
@@ -151,7 +173,7 @@ function Calculator() {
       }
     }, 350);
     return () => clearTimeout(timer);
-  }, [inputs, options, mode, fail]);
+  }, [inputs, options, mode, overrides, fail]);
 
   // Only a result fetched for the mode now showing. Switching tabs therefore renders
   // "Recalculating…" for one beat rather than a panel built from the other document.
@@ -350,7 +372,7 @@ function Calculator() {
               {mode === "quotation" && canSeeCost && <CostPanel result={shown} />}
               {/* Shown in both modes: the installer reads it off the dispatch list too. */}
               <StringConfigPanel config={shown.string_config} />
-              <BomLinesTable result={shown} mode={mode} />
+              <BomLinesTable result={shown} mode={mode} onChoose={choose} />
             </>
           )}
           {!shown && !error && !loading && (

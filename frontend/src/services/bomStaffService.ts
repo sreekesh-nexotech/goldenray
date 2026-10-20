@@ -46,7 +46,13 @@ export interface BomQuoteRequest {
   module_dcr?: BomModuleDcr;
   ghs_houses?: number;
   selected_offer_id?: string | null;
-  custom_discount?: { type: BomAmountType; value: number } | null;
+  custom_discount?: { type: BomAmountType; value: number   /**
+   * Per-slot part choices, `{pos, component}`. A slot the configuration no longer
+   * has is ignored rather than rejected, so changing the size does not invalidate
+   * the request mid-edit.
+   */
+  item_overrides?: { pos: number; component: string }[];
+} | null;
   margin_type?: BomAmountType;
   margin_val?: number;
   /**
@@ -92,6 +98,22 @@ export interface BomQuoteLine {
   gst_amt: number;
   section: string;
   is_variable: boolean;
+  /** The SKU quoted on this line. Present only where there is a choice to make. */
+  component?: string;
+  /**
+   * What else this slot could be: everything that passed the phase, content and
+   * engineering gates for this configuration. Absent on a line with one candidate,
+   * and `unit_price` is absent in dispatch mode -- the picking list names the
+   * alternatives without pricing them.
+   */
+  options?: BomLineOption[];
+}
+
+export interface BomLineOption {
+  component: string;
+  name: string;
+  brand: string;
+  unit_price?: number;
 }
 
 export interface BomCostBreakdown {
