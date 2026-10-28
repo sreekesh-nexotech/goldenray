@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { CircleAlert, CircleCheck, CircleX, Info } from "lucide-react";
+import styles from "./WhichSolarSystem.module.css";
 
 // Swap the sources once the system diagrams are on the CDN.
 const CDN = "https://golden-ray.b-cdn.net/Residential%20Solar%20Solutions";
@@ -111,15 +112,11 @@ const WhichSolarSystem = () => {
       </div>
 
       {/* Cards */}
-      <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
+      <div className={`${styles.cards} w-full grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6`}>
         {systems.map((system) => (
           <article
             key={system.title}
-            className={`rounded-2xl bg-white p-5 md:p-6 border ${
-              system.highlighted
-                ? "border-[#074A4D] shadow-[0_10px_30px_rgba(18,53,50,0.08)]"
-                : "border-[#B2B2B233]"
-            }`}
+            className={`${styles.card} ${system.highlighted ? styles.featured : ""} rounded-2xl bg-white p-5 md:p-6 border`}
           >
             {/* Desktop: image on top, then title, tagline, description, points */}
             <div className="hidden lg:flex lg:flex-col">

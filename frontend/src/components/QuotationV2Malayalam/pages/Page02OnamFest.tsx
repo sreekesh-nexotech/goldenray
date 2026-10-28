@@ -293,7 +293,7 @@ export default function Page02OnamFest({
                 fontWeight: 800,
                 color: "#123532",
                 marginTop: 3,
-                lineHeight: 1.25,
+                lineHeight: 1.15,
               }}
             >
               ഇനി വെറും <span style={{ color: "#F88A22" }}>35</span> സ്ലോട്ടുകൾ
@@ -353,10 +353,10 @@ export default function Page02OnamFest({
             </div>
             <div
               style={{
-                fontSize: 34,
+                fontSize: 46,
                 fontWeight: 900,
                 color: "#ffffff",
-                lineHeight: 1.2,
+                lineHeight: 1.1,
                 marginTop: 3,
                 letterSpacing: -0.5,
               }}
@@ -970,7 +970,7 @@ export default function Page02OnamFest({
               gap: 11,
             }}
           >
-            <div style={{ textAlign: "center", flexShrink: 0, width: 72 }}>
+            <div style={{ textAlign: "center", flexShrink: 0 }}>
               <div
                 style={{
                   fontSize: 8,

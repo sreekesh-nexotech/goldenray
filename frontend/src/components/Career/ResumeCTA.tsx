@@ -10,7 +10,7 @@ export default function ResumeCTA() {
         alt="Team members walking outside the office at sunset"
         fill
         sizes="100vw"
-        className="object-cover object-center z-0"
+        className="object-cover object-center-z-0"
         priority={false}
       />
       {/* Overlay for text contrast */}
@@ -36,7 +36,7 @@ export default function ResumeCTA() {
           href="mailto:careers@flarize.com"
           className="mt-8 text-xs md:text-sm font-normal text-white/70 hover:text-white transition-colors"
         >
-          careers@flarize.com
+          hr@flarize.com
         </a>
       </div>
     </section>

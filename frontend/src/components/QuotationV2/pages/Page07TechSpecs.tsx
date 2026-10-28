@@ -2303,7 +2303,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.premium.downPayment}
+                  −{data.premium.downPayment}
                 </span>
               </div><div
                 style={{
@@ -2339,7 +2339,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.smart.downPayment}
+                  −{data.smart.downPayment}
                 </span>
               </div><div
                 style={{
@@ -2377,7 +2377,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.basic.downPayment}
+                  −{data.basic.downPayment}
                 </span>
               </div><div
                 style={{
@@ -2449,7 +2449,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.subsidyRowValue}
+                  {data.hasSubsidy ? `−${data.subsidyRowValue}` : data.subsidyRowValue}
                 </span>
               </div><div
                 style={{
@@ -2485,7 +2485,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.subsidyRowValue}
+                  {data.hasSubsidy ? `−${data.subsidyRowValue}` : data.subsidyRowValue}
                 </span>
               </div><div
                 style={{
@@ -2523,7 +2523,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.subsidyRowValue}
+                  {data.hasSubsidy ? `−${data.subsidyRowValue}` : data.subsidyRowValue}
                 </span>
               </div><div
                 style={{
@@ -2778,13 +2778,14 @@ export default function Page07TechSpecs({
                     fontFamily:
                       'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                     fontWeight: 500,
-                    fontSize: 18,
-                    lineHeight: 1.399999976158142,
+                    fontSize: 12,
+                    whiteSpace: "pre-line",
+                    lineHeight: "14px",
                     color: "rgb(18,53,50)",
                     flexGrow: 1,
                   }}
                 >
-                  Thannikakal, Thumpoly PO, Alappuzha– 688008
+                  {"Tharath Building,Kalappura, \nAlappuzha – 688007"}
                 </span>
               </div>
               <div
@@ -2803,7 +2804,7 @@ export default function Page07TechSpecs({
                   style={{
                     position: "absolute",
                     left: 0,
-                    top: 16,
+                    top: 5,
                     width: 18,
                     height: 18,
                     color: "rgb(18,53,50)",
@@ -2819,7 +2820,7 @@ export default function Page07TechSpecs({
                   style={{
                     position: "absolute",
                     left: 29,
-                    top: 12.5,
+                    top: 1,
                     width: 163,
                     height: 25,
                     fontFamily:

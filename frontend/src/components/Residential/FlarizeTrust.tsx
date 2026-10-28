@@ -61,7 +61,7 @@ const FlarizeTrust = () => {
         </h2>
       </div>
 
-      {/* Horizontally scrollable on mobile, 3 x 2 grid from sm+ */}
+      {/* Horizontally scrollable, 3 x 2 grid from sm+ */}
       <div className="w-full flex overflow-x-auto gap-4 no-scrollbar sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 sm:overflow-visible">
         {differences.map(({ icon: Icon, title, desc }, idx) => (
           <div
@@ -71,10 +71,10 @@ const FlarizeTrust = () => {
             <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-white/20">
               <Icon className="text-white" size={24} strokeWidth={1.75} />
             </div>
-            <h3 className="mb-3 text-[20px] font-semibold leading-[28px] text-white">
+            <h3 className="mb-3 text-[20px] font-semibold-[28px] text-white">
               {title}
             </h3>
-            <p className="text-[12px] font-normal leading-[18px] text-[#A9B6B3] md:text-[14px] md:leading-[22px]">
+            <p className="text-[px] font-normal leading-[18px] text-[#A9B6B3] md:text-[14px] md:leading-[22px]">
               {desc}
             </p>
           </div>

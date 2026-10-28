@@ -95,6 +95,115 @@
   --font-hanken-grotesk: var(--font-noto-malayalam) !important;
 }
 
+/* The translated second label must not make one proof card wider than its
+ * neighbours. Share the row width evenly and wrap copy inside each card. */
+.quotation-v2-ml .qv2-ml-proof-stats > div {
+  flex: 1 1 0 !important;
+  min-width: 0;
+}
+
+.quotation-v2-ml .qv2-ml-proof-stats span {
+  overflow-wrap: break-word;
+}
+
+/* Cover proposal grid: the reference has one central rule and equal columns. */
+.quotation-v2-ml .qv2-ml-cover-details {
+  align-self: stretch !important;
+  justify-content: space-between !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  padding: 0 !important;
+}
+
+.quotation-v2-ml .qv2-ml-cover-details > div {
+  width: 50% !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  gap: 26px !important;
+  padding: 20px 42px 20px 20px !important;
+}
+
+.quotation-v2-ml .qv2-ml-cover-details > div:first-child {
+  border-right: 1px solid var(--grays-gray-5) !important;
+}
+
+.quotation-v2-ml .qv2-ml-cover-details > div:last-child {
+  padding-left: 42px !important;
+  padding-right: 20px !important;
+}
+
+/* Keep the three cover proofs inside the same margins as the English page. */
+.quotation-v2-ml .qv2-ml-cover-stats {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px !important;
+  padding: 24px 80px !important;
+}
+
+.quotation-v2-ml .qv2-ml-cover-stats > div,
+.quotation-v2-ml .qv2-ml-cover-stats > div > div:last-child {
+  min-width: 0;
+}
+
+.quotation-v2-ml .qv2-ml-cover-stats > div {
+  justify-content: center;
+}
+
+.quotation-v2-ml .qv2-ml-cover-stats span {
+  overflow-wrap: break-word;
+}
+
+/* Give the timeline numbers and their descriptions the same five tracks. */
+.quotation-v2-ml .qv2-ml-journey-nodes,
+.quotation-v2-ml .qv2-ml-journey-descriptions {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  column-gap: 42px;
+}
+
+.quotation-v2-ml .qv2-ml-journey-nodes > div,
+.quotation-v2-ml .qv2-ml-journey-descriptions > div {
+  min-width: 0;
+}
+
+.quotation-v2-ml .qv2-ml-journey-descriptions > div {
+  align-items: center !important;
+  text-align: center;
+}
+
+.quotation-v2-ml .qv2-ml-journey-descriptions span {
+  overflow-wrap: break-word;
+  text-align: center;
+}
+
+/* Let the savings benefits use the full green card width. */
+.quotation-v2-ml .qv2-ml-savings-positive > div:nth-child(2) {
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.quotation-v2-ml .qv2-ml-savings-positive > div:nth-child(2) > div:nth-child(n + 2) {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100% !important;
+}
+
+.quotation-v2-ml .qv2-ml-savings-positive > div:nth-child(2) > div:nth-child(n + 2) > div:first-child {
+  position: relative !important;
+  top: auto !important;
+  flex: 0 0 20px;
+}
+
+.quotation-v2-ml .qv2-ml-savings-positive > div:nth-child(2) > div:nth-child(n + 2) > span {
+  flex: 1;
+  width: auto !important;
+  min-width: 0;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+}
+
 /* Bitmap crops extracted from the Figma file (generated positions/sizes —
  * do not hand-tune). One rule per line. */
 .quotation-v2 .fig-asset-0701f7494693611f-5d8c127c { background: url(https://golden-ray.b-cdn.net/quotation-v2/assets/0701f7494693611f.jpg) 49.674% 61.761% / 129.135% 146.664% no-repeat; }

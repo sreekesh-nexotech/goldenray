@@ -260,20 +260,24 @@ function PackageCard({
             padding: "10px 16px",
           }}
         >
-          <span
-            style={text(13, 700, "rgb(146,128,106)", {
-              letterSpacing: "1.4px",
-              textTransform: "uppercase",
-              lineHeight: "18px",
-              display: "block",
-              marginBottom: 2,
-            })}
-          >
-            {l.paymentBreakdown}
-          </span>
+          {l !== LABELS.Malayalam && (
+            <span
+              style={text(13, 700, "rgb(146,128,106)", {
+                letterSpacing: "1.4px",
+                textTransform: "uppercase",
+                lineHeight: "18px",
+                display: "block",
+                marginBottom: 2,
+              })}
+            >
+              {l.paymentBreakdown}
+            </span>
+          )}
           <div style={row({ lineHeight: "28px" })}>
             <span style={text(16, 400, GREY)}>{l.downPayment(data.downPaymentPercent)}</span>
-            <span style={text(17, 600, INK)}>{tier.downPayment}</span>
+            <span style={text(17, 600, INK)}>
+              {l === LABELS.Malayalam ? "− " : ""}{tier.downPayment}
+            </span>
           </div>
           {data.hasSubsidy && (
             <div style={row({ lineHeight: "28px" })}>

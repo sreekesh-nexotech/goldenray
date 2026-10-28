@@ -1671,7 +1671,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 color: "var(--2-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>{data.premium.downPayment}</span></div><div style={{
+              }}>−{data.premium.downPayment}</span></div><div style={{
               gridRow: "14",
               gridColumn: "3",
               position: "relative",
@@ -1698,7 +1698,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 color: "var(--2-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>{data.smart.downPayment}</span></div><div style={{
+              }}>−{data.smart.downPayment}</span></div><div style={{
               gridRow: "14",
               gridColumn: "4",
               position: "relative",
@@ -1727,7 +1727,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 color: "var(--2-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>{data.basic.downPayment}</span></div><div style={{
+              }}>−{data.basic.downPayment}</span></div><div style={{
               gridRow: "15",
               gridColumn: "1",
               position: "relative",
@@ -1781,7 +1781,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 color: "var(--green-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>{data.subsidyRowValue}</span></div><div style={{
+              }}>{data.hasSubsidy ? `−${data.subsidyRowValue}` : data.subsidyRowValue}</span></div><div style={{
               gridRow: "15",
               gridColumn: "3",
               position: "relative",
@@ -1808,7 +1808,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 color: "var(--green-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>{data.subsidyRowValue}</span></div><div style={{
+              }}>{data.hasSubsidy ? `−${data.subsidyRowValue}` : data.subsidyRowValue}</span></div><div style={{
               gridRow: "15",
               gridColumn: "4",
               position: "relative",
@@ -1837,7 +1837,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 color: "var(--green-2)",
                 flexGrow: 1,
                 alignSelf: "stretch"
-              }}>{data.subsidyRowValue}</span></div><div style={{
+              }}>{data.hasSubsidy ? `−${data.subsidyRowValue}` : data.subsidyRowValue}</span></div><div style={{
               gridRow: "16",
               gridColumn: "1",
               position: "relative",
@@ -2018,11 +2018,12 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 position: "relative",
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                 fontWeight: 500,
-                fontSize: 18,
-                lineHeight: 1.399999976158142,
+                fontSize: 12,
+                whiteSpace: "pre-line",
+                lineHeight: "14px",
                 color: "rgb(18,53,50)",
                 flexGrow: 1
-              }}>Thannikakal, Thumpoly PO, Alappuzha– 688008</span></div><div style={{
+              }}>{"Tharath Building,Kalappura, \nAlappuzha – 688007"}</span></div><div style={{
               position: "relative",
               width: 192,
               flexShrink: 0,
@@ -2030,14 +2031,14 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
             }}><svg width={18} height={18} viewBox="0 0 18 18" fill="none" style={{
                 position: "absolute",
                 left: 0,
-                top: 16,
+                top: 5,
                 width: 18,
                 height: 18,
                 color: "rgb(18,53,50)"
               }}><path d="M 9.009 18 C 13.931 18 18 13.921 18 9 C 18 4.088 13.921 0 9 0 C 4.079 0 0 4.088 0 9 C 0 13.921 4.088 18 9.009 18 Z M 6.399 4.305 C 6.934 2.955 7.668 1.985 8.474 1.686 L 8.474 4.514 C 7.731 4.495 7.033 4.423 6.399 4.305 Z M 9.517 1.686 C 10.323 1.985 11.066 2.955 11.592 4.305 C 10.958 4.423 10.269 4.495 9.517 4.514 L 9.517 1.686 Z M 11.429 1.94 C 12.399 2.275 13.278 2.792 14.012 3.471 C 13.613 3.698 13.151 3.888 12.634 4.051 C 12.308 3.208 11.891 2.492 11.429 1.94 Z M 3.979 3.471 C 4.722 2.801 5.601 2.275 6.571 1.94 C 6.1 2.492 5.692 3.208 5.356 4.051 C 4.849 3.888 4.387 3.698 3.979 3.471 Z M 13.495 8.474 C 13.45 7.214 13.26 6.045 12.961 5.012 C 13.64 4.804 14.239 4.541 14.746 4.233 C 15.707 5.393 16.332 6.861 16.441 8.474 L 13.495 8.474 Z M 1.559 8.474 C 1.668 6.861 2.284 5.393 3.254 4.233 C 3.752 4.541 4.36 4.804 5.03 5.012 C 4.731 6.045 4.55 7.214 4.505 8.474 L 1.559 8.474 Z M 9.517 8.474 L 9.517 5.556 C 10.369 5.529 11.175 5.429 11.927 5.275 C 12.199 6.245 12.381 7.332 12.426 8.474 L 9.517 8.474 Z M 5.574 8.474 C 5.61 7.332 5.792 6.245 6.073 5.275 C 6.816 5.429 7.631 5.529 8.474 5.556 L 8.474 8.474 L 5.574 8.474 Z M 1.559 9.517 L 4.505 9.517 C 4.541 10.795 4.731 11.991 5.03 13.033 C 4.369 13.242 3.77 13.495 3.272 13.804 C 2.293 12.625 1.668 11.148 1.559 9.517 Z M 5.565 9.517 L 8.474 9.517 L 8.474 12.489 C 7.631 12.517 6.816 12.607 6.073 12.77 C 5.792 11.792 5.61 10.677 5.565 9.517 Z M 9.517 12.489 L 9.517 9.517 L 12.426 9.517 C 12.39 10.677 12.208 11.792 11.927 12.77 C 11.175 12.607 10.369 12.517 9.517 12.489 Z M 12.961 13.033 C 13.269 11.991 13.45 10.795 13.495 9.517 L 16.441 9.517 C 16.341 11.148 15.716 12.634 14.728 13.804 C 14.23 13.505 13.631 13.242 12.961 13.033 Z M 6.399 13.74 C 7.033 13.622 7.731 13.55 8.474 13.532 L 8.474 16.36 C 7.668 16.06 6.934 15.091 6.399 13.74 Z M 9.517 13.532 C 10.269 13.55 10.958 13.622 11.592 13.74 C 11.066 15.091 10.323 16.06 9.517 16.36 L 9.517 13.532 Z M 4.006 14.556 C 4.405 14.338 4.858 14.148 5.356 13.994 C 5.683 14.81 6.073 15.499 6.526 16.051 C 5.583 15.725 4.731 15.208 4.006 14.556 Z M 12.634 13.994 C 13.142 14.148 13.595 14.338 13.994 14.565 C 13.269 15.218 12.408 15.734 11.465 16.06 C 11.918 15.508 12.317 14.81 12.634 13.994 Z" fill="currentColor" fillRule="nonzero" /></svg><span style={{
                 position: "absolute",
                 left: 29,
-                top: 12.5,
+                top: 1,
                 width: 163,
                 height: 25,
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",

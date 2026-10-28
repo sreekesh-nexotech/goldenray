@@ -2166,13 +2166,14 @@ export default function Page04WhyFlarize({
                       fontFamily:
                         'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                       fontWeight: 500,
-                      fontSize: 18,
-                      lineHeight: 1.399999976158142,
+                      fontSize: 12,
+                      whiteSpace: "pre-line",
+                      lineHeight: "14px",
                       color: "rgb(18,53,50)",
                       flexGrow: 1,
                     }}
                   >
-                    Thannikakal, Thumpoly PO, Alappuzha– 688008
+                    {"Tharath Building,Kalappura, \nAlappuzha – 688007"}
                   </span>
                 </div>
                 <div
@@ -2191,7 +2192,7 @@ export default function Page04WhyFlarize({
                     style={{
                       position: "absolute",
                       left: 0,
-                      top: 16,
+                      top: 5,
                       width: 18,
                       height: 18,
                       color: "rgb(18,53,50)",
@@ -2207,7 +2208,7 @@ export default function Page04WhyFlarize({
                     style={{
                       position: "absolute",
                       left: 29,
-                      top: 12.5,
+                      top: 1,
                       width: 149,
                       height: 25,
                       fontFamily:

@@ -19,6 +19,14 @@ const SYSTEM_CANDIDATES = [
   "/snap/bin/chromium",
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "/Applications/Chromium.app/Contents/MacOS/Chromium",
+  // Local Windows development. Chrome may be installed for all users or only
+  // for the current user; Edge is a Chromium fallback on Windows.
+  ...[process.env.PROGRAMFILES, process.env["PROGRAMFILES(X86)"], process.env.LOCALAPPDATA]
+    .filter((dir): dir is string => Boolean(dir))
+    .flatMap((dir) => [
+      path.join(dir, "Google", "Chrome", "Application", "chrome.exe"),
+      path.join(dir, "Microsoft", "Edge", "Application", "msedge.exe"),
+    ]),
 ];
 
 /** Newest Chromium that Playwright downloaded into its cache, if any. */

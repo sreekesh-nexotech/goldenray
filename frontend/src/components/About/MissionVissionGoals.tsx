@@ -1,6 +1,7 @@
 // components/MissionVisionGoals.jsx
 import React from "react";
 import PageIllustration from "../ui/page-illustration";
+import styles from "./MissionVissionGoals.module.css";
 
 type GoalData = {
   number: string;
@@ -46,15 +47,11 @@ export default function MissionVisionGoals() {
       </div>
 
       {/* Grid Container for the Goal Cards */}
-      <div className="relative max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+      <div className={`${styles.cards} relative max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-center`}>
         {goalsData.map((goal, index) => (
           <div
             key={index}
-            className={
-              goal.isHighlighted
-                ? "rounded-2xl bg-white shadow-xl p-8"
-                : "p-8"
-            }
+            className={`${styles.card} ${goal.isHighlighted ? styles.featured : ""} rounded-2xl p-8`}
           >
             <p className="text-xs font-semibold text-gray-400 mb-6">
               {goal.number}
