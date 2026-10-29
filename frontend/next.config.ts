@@ -2,6 +2,25 @@
 import path from "path";
 import type { NextConfig } from "next";
 
+// The blog CMS returns absolute media URLs on its own origin. Locally that is
+// Django on a loopback port (8009, or 8014 under docker-compose.override.yml),
+// so loopback is allow-listed only when the CMS URL baked into this build is
+// itself loopback. Production builds point it at flarize.com, which keeps
+// internal addresses off the image optimizer's allow-list (GHSA-cjq9-62q9-8jv4).
+// Same fallback as src/config.ts when the variable is unset.
+const blogCmsUrl = new URL(
+    process.env.NEXT_PUBLIC_BLOG_API_BASE_URL ||
+        (process.env.NODE_ENV !== 'production' ? 'http://127.0.0.1:8009/api' : 'https://flarize.com/studio-api/api'),
+);
+const LOOPBACK_HOSTS = ['localhost', '127.0.0.1'];
+const localBlogCmsPatterns = LOOPBACK_HOSTS.includes(blogCmsUrl.hostname)
+    ? LOOPBACK_HOSTS.map((hostname) => ({
+          protocol: blogCmsUrl.protocol.slice(0, -1) as 'http' | 'https',
+          hostname,
+          port: blogCmsUrl.port,
+      }))
+    : [];
+
 const nextConfig: NextConfig = {
     outputFileTracingRoot: path.join(__dirname),
     images: {
@@ -18,17 +37,7 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: 'blog.flarize.com',
             },
-            // Local Blog CMS (dev) — uploaded media served from Django on :8009
-            {
-                protocol: 'http',
-                hostname: 'localhost',
-                port: '8009',
-            },
-            {
-                protocol: 'http',
-                hostname: '127.0.0.1',
-                port: '8009',
-            },
+            ...localBlogCmsPatterns,
         ],
     },
     reactStrictMode: true,

@@ -1,9 +1,10 @@
 import Image from "next/image";
-import logo1 from "../../public/image-33.png";
-import logo2 from "../../public/image-36.png";
-import logo3 from "../../public/image-34.png";
-import logo4 from "../../public/image-37.png";
-import logo5 from "../../public/image-32.png";
+
+const logo1 = "https://golden-ray.b-cdn.net/icons/image-33.png";
+const logo2 = "https://golden-ray.b-cdn.net/icons/image-36.png";
+const logo3 = "https://golden-ray.b-cdn.net/icons/image-34.png";
+const logo4 = "https://golden-ray.b-cdn.net/icons/image-37.png";
+const logo5 = "https://golden-ray.b-cdn.net/icons/image-32.png";
 
 export default function Certified() {
   return (

@@ -1,9 +1,10 @@
 // src/components/SolutionsPage/PanelTypesSection.tsx
 import Image from "next/image";
 import { PanelType } from "@/data/solutions-page-data";
-import vector1 from "../../../public/Vector-1.png";
-import vector2 from "../../../public/Vector-2.png";
-import vector3 from "../../../public/Vector-3.png";
+import vector2 from "../../../public/images/aboutus/Vector-2.png";
+import vector3 from "../../../public/images/aboutus/Vector-3.png";
+
+const vector1 = "https://golden-ray.b-cdn.net/icons/Vector-1.png";
 
 interface PanelTypesSectionProps {
   title?: string;

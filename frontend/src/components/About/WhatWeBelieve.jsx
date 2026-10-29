@@ -26,7 +26,7 @@ export default function WhatWeBelieve() {
             <p>
               We think that&apos;s backwards. A 25-year decision should sit
               with the person who lives with it. Solar has a trust problem,
-              not a demand problem, and trust starts with you understanding
+              not a demand problem, and trust starts with you understanding 
               the choice.
             </p>
             <p>
@@ -44,12 +44,12 @@ export default function WhatWeBelieve() {
           
         </div>
 
-        
+      
 
         {/* Image */}
         <div className="w-full h-[320px] sm:h-[400px] lg:h-[460px] rounded-2xl overflow-hidden">
           <Image
-            src="https://golden-ray.b-cdn.net/About%20us/29939b82a17e1e41862f56586c43584aae7b32ce.jpg"
+            src="https://golden-ray.b-cdn.net/About%20us/Why%20Flarize%20Exists.JPG"
             alt="The Flarize team collaborating"
             width={640}
             height={460}

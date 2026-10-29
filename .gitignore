@@ -4,3 +4,9 @@
 
 # Local dev compose overrides (dev servers + bind mounts, never deployed)
 /docker-compose.override.yml
+
+# Next.js build output accidentally produced at the repo root
+/.next/
+
+# Backend secrets (also ignored in goldenray-backend/.gitignore)
+/goldenray-backend/.env
