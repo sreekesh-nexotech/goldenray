@@ -565,15 +565,20 @@ export async function getDashboard(): Promise<StudioDashboard> {
   };
 }
 
-/** Slot type on a template attribute (mirrors the backend TextChoices). */
+/**
+ * Slot type on a template attribute — the backend `TemplateAttributeSlot.Type`
+ * values verbatim. The legacy CMS used lowercase names ("enum", "boolean");
+ * the platform does not, and a mismatch silently degrades every typed slot to a
+ * free-text input whose value the backend then rejects on save.
+ */
 export type StudioSlotType =
-  | "text"
-  | "richtext_blocks"
-  | "number"
-  | "boolean"
-  | "date"
-  | "enum"
-  | "url";
+  | "TEXT"
+  | "RICHTEXT_BLOCKS"
+  | "NUMBER"
+  | "BOOL"
+  | "DATE"
+  | "ENUM"
+  | "URL";
 
 /**
  * Image group on a template — `key` is the delivery contract, never rename it.
@@ -803,13 +808,14 @@ export interface EntrySeo {
 }
 
 /** What a write sends for the SEO block (uids, not nested objects). */
+/** Text fields are "" when blank — the backend rejects null for them. */
 export interface EntrySeoInput {
-  seo_title?: string | null;
-  meta_description?: string | null;
-  canonical_url?: string | null;
-  keywords?: string | null;
-  og_title?: string | null;
-  og_description?: string | null;
+  seo_title?: string;
+  meta_description?: string;
+  canonical_url?: string;
+  keywords?: string;
+  og_title?: string;
+  og_description?: string;
   og_image_uid?: string | null;
   schema_type?: string | null;
   schema_extra?: Record<string, unknown> | null;
@@ -870,8 +876,8 @@ export interface EntryWritePayload {
   summary?: unknown[];
   introduction?: unknown[];
   read_time?: number | null;
-  warning?: string | null;
-  insights?: string | null;
+  warning?: string;
+  insights?: string;
   published_on?: string | null;
   author_uid?: string | null;
   category_uids?: string[];

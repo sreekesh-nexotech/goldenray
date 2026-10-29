@@ -17,49 +17,70 @@ const awards: Award[] = [
     title: "Visionary Leader of the Year",
     description: "Harikrishnan K.R, Kerala Energy Excellence Awards 2026.",
     image:
-      "https://golden-ray.b-cdn.net/About%20us/Visionary%20Leader%20of%20the%20Year.jpg",
+      "https://golden-ray.b-cdn.net/About%20us/080A4064.jpg",
   },
 ];
 
+function TrophyIcon() {
+  return (
+    <div className="relative h-8 w-8 overflow-hidden rounded-full sm:h-9 sm:w-9">
+      <Image
+        src="https://golden-ray.b-cdn.net/About%20us/awardicon.png"
+        alt="Award icon"
+        fill
+        sizes="36px"
+        className="object-cover"
+      />
+    </div>
+  );
+}
+
 export default function Recognition() {
   return (
-    <section className="px-4 pt-8 pb-8 sm:pt-12 sm:pb-12 lg:pt-16 lg:pb-16 sm:px-6 lg:px-8 ">
+    <section className="px-4 pb-10 pt-8 sm:px-6 sm:pt-12 sm:pb-12 lg:px-8 lg:pt-16 lg:pb-16">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-8 text-center sm:mb-10 lg:mb-12">
+          <p className="mb-3 text-sm font-semibold text-[#123532] sm:text-base">
+            Recognised &amp; Trusted
+          </p>
+          <h2 className="text-[2.2rem] font-bold leading-tight text-[#123532] sm:text-[2.5rem] lg:text-[3rem]">
+            Recognised in Kerala
+          </h2>
+        </div>
 
-      {/* Heading */}
-      <div className="max-w-7xl mx-auto text-center mb-12">
-        <p className="text-sm md:text-base font-semibold text-[#123532] mb-3">
-          Recognised &amp; Trusted
-        </p>
-        <h2 className="text-3xl md:text-4xl font-bold text-[#123532]">
-          Recognised in Kerala
-        </h2>
-      </div>
+        <div className="grid grid-cols-1 gap-6 md:gap-7 lg:grid-cols-2">
+          {awards.map((award, index) => (
+            <article
+              key={index}
+              className="overflow-hidden rounded-[22px] border border-[#E9E5DE] bg-[#F7F6F5] shadow-[0_4px_18px_rgba(18,53,50,0.04)]"
+            >
+              <div className="relative aspect-[2.2/1] w-full overflow-hidden sm:aspect-[2.4/1] lg:aspect-[2.1/1]">
+                <Image
+                  src={award.image}
+                  alt={award.title}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
 
-      {/* Award cards */}
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-        {awards.map((award, index) => (
-          <div
-            key={index}
-            className="flex overflow-hidden rounded-xl bg-[#F5F6F5]"
-          >
-            <div className="relative w-40 sm:w-48 md:w-56 flex-shrink-0">
-              <Image
-                src={award.image}
-                alt={award.title}
-                fill
-                sizes="(min-width: 768px) 224px, (min-width: 640px) 192px, 160px"
-                className="object-cover"
-              />
-            </div>
+              <div className="flex items-center gap-3 bg-[#F6F5F3] px-4 py-3 sm:px-4 sm:py-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#D9BC6B] bg-[#F5E8C5] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.35)] sm:h-11 sm:w-11">
+                  <TrophyIcon />
+                </div>
 
-            <div className="flex flex-col justify-center gap-2 px-6 py-5">
-              <h3 className="text-lg font-bold text-[#123532] leading-snug">
-                {award.title}
-              </h3>
-              <p className="text-sm text-gray-600">{award.description}</p>
-            </div>
-          </div>
-        ))}
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base font-bold leading-snug text-[#123532] sm:text-[1rem] lg:text-[1.08rem]">
+                    {award.title}
+                  </h3>
+                  <p className="mt-1 text-sm text-[#4B4B4B] sm:text-[0.9rem]">
+                    {award.description}
+                  </p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

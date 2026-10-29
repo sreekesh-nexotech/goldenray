@@ -1,5 +1,5 @@
 # Stage 1: Builder with all dependencies
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 
 RUN apk add --no-cache build-base vips-dev
 
@@ -47,7 +47,7 @@ RUN npm run build
 # bind-mounted by docker-compose.override.yml and `next dev` compiles on the
 # fly, so a code change never needs an image rebuild. Not used in production —
 # the final stage below stays the default build target.
-FROM node:18-alpine AS dev
+FROM node:22-alpine AS dev
 
 RUN apk add --no-cache build-base vips-dev
 
@@ -70,7 +70,7 @@ EXPOSE 3000
 CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
 
 # Stage 3: Production image
-FROM node:18-alpine
+FROM node:22-alpine
 
 # Chromium for the quotation PDF: the document is rendered by real Chrome via
 # puppeteer-core rather than rasterised in JS, so the PDF matches the page

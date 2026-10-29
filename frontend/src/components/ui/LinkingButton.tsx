@@ -20,10 +20,16 @@ export default function LinkingButton({
   ButtonBorder,
   className,
 }: ButtonProps) {
+  const hasBorderClass = /(?:^|\s)border(?:-[^\s]+)?(?=\s|$)/.test(
+    className ?? "",
+  );
+  const borderClass =
+    ButtonBorder ?? (hasBorderClass ? "" : "border border-transparent");
+
   return (
     <Link
       href={ButtonLink}
-      className={`btn w-full justify-center rounded-xl border border-transparent text-[14px] font-semibold leading-[20px] transition-all duration-200 sm:w-auto ${ButtonBg} ${ButtonHover} ${Buttontext} ${ButtonBorder ?? ""} ${className ?? ""}`}
+      className={`btn w-full justify-center rounded-xl ${borderClass} text-[14px] font-semibold leading-[20px] transition-all duration-200 sm:w-auto ${ButtonBg} ${ButtonHover} ${Buttontext} ${className ?? ""}`}
     >
       {content}
     </Link>

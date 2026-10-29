@@ -532,7 +532,7 @@ export default function Calculator() {
             {/* Daily amount — EMI ÷ 30 */}
             <div className="bg-white rounded-xl px-4 py-3 mt-4 mb-4">
               <p className="text-base sm:text-lg font-bold text-[#15803D]">
-                ₹{fmt(dailyAmount)} /day
+                Just ₹{fmt(dailyAmount)} /day
               </p>
               <p className="text-xs sm:text-sm text-[#111827] mt-1">
                 You need to save per day for your EMI
