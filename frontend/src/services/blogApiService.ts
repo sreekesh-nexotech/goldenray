@@ -4,9 +4,10 @@ import type {
   ContentSection,
   SectionTable,
 } from "@/data/blog-content";
-import { BLOG_API_BASE_URL } from "@/config";
+import { PUBLIC_API_BASE_URL } from "@/config";
 
-const API_BASE = BLOG_API_BASE_URL;
+// Delivery API of the platform backend: /api/public/v1/content/<collection>/.
+const API_BASE = `${PUBLIC_API_BASE_URL}content`;
 
 // Data-cache window for blog fetches. Keep this EQUAL to the `revalidate = 120`
 // on the blog pages: Next collapses a segment's revalidate to the minimum of the
@@ -407,7 +408,7 @@ export async function fetchAllArticles(): Promise<{
   categories: string[];
 }> {
   try {
-    const res = await fetch(`${API_BASE}/articles?populate=*&pagination[pageSize]=100`, {
+    const res = await fetch(`${API_BASE}/articles/?populate=*&pagination[pageSize]=100`, {
       next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!res.ok) throw new Error(`API error: ${res.status}`);
@@ -436,7 +437,7 @@ export async function fetchArticleBySlug(slug: string): Promise<{
 } | null> {
   try {
     const res = await fetch(
-      `${API_BASE}/articles?populate=*&filters[slug][$eq]=${encodeURIComponent(slug)}`,
+      `${API_BASE}/articles/?populate=*&filters[slug][$eq]=${encodeURIComponent(slug)}`,
       { next: { revalidate: REVALIDATE_SECONDS } }
     );
     if (!res.ok) throw new Error(`API error: ${res.status}`);
@@ -459,7 +460,7 @@ export async function fetchArticleBySlug(slug: string): Promise<{
 /** Fetches only slugs — used for generateStaticParams. */
 export async function fetchAllSlugs(): Promise<string[]> {
   try {
-    const res = await fetch(`${API_BASE}/articles?fields[0]=slug`, {
+    const res = await fetch(`${API_BASE}/articles/?fields[0]=slug&pagination[pageSize]=200`, {
       next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!res.ok) throw new Error(`API error: ${res.status}`);

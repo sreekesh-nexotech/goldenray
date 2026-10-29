@@ -9,6 +9,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { entries, assets } from "@/data/studio";
 import { useStudio } from "../shared/StudioContext";
+import { PUBLIC_API_BASE_URL } from "@/config";
 import { PageHeader, TipBanner } from "../shared/primitives";
 import { studioColors, studioFonts } from "../shared/format";
 
@@ -42,7 +43,8 @@ const preview = {
   total: publishedArticles.length,
 } as const;
 
-const mainUrl = `https://flarize.com/api/articles?filters[slug][$eq]=${preview.slug}&populate=*`;
+const deliveryBase = `${PUBLIC_API_BASE_URL}content`;
+const mainUrl = `${deliveryBase}/articles/?filters[slug][$eq]=${preview.slug}&populate=*`;
 
 /* -------------------------------------------------------------------------- */
 /*  Syntax-highlight tokens (colours transcribed 1:1 from the design)          */
@@ -74,7 +76,7 @@ const preStyle: CSSProperties = {
 /* -------------------------------------------------------------------------- */
 
 const refCards: { label: string; code: string; desc: string }[] = [
-  { label: "List", code: "GET /api/articles?populate=*", desc: "All published articles, for the blog index page." },
+  { label: "List", code: "GET /api/public/v1/content/articles/?populate=*", desc: "All published articles, for the blog index page." },
   { label: "Detail", code: "?filters[slug][$eq]=…", desc: "One page by its URL slug — what each blog page requests." },
   { label: "Slugs", code: "?fields[0]=slug", desc: "Just slugs, so the site can pre-build every page." },
 ];

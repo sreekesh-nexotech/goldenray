@@ -287,7 +287,7 @@ type ApplicationFormProps = {
    * Applications queue (§6.13) and survives the posting being renamed (§6.14).
    * Absent for shipped (static) positions and the general form.
    */
-  positionId?: number | null;
+  positionId?: string | null;
   departmentName?: string;
 };
 

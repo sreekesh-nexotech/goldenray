@@ -18,7 +18,7 @@ import ImagePickerModal from "./ImagePickerModal";
 /** Social share image state for records that support one (pages). */
 export interface OgImageControl {
   url: string | null;
-  onPick: (asset: { id: number; url: string | null }) => void;
+  onPick: (asset: { uid: string; url: string | null }) => void;
   onClear: () => void;
 }
 
@@ -154,7 +154,7 @@ export function SeoPanel({
               onClose={() => setPickingImage(false)}
               onPick={(asset) => {
                 setPickingImage(false);
-                ogImage.onPick({ id: asset.id, url: asset.cdn_url || asset.url });
+                ogImage.onPick({ uid: asset.uid, url: asset.url });
               }}
             />
           </div>

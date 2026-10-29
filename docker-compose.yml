@@ -109,6 +109,8 @@ services:
       args:
         # Browser-reachable backend URL, baked into the client bundle at build.
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+        # New platform backend's public website API (/api/public/v1/).
+        NEXT_PUBLIC_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_PUBLIC_API_BASE_URL:-http://localhost:8000/api/public/v1/}
         # Content Studio admin API (blog CMS on host port 8009), also called
         # directly from the browser. Point at the deployed CMS in production
         # (e.g. https://blog.flarize.com/admin-api/).
@@ -129,9 +131,9 @@ services:
     # Host port 3003 — 3000/3001 are used by other projects on this shared VM.
     ports:
       - "3003:3000"
-    depends_on:
-      - backend
-      - cms
+    # depends_on:
+    #   - backend
+    #   - cms
 
 volumes:
   pgdata:

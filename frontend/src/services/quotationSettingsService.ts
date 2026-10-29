@@ -1,58 +1,58 @@
 // src/services/quotationSettingsService.ts
 //
 // The summary-page offer banner for the quotation document, managed by admin
-// in the Django BOM app (Django admin → Quotation Settings, or PATCH
-// /bom/api/quotation-settings/). The GET is public. EMI figures come from the
+// in the platform backend and served in the public company profile
+// (GET /api/public/v1/company/ → quotation.offer). The GET is public. EMI figures come from the
 // EMI calculator instead — see quotationEmiService.ts.
-import { API_BASE_URL } from "@/config";
+import { PUBLIC_API_BASE_URL } from "@/config";
 import {
   DEFAULT_QUOTATION_SETTINGS,
   type QuotationDocumentSettings,
 } from "@/components/QuotationV2/financing";
 
-// The BOM app is mounted at `/bom/` on the backend, not under `/api/`.
-const BOM_BASE_URL = API_BASE_URL.replace(/api\/?$/, "bom/");
 // Capped so a request that hangs (e.g. the PDF renderer inside the server
 // reaching the public API) falls back to defaults instead of stalling the page.
 const TIMEOUT_MS = 8000;
-const ENDPOINT = `${BOM_BASE_URL}api/quotation-settings/`;
+const ENDPOINT = `${PUBLIC_API_BASE_URL}company/`;
 
-interface QuotationSettingsApi {
-  offer_enabled: boolean;
-  offer_title: string;
-  offer_description: string;
-  offer_details: string;
-  offer_title_ml: string;
-  offer_description_ml: string;
-  offer_details_ml: string;
-  offer_valid_from: string | null;
-  offer_valid_until: string | null;
+interface QuotationOfferApi {
+  enabled: boolean;
+  title: string;
+  description: string;
+  details: string;
+  title_ml: string;
+  description_ml: string;
+  details_ml: string;
+  valid_from: string | null;
+  valid_until: string | null;
   /** The uploaded image if there is one, else the configured URL. */
-  offer_image_src: string;
+  image_src: string;
 }
 
 /**
  * The admin's settings, or the built-in defaults if the backend cannot be
- * reached — a quotation must still render when the BOM service is down.
+ * reached — a quotation must still render when the backend is down.
  */
 export async function getQuotationSettings(): Promise<QuotationDocumentSettings> {
   try {
     const res = await fetch(ENDPOINT, { cache: "no-store", signal: AbortSignal.timeout(TIMEOUT_MS) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const s: QuotationSettingsApi = await res.json();
+    const company: { quotation?: { offer?: QuotationOfferApi } } = await res.json();
+    const o = company.quotation?.offer;
+    if (!o) throw new Error("company profile has no quotation offer");
     const d = DEFAULT_QUOTATION_SETTINGS;
     return {
       offer: {
-        enabled: Boolean(s.offer_enabled),
-        title: s.offer_title ?? "",
-        description: s.offer_description ?? "",
-        details: s.offer_details ?? "",
-        titleMl: s.offer_title_ml ?? "",
-        descriptionMl: s.offer_description_ml ?? "",
-        detailsMl: s.offer_details_ml ?? "",
-        validFrom: s.offer_valid_from ?? "",
-        validUntil: s.offer_valid_until ?? "",
-        imageUrl: s.offer_image_src || d.offer.imageUrl,
+        enabled: Boolean(o.enabled),
+        title: o.title ?? "",
+        description: o.description ?? "",
+        details: o.details ?? "",
+        titleMl: o.title_ml ?? "",
+        descriptionMl: o.description_ml ?? "",
+        detailsMl: o.details_ml ?? "",
+        validFrom: o.valid_from ?? "",
+        validUntil: o.valid_until ?? "",
+        imageUrl: o.image_src || d.offer.imageUrl,
       },
     };
   } catch (error) {

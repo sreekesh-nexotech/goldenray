@@ -9,7 +9,7 @@ import { GhostButton, GoldButton } from "../shared/primitives";
 import { studioColors } from "../shared/format";
 import type { EMISettings } from "@/services/emiCalculator";
 import { updateSettings } from "@/services/emiConfigService";
-import { FieldGrid, NumberField, PanelIntro, TextField, str } from "./shared";
+import { FieldGrid, NumberField, PanelIntro, TextField, str } from "../shared/rows";
 
 /** "5000, 10000, 20000" → [5000, 10000, 20000]; junk and blanks are dropped. */
 function parseAmounts(text: string): number[] {

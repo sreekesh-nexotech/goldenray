@@ -56,7 +56,11 @@ function startOfToday(): number {
 type Row = ContactEnquiry & { ts: number };
 
 export default function EnquiriesScreen() {
-  const { tips, toast } = useStudio();
+  const { tips, toast, scope } = useStudio();
+  // `leads: owned` makes the backend filter the list in get_queryset(), so an
+  // empty table can mean "none of these are yours" rather than "none exist".
+  const leadScope = scope("leads");
+  const scoped = leadScope !== "all";
 
   const [rows, setRows] = useState<Row[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -346,13 +350,13 @@ export default function EnquiriesScreen() {
                   const valid = !Number.isNaN(r.ts);
                   const d = valid ? new Date(r.ts) : null;
                   return (
-                    <tr key={r.id} className="hover:bg-[rgba(248,242,225,0.5)]">
+                    <tr key={r.uid} className="hover:bg-[rgba(248,242,225,0.5)]">
                       <td style={cellStyle}>
                         <div style={{ fontWeight: 600, color: studioColors.tealDeep, fontSize: 13.5 }}>
                           {r.name?.trim() || "—"}
                         </div>
                         <div style={{ fontFamily: studioFonts.mono, fontSize: 11, color: studioColors.faintGray, marginTop: 2 }}>
-                          #{r.id}
+                          {r.number}
                         </div>
                       </td>
                       <td style={cellStyle}>
@@ -396,12 +400,18 @@ export default function EnquiriesScreen() {
                 <path d="m3 7 9 6 9-6" />
               </svg>
               <div style={{ fontSize: 14, fontWeight: 600, color: studioColors.tealDeep, marginTop: 8 }}>
-                {search || sourceFilter !== "all" ? "No enquiries match" : "No enquiries yet"}
+                {search || sourceFilter !== "all"
+                  ? "No enquiries match"
+                  : scoped
+                    ? "No enquiries assigned to you"
+                    : "No enquiries yet"}
               </div>
               <div style={{ fontSize: 12.5, color: studioColors.bodyGray, marginTop: 3 }}>
                 {search || sourceFilter !== "all"
                   ? "Try a different search or form filter."
-                  : "New submissions from the site’s contact forms will appear here."}
+                  : scoped
+                    ? "Your role only shows enquiries you own — others exist but are not visible to you."
+                    : "New submissions from the site’s contact forms will appear here."}
               </div>
             </div>
           )}

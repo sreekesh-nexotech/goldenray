@@ -4,8 +4,18 @@ import { USE_MOCK_DATA } from '@/config';
 import { BasicCalculatorData, AdvancedCalculatorData, SolarBasicPayload, SolarCalculatorApiResponse, SolarAdvancedPayload, AdvancedCalculatorApiResponse } from '@/types/types';
 
 // Endpoints
-const SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar-new/';
-const ADVANCED_SOLAR_CALCULATOR_ENDPOINT = 'calculate-solar-advanced/';
+const SOLAR_CALCULATOR_ENDPOINT = 'calculators/basic-v2/';
+const ADVANCED_SOLAR_CALCULATOR_ENDPOINT = 'calculators/advanced/';
+
+// The new backend answers an unknown pincode with 404 `pincode_not_found`. The
+// calculator screens match on this message, so keep it stable.
+function normalizeCalculatorError(error: unknown): unknown {
+  const code = (error as { errorData?: { code?: string } } | null)?.errorData?.code;
+  if (code === 'pincode_not_found') {
+    return Object.assign(new Error('Pincode not found in database'), error as object);
+  }
+  return error;
+}
 
 // Basic calculator API call
 export async function getSolarAdvantageData(
@@ -21,7 +31,7 @@ export async function getSolarAdvantageData(
 
   try {
     // console.log('🔵 Calling API:', SOLAR_CALCULATOR_ENDPOINT, 'with payload:', payload);
-    const response = await apiCall<SolarCalculatorApiResponse>(SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
+    const response = await apiCall<SolarCalculatorApiResponse>(SOLAR_CALCULATOR_ENDPOINT, "POST", payload, { publicApi: true });
 
     // console.log('🟢 API Response received:', response);
     if (!response) {
@@ -70,7 +80,7 @@ export async function getSolarAdvantageData(
     return transformedData;
   } catch (error) {
     console.error("Error in getSolarAdvantageData:", error, "Payload:", payload);
-    throw error;
+    throw normalizeCalculatorError(error);
   }
 }
 
@@ -88,7 +98,7 @@ export async function getSolarAdvancedData(
 
   try {
     // console.log('🔵 [Advanced] Calling API:', ADVANCED_SOLAR_CALCULATOR_ENDPOINT, 'with payload:', payload);
-    const response = await apiCall<AdvancedCalculatorApiResponse>(ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "POST", payload);
+    const response = await apiCall<AdvancedCalculatorApiResponse>(ADVANCED_SOLAR_CALCULATOR_ENDPOINT, "POST", payload, { publicApi: true });
 
     // console.log('🟢 [Advanced] API Response received:', response);
     if (!response) {
@@ -154,6 +164,6 @@ export async function getSolarAdvancedData(
     return advancedTransformedData;
   } catch (error) {
     console.error("Error in getSolarAdvancedData:", error, "Payload:", payload);
-    throw error;
+    throw normalizeCalculatorError(error);
   }
 }

@@ -33,7 +33,7 @@ interface ResolvedPosition {
   isHiring: boolean;
   detail: JobDetailData;
   /** CMS id + department snapshot for the application form; null when shipped data. */
-  positionId: number | null;
+  positionId: string | null;
   seo: { title: string; description: string; keywords?: string[]; canonical?: string; noindex?: boolean };
   /** JobPosting JSON-LD from the CMS, when it built one. */
   schema: Record<string, unknown> | null;
@@ -56,7 +56,7 @@ function fromCms(p: PublicJobDetail, schema: Record<string, unknown> | null): Re
     department: p.department ?? "General",
     location: p.location,
     isHiring: p.is_open,
-    positionId: p.id,
+    positionId: p.uid,
     detail: {
       title: p.title,
       overview: overview.length ? overview : [p.description],

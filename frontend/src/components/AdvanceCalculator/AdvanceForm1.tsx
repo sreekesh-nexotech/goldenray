@@ -10,7 +10,7 @@ import bimonthlyIcon from "../../../public/bimonthly.svg";
 import { apiCall } from "@/services/apiService";
 
 interface RoomSize {
-  id: number;
+  uid: string;
   bhk_type: number;
   size: number;
   units: number;
@@ -39,8 +39,13 @@ export default function BasicInformationStep({
     const fetchRoomSizes = async () => {
       try {
         setLoadingSizes(true);
-        const data = await apiCall<RoomSize[]>("room-sizes/", "GET");
-        setRoomSizes(data);
+        const data = await apiCall<{ results: RoomSize[] }>(
+          "reference/room-sizes/?page_size=200",
+          "GET",
+          null,
+          { publicApi: true }
+        );
+        setRoomSizes(data.results);
       } catch (err) {
         console.error("Error fetching room sizes:", err);
       } finally {
@@ -65,8 +70,7 @@ export default function BasicInformationStep({
   };
 
   const handleRoomSizeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedId = Number(e.target.value);
-    const selectedRoom = roomSizes.find((r) => r.id === selectedId);
+    const selectedRoom = roomSizes.find((r) => r.uid === e.target.value);
     if (selectedRoom) {
       setFormData((prev) => ({
         ...prev,
@@ -235,7 +239,7 @@ export default function BasicInformationStep({
               value={
                 roomSizes.find(
                   (r) => r.size.toString() === formData.home_size?.toString()
-                )?.id || ""
+                )?.uid || ""
               }
               className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F7BA41]"
               disabled={loadingSizes}
@@ -244,7 +248,7 @@ export default function BasicInformationStep({
                 {loadingSizes ? "Loading..." : "Select Home Size (BHK)"}
               </option>
               {roomSizes.map((room) => (
-                <option key={room.id} value={room.id}>
+                <option key={room.uid} value={room.uid}>
                   {room.bhk_type} BHK — {room.size} sq.ft
                 </option>
               ))}

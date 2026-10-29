@@ -1,13 +1,19 @@
 // src/middleware.ts
 //
 // Auth gate for the Content Studio. Every /studio route except the sign-in
-// screen requires a session cookie (set by studioService on login); visitors
+// screen requires a session cookie (set by the BFF's login handler); visitors
 // without one are bounced to /studio/login with the original destination in
 // ?next=. The cookie's presence only gates routing — token validity is
-// enforced by the admin API on every call.
+// enforced by the staff API on every call.
+//
+// The cookie is HttpOnly, so only the middleware and the /fe-api/studio route
+// handlers can read it; nothing in the browser can.
 
 import { NextResponse, type NextRequest } from "next/server";
-import { STUDIO_REFRESH_COOKIE } from "@/services/studioService";
+
+// Inlined rather than imported from the route handlers: middleware runs on the
+// edge runtime and must not pull in `next/headers` or the staff-API client.
+const STUDIO_REFRESH_COOKIE = "flz_studio_rt";
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;

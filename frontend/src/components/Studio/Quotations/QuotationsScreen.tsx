@@ -147,7 +147,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
 export default function QuotationsScreen() {
   const { me, toast } = useStudio();
   const defaultSalesPerson = useMemo(
-    () => [me?.first_name, me?.last_name].filter(Boolean).join(" ") || me?.username || "",
+    () => me?.user.full_name || me?.user.email || "",
     [me],
   );
 

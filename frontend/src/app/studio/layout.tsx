@@ -4,10 +4,10 @@
 // it as --font-inter, and marks the whole surface noindex (admin app).
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 
-const inter = Inter({
-  subsets: ["latin"],
+const inter = localFont({
+  src: "../../../public/fonts/inter/Inter-Variable.woff2",
   variable: "--font-inter",
   display: "swap",
 });
@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function StudioRootLayout({ children }: { children: React.ReactNode }) {
+export default function StudioRootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <div className={inter.variable}>{children}</div>;
 }

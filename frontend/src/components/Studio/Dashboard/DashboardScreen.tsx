@@ -98,12 +98,12 @@ export default function DashboardScreen() {
       getCareerApplications()
         .then((rows) => {
           setTotalApps(rows.length);
-          setNewApps(rows.filter((r) => r.status === "new").length);
+          setNewApps(rows.filter((r) => r.status === "NEW").length);
           setCrossActivity((prev) => [
             ...prev.filter((a) => a.kind !== "application"),
             ...rows.slice(0, 5).map<ActivityLine>((r) => ({
               kind: "application",
-              label: r.full_name,
+              label: r.name,
               detail: `Application received · ${r.display_position}`,
               href: "/studio/careers/applications",
               actor: null,

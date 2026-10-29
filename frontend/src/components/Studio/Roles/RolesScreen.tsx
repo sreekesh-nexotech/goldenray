@@ -5,98 +5,43 @@
 // Roles & access — the internal user list backed by auth/users/ (admin only:
 // everyone else gets a 403 and sees the lock banner), a "Preview as" segmented
 // control that drives capability gating across the whole studio, and the
-// read-only role permission matrix (presentational copy of the server rules).
+// team list backed by the platform's users/ and roles/ endpoints.
 
 import { useEffect, useState } from "react";
-import type { Role } from "@/types/studio";
-import { useStudio, useCapabilities } from "../shared/StudioContext";
+import { useStudio } from "../shared/StudioContext";
 import { PageHeader, TipBanner, StatusPill, SelectField, GhostButton, thStyle, tdStyle } from "../shared/primitives";
 import { ConfirmDialog } from "../shared/overlays";
 import { initialsOf, studioColors } from "../shared/format";
+import EditUserModal from "./EditUserModal";
 import { InviteModal, type NewUserPayload } from "./InviteModal";
 import {
   getUsers,
   createUser,
   patchUser,
-  deleteUser,
+  deactivateUser,
+  reactivateUser,
+  forceUserReset,
   isAuthError,
   StudioApiError,
   type StudioUser,
-  type StudioApiRole,
 } from "@/services/studioService";
 import { getRoles, type StudioRole } from "@/services/adminService";
 
 // The design uses tighter row paddings than the shared tdStyle (12px): member
 // rows are 11px, permission-matrix rows are 13px.
 const memberTd = { ...tdStyle, padding: "11px 16px" } as const;
-const matrixTd = { ...tdStyle, padding: "13px 16px" } as const;
 
 /* -------------------------------------------------------------------------- */
-/*  Static presentational copy (mirrors the server's role rules)               */
+/*  Row helpers                                                                */
 /* -------------------------------------------------------------------------- */
-
-const roleOptions: Role[] = ["Admin", "Editor", "Author"];
-
-
-const apiRoleLabel: Record<StudioApiRole, string> = { admin: "Admin", editor: "Editor", author: "Author" };
-
-const rolePreviewNotes: Record<Role, string> = {
-  Admin: "Admins manage structure, publish and delete.",
-  Editor: "Editors write, publish and delete — but not structure.",
-  Author: "Authors write drafts; an editor publishes them.",
-};
-
-const rolePermissions: { role: Role; sub: string; cells: boolean[] }[] = [
-  { role: "Admin", sub: "Full control — structure, content, people", cells: [true, true, true, true] },
-  { role: "Editor", sub: "Content & publishing, no structure", cells: [false, true, true, true] },
-  { role: "Author", sub: "Writes drafts; an editor publishes", cells: [false, true, false, false] },
-];
 
 /** Display name for a user row. */
 function displayName(u: StudioUser): string {
-  return [u.first_name, u.last_name].filter(Boolean).join(" ") || u.username;
+  return u.full_name || [u.first_name, u.last_name].filter(Boolean).join(" ") || u.email;
 }
 
 const activePill = { label: "Active", bg: "#C3E0BD", ink: "#0A6B31" };
 const inactivePill = { label: "Deactivated", bg: "#E5E7EB", ink: "#5B5B5B" };
-
-/* -------------------------------------------------------------------------- */
-/*  Preview-as segmented control                                               */
-/* -------------------------------------------------------------------------- */
-
-function PreviewSegment() {
-  const { role, setRole } = useStudio();
-  return (
-    <div style={{ display: "flex", gap: 4, background: "rgba(248,242,225,.95)", padding: 4, borderRadius: 12 }}>
-      {roleOptions.map((r) => {
-        const active = role === r;
-        return (
-          <button
-            key={r}
-            type="button"
-            onClick={() => setRole(r)}
-            style={{
-              height: 30,
-              padding: "0 15px",
-              borderRadius: 9,
-              border: "none",
-              cursor: "pointer",
-              fontFamily: "var(--font-switzer)",
-              fontSize: 12.5,
-              fontWeight: 600,
-              transition: "background .12s,color .12s",
-              background: active ? "#ffffff" : "transparent",
-              color: active ? studioColors.tealDeep : studioColors.bodyGray,
-              boxShadow: active ? "0 1px 2px rgba(10,13,18,.08)" : "none",
-            }}
-          >
-            {r}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
 
 /* -------------------------------------------------------------------------- */
 /*  Member row                                                                  */
@@ -105,21 +50,35 @@ function PreviewSegment() {
 function MemberRow({
   user,
   self,
-  editable,
+  canChangeRole,
+  canSetActive,
+  canForceReset,
+  canEditDetails,
   busy,
   roles,
   onRoleChange,
+  onEdit,
   onDeactivate,
   onReactivate,
+  onForceReset,
 }: {
   user: StudioUser;
   self: boolean;
-  editable: boolean;
+  /** `users.edit` — assigning a role. */
+  canChangeRole: boolean;
+  /** `users.archive` — deactivate / reactivate are actions, not a PATCH. */
+  canSetActive: boolean;
+  /** `users.manage` — force-reset invalidates the user's password. */
+  canForceReset: boolean;
+  /** `users.edit` — correcting name, phone, title (e-mail additionally needs manage). */
+  canEditDetails: boolean;
   busy: boolean;
   /** Phase 1 roles (§6.17); the select assigns one of these. */
   roles: StudioRole[];
-  onRoleChange: (accessRoleId: number) => void;
+  onRoleChange: (roleUid: string) => void;
+  onEdit: () => void;
   onDeactivate: () => void;
+  onForceReset: () => void;
   onReactivate: () => void;
 }) {
   const name = displayName(user);
@@ -161,22 +120,22 @@ function MemberRow({
                 </span>
               )}
             </div>
-            <div style={{ fontSize: 11.5, color: studioColors.faintGray }}>{user.email || user.username}</div>
+            <div style={{ fontSize: 11.5, color: studioColors.faintGray }}>{user.email}</div>
           </div>
         </div>
       </td>
       <td style={memberTd}>
-        {editable ? (
+        {canChangeRole ? (
           <div style={{ maxWidth: 150 }}>
             <SelectField
-              value={user.access_role ? String(user.access_role) : ""}
+              value={user.role?.uid ?? ""}
               ariaLabel={`Role for ${name}`}
-              onChange={(v) => v && onRoleChange(Number(v))}
+              onChange={(v) => v && onRoleChange(v)}
               style={{ fontSize: 13, padding: "8px 30px 8px 11px", borderRadius: 10 }}
             >
-              {!user.access_role && <option value="">Legacy: {apiRoleLabel[user.role]}</option>}
+              {!user.role && <option value="">No role</option>}
               {roles.map((r) => (
-                <option key={r.id} value={r.id}>
+                <option key={r.uid} value={r.uid}>
                   {r.name}
                 </option>
               ))}
@@ -184,26 +143,40 @@ function MemberRow({
           </div>
         ) : (
           <span style={{ fontSize: 13, color: studioColors.bodyGray, fontWeight: 500 }}>
-            {user.access_role_name ?? `Legacy: ${apiRoleLabel[user.role]}`}
+            {user.role?.name ?? "No role"}
           </span>
         )}
       </td>
       <td style={memberTd}>
         <StatusPill pill={user.is_active ? activePill : inactivePill} />
+        {user.must_reset_password && (
+          <div style={{ fontSize: 11, color: studioColors.faintGray, marginTop: 3 }}>Password reset pending</div>
+        )}
       </td>
       <td style={memberTd}>
         <div className="flex justify-end" style={{ gap: 6 }}>
-          {editable && !user.is_active && (
+          {canSetActive && !user.is_active && (
             <GhostButton onClick={onReactivate} disabled={busy} style={{ height: 30, padding: "0 11px", fontSize: 12, borderRadius: 9 }}>
               Reactivate
             </GhostButton>
           )}
-          {editable && user.is_active && (
+          {canEditDetails && (
+            <GhostButton onClick={onEdit} disabled={busy} style={{ height: 30, padding: "0 11px", fontSize: 12, borderRadius: 9 }}>
+              Edit
+            </GhostButton>
+          )}
+          {canForceReset && user.is_active && (
+            <GhostButton onClick={onForceReset} disabled={busy} style={{ height: 30, padding: "0 11px", fontSize: 12, borderRadius: 9 }}>
+              Reset password
+            </GhostButton>
+          )}
+          {canSetActive && user.is_active && (
             <button
               type="button"
               onClick={onDeactivate}
               disabled={busy}
               aria-label={`Deactivate ${name}`}
+              title="Suspends the account. They cannot sign in, and can be reactivated."
               className="inline-flex items-center transition-colors hover:bg-[rgba(220,38,38,0.08)]"
               style={{
                 height: 30,
@@ -218,7 +191,7 @@ function MemberRow({
                 cursor: busy ? "default" : "pointer",
               }}
             >
-              Remove
+              Deactivate
             </button>
           )}
         </div>
@@ -231,41 +204,30 @@ function MemberRow({
 /*  Permission matrix cell                                                      */
 /* -------------------------------------------------------------------------- */
 
-function PermCell({ yes }: { yes: boolean }) {
-  return (
-    <td style={matrixTd}>
-      {yes ? (
-        <span
-          className="inline-grid place-items-center"
-          style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(195,223,189,.6)" }}
-        >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0A6B31" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m5 12.5 4.5 4.5L19 7.5" />
-          </svg>
-        </span>
-      ) : (
-        <span style={{ color: studioColors.hairline }}>&#8212;</span>
-      )}
-    </td>
-  );
-}
-
 /* -------------------------------------------------------------------------- */
 /*  Screen                                                                      */
 /* -------------------------------------------------------------------------- */
 
 export default function RolesScreen() {
-  const { role, tips, toast, me } = useStudio();
-  const { isAdmin } = useCapabilities();
+  const { tips, toast, me, can } = useStudio();
+  // accounts/views/users.py maps these three ways; `isAdmin` hid the difference.
+  const canInvite = can("users", "create");
+  const canChangeRole = can("users", "edit");
+  const canSetActive = can("users", "archive");
+  const canForceReset = can("users", "manage");
+  const canSeeUsers = can("users", "view");
 
   const [users, setUsers] = useState<StudioUser[] | null>(null);
   const [roles, setRoles] = useState<StudioRole[]>([]);
   const [forbidden, setForbidden] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
-  const [busyId, setBusyId] = useState<number | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
   const [confirmUser, setConfirmUser] = useState<StudioUser | null>(null);
   const [deactivating, setDeactivating] = useState(false);
+  const [confirmReset, setConfirmReset] = useState<StudioUser | null>(null);
+  const [editing, setEditing] = useState<StudioUser | null>(null);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -281,20 +243,37 @@ export default function RolesScreen() {
     };
   }, []);
 
-  const replaceUser = (u: StudioUser) => setUsers((prev) => prev?.map((x) => (x.id === u.id ? u : x)) ?? prev);
+  /** Force a password reset: the user's current password stops working. */
+  const doForceReset = async () => {
+    if (!confirmReset) return;
+    setResetting(true);
+    try {
+      const updated = await forceUserReset(confirmReset.uid, confirmReset.version);
+      replaceUser(updated);
+      toast(`${displayName(confirmReset)} must set a new password`);
+      setConfirmReset(null);
+    } catch (err) {
+      toast(err instanceof StudioApiError ? `Reset failed: ${err.message}` : "Reset failed", "error");
+    } finally {
+      setResetting(false);
+    }
+  };
+
+  const replaceUser = (u: StudioUser) => setUsers((prev) => prev?.map((x) => (x.uid === u.uid ? u : x)) ?? prev);
 
   useEffect(() => {
     getRoles().then((p) => setRoles(p.results)).catch(() => {});
   }, []);
 
-  const changeRole = async (u: StudioUser, accessRoleId: number) => {
-    setBusyId(u.id);
+  const changeRole = async (u: StudioUser, roleUid: string) => {
+    setBusyId(u.uid);
     try {
-      // The server derives the legacy `role` claim from the granted role, so
-      // the token the other service reads stays in step automatically.
-      const updated = await patchUser(u.id, { access_role: accessRoleId });
+      // Permissions come from the role, so changing it is the whole change;
+      // `expected_version` makes a concurrent edit a 409 rather than a silent
+      // overwrite.
+      const updated = await patchUser(u.uid, { role: roleUid, expected_version: u.version });
       replaceUser(updated);
-      toast(`Role updated to ${updated.access_role_name ?? apiRoleLabel[updated.role]}`);
+      toast(`Role updated to ${updated.role?.name ?? "no role"}`);
     } catch (err) {
       toast(err instanceof StudioApiError ? `Update failed: ${err.message}` : "Update failed", "error");
     } finally {
@@ -306,8 +285,8 @@ export default function RolesScreen() {
     if (!confirmUser) return;
     setDeactivating(true);
     try {
-      await deleteUser(confirmUser.id);
-      replaceUser({ ...confirmUser, is_active: false });
+      const updated = await deactivateUser(confirmUser.uid, confirmUser.version);
+      replaceUser(updated);
       toast(`${displayName(confirmUser)} deactivated`);
       setConfirmUser(null);
     } catch (err) {
@@ -318,9 +297,10 @@ export default function RolesScreen() {
   };
 
   const reactivate = async (u: StudioUser) => {
-    setBusyId(u.id);
+    setBusyId(u.uid);
     try {
-      const updated = await patchUser(u.id, { is_active: true });
+      // `is_active` is read-only on the user resource; reactivating is an action.
+      const updated = await reactivateUser(u.uid, u.version);
       replaceUser(updated);
       toast(`${displayName(u)} reactivated`);
     } catch (err) {
@@ -334,11 +314,17 @@ export default function RolesScreen() {
     try {
       const created = await createUser(payload);
       setUsers((prev) => [...(prev ?? []), created]);
-      toast(`${created.username} added`);
+      // Only the no-password branch sends mail, so don't claim an invite that never went out.
+      toast(payload.password ? `${created.email} created` : `${created.email} invited`);
       setInviteOpen(false);
     } catch (err) {
-      // Re-throw with the API's message so the modal shows it inline.
-      throw new Error(err instanceof StudioApiError ? err.message : "Couldn’t create the user");
+      // Re-throw with the API's message so the modal shows it inline. A rejected
+      // password comes back as a field error, which carries the actual rule
+      // (too common, too similar to the e-mail) that the generic message omits.
+      if (err instanceof StudioApiError) {
+        throw new Error(err.fieldError("password") ?? err.errors?.[0] ?? err.message);
+      }
+      throw new Error("Couldn’t create the user");
     }
   };
 
@@ -364,7 +350,7 @@ export default function RolesScreen() {
             <span style={{ fontSize: 14, fontWeight: 600, color: studioColors.tealDeep }}>Team members</span>
             {users !== null && <span style={{ fontSize: 12, color: studioColors.faintGray }}> &#183; {memberCount}</span>}
           </div>
-          {isAdmin && !forbidden && (
+          {canInvite && !forbidden && (
             <button
               type="button"
               onClick={() => setInviteOpen(true)}
@@ -394,9 +380,8 @@ export default function RolesScreen() {
           )}
         </div>
 
-        {/* Preview-as lock: real admin previewing a lesser role sees the
-            view-only state the lesser role would get. */}
-        {!forbidden && !isAdmin && (
+        {/* Read-only state: the user may view the team but not change it. */}
+        {!forbidden && !canSeeUsers && (
           <div
             className="flex items-center"
             style={{
@@ -413,7 +398,8 @@ export default function RolesScreen() {
               <rect x="4.5" y="10.5" width="15" height="10" rx="2" />
               <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
             </svg>
-            Only Admins can add teammates or change roles — this list is view-only for {role}s.
+            Your role can view the team but not change it — adding teammates and changing roles
+            needs the users module.
           </div>
         )}
 
@@ -433,7 +419,7 @@ export default function RolesScreen() {
               <rect x="4.5" y="10.5" width="15" height="10" rx="2" />
               <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
             </svg>
-            Only Admins can view and manage the team — ask an Admin if you need access changed.
+            Viewing the team needs the users module — ask someone who manages access.
           </div>
         ) : loadError ? (
           <div role="alert" style={{ padding: "16px", fontSize: 13, color: studioColors.danger }}>
@@ -454,17 +440,22 @@ export default function RolesScreen() {
               </thead>
               <tbody>
                 {users.map((u) => {
-                  const self = me?.id === u.id;
+                  const self = me?.user.uid === u.uid;
                   return (
                     <MemberRow
-                      key={u.id}
+                      key={u.uid}
                       user={u}
                       self={self}
-                      editable={isAdmin && !self}
-                      busy={busyId === u.id}
+                      canChangeRole={canChangeRole && !self}
+                      canSetActive={canSetActive && !self}
+                      busy={busyId === u.uid}
                       roles={roles}
+                      canEditDetails={canChangeRole}
                       onRoleChange={(v) => changeRole(u, v)}
+                      onEdit={() => setEditing(u)}
+                      canForceReset={canForceReset && !self}
                       onDeactivate={() => setConfirmUser(u)}
+                      onForceReset={() => setConfirmReset(u)}
                       onReactivate={() => reactivate(u)}
                     />
                   );
@@ -475,45 +466,22 @@ export default function RolesScreen() {
         )}
       </div>
 
-      {/* Preview-as bar */}
-      <div
-        className="flex flex-wrap items-center"
-        style={{ background: "#ffffff", borderRadius: 16, boxShadow: `inset 0 0 0 1px ${studioColors.ring}`, padding: "13px 16px", marginBottom: 14, gap: 14 }}
+      <ConfirmDialog
+        open={confirmReset !== null}
+        title="Force a password reset?"
+        busy={resetting}
+        busyLabel="Resetting…"
+        confirmLabel="Reset password"
+        onCancel={() => setConfirmReset(null)}
+        onConfirm={() => void doForceReset()}
       >
-        <span style={{ fontSize: 13, fontWeight: 600, color: studioColors.tealDeep }}>Preview the CMS as</span>
-        <PreviewSegment />
-        <span style={{ fontSize: 12, color: studioColors.bodyGray }}>{rolePreviewNotes[role]}</span>
-      </div>
-
-      {/* Permission matrix */}
-      <div style={{ background: "#ffffff", borderRadius: 16, boxShadow: `inset 0 0 0 1px ${studioColors.ring}`, overflow: "hidden" }}>
-        <div className="overflow-x-auto">
-          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 620 }}>
-            <thead>
-              <tr>
-                <th style={thStyle}>Role</th>
-                <th style={thStyle}>Manage structure</th>
-                <th style={thStyle}>Author entries</th>
-                <th style={thStyle}>Publish</th>
-                <th style={thStyle}>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rolePermissions.map((r) => (
-                <tr key={r.role}>
-                  <td style={matrixTd}>
-                    <div style={{ fontWeight: 600, color: studioColors.tealDeep, fontSize: 13.5 }}>{r.role}</div>
-                    <div style={{ fontSize: 11.5, color: studioColors.faintGray, marginTop: 1 }}>{r.sub}</div>
-                  </td>
-                  {r.cells.map((c, i) => (
-                    <PermCell key={i} yes={c} />
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+        {confirmReset && (
+          <>
+            <b style={{ color: studioColors.tealDeep }}>{displayName(confirmReset)}</b> will be signed out and
+            their current password will stop working. They set a new one from the e-mail they receive.
+          </>
+        )}
+      </ConfirmDialog>
 
       <ConfirmDialog
         open={confirmUser !== null}
@@ -532,6 +500,20 @@ export default function RolesScreen() {
           </>
         )}
       </ConfirmDialog>
+
+      {editing && (
+        <EditUserModal
+          user={editing}
+          // The API refuses an e-mail change without `users.manage`, so the field
+          // is read-only rather than offering an edit that would be rejected.
+          canChangeEmail={canForceReset}
+          onSaved={(u) => {
+            replaceUser(u);
+            toast(`${displayName(u)} updated`);
+          }}
+          onClose={() => setEditing(null)}
+        />
+      )}
 
       <InviteModal
         roles={roles} open={inviteOpen} onClose={() => setInviteOpen(false)} onCreate={handleCreate} />

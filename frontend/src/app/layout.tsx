@@ -1,7 +1,6 @@
 /* src/app/layout.tsx */
 import "@/styles/globals.css";
 
-import { DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import type { Metadata } from "next";
 import Script from "next/script";
@@ -15,13 +14,22 @@ import { isGtmEnabled } from "@/utils/gtm";
 import { GTM_ID, GA_MEASUREMENT_ID } from "@/config";
 
 import JsonLD from "@/components/JsonLD"; 
+import PhoneVerificationHost from "@/components/ui/PhoneVerificationHost";
 import { organizationSchema } from "@/data/jsonld"; 
 
 /* -------------------- Fonts -------------------- */
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const dmSans = localFont({
+  src: [
+    {
+      path: "../../public/fonts/dm-sans/DMSans-Variable.woff2",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/dm-sans/DMSans-Italic-Variable.woff2",
+      style: "italic",
+    },
+  ],
   variable: "--font-dm-sans",
   display: "swap",
 });
@@ -195,6 +203,8 @@ export default function RootLayout({
         </Suspense>
 
         <ConditionalLayout>{children}</ConditionalLayout>
+        {/* One-time-code dialog behind the public lead forms (services/phoneVerification.ts) */}
+        <PhoneVerificationHost />
       </body>
     </html>
   );

@@ -11,7 +11,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useStudio, useCapabilities } from "../shared/StudioContext";
+import { useStudio } from "../shared/StudioContext";
 import { DropdownMenu } from "../shared/overlays";
 import {
   TipBanner,
@@ -30,7 +30,7 @@ import {
 import { statusPill, slugify, studioColors, studioFonts } from "../shared/format";
 import ImagePickerModal, { type PickerAsset } from "./ImagePickerModal";
 import RichTextBlock from "./RichTextBlock";
-import { blocksToHtml, htmlToBlocks } from "./entryBlocks";
+import { blocksToHtml, blocksToText, htmlToBlocks, textToBlocks } from "./entryBlocks";
 import {
   getEntry,
   createEntry,
@@ -56,6 +56,7 @@ import {
   type StudioTag,
   type StudioBadge,
   type StudioMediaAsset,
+  type StudioEntryStatus,
   type EntryWritePayload,
 } from "@/services/studioService";
 import type { BlockNode } from "./entryBlocks";
@@ -81,9 +82,13 @@ const newBlockKey = () => `b_${++blockSeq}`;
 
 export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const router = useRouter();
-  const { tips, toast, config } = useStudio();
-  const { canPublish, role } = useCapabilities();
+  const { tips, toast, config, can } = useStudio();
   const isNew = entryId === "new";
+  const canPublish = can("blogs", "publish");
+  const canCreate = can("blogs", "create");
+  // The editor had no read-only concept at all: save and autosave were ungated.
+  // A new entry needs `blogs.create`; an existing one `blogs.edit`.
+  const canWrite = can("blogs", isNew ? "create" : "edit");
 
   // Reference data.
   const [colls, setColls] = useState<StudioCollection[]>([]);
@@ -98,22 +103,30 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   // Entry identity + form fields.
-  const [id, setId] = useState<number | null>(isNew ? null : Number(entryId));
-  const [documentMeta, setDocumentMeta] = useState<{ status: "draft" | "published"; published_on: string | null; published_at: string | null }>(
-    { status: "draft", published_on: null, published_at: null }
+  const [id, setIdState] = useState<string | null>(isNew ? null : String(entryId));
+  // The id as of now, not as of the render a save was scheduled from: an
+  // auto-save that creates the entry must turn a later save into a PATCH, or a
+  // second POST with the same slug fails and takes Publish down with it.
+  const idRef = useRef<string | null>(id);
+  const setId = (uid: string) => {
+    idRef.current = uid;
+    setIdState(uid);
+  };
+  const [documentMeta, setDocumentMeta] = useState<{ status: StudioEntryStatus; published_on: string | null; published_at: string | null }>(
+    { status: "DRAFT", published_on: null, published_at: null }
   );
-  const [collId, setCollId] = useState<number | null>(null);
-  const [tplId, setTplId] = useState<number | null>(null);
+  const [collId, setCollId] = useState<string | null>(null);
+  const [tplId, setTplId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
-  const [authorId, setAuthorId] = useState<number | null>(null);
-  const [catIds, setCatIds] = useState<number[]>([]);
-  const [tagIds, setTagIds] = useState<number[]>([]);
+  const [authorId, setAuthorId] = useState<string | null>(null);
+  const [catIds, setCatIds] = useState<string[]>([]);
+  const [tagIds, setTagIds] = useState<string[]>([]);
   const [attrs, setAttrs] = useState<Record<string, string>>({});
   const [seo, setSeo] = useState({ mt: "", md: "", cu: "", kw: "" });
   // group_key → ordered media_asset ids.
-  const [images, setImages] = useState<Record<string, number[]>>({});
+  const [images, setImages] = useState<Record<string, string[]>>({});
   const [blocks, setBlocks] = useState<EditorBlock[]>([]);
   // Dedicated Entry fields the delivery API exposes as their own keys.
   const [intro, setIntro] = useState("");
@@ -122,7 +135,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const [insights, setInsights] = useState("");
   const [readTime, setReadTime] = useState("");
   const [publishedOn, setPublishedOn] = useState("");
-  const [badgeIds, setBadgeIds] = useState<number[]>([]);
+  const [badgeIds, setBadgeIds] = useState<string[]>([]);
 
   const [publishing, setPublishing] = useState(false);
   const [autoState, setAutoState] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -162,8 +175,8 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
         setMedia(mediaP.results);
 
         if (isNew) {
-          setCollId(collsP.results[0]?.id ?? null);
-          setTplId(tplsP.results[0]?.id ?? null);
+          setCollId(collsP.results[0]?.uid ?? null);
+          setTplId(tplsP.results[0]?.uid ?? null);
           setBlocks([{ key: newBlockKey(), html: "" }]);
         } else {
           const e = await getEntry(entryId);
@@ -185,10 +198,10 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
 
   /** Map a fetched entry into the editor's working state. */
   const seedFromEntry = (e: StudioEntryDetail) => {
-    setId(e.id);
+    setId(e.uid);
     setDocumentMeta({ status: e.status, published_on: e.published_on, published_at: e.published_at });
-    setCollId(e.collection);
-    setTplId(e.template);
+    setCollId(e.collection.uid);
+    setTplId(e.template?.uid ?? null);
     setTitle(e.title);
     setSlug(e.slug);
     setExcerpt(e.excerpt ?? "");
@@ -198,76 +211,81 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     setInsights(e.insights ?? "");
     setReadTime(e.read_time != null ? String(e.read_time) : "");
     setPublishedOn(e.published_on ? e.published_on.slice(0, 10) : "");
-    setAuthorId(e.author?.id ?? null);
-    setCatIds(e.categories.map((c) => c.id));
-    setTagIds(e.tags.map((t) => t.id));
-    setBadgeIds(e.badges.map((b) => b.id));
-    setAttrs(Object.fromEntries(e.attribute_values.map((av) => [av.slot_key, av.value == null ? "" : String(av.value)])));
+    setAuthorId(e.author?.uid ?? null);
+    setCatIds(e.categories.map((c) => c.uid));
+    setTagIds(e.tags.map((t) => t.uid));
+    setBadgeIds(e.badges.map((b) => b.uid));
+    // A rich-text slot's value is a block list; the textarea edits it as plain text.
+    setAttrs(
+      Object.fromEntries(
+        e.attribute_values.map((av) => [av.slot_key, av.value == null ? "" : Array.isArray(av.value) ? blocksToText(av.value as BlockNode[]) : String(av.value)])
+      )
+    );
     setSeo({
-      mt: e.seo?.meta_title ?? "",
+      mt: e.seo?.seo_title ?? "",
       md: e.seo?.meta_description ?? "",
       cu: e.seo?.canonical_url ?? "",
       kw: e.seo?.keywords ?? "",
     });
     // Group images by group_key, ordered by position.
-    const grouped: Record<string, number[]> = {};
+    const grouped: Record<string, string[]> = {};
     [...e.images]
       .sort((a, b) => a.position - b.position)
       .forEach((im) => {
         if (im.media_asset == null) return;
-        (grouped[im.group_key] ??= []).push(im.media_asset);
+        (grouped[im.group_key] ??= []).push(im.media_asset.uid);
       });
     setImages(grouped);
-    const sortedBlocks = [...e.content_blocks].sort((a, b) => a.order - b.order);
+    const sortedBlocks = [...e.content_blocks].sort((a, b) => a.position - b.position);
     setBlocks(
       sortedBlocks.length
-        ? sortedBlocks.map((b) => ({ key: newBlockKey(), html: blocksToHtml(b.body as never) }))
+        ? sortedBlocks.map((b) => ({ key: newBlockKey(), html: blocksToHtml(b.data as never) }))
         : [{ key: newBlockKey(), html: "" }]
     );
   };
 
   /* ---- derived ----------------------------------------------------------- */
-  const collection = colls.find((c) => c.id === collId) ?? null;
-  const template = templates.find((t) => t.id === tplId) ?? null;
+  const collection = colls.find((c) => c.uid === collId) ?? null;
+  const template = templates.find((t) => t.uid === tplId) ?? null;
   const status = documentMeta.status;
   const pill = statusPill(status);
-  const mediaById = useMemo(() => new Map(media.map((m) => [m.id, m])), [media]);
-  const assetSrc = (assetId?: number) => (assetId != null ? mediaById.get(assetId)?.url ?? "" : "");
+  const mediaById = useMemo(() => new Map(media.map((m) => [m.uid, m])), [media]);
+  const assetSrc = (assetUid?: string) => (assetUid ? mediaById.get(assetUid)?.url ?? "" : "");
 
   const pickerAssets: PickerAsset[] = useMemo(
     () =>
       media.map((m) => ({
-        id: m.id,
+        id: m.uid,
         url: m.url,
-        name: m.file?.split("/").pop() || `asset-${m.id}`,
+        name: m.original_filename?.split("/").pop() || `asset-${m.uid}`,
         width: m.width,
         height: m.height,
-        kb: Math.max(1, Math.round((m.size || 0) / 1024)),
+        kb: Math.max(1, Math.round((m.size_bytes || 0) / 1024)),
       })),
     [media]
   );
 
   const headTitle = title || "Untitled entry";
   const publishLabel = "Publish";
-  const showPublish = canPublish && status !== "published";
-  const canUnpub = canPublish && status === "published";
-  const isLive = status === "published";
+  const showPublish = canPublish && status !== "PUBLISHED";
+  const canUnpub = canPublish && status === "PUBLISHED";
+  const isLive = status === "PUBLISHED";
   const blogPath = config?.blog_path ?? "/blog";
 
   // Attribute slots split into inline (short) and full-width (long/rich) fields.
   const slots = template?.attribute_slots ?? [];
-  const shortSlots = slots.filter((s) => s.type !== "text" && s.type !== "richtext_blocks");
-  const longSlots = slots.filter((s) => s.type === "text" || s.type === "richtext_blocks");
+  const shortSlots = slots.filter((s) => s.type !== "TEXT" && s.type !== "RICHTEXT_BLOCKS");
+  const longSlots = slots.filter((s) => s.type === "TEXT" || s.type === "RICHTEXT_BLOCKS");
 
   /* ---- image group helpers ---- */
   const groupList = (key: string) => images[key] ?? [];
-  const setGroupList = (key: string, list: number[]) => setImages((m) => ({ ...m, [key]: list }));
-  const addToGroup = (groupKey: string, mode: "single" | "repeat", assetId: number) => {
+  const setGroupList = (key: string, list: string[]) => setImages((m) => ({ ...m, [key]: list }));
+  const addToGroup = (groupKey: string, mode: "single" | "repeat", assetId: string) => {
     if (mode === "single") setGroupList(groupKey, [assetId]);
     else setGroupList(groupKey, [...groupList(groupKey), assetId]);
   };
 
-  const pickImage = (assetId: number) => {
+  const pickImage = (assetId: string) => {
     if (!picker) return;
     addToGroup(picker.groupKey, picker.mode, assetId);
     setPicker(null);
@@ -287,7 +305,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       const uploaded: StudioMediaAsset[] = [];
       for (const file of list) {
         try {
-          uploaded.push(await uploadMediaAsset(file, collId != null ? { collection: collId } : undefined));
+          uploaded.push(await uploadMediaAsset(file, collId != null ? { folder: collId } : undefined));
         } catch (err) {
           toast(err instanceof StudioApiError ? `${file.name}: ${err.message}` : `${file.name}: upload failed`, "error");
         }
@@ -295,9 +313,9 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       if (uploaded.length === 0) return;
       setMedia((prev) => [...uploaded, ...prev]);
       if (target.mode === "single") {
-        setGroupList(target.groupKey, [uploaded[0].id]);
+        setGroupList(target.groupKey, [uploaded[0].uid]);
       } else {
-        setGroupList(target.groupKey, [...groupList(target.groupKey), ...uploaded.map((a) => a.id)]);
+        setGroupList(target.groupKey, [...groupList(target.groupKey), ...uploaded.map((a) => a.uid)]);
       }
       toast(uploaded.length === 1 ? "Image uploaded" : `${uploaded.length} images uploaded`);
       setPicker(null);
@@ -314,12 +332,12 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   };
 
   /* ---- taxonomy helpers ---- */
-  const remainingCats = allCategories.filter((c) => !catIds.includes(c.id));
-  const remainingTags = allTags.filter((t) => !tagIds.includes(t.id));
-  const remainingBadges = allBadges.filter((b) => !badgeIds.includes(b.id));
-  const catName = (cid: number) => allCategories.find((c) => c.id === cid)?.name ?? String(cid);
-  const tagName = (tid: number) => allTags.find((t) => t.id === tid)?.name ?? String(tid);
-  const badgeLabel = (bid: number) => allBadges.find((b) => b.id === bid)?.label ?? String(bid);
+  const remainingCats = allCategories.filter((c) => !catIds.includes(c.uid));
+  const remainingTags = allTags.filter((t) => !tagIds.includes(t.uid));
+  const remainingBadges = allBadges.filter((b) => !badgeIds.includes(b.uid));
+  const catName = (cid: string) => allCategories.find((c) => c.uid === cid)?.name ?? cid;
+  const tagName = (tid: string) => allTags.find((t) => t.uid === tid)?.name ?? tid;
+  const badgeLabel = (bid: string) => allBadges.find((b) => b.uid === bid)?.name ?? bid;
 
   const addTag = async () => {
     const name = tagInput.trim();
@@ -328,7 +346,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     if (!name) return;
     const existing = allTags.find((t) => t.name.toLowerCase() === name.toLowerCase());
     if (existing) {
-      if (!tagIds.includes(existing.id)) setTagIds((x) => [...x, existing.id]);
+      if (!tagIds.includes(existing.uid)) setTagIds((x) => [...x, existing.uid]);
       return;
     }
     // Create the tag on the fly, then attach it.
@@ -336,7 +354,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       const { createTag } = await import("@/services/studioService");
       const created = await createTag({ name });
       setAllTags((prev) => [...prev, created]);
-      setTagIds((x) => [...x, created.id]);
+      setTagIds((x) => [...x, created.uid]);
     } catch (err) {
       toast(err instanceof StudioApiError ? err.message : "Couldn’t add the tag", "error");
     }
@@ -347,16 +365,16 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     setAddingBadge(false);
     setBadgeInput("");
     if (!label) return;
-    const existing = allBadges.find((b) => b.label.toLowerCase() === label.toLowerCase());
+    const existing = allBadges.find((b) => b.name.toLowerCase() === label.toLowerCase());
     if (existing) {
-      if (!badgeIds.includes(existing.id)) setBadgeIds((x) => [...x, existing.id]);
+      if (!badgeIds.includes(existing.uid)) setBadgeIds((x) => [...x, existing.uid]);
       return;
     }
     // Create the badge on the fly, then attach it.
     try {
-      const created = await createBadge({ label });
+      const created = await createBadge({ name: label });
       setAllBadges((prev) => [...prev, created]);
-      setBadgeIds((x) => [...x, created.id]);
+      setBadgeIds((x) => [...x, created.uid]);
     } catch (err) {
       toast(err instanceof StudioApiError ? err.message : "Couldn’t add the badge", "error");
     }
@@ -392,51 +410,65 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       return null;
     }
     const imageRows = Object.entries(images).flatMap(([group_key, ids]) =>
-      ids.map((mediaId, position) => ({ group_key, position, media_asset: mediaId }))
+      ids.map((mediaUid, position) => ({ group_key, position, media_asset_uid: mediaUid }))
     );
     const attrRows = slots
       .map((s) => {
         const raw = attrs[s.key];
         if (raw === undefined || raw === "") return null;
-        const value: unknown = s.type === "number" ? Number(raw) : s.type === "boolean" ? raw === "true" : raw;
+        // Typed per the slot: the backend checks values strictly and rejects a
+        // number or a yes/no sent as a string.
+        const value: unknown = s.type === "NUMBER" ? Number(raw) : s.type === "BOOL" ? raw === "true" : s.type === "RICHTEXT_BLOCKS" ? textToBlocks(raw) : raw;
         return { slot_key: s.key, value };
       })
       .filter(Boolean) as { slot_key: string; value: unknown }[];
     const contentRows = blocks.map((b, i) => ({
       component: "shared.rich-text",
-      body: htmlToBlocks(b.html),
-      order: i,
+      data: htmlToBlocks(b.html),
+      position: i,
     }));
 
     return {
-      collection: collId,
-      template: tplId ?? null,
+      collection_uid: collId,
+      template_uid: tplId ?? null,
       title: title.trim(),
       slug: slug.trim(),
       excerpt: excerpt.trim(),
       summary: htmlToBlocks(summaryHtml),
       introduction: htmlToBlocks(intro),
       read_time: readTime.trim() ? Number(readTime) : null,
-      warning: warning.trim() || null,
-      insights: insights.trim() || null,
+      // Optional text is "" when blank — the backend's text fields are not
+      // nullable, so a null here fails the whole save.
+      warning: warning.trim(),
+      insights: insights.trim(),
       // `published_on` is a DateTimeField — send a full ISO datetime (midnight
       // UTC) so DRF accepts it; the date-only input gives us YYYY-MM-DD.
       published_on: publishedOn ? `${publishedOn}T00:00:00Z` : null,
-      author: authorId ?? null,
-      categories: catIds,
-      tags: tagIds,
-      badges: badgeIds,
+      author_uid: authorId ?? null,
+      category_uids: catIds,
+      tag_uids: tagIds,
+      badge_uids: badgeIds,
       content_blocks: contentRows,
       images: imageRows,
       attribute_values: attrRows,
       seo: {
-        meta_title: seo.mt || null,
-        meta_description: seo.md || null,
-        canonical_url: seo.cu || null,
-        keywords: seo.kw || null,
+        seo_title: seo.mt,
+        meta_description: seo.md,
+        canonical_url: seo.cu,
+        keywords: seo.kw,
       },
     };
   };
+
+  // Saves run one at a time, in the order they were asked for: Publish waits
+  // for an auto-save already in flight instead of racing it.
+  const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
+  const enqueueSave = <T,>(run: () => Promise<T>): Promise<T> => {
+    const next = saveQueue.current.then(run, run);
+    saveQueue.current = next.catch(() => undefined);
+    return next;
+  };
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /**
    * Persist and return the saved entry (or null on failure/validation).
@@ -445,6 +477,10 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
    * source of truth; we only sync identity + publish metadata back.
    */
   const persist = async (): Promise<StudioEntryDetail | null> => {
+    if (!canWrite) {
+      toast(isNew ? "You cannot create entries" : "You cannot edit this entry", "error");
+      return null;
+    }
     if (!title.trim()) {
       toast("Give the entry a title", "error");
       return null;
@@ -455,16 +491,20 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     }
     const payload = buildPayload();
     if (!payload) return null;
+    // This save carries everything a pending auto-save would.
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     try {
-      const saved = id == null ? await createEntry(payload) : await updateEntry(id, payload);
-      const wasNew = id == null;
-      setId(saved.id);
+      const { saved, wasNew } = await enqueueSave(async () => {
+        const current = idRef.current;
+        return { saved: current == null ? await createEntry(payload) : await updateEntry(current, payload), wasNew: current == null };
+      });
+      setId(saved.uid);
       setDocumentMeta({ status: saved.status, published_on: saved.published_on, published_at: saved.published_at });
       savedSnapshot.current = snapshot; // keep the auto-save baseline in sync
       // A new entry gets its real id in the URL — via history.replaceState so
       // the route param doesn't change and the editor isn't remounted/refetched.
       if (wasNew && typeof window !== "undefined") {
-        window.history.replaceState(null, "", `/studio/entries/${saved.id}`);
+        window.history.replaceState(null, "", `/studio/entries/${saved.uid}`);
       }
       return saved;
     } catch (err) {
@@ -491,21 +531,25 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const autoSave = async () => {
     // New entries auto-create once they have the required title + slug;
     // existing ones PATCH. Skip while a slug is known-duplicate.
+    if (!canWrite) return;
     if (!title.trim() || !slug.trim() || slugState.available === false) return;
     const payload = buildPayload();
     if (!payload) return;
     setAutoState("saving");
     try {
-      if (id == null) {
-        const created = await createEntry(payload);
-        setId(created.id);
-        setDocumentMeta({ status: created.status, published_on: created.published_on, published_at: created.published_at });
-        if (typeof window !== "undefined") {
-          window.history.replaceState(null, "", `/studio/entries/${created.id}`);
+      await enqueueSave(async () => {
+        const current = idRef.current;
+        if (current == null) {
+          const created = await createEntry(payload);
+          setId(created.uid);
+          setDocumentMeta({ status: created.status, published_on: created.published_on, published_at: created.published_at });
+          if (typeof window !== "undefined") {
+            window.history.replaceState(null, "", `/studio/entries/${created.uid}`);
+          }
+        } else {
+          await updateEntry(current, payload);
         }
-      } else {
-        await updateEntry(id, payload);
-      }
+      });
       savedSnapshot.current = snapshot;
       setAutoState("saved");
     } catch (err) {
@@ -527,6 +571,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     }
     if (snapshot === savedSnapshot.current) return;
     const t = setTimeout(() => void autoSave(), 1200);
+    autoSaveTimer.current = t;
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [snapshot, loading]);
@@ -539,10 +584,10 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       return;
     }
     try {
-      await publishEntry(saved.id);
+      await publishEntry(saved.uid);
       toast("Entry published");
       // Re-pull publish metadata only (not the whole form — avoids remount).
-      const fresh = await getEntry(saved.id);
+      const fresh = await getEntry(saved.uid);
       setDocumentMeta({ status: fresh.status, published_on: fresh.published_on, published_at: fresh.published_at });
       setPublishedOn(fresh.published_on ? fresh.published_on.slice(0, 10) : "");
     } catch (err) {
@@ -561,7 +606,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     setPublishing(true);
     try {
       await unpublishEntry(id);
-      setDocumentMeta((m) => ({ ...m, status: "draft" }));
+      setDocumentMeta((m) => ({ ...m, status: "DRAFT" }));
       toast("Entry unpublished");
     } catch (err) {
       toast(err instanceof StudioApiError ? `Unpublish failed: ${err.message}` : "Unpublish failed", "error");
@@ -905,22 +950,22 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                         <FieldLabel suffix={<KeyTag>{a.key} · {a.type}</KeyTag>}>
                           {a.label} {a.required && <span style={{ color: studioColors.danger }}>*</span>}
                         </FieldLabel>
-                        {a.type === "number" ? (
+                        {a.type === "NUMBER" ? (
                           <TextInput value={attrs[a.key] || ""} onChange={(v) => setAttr(a.key, v)} type="number" style={{ fontFamily: studioFonts.num }} />
-                        ) : a.type === "boolean" ? (
+                        ) : a.type === "BOOL" ? (
                           <SelectField value={attrs[a.key] || ""} onChange={(v) => setAttr(a.key, v)} ariaLabel={a.label}>
                             <option value="">—</option>
                             <option value="true">Yes</option>
                             <option value="false">No</option>
                           </SelectField>
-                        ) : a.type === "enum" ? (
+                        ) : a.type === "ENUM" ? (
                           <SelectField value={attrs[a.key] || ""} onChange={(v) => setAttr(a.key, v)} ariaLabel={a.label}>
                             <option value="">—</option>
                             {enumChoices(a).map((o) => (
                               <option key={o} value={o}>{o}</option>
                             ))}
                           </SelectField>
-                        ) : a.type === "date" ? (
+                        ) : a.type === "DATE" ? (
                           <TextInput value={attrs[a.key] || ""} onChange={(v) => setAttr(a.key, v)} type="date" />
                         ) : (
                           <TextInput value={attrs[a.key] || ""} onChange={(v) => setAttr(a.key, v)} placeholder={a.label} />
@@ -1020,9 +1065,9 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 4h6v6M20 4 11 13" /></svg>
               </a>
             )}
-            {role === "Author" && (
+            {!canPublish && (
               <div style={{ marginTop: 12, padding: "9px 11px", background: "rgba(248,242,225,.85)", borderRadius: 10, fontSize: 11.5, color: studioColors.bodyGray, lineHeight: 1.5 }}>
-                Authors can’t publish — an Editor reviews this draft and takes it live.
+                You can’t publish — someone with publishing rights reviews this draft and takes it live.
               </div>
             )}
           </Card>
@@ -1031,16 +1076,16 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
           <Card style={{ padding: 16 }}>
             <div style={{ fontSize: 12.5, fontWeight: 600, color: studioColors.tealDeep, marginBottom: 10 }}>Collection &amp; template</div>
             <label style={{ display: "block", fontSize: 11.5, fontWeight: 500, color: studioColors.labelGray, marginBottom: 5 }}>Collection</label>
-            <SelectField value={collId != null ? String(collId) : ""} onChange={(v) => { setCollId(Number(v)); setSlugState({ checking: false, available: null, suggestion: null }); }} ariaLabel="Collection" style={{ fontSize: 13, marginBottom: 12 }}>
+            <SelectField value={collId ?? ""} onChange={(v) => { setCollId(v || null); setSlugState({ checking: false, available: null, suggestion: null }); }} ariaLabel="Collection" style={{ fontSize: 13, marginBottom: 12 }}>
               {colls.map((c) => (
-                <option key={c.id} value={c.id}>{c.plural_name}</option>
+                <option key={c.uid} value={c.uid}>{c.plural_name}</option>
               ))}
             </SelectField>
             <label style={{ display: "block", fontSize: 11.5, fontWeight: 500, color: studioColors.labelGray, marginBottom: 5 }}>Template</label>
-            <SelectField value={tplId != null ? String(tplId) : ""} onChange={(v) => setTplId(v ? Number(v) : null)} ariaLabel="Template" mono style={{ fontSize: 13 }}>
+            <SelectField value={tplId ?? ""} onChange={(v) => setTplId(v || null)} ariaLabel="Template" mono style={{ fontSize: 13 }}>
               <option value="">No template</option>
               {templates.map((t) => (
-                <option key={t.id} value={t.id}>{t.slug}</option>
+                <option key={t.uid} value={t.uid}>{t.slug}</option>
               ))}
             </SelectField>
             <div style={{ fontSize: 11.5, color: studioColors.mutedGray, marginTop: 7, lineHeight: 1.45 }}>
@@ -1053,10 +1098,10 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
             <div style={{ fontSize: 12.5, fontWeight: 600, color: studioColors.tealDeep, marginBottom: 10 }}>Organize</div>
             <div style={{ marginBottom: 13 }}>
               <label style={{ display: "block", fontSize: 11.5, fontWeight: 500, color: studioColors.labelGray, marginBottom: 5 }}>Author</label>
-              <SelectField value={authorId != null ? String(authorId) : ""} onChange={(v) => setAuthorId(v ? Number(v) : null)} ariaLabel="Author" style={{ fontSize: 13, padding: "9px 32px 9px 12px" }}>
+              <SelectField value={authorId ?? ""} onChange={(v) => setAuthorId(v || null)} ariaLabel="Author" style={{ fontSize: 13, padding: "9px 32px 9px 12px" }}>
                 <option value="">—</option>
                 {authors.map((a) => (
-                  <option key={a.id} value={a.id}>{a.name}</option>
+                  <option key={a.uid} value={a.uid}>{a.name}</option>
                 ))}
               </SelectField>
             </div>
@@ -1096,7 +1141,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                   </span>
                 ))}
                 {/* Pick an existing tag (dropdown, like categories) */}
-                {remainingTags.length > 0 && !addingTag && (
+                {canWrite && remainingTags.length > 0 && !addingTag && (
                   <button
                     onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setAddTagAnchor({ top: r.bottom + 4, left: r.left }); }}
                     aria-haspopup="menu"
@@ -1107,8 +1152,8 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                     +
                   </button>
                 )}
-                {/* Type a brand-new tag */}
-                {addingTag ? (
+                {/* Type a brand-new tag — creating one needs blogs.create */}
+                {!canCreate ? null : addingTag ? (
                   <input
                     autoFocus
                     value={tagInput}
@@ -1141,7 +1186,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                   </span>
                 ))}
                 {/* Pick an existing badge */}
-                {remainingBadges.length > 0 && !addingBadge && (
+                {canWrite && remainingBadges.length > 0 && !addingBadge && (
                   <button
                     onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setAddBadgeAnchor({ top: r.bottom + 4, left: r.left }); }}
                     aria-haspopup="menu"
@@ -1152,8 +1197,8 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                     +
                   </button>
                 )}
-                {/* Type a brand-new badge */}
-                {addingBadge ? (
+                {/* Type a brand-new badge — creating one needs blogs.create */}
+                {!canCreate ? null : addingBadge ? (
                   <input
                     autoFocus
                     value={badgeInput}
@@ -1187,7 +1232,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
         onClose={() => setAddCatAnchor(null)}
         top={addCatAnchor?.top || 0}
         left={addCatAnchor?.left || 0}
-        items={remainingCats.map((c) => ({ label: c.name, onClick: () => setCatIds((x) => [...x, c.id]) }))}
+        items={remainingCats.map((c) => ({ label: c.name, onClick: () => setCatIds((x) => [...x, c.uid]) }))}
       />
 
       {/* Add existing-tag menu */}
@@ -1196,7 +1241,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
         onClose={() => setAddTagAnchor(null)}
         top={addTagAnchor?.top || 0}
         left={addTagAnchor?.left || 0}
-        items={remainingTags.map((t) => ({ label: t.name, onClick: () => setTagIds((x) => [...x, t.id]) }))}
+        items={remainingTags.map((t) => ({ label: t.name, onClick: () => setTagIds((x) => [...x, t.uid]) }))}
       />
 
       {/* Add existing-badge menu */}
@@ -1205,7 +1250,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
         onClose={() => setAddBadgeAnchor(null)}
         top={addBadgeAnchor?.top || 0}
         left={addBadgeAnchor?.left || 0}
-        items={remainingBadges.map((b) => ({ label: b.label, onClick: () => setBadgeIds((x) => [...x, b.id]) }))}
+        items={remainingBadges.map((b) => ({ label: b.name, onClick: () => setBadgeIds((x) => [...x, b.uid]) }))}
       />
 
       {/* Image picker */}

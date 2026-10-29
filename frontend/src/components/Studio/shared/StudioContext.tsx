@@ -4,8 +4,6 @@
 //
 // Client state for the Content Studio:
 //  - session data loaded once from the admin API (`me`, `config`, `dashboard`)
-//  - `role`    — the "Preview as" role that drives capability gating visuals,
-//                initialised from the signed-in user's real role
 //  - `tips`    — whether the amber explainer tips are shown
 //  - `toast()` — transient bottom-right notifications
 //
@@ -20,20 +18,18 @@ import {
   useMemo,
   useState,
 } from "react";
-import type { Role } from "@/types/studio";
 import {
   endStudioSession,
   getConfig,
   getDashboard,
   getMe,
-  isAuthenticated,
   isSessionExpired,
-  sessionExpiresAt,
   type StudioAction,
   type StudioConfig,
   type StudioDashboard,
   type StudioMe,
   type StudioModule,
+  type StudioScope,
 } from "@/services/studioService";
 
 export type ToastKind = "success" | "error";
@@ -45,8 +41,6 @@ interface Toast {
 }
 
 interface StudioContextValue {
-  role: Role;
-  setRole: (r: Role) => void;
   tips: boolean;
   setTips: (v: boolean) => void;
   toasts: Toast[];
@@ -70,21 +64,23 @@ interface StudioContextValue {
    * keeps action buttons hidden rather than briefly visible.
    */
   can: (module: StudioModule, action?: StudioAction) => boolean;
+  /**
+   * The record scope the signed-in user holds on `module`, from `me.scopes`.
+   *
+   * The backend applies this inside `get_queryset()`, so a `leads: owned` user
+   * sees only their own rows and an otherwise-populated list can come back
+   * empty. Screens use this to say *why* a list is empty, never to filter —
+   * the filtering already happened server-side. Defaults to `"all"` (the widest
+   * reading) while `me` is loading or when the module carries no scope.
+   */
+  scope: (module: StudioModule) => StudioScope;
 }
 
 const StudioCtx = createContext<StudioContextValue | null>(null);
 
 let toastSeq = 0;
 
-/** API role → presentation role ("admin" → "Admin"). */
-function uiRole(apiRole: StudioMe["role"]): Role {
-  if (apiRole === "admin") return "Admin";
-  if (apiRole === "editor") return "Editor";
-  return "Author";
-}
-
 export function StudioProvider({ children }: { children: React.ReactNode }) {
-  const [role, setRole] = useState<Role>("Author");
   const [tips, setTips] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [me, setMe] = useState<StudioMe | null>(null);
@@ -105,7 +101,6 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
         ]);
         if (cancelled) return;
         setMe(meData);
-        setRole(uiRole(meData.role));
         setConfig(configData);
         setDashboard(dashData);
       } catch (err) {
@@ -126,36 +121,30 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Send the user to sign in the moment the login lifetime runs out, even if
-  // they're idle on a screen that won't make another call. Re-checked when the
-  // tab regains focus: timers are throttled in background tabs and a laptop
-  // may have slept past the deadline. Signing out in another tab (cookie gone)
-  // is caught the same way.
+  // Send the user to sign in once the session is really over, even if they're
+  // idle on a screen that won't make another call.
+  //
+  // The token now lives in an HttpOnly cookie, so its expiry can't be read
+  // here any more (and shouldn't be — the server is the authority). Instead,
+  // when the tab comes back to the foreground we ask the API who we are: a 401
+  // means the session is gone, which also covers signing out in another tab and
+  // a laptop that slept past the deadline. `getMe` routes through the BFF, so a
+  // merely-expired access token is refreshed transparently and this stays quiet.
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | undefined;
+    let cancelled = false;
     const check = () => {
-      clearTimeout(timer);
-      const expiresAt = sessionExpiresAt();
-      if (expiresAt === null) {
-        if (!isAuthenticated()) endStudioSession();
-        return; // undecodable token — the API's 401 path still covers it
-      }
-      const left = expiresAt - Date.now();
-      if (left <= 0) {
-        endStudioSession();
-        return;
-      }
-      // setTimeout overflows past ~24.8 days; re-check at most daily.
-      timer = setTimeout(check, Math.min(left, 24 * 60 * 60 * 1000));
+      if (cancelled || document.visibilityState !== "visible") return;
+      getMe().catch((err) => {
+        if (!cancelled && isSessionExpired(err)) endStudioSession();
+      });
     };
     const onVisible = () => {
       if (document.visibilityState === "visible") check();
     };
-    check();
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("focus", check);
     return () => {
-      clearTimeout(timer);
+      cancelled = true;
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("focus", check);
     };
@@ -174,9 +163,14 @@ export function StudioProvider({ children }: { children: React.ReactNode }) {
     [me]
   );
 
+  const scope = useCallback(
+    (module: StudioModule): StudioScope => me?.scopes?.[module] ?? "all",
+    [me]
+  );
+
   const value = useMemo(
-    () => ({ role, setRole, tips, setTips, toasts, toast, me, config, dashboard, shellLoading, shellError, can }),
-    [role, tips, toasts, toast, me, config, dashboard, shellLoading, shellError, can]
+    () => ({ tips, setTips, toasts, toast, me, config, dashboard, shellLoading, shellError, can, scope }),
+    [tips, toasts, toast, me, config, dashboard, shellLoading, shellError, can, scope]
   );
 
   return <StudioCtx.Provider value={value}>{children}</StudioCtx.Provider>;
@@ -188,14 +182,3 @@ export function useStudio(): StudioContextValue {
   return ctx;
 }
 
-/** Capability checks derived from the previewed role. */
-export function useCapabilities() {
-  const { role } = useStudio();
-  return {
-    role,
-    canManageStructure: role === "Admin",
-    canPublish: role === "Admin" || role === "Editor",
-    canDelete: role === "Admin" || role === "Editor",
-    isAdmin: role === "Admin",
-  };
-}

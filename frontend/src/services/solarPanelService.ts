@@ -2,107 +2,112 @@
 // This service provides solar panel data from the backend API
 
 import { SolarPanel, FilterState } from "@/types/solarPanel";
-import { apiCall } from "./apiService";
+import {
+  brandSlug,
+  fetchProduct,
+  fetchProducts,
+  orderingFor,
+  type CatalogProduct,
+  type CatalogSort,
+} from "./catalogApi";
 
-// Backend response interface
-interface BackendPanelData {
-  id: number;
-  brand: string;
-  name: string;
-  wattage: number;
-  panel_type: string;
-  technology: string;
-  image_url: string;
-  description: string;
-  efficiency: string;
-  temperature_coefficient: string;
-  noct: string;
-  real_output_at_60c: string;
-  ip_rating: string;
-  wind_load: string;
-  moisture_protection: string;
-  weight: string;
-  bifacial_gain: string;
-  product_warranty: number;
-  performance_warranty: number;
-  first_year_power_drop: string;
-  annual_degradation: string;
-  output_at_year_25: string;
-  manufacturing_capacity: string;
-  bloomberg_tier1: boolean;
-  pvel_top_performer: boolean;
-  bis_certified: boolean;
-  independent_audit: boolean;
-  certifications: string[];
-  price_range: string;
-  subsidy_eligible: boolean;
-  kerala_climate_score: number;
-  efficiency_rating: number;
-  heat_performance_rating: number;
-  warranty_rating: number;
-  kerala_climate_rating: number;
-  overall_rating: string;
+// Backend payload (GET /api/public/v1/products/panels/): the product profile
+// with the technical sheet under `spec`.
+interface PanelSpec {
+  wattage_w: number | null;
+  panel_type: string | null;
+  technology: string | null;
+  efficiency_pct: string | null;
+  temperature_coefficient: string | null;
+  noct_c: number | null;
+  real_output_at_60c_pct: number | null;
+  ip_rating: string | null;
+  wind_load_pa: number | null;
+  moisture_protection: string | null;
+  weight_kg: string | null;
+  bifacial_gain_pct: number | null;
+  first_year_drop_pct: string | null;
+  annual_degradation_pct: string | null;
+  output_at_year_25_pct: string | null;
+  bis_certified: boolean | null;
+  bloomberg_tier1: boolean | null;
+  pvel_top_performer: boolean | null;
+  independent_audit: boolean | null;
+  certifications: string[] | null;
+  manufacturing_capacity: string | null;
 }
 
-interface SolarPanelsResponse {
-  data: BackendPanelData[];
-  meta?: {
-    total: number;
-  };
-}
+type BackendPanelData = CatalogProduct<PanelSpec>;
 
-interface SinglePanelResponse {
-  data: BackendPanelData;
-}
+const PANEL_TYPE_MAP: Record<string, SolarPanel["type"]> = {
+  MONOCRYSTALLINE: "Monocrystalline",
+  POLYCRYSTALLINE: "Polycrystalline",
+  BIFACIAL: "Bifacial",
+};
 
-// Transform backend data to frontend format
+const TECHNOLOGY_MAP: Record<string, SolarPanel["technology"]> = {
+  N_TYPE_TOPCON: "N-Type TOPCon",
+  P_TYPE_PERC: "P-Type PERC",
+  HJT: "HJT",
+  IBC: "IBC",
+};
+
+const RATING_MAP: Record<string, SolarPanel["overallRating"]> = {
+  EXCELLENT: "Excellent",
+  VERY_GOOD: "Very Good",
+  GOOD: "Good",
+};
+
+const num = (value: string | number | null | undefined): number =>
+  value === null || value === undefined || value === "" ? 0 : Number(value);
+
+// Transform backend data to frontend format. `id` is the product slug (the
+// comparison pages carry it in the URL and `?slug=a,b` selects by it).
 function transformPanelData(backendPanel: BackendPanelData): SolarPanel {
+  const spec = backendPanel.spec;
+  const ratings = backendPanel.ratings;
   return {
-    id: backendPanel.id.toString(),
-    brand: backendPanel.brand,
-    name: backendPanel.name,
-    wattage: backendPanel.wattage,
-    type: backendPanel.panel_type === 'monocrystalline' ? 'Monocrystalline' :
-          backendPanel.panel_type === 'polycrystalline' ? 'Polycrystalline' :
-          backendPanel.panel_type === 'bifacial' ? 'Bifacial' : 'Monocrystalline',
-    technology: backendPanel.technology === 'n-type-topcon' ? 'N-Type TOPCon' :
-                backendPanel.technology === 'p-type-perc' ? 'P-Type PERC' :
-                backendPanel.technology === 'hjt' ? 'HJT' :
-                backendPanel.technology === 'ibc' ? 'IBC' : 'P-Type PERC',
+    id: backendPanel.slug,
+    brand: backendPanel.brand_label,
+    name: backendPanel.headline || backendPanel.model,
+    wattage: num(spec.wattage_w),
+    type: PANEL_TYPE_MAP[spec.panel_type ?? ""] ?? "Monocrystalline",
+    technology: TECHNOLOGY_MAP[spec.technology ?? ""] ?? "P-Type PERC",
     imageUrl: backendPanel.image_url,
-    description: backendPanel.description,
-    efficiency: parseFloat(backendPanel.efficiency),
-    temperatureCoefficient: parseFloat(backendPanel.temperature_coefficient),
-    noct: parseFloat(backendPanel.noct),
-    realOutputAt60C: parseFloat(backendPanel.real_output_at_60c),
-    ipRating: backendPanel.ip_rating,
-    windLoad: parseFloat(backendPanel.wind_load),
-    moistureProtection: backendPanel.moisture_protection,
-    weight: parseFloat(backendPanel.weight),
-    bifacialGain: backendPanel.bifacial_gain ? parseFloat(backendPanel.bifacial_gain) : null,
-    productWarranty: backendPanel.product_warranty,
-    performanceWarranty: backendPanel.performance_warranty,
-    firstYearPowerDrop: parseFloat(backendPanel.first_year_power_drop),
-    annualDegradation: parseFloat(backendPanel.annual_degradation),
-    outputAtYear25: parseFloat(backendPanel.output_at_year_25),
-    manufacturingCapacity: backendPanel.manufacturing_capacity,
-    bloombergTier1: backendPanel.bloomberg_tier1,
-    pvelTopPerformer: backendPanel.pvel_top_performer,
-    bisCertified: backendPanel.bis_certified,
-    independentAudit: backendPanel.independent_audit,
-    certifications: backendPanel.certifications || [],
-    priceRange: backendPanel.price_range,
-    subsidyEligible: backendPanel.subsidy_eligible,
-    keralaClimateScore: backendPanel.kerala_climate_score,
+    description: backendPanel.description || backendPanel.summary,
+    efficiency: num(spec.efficiency_pct),
+    temperatureCoefficient: num(spec.temperature_coefficient),
+    noct: num(spec.noct_c),
+    realOutputAt60C: num(spec.real_output_at_60c_pct),
+    ipRating: spec.ip_rating ?? "",
+    windLoad: num(spec.wind_load_pa),
+    moistureProtection: spec.moisture_protection ?? "",
+    weight: num(spec.weight_kg),
+    bifacialGain:
+      spec.bifacial_gain_pct === null || spec.bifacial_gain_pct === undefined
+        ? null
+        : Number(spec.bifacial_gain_pct),
+    productWarranty: num(backendPanel.warranty.product_years),
+    performanceWarranty: num(backendPanel.warranty.performance_years),
+    firstYearPowerDrop: num(spec.first_year_drop_pct),
+    annualDegradation: num(spec.annual_degradation_pct),
+    outputAtYear25: num(spec.output_at_year_25_pct),
+    manufacturingCapacity: spec.manufacturing_capacity ?? "",
+    bloombergTier1: Boolean(spec.bloomberg_tier1),
+    pvelTopPerformer: Boolean(spec.pvel_top_performer),
+    bisCertified: Boolean(spec.bis_certified),
+    independentAudit: Boolean(spec.independent_audit),
+    certifications: spec.certifications || [],
+    priceRange: backendPanel.price_range_label ?? "",
+    subsidyEligible: Boolean(backendPanel.subsidy_eligible),
+    keralaClimateScore: num(backendPanel.kerala_climate_score),
     ratings: {
-      efficiency: backendPanel.efficiency_rating,
-      heatPerformance: backendPanel.heat_performance_rating,
-      warranty: backendPanel.warranty_rating,
-      keralaClimate: backendPanel.kerala_climate_rating,
+      efficiency: num(ratings.efficiency),
+      heatPerformance: num(ratings.heat_performance),
+      warranty: num(ratings.warranty),
+      keralaClimate: num(ratings.kerala_climate),
     },
-    overallRating: backendPanel.overall_rating === 'excellent' ? 'Excellent' :
-                   backendPanel.overall_rating === 'very-good' ? 'Very Good' :
-                   backendPanel.overall_rating === 'good' ? 'Good' : 'Good',
+    overallRating: RATING_MAP[backendPanel.overall_rating ?? ""] ?? "Good",
   };
 }
 
@@ -124,118 +129,91 @@ export function getAvailableBrands(): string[] {
 // Get all panels
 export async function getAllPanels(): Promise<SolarPanel[]> {
   try {
-    const response = await apiCall<SolarPanelsResponse>(
-      "solar-panels",
-      "GET",
-      null,
-      { revalidate: 3600 }
-    );
-    return response.data.map(transformPanelData);
+    const rows = await fetchProducts<BackendPanelData>("panels", new URLSearchParams(), 3600);
+    return rows.map(transformPanelData);
   } catch (error) {
     console.error("Error fetching all panels:", error);
     return [];
   }
 }
 
-// Get panel by ID
+// Get panel by slug
 export async function getPanelById(id: string): Promise<SolarPanel | null> {
   try {
-    const response = await apiCall<SinglePanelResponse>(
-      `solar-panels/${id}`,
-      "GET"
-    );
-    return transformPanelData(response.data);
+    return transformPanelData(await fetchProduct<BackendPanelData>("panel", id));
   } catch (error) {
     console.error(`Error fetching panel ${id}:`, error);
     return null;
   }
 }
 
-// Get panels by IDs
+// Get panels by slugs (the comparison selection)
 export async function getPanelsByIds(ids: string[]): Promise<SolarPanel[]> {
   try {
-    const idsParam = ids.join(",");
-    const response = await apiCall<SolarPanelsResponse>(
-      `solar-panels?ids=${idsParam}`,
-      "GET",
-      null,
-      { revalidate: 3600 }
-    );
-    return response.data.map(transformPanelData);
+    const params = new URLSearchParams({ slug: ids.join(",") });
+    const rows = await fetchProducts<BackendPanelData>("panels", params, 3600);
+    return rows.map(transformPanelData);
   } catch (error) {
     console.error("Error fetching panels by IDs:", error);
     return [];
   }
 }
 
-// Build query parameters for filtering
-function buildFilterQuery(filters: FilterState): string {
+const RATING_TO_BACKEND: Record<string, string> = {
+  Excellent: "EXCELLENT",
+  "Very Good": "VERY_GOOD",
+  Good: "GOOD",
+};
+
+// Build query parameters for filtering (public API v1 names)
+function buildFilterQuery(filters: FilterState): URLSearchParams {
   const params = new URLSearchParams();
 
-  // Panel types filter - convert to backend format
-  if (filters.panelTypes.length > 0) {
-    const backendTypes = filters.panelTypes.map(type =>
-      type.toLowerCase()
-    );
-    params.append("type", backendTypes.join(","));
-  }
-
-  // Ratings filter - convert to backend format
-  if (filters.ratings.length > 0) {
-    const backendRatings = filters.ratings.map(rating =>
-      rating === "Very Good" ? "very-good" : rating.toLowerCase()
-    );
-    params.append("rating", backendRatings.join(","));
-  }
+  // Multi-choice filters repeat the parameter.
+  filters.panelTypes.forEach((type) => params.append("panel_type", type.toUpperCase()));
+  filters.ratings.forEach((rating) =>
+    params.append("overall_rating", RATING_TO_BACKEND[rating] ?? rating.toUpperCase()),
+  );
 
   // Efficiency range
   if (filters.efficiencyRange[0] !== 15) {
-    params.append("minEfficiency", filters.efficiencyRange[0].toString());
+    params.append("min_efficiency", filters.efficiencyRange[0].toString());
   }
   if (filters.efficiencyRange[1] !== 23) {
-    params.append("maxEfficiency", filters.efficiencyRange[1].toString());
+    params.append("max_efficiency", filters.efficiencyRange[1].toString());
   }
 
   // Warranty filters
   if (filters.warranties.productWarranty12Plus) {
-    params.append("minProductWarranty", "12");
+    params.append("min_product_warranty", "12");
   }
   if (filters.warranties.performanceWarranty30) {
-    params.append("minPerformanceWarranty", "30");
+    params.append("min_performance_warranty", "30");
   }
 
-  // Brands filter
+  // Brands filter (by brand slug)
   if (filters.brands.length > 0) {
-    params.append("brand", filters.brands.join(","));
+    params.append("brand", filters.brands.map(brandSlug).join(","));
   }
 
   // Kerala Climate Rated
   if (filters.keralaClimateRated) {
-    params.append("minKeralaScore", "85");
+    params.append("min_kerala_score", "85");
   }
 
-  return params.toString();
+  return params;
 }
 
 // Filter and sort panels
 export async function getFilteredPanels(
   filters: FilterState,
-  sortBy: "topRated" | "efficiency" | "price" | "warranty" = "topRated"
+  sortBy: CatalogSort = "topRated"
 ): Promise<SolarPanel[]> {
   try {
-    // Build query string
-    const filterQuery = buildFilterQuery(filters);
-    const sortParam = sortBy;
-    const queryString = filterQuery
-      ? `${filterQuery}&sort=${sortParam}&order=desc`
-      : `sort=${sortParam}&order=desc`;
-
-    const response = await apiCall<SolarPanelsResponse>(
-      `solar-panels?${queryString}`,
-      "GET"
-    );
-
-    return response.data.map(transformPanelData);
+    const params = buildFilterQuery(filters);
+    params.set("ordering", orderingFor(sortBy));
+    const rows = await fetchProducts<BackendPanelData>("panels", params);
+    return rows.map(transformPanelData);
   } catch (error) {
     console.error("Error fetching filtered panels:", error);
     return [];

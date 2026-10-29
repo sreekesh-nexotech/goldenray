@@ -11,7 +11,7 @@ import { studioColors, studioFonts } from "../shared/format";
 
 /** Slim asset shape the picker renders (mapped from StudioMediaAsset). */
 export interface PickerAsset {
-  id: number;
+  id: string;
   url: string | null;
   name: string;
   width: number | null;
@@ -31,7 +31,7 @@ export default function ImagePickerModal({
 }: {
   open: boolean;
   onClose: () => void;
-  onPick: (assetId: number) => void;
+  onPick: (assetUid: string) => void;
   /** Upload the picked file(s) to media-assets/; the caller auto-selects the
    *  first new asset on success. */
   onUploadFiles: (files: FileList | File[]) => void;

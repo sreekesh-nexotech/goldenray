@@ -99,7 +99,7 @@ export default function ImagePickerModal({
         <div className="grid gap-2.5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))" }}>
           {assets?.map((a) => (
             <button
-              key={a.id}
+              key={a.uid}
               type="button"
               onClick={() => onPick(a)}
               className="transition-shadow hover:shadow-[inset_0_0_0_2px_#074A4D]"
@@ -110,10 +110,10 @@ export default function ImagePickerModal({
               </div>
               <div style={{ padding: "6px 8px" }}>
                 <div style={{ fontSize: 11.5, fontWeight: 600, color: studioColors.tealDeep, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {a.file.split("/").pop()}
+                  {a.original_filename}
                 </div>
                 <div style={{ fontSize: 10.5, color: studioColors.faintGray, fontFamily: studioFonts.mono }}>
-                  {a.width && a.height ? `${a.width}×${a.height}` : a.mime}
+                  {a.width && a.height ? `${a.width}×${a.height}` : a.mime_type}
                 </div>
               </div>
             </button>
