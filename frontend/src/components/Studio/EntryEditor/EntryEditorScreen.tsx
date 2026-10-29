@@ -98,7 +98,22 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   // Entry identity + form fields.
-  const [id, setId] = useState<number | null>(isNew ? null : Number(entryId));
+  const [id, setIdState] = useState<number | null>(isNew ? null : Number(entryId));
+  // The entry id as the save path sees it. State lags a render behind, so two
+  // saves started back to back would both read `null` and both POST — the second
+  // then collides with the first on the unique slug.
+  const idRef = useRef<number | null>(isNew ? null : Number(entryId));
+  const setId = (next: number | null) => {
+    idRef.current = next;
+    setIdState(next);
+  };
+  // Saves run strictly one at a time (auto-save and Publish share this queue).
+  const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
+  const serialized = <T,>(task: () => Promise<T>): Promise<T> => {
+    const run = saveQueue.current.then(task, task);
+    saveQueue.current = run.catch(() => undefined);
+    return run;
+  };
   const [documentMeta, setDocumentMeta] = useState<{ status: "draft" | "published"; published_on: string | null; published_at: string | null }>(
     { status: "draft", published_on: null, published_at: null }
   );
@@ -444,7 +459,9 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
    * remount the content blocks and yank the caret mid-edit. Local state is the
    * source of truth; we only sync identity + publish metadata back.
    */
-  const persist = async (): Promise<StudioEntryDetail | null> => {
+  const persist = (): Promise<StudioEntryDetail | null> => serialized(persistNow);
+
+  const persistNow = async (): Promise<StudioEntryDetail | null> => {
     if (!title.trim()) {
       toast("Give the entry a title", "error");
       return null;
@@ -456,8 +473,9 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     const payload = buildPayload();
     if (!payload) return null;
     try {
-      const saved = id == null ? await createEntry(payload) : await updateEntry(id, payload);
-      const wasNew = id == null;
+      const currentId = idRef.current;
+      const saved = currentId == null ? await createEntry(payload) : await updateEntry(currentId, payload);
+      const wasNew = currentId == null;
       setId(saved.id);
       setDocumentMeta({ status: saved.status, published_on: saved.published_on, published_at: saved.published_at });
       savedSnapshot.current = snapshot; // keep the auto-save baseline in sync
@@ -488,7 +506,9 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   );
   const savedSnapshot = useRef<string | null>(null);
 
-  const autoSave = async () => {
+  const autoSave = () => serialized(autoSaveNow);
+
+  const autoSaveNow = async () => {
     // New entries auto-create once they have the required title + slug;
     // existing ones PATCH. Skip while a slug is known-duplicate.
     if (!title.trim() || !slug.trim() || slugState.available === false) return;
@@ -496,7 +516,8 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     if (!payload) return;
     setAutoState("saving");
     try {
-      if (id == null) {
+      const currentId = idRef.current;
+      if (currentId == null) {
         const created = await createEntry(payload);
         setId(created.id);
         setDocumentMeta({ status: created.status, published_on: created.published_on, published_at: created.published_at });
@@ -504,7 +525,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
           window.history.replaceState(null, "", `/studio/entries/${created.id}`);
         }
       } else {
-        await updateEntry(id, payload);
+        await updateEntry(currentId, payload);
       }
       savedSnapshot.current = snapshot;
       setAutoState("saved");
