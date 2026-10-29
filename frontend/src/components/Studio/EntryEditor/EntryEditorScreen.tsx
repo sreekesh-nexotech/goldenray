@@ -30,7 +30,7 @@ import {
 import { statusPill, slugify, studioColors, studioFonts } from "../shared/format";
 import ImagePickerModal, { type PickerAsset } from "./ImagePickerModal";
 import RichTextBlock from "./RichTextBlock";
-import { blocksToHtml, htmlToBlocks } from "./entryBlocks";
+import { blocksToHtml, blocksToText, htmlToBlocks, textToBlocks } from "./entryBlocks";
 import {
   getEntry,
   createEntry,
@@ -103,7 +103,15 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   // Entry identity + form fields.
-  const [id, setId] = useState<string | null>(isNew ? null : String(entryId));
+  const [id, setIdState] = useState<string | null>(isNew ? null : String(entryId));
+  // The id as of now, not as of the render a save was scheduled from: an
+  // auto-save that creates the entry must turn a later save into a PATCH, or a
+  // second POST with the same slug fails and takes Publish down with it.
+  const idRef = useRef<string | null>(id);
+  const setId = (uid: string) => {
+    idRef.current = uid;
+    setIdState(uid);
+  };
   const [documentMeta, setDocumentMeta] = useState<{ status: StudioEntryStatus; published_on: string | null; published_at: string | null }>(
     { status: "DRAFT", published_on: null, published_at: null }
   );
@@ -207,7 +215,12 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     setCatIds(e.categories.map((c) => c.uid));
     setTagIds(e.tags.map((t) => t.uid));
     setBadgeIds(e.badges.map((b) => b.uid));
-    setAttrs(Object.fromEntries(e.attribute_values.map((av) => [av.slot_key, av.value == null ? "" : String(av.value)])));
+    // A rich-text slot's value is a block list; the textarea edits it as plain text.
+    setAttrs(
+      Object.fromEntries(
+        e.attribute_values.map((av) => [av.slot_key, av.value == null ? "" : Array.isArray(av.value) ? blocksToText(av.value as BlockNode[]) : String(av.value)])
+      )
+    );
     setSeo({
       mt: e.seo?.seo_title ?? "",
       md: e.seo?.meta_description ?? "",
@@ -261,8 +274,8 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
 
   // Attribute slots split into inline (short) and full-width (long/rich) fields.
   const slots = template?.attribute_slots ?? [];
-  const shortSlots = slots.filter((s) => s.type !== "text" && s.type !== "richtext_blocks");
-  const longSlots = slots.filter((s) => s.type === "text" || s.type === "richtext_blocks");
+  const shortSlots = slots.filter((s) => s.type !== "TEXT" && s.type !== "RICHTEXT_BLOCKS");
+  const longSlots = slots.filter((s) => s.type === "TEXT" || s.type === "RICHTEXT_BLOCKS");
 
   /* ---- image group helpers ---- */
   const groupList = (key: string) => images[key] ?? [];
@@ -403,7 +416,9 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       .map((s) => {
         const raw = attrs[s.key];
         if (raw === undefined || raw === "") return null;
-        const value: unknown = s.type === "number" ? Number(raw) : s.type === "boolean" ? raw === "true" : raw;
+        // Typed per the slot: the backend checks values strictly and rejects a
+        // number or a yes/no sent as a string.
+        const value: unknown = s.type === "NUMBER" ? Number(raw) : s.type === "BOOL" ? raw === "true" : s.type === "RICHTEXT_BLOCKS" ? textToBlocks(raw) : raw;
         return { slot_key: s.key, value };
       })
       .filter(Boolean) as { slot_key: string; value: unknown }[];
@@ -422,8 +437,10 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       summary: htmlToBlocks(summaryHtml),
       introduction: htmlToBlocks(intro),
       read_time: readTime.trim() ? Number(readTime) : null,
-      warning: warning.trim() || null,
-      insights: insights.trim() || null,
+      // Optional text is "" when blank — the backend's text fields are not
+      // nullable, so a null here fails the whole save.
+      warning: warning.trim(),
+      insights: insights.trim(),
       // `published_on` is a DateTimeField — send a full ISO datetime (midnight
       // UTC) so DRF accepts it; the date-only input gives us YYYY-MM-DD.
       published_on: publishedOn ? `${publishedOn}T00:00:00Z` : null,
@@ -435,13 +452,23 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
       images: imageRows,
       attribute_values: attrRows,
       seo: {
-        seo_title: seo.mt || null,
-        meta_description: seo.md || null,
-        canonical_url: seo.cu || null,
-        keywords: seo.kw || null,
+        seo_title: seo.mt,
+        meta_description: seo.md,
+        canonical_url: seo.cu,
+        keywords: seo.kw,
       },
     };
   };
+
+  // Saves run one at a time, in the order they were asked for: Publish waits
+  // for an auto-save already in flight instead of racing it.
+  const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
+  const enqueueSave = <T,>(run: () => Promise<T>): Promise<T> => {
+    const next = saveQueue.current.then(run, run);
+    saveQueue.current = next.catch(() => undefined);
+    return next;
+  };
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /**
    * Persist and return the saved entry (or null on failure/validation).
@@ -464,9 +491,13 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     }
     const payload = buildPayload();
     if (!payload) return null;
+    // This save carries everything a pending auto-save would.
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     try {
-      const saved = id == null ? await createEntry(payload) : await updateEntry(id, payload);
-      const wasNew = id == null;
+      const { saved, wasNew } = await enqueueSave(async () => {
+        const current = idRef.current;
+        return { saved: current == null ? await createEntry(payload) : await updateEntry(current, payload), wasNew: current == null };
+      });
       setId(saved.uid);
       setDocumentMeta({ status: saved.status, published_on: saved.published_on, published_at: saved.published_at });
       savedSnapshot.current = snapshot; // keep the auto-save baseline in sync
@@ -506,16 +537,19 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     if (!payload) return;
     setAutoState("saving");
     try {
-      if (id == null) {
-        const created = await createEntry(payload);
-        setId(created.uid);
-        setDocumentMeta({ status: created.status, published_on: created.published_on, published_at: created.published_at });
-        if (typeof window !== "undefined") {
-          window.history.replaceState(null, "", `/studio/entries/${created.uid}`);
+      await enqueueSave(async () => {
+        const current = idRef.current;
+        if (current == null) {
+          const created = await createEntry(payload);
+          setId(created.uid);
+          setDocumentMeta({ status: created.status, published_on: created.published_on, published_at: created.published_at });
+          if (typeof window !== "undefined") {
+            window.history.replaceState(null, "", `/studio/entries/${created.uid}`);
+          }
+        } else {
+          await updateEntry(current, payload);
         }
-      } else {
-        await updateEntry(id, payload);
-      }
+      });
       savedSnapshot.current = snapshot;
       setAutoState("saved");
     } catch (err) {
@@ -537,6 +571,7 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
     }
     if (snapshot === savedSnapshot.current) return;
     const t = setTimeout(() => void autoSave(), 1200);
+    autoSaveTimer.current = t;
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [snapshot, loading]);
@@ -915,22 +950,22 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
                         <FieldLabel suffix={<KeyTag>{a.key} · {a.type}</KeyTag>}>
                           {a.label} {a.required && <span style={{ color: studioColors.danger }}>*</span>}
                         </FieldLabel>
-                        {a.type === "number" ? (
+                        {a.type === "NUMBER" ? (
                           <TextInput value={attrs[a.key] || ""} onChange={(v) => setAttr(a.key, v)} type="number" style={{ fontFamily: studioFonts.num }} />
-                        ) : a.type === "boolean" ? (
+                        ) : a.type === "BOOL" ? (
                           <SelectField value={attrs[a.key] || ""} onChange={(v) => setAttr(a.key, v)} ariaLabel={a.label}>
                             <option value="">—</option>
                             <option value="true">Yes</option>
                             <option value="false">No</option>
                           </SelectField>
-                        ) : a.type === "enum" ? (
+                        ) : a.type === "ENUM" ? (
                           <SelectField value={attrs[a.key] || ""} onChange={(v) => setAttr(a.key, v)} ariaLabel={a.label}>
                             <option value="">—</option>
                             {enumChoices(a).map((o) => (
                               <option key={o} value={o}>{o}</option>
                             ))}
                           </SelectField>
-                        ) : a.type === "date" ? (
+                        ) : a.type === "DATE" ? (
                           <TextInput value={attrs[a.key] || ""} onChange={(v) => setAttr(a.key, v)} type="date" />
                         ) : (
                           <TextInput value={attrs[a.key] || ""} onChange={(v) => setAttr(a.key, v)} placeholder={a.label} />

@@ -86,28 +86,28 @@ function groupChip(g: WorkingGroup): ChipStyle {
 }
 
 const SLOT_TYPE_LABELS: Record<StudioSlotType, string> = {
-  text: "Text",
-  richtext_blocks: "Rich text",
-  number: "Number",
-  boolean: "Boolean",
-  date: "Date",
-  enum: "Choice",
-  url: "URL",
+  TEXT: "Text",
+  RICHTEXT_BLOCKS: "Rich text",
+  NUMBER: "Number",
+  BOOL: "Boolean",
+  DATE: "Date",
+  ENUM: "Choice",
+  URL: "URL",
 };
 
 function attrChip(a: WorkingAttr): ChipStyle {
   switch (a.type) {
-    case "number":
-      return { label: SLOT_TYPE_LABELS.number, bg: "rgba(195,223,189,.5)", ink: "#0A6B31" };
-    case "enum":
-      return { label: SLOT_TYPE_LABELS.enum, bg: "rgba(251,232,218,.85)", ink: "#9C4B21" };
-    case "richtext_blocks":
-      return { label: SLOT_TYPE_LABELS.richtext_blocks, bg: "rgba(173,214,216,.45)", ink: "#074A4D" };
-    case "boolean":
-    case "date":
-    case "url":
+    case "NUMBER":
+      return { label: SLOT_TYPE_LABELS.NUMBER, bg: "rgba(195,223,189,.5)", ink: "#0A6B31" };
+    case "ENUM":
+      return { label: SLOT_TYPE_LABELS.ENUM, bg: "rgba(251,232,218,.85)", ink: "#9C4B21" };
+    case "RICHTEXT_BLOCKS":
+      return { label: SLOT_TYPE_LABELS.RICHTEXT_BLOCKS, bg: "rgba(173,214,216,.45)", ink: "#074A4D" };
+    case "BOOL":
+    case "DATE":
+    case "URL":
       return { label: SLOT_TYPE_LABELS[a.type], bg: "rgba(253,246,210,.9)", ink: "#8A6117" };
-    case "text":
+    case "TEXT":
     default:
       return { label: SLOT_TYPE_LABELS[a.type] ?? a.type, bg: "rgba(248,242,225,.95)", ink: "#414651", ring: true };
   }
@@ -146,7 +146,7 @@ export default function TemplatesScreen() {
   const [ntError, setNtError] = useState("");
   const [fKey, setFKey] = useState("");
   const [fLabel, setFLabel] = useState("");
-  const [fType, setFType] = useState<StudioSlotType>("text");
+  const [fType, setFType] = useState<StudioSlotType>("TEXT");
   const [fRepeatable, setFRepeatable] = useState(false);
   const [fRequired, setFRequired] = useState(false);
   const [formError, setFormError] = useState("");
@@ -350,7 +350,7 @@ export default function TemplatesScreen() {
     setAddModal(null);
     setFKey("");
     setFLabel("");
-    setFType("text");
+    setFType("TEXT");
     setFRepeatable(false);
     setFRequired(false);
     setFormError("");
