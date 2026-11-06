@@ -1,5 +1,6 @@
 // Page 4 of the Flarize quotation document (Malayalam) — Three Options. One Smart Choice. — Premium/Smart/Basic comparison table
 import { PackageCards } from "@/components/QuotationV2/PricingBlocks";
+import { HybridServicePromise } from "@/components/QuotationV2/HybridBlocks";
 import type { CSSProperties } from "react";
 import type { QuotationV2Data } from "../quotationV2MalayalamData";
 
@@ -108,7 +109,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
             letterSpacing: "-0.500px",
             color: "var(--grey)",
             flexShrink: 0
-          }}>{data.optionsSubtitle}</span></div><PackageCards data={data} language="Malayalam" /><div style={{
+          }}>{data.optionsSubtitle}</span></div><PackageCards data={data} language="Malayalam" />{data.hybrid ? <HybridServicePromise language="Malayalam" /> : <div style={{
           position: "relative",
           width: 1274,
           height: 1139,
@@ -1872,7 +1873,7 @@ export default function Page05Options({ className, style, data }: Page05OptionsP
                 width: 28,
                 height: 28,
                 color: "rgb(194,194,194)"
-              }}><path d="M 14 0 C 17.713 0 21.274 1.475 23.899 4.101 C 26.525 6.726 28 10.287 28 14 C 28 17.713 26.525 21.274 23.899 23.899 C 21.274 26.525 17.713 28 14 28 C 10.287 28 6.726 26.525 4.101 23.899 C 1.475 21.274 0 17.713 0 14 C 0 10.287 1.475 6.726 4.101 4.101 C 6.726 1.475 10.287 0 14 0 Z M 4 12 L 4 16 L 24 16 L 24 12 L 4 12 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div></div><div style={{
+              }}><path d="M 14 0 C 17.713 0 21.274 1.475 23.899 4.101 C 26.525 6.726 28 10.287 28 14 C 28 17.713 26.525 21.274 23.899 23.899 C 21.274 26.525 17.713 28 14 28 C 10.287 28 6.726 26.525 4.101 23.899 C 1.475 21.274 0 17.713 0 14 C 0 10.287 1.475 6.726 4.101 4.101 C 6.726 1.475 10.287 0 14 0 Z M 4 12 L 4 16 L 24 16 L 24 12 L 4 12 Z" fill="currentColor" fillRule="nonzero" /></svg></div></div></div>}<div style={{
           position: "relative",
           height: 98,
           backgroundColor: "rgb(247,244,230)",

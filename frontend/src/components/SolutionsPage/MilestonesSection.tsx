@@ -3,7 +3,8 @@
 import { Milestone } from "@/data/solutions-page-data";
 import Image from "next/image";
 import { useState } from "react";
-import vector1 from "../../../public/Vector-1.png";
+
+const vector1 = "https://golden-ray.b-cdn.net/icons/Vector-1.png";
 
 interface MilestonesSectionProps {
   title?: string;

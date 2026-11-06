@@ -39,10 +39,28 @@ const READY_TIMEOUT_MS = 35_000;
 /** Best-effort wait for photos after the page is ready; never fails the PDF. */
 const IMAGE_SETTLE_MS = 6_000;
 
+/**
+ * Every render launches a whole Chrome, and the routes are public (customers
+ * download their own quotation), so a burst of requests could exhaust the
+ * container. Beyond this many at once the route answers 503 instead. The count
+ * lives on globalThis so the English and Malayalam route bundles share it.
+ */
+const MAX_CONCURRENT_RENDERS = 3;
+const renders = globalThis as typeof globalThis & { __quotationPdfRenders?: number };
+
 export async function renderQuotationPdf(
   request: Request,
   { path, label }: { path: string; label: string },
 ): Promise<NextResponse> {
+  if ((renders.__quotationPdfRenders ?? 0) >= MAX_CONCURRENT_RENDERS) {
+    console.warn(`${label} PDF rejected: ${MAX_CONCURRENT_RENDERS} renders already running`);
+    return NextResponse.json(
+      { error: "The quotation PDF service is busy. Please try again shortly." },
+      { status: 503, headers: { "Retry-After": "15" } },
+    );
+  }
+  renders.__quotationPdfRenders = (renders.__quotationPdfRenders ?? 0) + 1;
+
   let browser: Browser | undefined;
   const started = Date.now();
   let stage = "reading request";
@@ -148,6 +166,7 @@ export async function renderQuotationPdf(
     console.error(`${label} PDF generation failed while ${stage} after ${Date.now() - started} ms:`, error);
     return NextResponse.json({ error: "Failed to generate the quotation PDF." }, { status: 500 });
   } finally {
+    renders.__quotationPdfRenders = (renders.__quotationPdfRenders ?? 1) - 1;
     await browser?.close();
   }
 }

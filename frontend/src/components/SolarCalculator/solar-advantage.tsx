@@ -1,6 +1,7 @@
 "use client";
 import { ChangeEvent, useState } from "react";
 import PageIllustration from "@/components/ui/page-illustration";
+import { INSTALLATION_OPTIONS, propertyTypeOf } from "./installationType";
 
 interface SolarAdvantageProps {
   onSubmit: (
@@ -87,7 +88,7 @@ export default function SolarAdvantage({
     setproperty_type(e.target.value);
     setErrors((prev) => ({ ...prev, property_type: "" }));
     setmonthly_label(
-      e.target.value === "residential"
+      propertyTypeOf(e.target.value) === "residential"
         ? "Average bi-Monthly Bill"
         : "Average Monthly Bill",
     );
@@ -195,12 +196,11 @@ export default function SolarAdvantage({
                 <option value="" disabled hidden>
                   Select Property Type
                 </option>
-                <option value="residential" className="text-black">
-                  Residential
-                </option>
-                <option value="commercial" className="text-black">
-                  Commercial
-                </option>
+                {INSTALLATION_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value} className="text-black">
+                    {o.label}
+                  </option>
+                ))}
               </select>
               {errors.property_type && (
                 <p className="text-red-500 text-xs mt-1 text-left">

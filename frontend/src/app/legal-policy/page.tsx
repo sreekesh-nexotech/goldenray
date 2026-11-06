@@ -134,7 +134,7 @@ export default function legalPolicy() {
               <h2 className="mb-4 text-2xl font-semibold">4. Calculators and Interactive Tools</h2>
               <p>
                 Calculator inputs are generally processed to provide the requested result and are not ordinarily stored in our
-                database. Certain quotation-related information may be temporarily stored in the user's browser and
+                database. Certain quotation-related information may be temporarily stored in the user&apos;s browser and
                 transmitted to our server when required to generate a quotation or related output.
               </p>
             </div>
@@ -229,7 +229,7 @@ export default function legalPolicy() {
             </div>
 
             <div className="space-y-5">
-              <h2 className="mb-4 text-2xl font-semibold">13. Children's Privacy</h2>
+              <h2 className="mb-4 text-2xl font-semibold">13. Children&apos;s Privacy</h2>
               <p>
                 Our website and services are not intended to knowingly collect personal information from children except
                 where permitted and handled in accordance with applicable law.

@@ -5,6 +5,7 @@ import SolarBasicResult from "./SolarBasicResult";
 import SolarAdvantage from "./solar-advantage";
 import { BasicCalculatorData, SolarBasicPayload } from "@/types/types";
 import { getSolarAdvantageData } from "@/services/CalculatorService";
+import { propertyTypeOf } from "./installationType";
 
 interface SolarAdvantageMainProps {
   showOwnershipField?: boolean; // Optional prop to show ownership field
@@ -44,7 +45,9 @@ export default function SolarAdvantageMain({
     try {
       const payload: SolarBasicPayload = {
         pincode,
-        property_type,
+        // The form's choice also carries on-grid / hybrid; the API wants only
+        // residential / commercial.
+        property_type: propertyTypeOf(property_type),
         monthly_bill,
         ...(ownership_type && { ownership_type }), // Only include if provided
       };
@@ -93,7 +96,9 @@ export default function SolarAdvantageMain({
     try {
       const payload: SolarBasicPayload = {
         pincode,
-        property_type,
+        // The form's choice also carries on-grid / hybrid; the API wants only
+        // residential / commercial.
+        property_type: propertyTypeOf(property_type),
         monthly_bill,
         ...(ownership_type && { ownership_type }), // Only include if provided
       };

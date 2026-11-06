@@ -207,6 +207,10 @@ class BomCalculateView(APIView):
     VALID_SUBSIDY = {"residential", "ghs", "none"}
     VALID_MARGIN = {"percent", "flat"}
     VALID_STRUCTURE = {"flatRoof", "elevated", "sheetRoof"}
+    #: The calculator page once sent "10"/"20" for one/two batteries; the hybrid
+    #: template's battery configs are "0"/"1"/"2", so those never matched and
+    #: silently priced a hybrid with no battery.
+    LEGACY_BAT_CONFIG = {"10": "1", "20": "2"}
 
     def post(self, request):
         data = request.data
@@ -320,7 +324,9 @@ class BomCalculateView(APIView):
             "sys_type": data["sys_type"],
             "size": str(data["size"]),
             "tier": data["tier"],
-            "bat_config": str(data.get("bat_config", "0")),
+            "bat_config": self.LEGACY_BAT_CONFIG.get(
+                str(data.get("bat_config", "0")), str(data.get("bat_config", "0"))
+            ),
             "mode": data.get("mode", "quotation"),
             "dist_km": max(0, int(data.get("dist_km", 100))),
             "structure_type": data.get("structure_type", "flatRoof"),

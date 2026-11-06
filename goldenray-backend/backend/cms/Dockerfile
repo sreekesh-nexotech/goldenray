@@ -30,4 +30,9 @@ RUN DJANGO_ENV=production DJANGO_SECRET_KEY=build-only \
 
 EXPOSE 8000
 
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Several threaded workers: with gunicorn's default (one sync worker) a single
+# slow request — a Bunny upload, or a browser holding an idle connection — made
+# every other Studio user wait up to 30s, token refreshes timed out and editors
+# got signed out. --timeout covers large media uploads to Bunny.
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", \
+     "--workers", "3", "--worker-class", "gthread", "--threads", "4", "--timeout", "120"]

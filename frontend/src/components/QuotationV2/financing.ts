@@ -91,25 +91,28 @@ function exactEmi(principal: number, annualRatePct: number, years = EMI_YEARS): 
   return (principal * r * growth) / (growth - 1);
 }
 
+/** One package priced by the calculator's policy, computed locally. */
+export function localPackageFinancing(total: number, subsidy: number): PackageFinancing {
+  const p = FALLBACK_POLICY;
+  const downPayment = Math.round((total * p.downPaymentPercent) / 100);
+  const x = total - downPayment;
+  const rate = x > p.threshold ? p.rateAbove : p.rateAtOrBelow;
+  const financed = Math.max(0, x - Math.min(subsidy, total));
+  // As the engine does: the daily figure divides the exact EMI.
+  const emi = exactEmi(financed, rate);
+  return {
+    downPaymentPercent: p.downPaymentPercent,
+    downPayment,
+    financed,
+    rate,
+    emi: Math.round(emi),
+    daily: Math.round(emi / p.dailyDivisor),
+  };
+}
+
 /** The calculator's policy computed locally, for when its backend is down. */
 export function localFinancing(prices: PackagePrices): QuotationFinancing {
-  const p = FALLBACK_POLICY;
-  const one = (total: number): PackageFinancing => {
-    const downPayment = Math.round((total * p.downPaymentPercent) / 100);
-    const x = total - downPayment;
-    const rate = x > p.threshold ? p.rateAbove : p.rateAtOrBelow;
-    const financed = Math.max(0, x - Math.min(prices.subsidy, total));
-    // As the engine does: the daily figure divides the exact EMI.
-    const emi = exactEmi(financed, rate);
-    return {
-      downPaymentPercent: p.downPaymentPercent,
-      downPayment,
-      financed,
-      rate,
-      emi: Math.round(emi),
-      daily: Math.round(emi / p.dailyDivisor),
-    };
-  };
+  const one = (total: number) => localPackageFinancing(total, prices.subsidy);
   return {
     premium: one(prices.totals.premium),
     smart: one(prices.totals.smart),
