@@ -172,7 +172,7 @@ export default function Page08Savings({
               <div
                 style={{
                   position: "relative",
-                  height: 414,
+                  height: 374,
                   backgroundColor: "rgba(0,0,0,0)",
                   flexShrink: 0,
                   alignSelf: "stretch",
@@ -185,10 +185,12 @@ export default function Page08Savings({
                     left: 668,
                     top: 0,
                     width: 612,
+                    height: 360,
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
                     flexDirection: "column",
                     gap: 22,
+                    justifyContent: "space-between",
                     alignItems: "flex-start",
                     flexWrap: "nowrap",
                   }}
@@ -514,58 +516,6 @@ export default function Page08Savings({
                       </span>
                     </div>
                   </div>
-                  <div
-                    style={{
-                      position: "relative",
-                      borderRadius: 12,
-                      borderTop: "1px solid var(--1-2)",
-                      borderRight: "1px solid var(--1-2)",
-                      borderBottom: "1px solid var(--1-2)",
-                      borderLeft: "2px solid var(--1-2)",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 7,
-                      padding: "23px 25px 23px 25px",
-                      alignItems: "flex-start",
-                      flexWrap: "nowrap",
-                      boxSizing: "border-box",
-                      flexShrink: 0,
-                      alignSelf: "stretch",
-                    }}
-                  >
-                    <span
-                      style={{
-                        position: "relative",
-                        fontFamily:
-                          'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                        fontWeight: 600,
-                        fontSize: 22,
-                        lineHeight: "28px",
-                        letterSpacing: "-0.500px",
-                        color: "var(--black)",
-                        flexShrink: 0,
-                        alignSelf: "stretch",
-                      }}
-                    >
-                      Key Takeaway
-                    </span>
-                    <span
-                      style={{
-                        position: "relative",
-                        fontFamily:
-                          'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                        fontWeight: 400,
-                        fontSize: 22,
-                        lineHeight: "24.5px",
-                        color: "var(--black)",
-                        flexShrink: 0,
-                        alignSelf: "stretch",
-                      }}
-                    >
-                      In just {data.paybackMonths}, your solar system pays for
-                      itself. The next 25 years are pure savings.
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -578,7 +528,7 @@ export default function Page08Savings({
               display: "flex",
               flexDirection: "row",
               gap: 24,
-              alignItems: "center",
+              alignItems: "stretch",
               flexWrap: "nowrap",
               flexShrink: 0,
             }}
@@ -1081,7 +1031,11 @@ export default function Page08Savings({
             </div>
             <FlowArrow
               size={46}
-              style={{ flexShrink: 0, color: "rgb(0,0,0)" }}
+              style={{
+                flexShrink: 0,
+                alignSelf: "center",
+                color: "rgb(0,0,0)",
+              }}
             />
             <div
               style={{
@@ -1744,7 +1698,7 @@ export default function Page08Savings({
                           fontFamily:
                             'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                           fontWeight: 600,
-                          fontSize: 26,
+                          fontSize: 20,
                           whiteSpace: "pre-wrap",
                           lineHeight: "100%",
                           textBox: "trim-both cap alphabetic",
@@ -1755,7 +1709,7 @@ export default function Page08Savings({
                         <span
                           style={{
                             fontWeight: 500,
-                            fontSize: 26,
+                            fontSize: 20,
                           }}
                         >
                           UPI ID:
@@ -1763,7 +1717,7 @@ export default function Page08Savings({
                         <span
                           style={{
                             color: "rgb(248,138,34)",
-                            fontSize: 26,
+                            fontSize: 20,
                           }}
                         >
                            flarize@upi
@@ -2231,13 +2185,14 @@ export default function Page08Savings({
                     fontFamily:
                       'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                     fontWeight: 500,
-                    fontSize: 18,
-                    lineHeight: 1.399999976158142,
+                    fontSize: 12,
+                    whiteSpace: "pre-line",
+                    lineHeight: "14px",
                     color: "rgb(18,53,50)",
                     flexGrow: 1,
                   }}
                 >
-                  Thannikakal, Thumpoly PO, Alappuzha– 688008
+                  {"Tharath Building,Kalappura, \nAlappuzha – 688007"}
                 </span>
               </div>
               <div
@@ -2256,7 +2211,7 @@ export default function Page08Savings({
                   style={{
                     position: "absolute",
                     left: 0,
-                    top: 16,
+                    top: 5,
                     width: 18,
                     height: 18,
                     color: "rgb(18,53,50)",
@@ -2272,7 +2227,7 @@ export default function Page08Savings({
                   style={{
                     position: "absolute",
                     left: 29,
-                    top: 12.5,
+                    top: 1,
                     width: 149,
                     height: 25,
                     fontFamily:

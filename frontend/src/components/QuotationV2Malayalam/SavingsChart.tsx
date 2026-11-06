@@ -11,11 +11,11 @@ import type { QuotationV2Data } from "./quotationV2MalayalamData";
 
 // Card and plot geometry, taken from the design frame this replaces.
 const CARD_W = 612;
-const CARD_H = 400;
+const CARD_H = 360;
 const PLOT_LEFT = 80;
 const PLOT_TOP = 60;
 const PLOT_W = 400;
-const PLOT_H = 266;
+const PLOT_H = 230;
 const Y_TICK_COUNT = 5;
 
 const KSEB_COLOR = "rgb(220,38,38)";

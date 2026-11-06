@@ -2,7 +2,6 @@ import Certified from "../certified-by";
 import AboutHero from "./AboutHero";
 import AboutServices from "./AboutServices";
 import CareerBanner from "./CareerBanner";
-import Founder from "./Founder";
 import FounderNote from "./FounderNote";
 import Milestones from "./Milestones";
 import MissionVisionGoals from "./MissionVissionGoals";
@@ -38,9 +37,6 @@ export default function AboutMain() {
 
       {/* Certified by */}
       <Certified />
-
-      {/* Founder & CEO */}
-      <Founder />
 
       {/* Our Team */}
       <TeamSection />

@@ -1,0 +1,28 @@
+.card {
+  border-color: #b2b2b233;
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+
+.featured,
+.card:hover {
+  border-color: #074a4d;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 18px rgba(18, 53, 50, 0.12);
+}
+
+.cards:has(.card:hover) .featured:not(:hover) {
+  border-color: #b2b2b233;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}

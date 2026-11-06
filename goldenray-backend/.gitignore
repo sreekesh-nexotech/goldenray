@@ -177,3 +177,6 @@ cython_debug/
 
 #for macos
 .DS_store
+# Local SQLite database used by backend/run-local.ps1
+backend/local.sqlite3
+run-local-ps1

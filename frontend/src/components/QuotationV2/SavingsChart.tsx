@@ -5,17 +5,17 @@ import type { QuotationV2Data } from "./quotationV2Data";
  *
  * The Figma export left this as an empty placeholder box, so the curves are
  * drawn here from the calculator's `graphData` — the same series and the same
- * smoothing the v1 savings page uses — laid out on the 612×400 card the design
+ * smoothing the v1 savings page uses — laid out on the 612×360 card the design
  * reserved for it.
  */
 
 // Card and plot geometry, taken from the design frame this replaces.
 const CARD_W = 612;
-const CARD_H = 400;
+const CARD_H = 360;
 const PLOT_LEFT = 80;
 const PLOT_TOP = 60;
 const PLOT_W = 400;
-const PLOT_H = 266;
+const PLOT_H = 230;
 const Y_TICK_COUNT = 5;
 
 const KSEB_COLOR = "rgb(220,38,38)";
