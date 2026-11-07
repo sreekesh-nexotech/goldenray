@@ -2,7 +2,7 @@
 import type { CSSProperties } from "react";
 import TermsPageLayout, { type TermsClause } from "../TermsPageLayout";
 
-const CLAUSES: TermsClause[] = [
+export const CLAUSES: TermsClause[] = [
   {
     title: "1. Warranty",
     body: "Golden Ray Renewable Energy provides a five (5) year warranty for the complete solar power system against technical defects, subject to the terms and conditions mentioned herein. Solar panels, inverters, and other OEM products shall carry warranty coverage as provided by their respective manufacturers.",

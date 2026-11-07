@@ -8,6 +8,7 @@
 // engine (`/bom/api/calculate/`) to generate the real line items + pricing for
 // the system size the calculator computed.
 import { API_BASE_URL } from "@/config";
+import type { PropertyType } from "@/components/SolarCalculator/installationType";
 
 // The BOM app is mounted at `/bom/` on the backend, not under `/api/`.
 // API_BASE_URL is e.g. "http://127.0.0.1:8000/api/" → derive ".../bom/".
@@ -103,10 +104,11 @@ interface BomRun {
   batConfig: string;
   customerName: string;
   salesPerson: string;
+  sector: PropertyType;
 }
 
 /** One run of the BOM engine, or null if it is unavailable / unseeded. */
-async function runBom({ sysType, sizeKey, kw, batConfig, customerName, salesPerson }: BomRun): Promise<QuotationBom | null> {
+async function runBom({ sysType, sizeKey, kw, batConfig, customerName, salesPerson, sector }: BomRun): Promise<QuotationBom | null> {
   try {
     const res = await fetch(`${BOM_BASE_URL}${BOM_CALCULATE_ENDPOINT}`, {
       method: "POST",
@@ -116,7 +118,7 @@ async function runBom({ sysType, sizeKey, kw, batConfig, customerName, salesPers
         size: sizeKey,
         tier: TIER,
         bat_config: batConfig,
-        subsidy_type: "residential",
+        subsidy_type: sector === "commercial" ? "none" : "residential",
       }),
     });
 
@@ -157,6 +159,7 @@ interface GetQuotationBomArgs {
   systemSize: string;
   customerName: string;
   salesPerson?: string;
+  sector?: PropertyType;
 }
 
 /**
@@ -168,9 +171,10 @@ export async function getQuotationBom({
   systemSize,
   customerName,
   salesPerson = "",
+  sector = "residential",
 }: GetQuotationBomArgs): Promise<QuotationBom | null> {
   const { key, kw } = mapSystemSizeToKey(systemSize);
-  return runBom({ sysType: "ongrid", sizeKey: key, kw, batConfig: "0", customerName, salesPerson });
+  return runBom({ sysType: "ongrid", sizeKey: key, kw, batConfig: "0", customerName, salesPerson, sector });
 }
 
 /** A hybrid quote's three battery options, priced by the BOM engine. */
@@ -191,10 +195,11 @@ export async function getHybridBoms({
   systemSize,
   customerName,
   salesPerson = "",
+  sector = "residential",
 }: GetQuotationBomArgs): Promise<HybridBoms | null> {
   const { key, kw } = mapSystemSizeToKey(systemSize, HYBRID_SIZES);
   const run = (batConfig: string) =>
-    runBom({ sysType: "hybrid", sizeKey: key, kw, batConfig, customerName, salesPerson });
+    runBom({ sysType: "hybrid", sizeKey: key, kw, batConfig, customerName, salesPerson, sector });
   const [noBattery, oneBattery, twoBattery] = await Promise.all([run("0"), run("1"), run("2")]);
   if (!noBattery || !oneBattery || !twoBattery) return null;
   return { kw, noBattery, oneBattery, twoBattery };

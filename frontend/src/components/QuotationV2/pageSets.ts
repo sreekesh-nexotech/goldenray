@@ -1,21 +1,24 @@
 /**
- * Which pages of the 12-page quotation a copy contains.
+ * Which pages of the quotation a copy contains.
  *
- * The customer gets everything. The accounting copy the Studio generates for
- * the sales / accounting team is the same document cut down to the pages that
- * carry the deal: 1 cover (customer, quote number), 5 package pricing, 7
- * technical specifications and pricing table, 8 savings. Ids match the
- * `PAGES` lists in both the English and Malayalam documents.
+ * The customer gets everything: 12 pages residential, 9 commercial. The short
+ * copy the Studio generates is five pages for the one system chosen there:
+ * cover, its specifications, its investment summary with Book Now, and the
+ * terms. The ids exist in both documents, so one list serves both.
  */
+import type { PropertyType } from "@/components/SolarCalculator/installationType";
+
 export type QuotationVariant = "customer" | "accounting";
 
 export const FULL_PAGE_COUNT = 12;
+export const COMMERCIAL_PAGE_COUNT = 9;
 
-export const ACCOUNTING_PAGE_IDS: readonly string[] = [
+export const SHORT_PAGE_IDS: readonly string[] = [
   "01-cover",
-  "05-options",
   "07-tech-specs",
   "08-savings",
+  "10-terms",
+  "11-terms-2",
 ];
 
 export function parseVariant(value: unknown): QuotationVariant {
@@ -24,9 +27,10 @@ export function parseVariant(value: unknown): QuotationVariant {
 
 /** Page ids to render, or undefined for the full document. */
 export function pageIdsFor(variant: QuotationVariant): readonly string[] | undefined {
-  return variant === "accounting" ? ACCOUNTING_PAGE_IDS : undefined;
+  return variant === "accounting" ? SHORT_PAGE_IDS : undefined;
 }
 
-export function pageCountFor(variant: QuotationVariant): number {
-  return variant === "accounting" ? ACCOUNTING_PAGE_IDS.length : FULL_PAGE_COUNT;
+export function pageCountFor(variant: QuotationVariant, sector?: PropertyType): number {
+  if (variant === "accounting") return SHORT_PAGE_IDS.length;
+  return sector === "commercial" ? COMMERCIAL_PAGE_COUNT : FULL_PAGE_COUNT;
 }

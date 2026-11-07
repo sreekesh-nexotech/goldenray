@@ -1,6 +1,7 @@
 // Page 7 of the Flarize quotation document (English) — Technical Specifications — full spec comparison table
 import type { CSSProperties } from "react";
 import { HybridSpecTable } from "@/components/QuotationV2/HybridBlocks";
+import { ShortSystemSpecTable } from "@/components/QuotationV2/ShortSystemBlocks";
 import type { QuotationV2Data } from "../quotationV2MalayalamData";
 
 interface Page07TechSpecsProps {
@@ -130,7 +131,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
               color: "var(--grey)",
               flexShrink: 0,
               alignSelf: "stretch"
-            }}>ഓരോ ഘടകത്തിന്റെയും വിവരങ്ങൾ വ്യക്തമായി അവതരിപ്പിക്കുന്നു.</span></div>{data.hybrid ? <HybridSpecTable data={data} language="Malayalam" /> : <div style={{
+            }}>ഓരോ ഘടകത്തിന്റെയും വിവരങ്ങൾ വ്യക്തമായി അവതരിപ്പിക്കുന്നു.</span></div>{data.short ? <ShortSystemSpecTable system={data.short} subsidyAmount={data.hasSubsidy ? data.subsidyAmount : undefined} language="Malayalam" /> : data.hybrid ? <HybridSpecTable data={data} language="Malayalam" /> : <div style={{
             position: "relative",
             width: 1274,
             height: 1582,
@@ -1952,7 +1953,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 letterSpacing: "-0.500px",
                 color: "rgb(255,255,255)",
                 flexGrow: 1
-              }}>{data.basic.financed}</span></div></div>}<p
+              }}>{data.basic.financed}</span></div></div>}{!data.short && <p
                 style={{
                   position: "relative",
                   // Sits right under the table rather than a full column gap below it.
@@ -1969,7 +1970,7 @@ export default function Page07TechSpecs({ className, style, data }: Page07TechSp
                 }}
               >
                 ഡൗൺ പേയ്‌മെന്റ് ആകെ സിസ്റ്റം വിലയുടെ 10% ആണ്. ആകെ വിലയിൽ നിന്ന് ഡൗൺ പേയ്‌മെന്റും സബ്‌സിഡിയും കുറച്ചുള്ളതാണ് അടയ്ക്കേണ്ട / ലോൺ തുക; EMI കണക്കാക്കുന്നത് ഈ തുകയിലാണ്.
-              </p></div><div style={{
+              </p>}</div><div style={{
           position: "relative",
           height: 98,
           backgroundColor: "rgb(247,244,230)",

@@ -1,0 +1,9 @@
+/* The Malayalam designs set Latin text and figures in Poppins and Malayalam in
+ * Noto Sans Malayalam, so the document's font variables resolve to both, in
+ * that order, and each glyph falls through to the font that has it. `!important`
+ * for the same reason as in the residential Malayalam stylesheet: next/font
+ * injects its own same-specificity rule for these variables. */
+.quotation-commercial-ml {
+  --font-poppins: var(--font-commercial-latin), var(--font-noto-malayalam) !important;
+  --font-inter: var(--font-commercial-latin), var(--font-noto-malayalam) !important;
+}

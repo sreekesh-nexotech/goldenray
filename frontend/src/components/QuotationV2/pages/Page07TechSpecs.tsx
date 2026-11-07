@@ -1,6 +1,7 @@
 // Page 7 of the Flarize quotation document (English) — Technical Specifications — full spec comparison table
 import type { CSSProperties } from "react";
 import { HybridSpecTable } from "@/components/QuotationV2/HybridBlocks";
+import { ShortSystemSpecTable } from "@/components/QuotationV2/ShortSystemBlocks";
 import type { QuotationV2Data } from "../quotationV2Data";
 
 interface Page07TechSpecsProps {
@@ -198,7 +199,7 @@ export default function Page07TechSpecs({
                 your peace of mind.
               </span>
             </div>
-            {data.hybrid ? <HybridSpecTable data={data} language="English" /> : <div
+            {data.short ? <ShortSystemSpecTable system={data.short} subsidyAmount={data.hasSubsidy ? data.subsidyAmount : undefined} language="English" /> : data.hybrid ? <HybridSpecTable data={data} language="English" /> : <div
               style={{
                 position: "relative",
                 width: 1274,
@@ -2677,7 +2678,7 @@ export default function Page07TechSpecs({
                   {data.basic.financed}
                 </span>
               </div>
-            </div>}<p
+            </div>}{!data.short && <p
                 style={{
                   position: "relative",
                   // Sits right under the table rather than a full column gap below it.
@@ -2694,7 +2695,7 @@ export default function Page07TechSpecs({
                 }}
               >
                 Down payment is calculated on the total system cost. Amount payable / financed is the total cost less the down payment and the subsidy, and is the basis for the EMI.
-              </p>
+              </p>}
           </div>
           <div
             style={{
