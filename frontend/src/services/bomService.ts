@@ -8,6 +8,7 @@
 // engine (`POST /api/public/v1/bom/quote/`) to generate the real line items + pricing for
 // the system size the calculator computed.
 import { PUBLIC_API_BASE_URL } from "@/config";
+import type { PropertyType } from "@/components/SolarCalculator/installationType";
 
 const BOM_QUOTE_URL = `${PUBLIC_API_BASE_URL}bom/quote/`;
 

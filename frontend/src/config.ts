@@ -1,4 +1,8 @@
-const defaultApiBaseUrl = "http://62.171.151.149:47063/api/";
+const isDevelopment = process.env.NODE_ENV !== "production";
+
+const defaultApiBaseUrl = isDevelopment
+	? "http://127.0.0.1:8000/api/"
+	: "https://flarize.com/api/";
 
 export const API_BASE_URL: string =
 	process.env.NEXT_PUBLIC_API_BASE_URL || defaultApiBaseUrl;
@@ -7,16 +11,20 @@ export const API_BASE_URL: string =
 // leads, catalog, content). Every path under it ends in a slash. Override with
 // NEXT_PUBLIC_PUBLIC_API_BASE_URL (dev needs the backend's CORS_ALLOWED_ORIGINS
 // to list the site origin).
-const defaultPublicApiBaseUrl = "http://62.171.151.149:47063/api/public/v1/";
+const defaultPublicApiBaseUrl = isDevelopment
+	? "http://127.0.0.1:8000/api/public/v1/"
+	: "https://flarize.com/api/public/v1/";
 export const PUBLIC_API_BASE_URL: string =
 	process.env.NEXT_PUBLIC_PUBLIC_API_BASE_URL || defaultPublicApiBaseUrl;
 
 // New platform backend: the authenticated staff API (RS256 JWT, module.action
 // RBAC). Used by the Studio's BOM calculator, which keeps its own session
-// separate from the CMS sign-in. Override with NEXT_PUBLIC_STAFF_API_BASE_URL.
-const defaultStaffApiBaseUrl = "http://62.171.151.149:47063/api/v1/";
+// separate from the CMS sign-in. Override with STAFF_API_BASE_URL or NEXT_PUBLIC_STAFF_API_BASE_URL.
+const defaultStaffApiBaseUrl = isDevelopment
+	? "http://127.0.0.1:8000/api/v1/"
+	: "http://goldenray-backend:8000/api/v1/";
 export const STAFF_API_BASE_URL: string =
-	process.env.NEXT_PUBLIC_STAFF_API_BASE_URL || defaultStaffApiBaseUrl;
+	process.env.STAFF_API_BASE_URL || process.env.NEXT_PUBLIC_STAFF_API_BASE_URL || defaultStaffApiBaseUrl;
 
 // The blog's delivery API is now the platform's public surface
 // (PUBLIC_API_BASE_URL + `content/`), so there is no separate CMS base URL.
