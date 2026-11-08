@@ -35,10 +35,20 @@ const ROUTE_MODULES: [string, StudioModule][] = [
   ["/studio/careers/applications", "applications"],
   ["/studio/careers/departments", "departments"],
   ["/studio/careers/page", "career_page"],
-  ["/studio/careers", "careers"],
+  // The registry has no umbrella `careers` module; the overview screen is
+  // really the postings list, so it is gated on `job_positions`.
+  ["/studio/careers", "job_positions"],
   ["/studio/users", "users"],
   ["/studio/roles", "roles"],
-  ["/studio/settings", "settings"],
+  // The Settings screen edits company/profile/, which is the `company` module.
+  ["/studio/settings", "company"],
+  ["/studio/bom", "bom"],
+  // The BOM admin screen spans catalog, bom and offers. It is gated here on the
+  // least of those -- `catalog`, which its first tab needs -- and the screen then
+  // hides each tab the role cannot read. Note `/studio/bom-admin` does not match
+  // the `/studio/bom` prefix above (the match requires a following slash), so
+  // without this entry the route would have no gate at all.
+  ["/studio/bom-admin", "catalog"],
 ];
 
 function moduleForPath(pathname: string): StudioModule | null {
@@ -75,7 +85,7 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
           This screen isn&apos;t part of your role
         </div>
         <div style={{ fontSize: 13.5, color: studioColors.bodyGray, lineHeight: 1.5 }}>
-          Your account ({me.access_role_name ?? me.role}) doesn&apos;t include this module. Ask a Super Admin to
+          Your account ({me.role?.name ?? ""}) doesn&apos;t include this module. Ask a Super Admin to
           extend your role if you need it.
         </div>
         <Link href="/studio/dashboard" style={{ display: "inline-block", marginTop: 14, fontSize: 13, fontWeight: 600, color: studioColors.tealDeep }}>

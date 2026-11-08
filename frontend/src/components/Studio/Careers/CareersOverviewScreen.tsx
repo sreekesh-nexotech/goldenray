@@ -88,9 +88,9 @@ export default function CareersOverviewScreen() {
             )}
             {overview?.open_positions.map((p) => (
               <button
-                key={p.id}
+                key={p.uid}
                 type="button"
-                onClick={() => router.push(`/studio/careers/positions/${p.id}`)}
+                onClick={() => router.push(`/studio/careers/positions/${p.uid}`)}
                 className="flex w-full items-center gap-3 text-left transition-colors hover:bg-[rgba(7,74,77,0.03)]"
                 style={{ border: "none", background: "transparent", padding: "11px 16px", cursor: "pointer", boxShadow: `inset 0 -1px 0 rgba(229,231,235,.7)`, fontFamily: "var(--font-switzer)" }}
               >
@@ -120,10 +120,10 @@ export default function CareersOverviewScreen() {
               {apps === null && <div style={{ padding: 16, fontSize: 13, color: studioColors.mutedGray }}>Loading…</div>}
               {apps && apps.length === 0 && <div style={{ padding: 20, fontSize: 13, color: studioColors.mutedGray, textAlign: "center" }}>No applications yet.</div>}
               {apps?.slice(0, 8).map((a) => (
-                <div key={a.id} className="flex items-center gap-3" style={{ padding: "11px 16px", boxShadow: `inset 0 -1px 0 rgba(229,231,235,.7)` }}>
+                <div key={a.uid} className="flex items-center gap-3" style={{ padding: "11px 16px", boxShadow: `inset 0 -1px 0 rgba(229,231,235,.7)` }}>
                   <div className="min-w-0" style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 600, fontSize: 13.5, color: studioColors.tealDeep }}>{a.full_name}</div>
-                    <div style={{ fontSize: 11.5, color: studioColors.faintGray }}>{a.position} · {a.total_experience}</div>
+                    <div style={{ fontWeight: 600, fontSize: 13.5, color: studioColors.tealDeep }}>{a.name}</div>
+                    <div style={{ fontSize: 11.5, color: studioColors.faintGray }}>{a.display_position} · {a.total_experience}</div>
                   </div>
                   <Pill status={(a as CareerApplication & { status?: string }).status ?? "new"} size="sm" />
                   <span style={{ fontSize: 11.5, color: studioColors.mutedGray, fontFamily: studioFonts.num }}>{fmtDate(a.created_at)}</span>

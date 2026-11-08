@@ -33,9 +33,11 @@ export default function AssetDetailDrawer({
   asset: StudioMediaAsset;
   onClose: () => void;
   onUpdated: (asset: StudioMediaAsset) => void;
-  onDeleted: (id: number) => void;
+  onDeleted: (uid: string) => void;
 }) {
-  const { toast } = useStudio();
+  const { toast, can } = useStudio();
+  const canEdit = can("media", "edit");
+  const canArchive = can("media", "archive");
   const [alt, setAlt] = useState(asset.alternative_text);
   const [caption, setCaption] = useState(asset.caption);
   const [saving, setSaving] = useState(false);
@@ -61,7 +63,7 @@ export default function AssetDetailDrawer({
   const save = async () => {
     setSaving(true);
     try {
-      const updated = await patchMediaAsset(asset.id, { alternative_text: alt, caption });
+      const updated = await patchMediaAsset(asset.uid, { alternative_text: alt, caption });
       onUpdated(updated);
       toast("Asset updated");
     } catch (err) {
@@ -87,10 +89,10 @@ export default function AssetDetailDrawer({
   const doDelete = async () => {
     setDeleting(true);
     try {
-      await deleteMediaAsset(asset.id);
+      await deleteMediaAsset(asset.uid);
       toast("Asset deleted");
       setConfirmOpen(false);
-      onDeleted(asset.id);
+      onDeleted(asset.uid);
     } catch (err) {
       toast(err instanceof StudioApiError ? `Delete failed: ${err.message}` : "Delete failed", "error");
       setDeleting(false);
@@ -174,10 +176,10 @@ export default function AssetDetailDrawer({
               <span>File size</span>
               <span style={valueInk}>{assetKb(asset)} KB</span>
             </div>
-            {asset.mime && (
+            {asset.mime_type && (
               <div style={detailRow}>
                 <span>Type</span>
-                <span style={{ color: studioColors.tealDeep, fontFamily: studioFonts.mono, fontSize: 11.5 }}>{asset.mime}</span>
+                <span style={{ color: studioColors.tealDeep, fontFamily: studioFonts.mono, fontSize: 11.5 }}>{asset.mime_type}</span>
               </div>
             )}
             <div style={detailRow}>
@@ -225,11 +227,13 @@ export default function AssetDetailDrawer({
             style={{ fontSize: 13 }}
           />
 
-          <div style={{ marginTop: 12 }}>
-            <GoldButton onClick={save} disabled={saving || !dirty} style={{ width: "100%", height: 38 }}>
-              {saving ? "Saving…" : "Save metadata"}
-            </GoldButton>
-          </div>
+          {canEdit && (
+            <div style={{ marginTop: 12 }}>
+              <GoldButton onClick={save} disabled={saving || !dirty} style={{ width: "100%", height: 38 }}>
+                {saving ? "Saving…" : "Save metadata"}
+              </GoldButton>
+            </div>
+          )}
           <div style={{ fontSize: 11.5, color: studioColors.mutedGray, marginTop: 8 }}>
             Metadata only — to replace the image itself, upload a new asset.
           </div>
@@ -257,6 +261,7 @@ export default function AssetDetailDrawer({
           >
             Copy URL
           </button>
+          {canArchive && (
           <button
             type="button"
             onClick={() => setConfirmOpen(true)}
@@ -276,6 +281,7 @@ export default function AssetDetailDrawer({
           >
             Delete
           </button>
+          )}
         </div>
       </div>
 

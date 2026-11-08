@@ -109,6 +109,10 @@ class TokenClaimTests(TestCase):
         self.assertEqual(token["permissions"]["career_page"], ["view", "edit"])
         self.assertNotIn("leads", token["modules"])
 
+    def test_token_carries_the_email_for_platform_single_sign_in(self):
+        u = user_with(mod.CAREERS_HR)
+        self.assertEqual(StudioTokenObtainPairSerializer.get_token(u)["email"], u.email)
+
     def test_superuser_token_claims_admin_regardless_of_stored_role(self):
         su = User.objects.create_superuser(username="root", password="pw")
         self.assertEqual(su.role, "author")

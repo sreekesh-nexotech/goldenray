@@ -59,7 +59,7 @@ export default function DepartmentsScreen() {
     setSaving(true);
     try {
       if (editing === "new") await createDepartment({ name: name.trim(), slug: slug || slugify(name), description });
-      else if (editing) await updateDepartment(editing.id, { name: name.trim(), slug, description });
+      else if (editing) await updateDepartment(editing.uid, { name: name.trim(), slug, description });
       toast(editing === "new" ? "Department added" : "Saved");
       setEditing(null);
       await load();
@@ -72,7 +72,7 @@ export default function DepartmentsScreen() {
 
   const toggleActive = async (d: Department) => {
     try {
-      await updateDepartment(d.id, { is_active: !d.is_active });
+      await updateDepartment(d.uid, { is_active: !d.is_active });
       toast(d.is_active ? "Deactivated" : "Activated");
       await load();
     } catch (err) {
@@ -82,7 +82,7 @@ export default function DepartmentsScreen() {
 
   const remove = async (d: Department) => {
     try {
-      await deleteDepartment(d.id);
+      await deleteDepartment(d.uid);
       toast("Department deleted");
       await load();
     } catch (err) {
@@ -136,7 +136,7 @@ export default function DepartmentsScreen() {
           </StateRow>
         )}
         {rows?.map((d) => (
-          <tr key={d.id} className="transition-colors hover:bg-[rgba(7,74,77,0.03)]">
+          <tr key={d.uid} className="transition-colors hover:bg-[rgba(7,74,77,0.03)]">
             <Td>
               <div style={{ fontWeight: 600, color: studioColors.tealDeep }}>{d.name}</div>
               {d.description && <div style={{ fontSize: 12, color: studioColors.bodyGray, marginTop: 2, maxWidth: 480 }}>{d.description}</div>}

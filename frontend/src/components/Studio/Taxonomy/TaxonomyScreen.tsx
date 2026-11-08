@@ -45,12 +45,15 @@ interface AddState {
 function TaxonomyCard({
   title,
   onAdd,
+  canAdd,
   bodyStyle,
   children,
 }: {
   title: string;
   /** Create the value server-side; resolve on success, throw to keep the input. */
   onAdd: (value: string) => Promise<void>;
+  /** `blogs.create` — every taxonomy list is created through the blog module. */
+  canAdd: boolean;
   bodyStyle: CSSProperties;
   children: (state: AddState) => ReactNode;
 }) {
@@ -89,6 +92,7 @@ function TaxonomyCard({
     <div style={{ background: "#ffffff", borderRadius: 16, boxShadow: "inset 0 0 0 1px #E5E7EB", overflow: "hidden" }}>
       <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", boxShadow: "inset 0 -1px 0 #E5E7EB" }}>
         <span style={{ fontSize: 13.5, fontWeight: 600, color: studioColors.tealDeep }}>{title}</span>
+        {canAdd && (
         <button
           type="button"
           onClick={() => setAdding(true)}
@@ -112,6 +116,7 @@ function TaxonomyCard({
         >
           + Add
         </button>
+        )}
       </div>
       <div style={bodyStyle}>{children({ adding, busy, input, setInput, confirm: () => void confirm(), onKeyDown })}</div>
     </div>
@@ -150,7 +155,9 @@ const chipsBodyStyle: CSSProperties = {
 };
 
 export default function TaxonomyScreen() {
-  const { tips, toast } = useStudio();
+  const { tips, toast, can } = useStudio();
+  // blog/views/taxonomy.py: create -> blogs.create.
+  const canAdd = can("blogs", "create");
 
   const [authors, setAuthors] = useState<StudioAuthor[] | null>(null);
   const [categories, setCategories] = useState<StudioCategory[] | null>(null);
@@ -219,6 +226,7 @@ export default function TaxonomyScreen() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(320px,100%),1fr))", gap: 14 }}>
           {/* Authors */}
           <TaxonomyCard
+            canAdd={canAdd}
             title="Authors"
             onAdd={adder(
               (name) => createAuthor({ name }),
@@ -233,7 +241,7 @@ export default function TaxonomyScreen() {
                   <div style={{ fontSize: 12.5, color: studioColors.mutedGray }}>No authors yet.</div>
                 )}
                 {authors.map((a) => (
-                  <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div key={a.uid} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <div
                       style={{
                         width: 30,
@@ -314,6 +322,7 @@ export default function TaxonomyScreen() {
 
           {/* Categories */}
           <TaxonomyCard
+            canAdd={canAdd}
             title="Categories"
             onAdd={adder(
               (name) => createCategory({ name, slug: slugify(name) }),
@@ -329,7 +338,7 @@ export default function TaxonomyScreen() {
                 )}
                 {categories.map((c) => (
                   <span
-                    key={c.id}
+                    key={c.uid}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -365,6 +374,7 @@ export default function TaxonomyScreen() {
 
           {/* Tags */}
           <TaxonomyCard
+            canAdd={canAdd}
             title="Tags"
             onAdd={adder(
               (name) => createTag({ name }),
@@ -380,7 +390,7 @@ export default function TaxonomyScreen() {
                 )}
                 {tags.map((t) => (
                   <span
-                    key={t.id}
+                    key={t.uid}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -418,9 +428,10 @@ export default function TaxonomyScreen() {
 
           {/* Badges */}
           <TaxonomyCard
+            canAdd={canAdd}
             title="Badges"
             onAdd={adder(
-              (label) => createBadge({ label }),
+              (name) => createBadge({ name }),
               (b) => setBadges((prev) => [...(prev ?? []), b]),
               "Badge added"
             )}
@@ -433,7 +444,7 @@ export default function TaxonomyScreen() {
                 )}
                 {badges.map((b) => (
                   <span
-                    key={b.id}
+                    key={b.uid}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -447,7 +458,7 @@ export default function TaxonomyScreen() {
                     }}
                   >
                     <span style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor" }} />
-                    {b.label}
+                    {b.name}
                   </span>
                 ))}
                 {adding && (

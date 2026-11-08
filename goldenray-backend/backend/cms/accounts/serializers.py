@@ -26,6 +26,8 @@ class StudioTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         token["username"] = user.username
+        # Lets the platform backend map a Studio sign-in to its own account (single sign-in for the BOM calculator).
+        token["email"] = user.email
         # Superusers act as admins regardless of the stored role.
         token["role"] = "admin" if user.is_superuser else user.role
         permissions = user.permission_map()

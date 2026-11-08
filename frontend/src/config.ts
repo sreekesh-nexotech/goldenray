@@ -1,28 +1,30 @@
-const isDevelopment = process.env.NODE_ENV !== "production";
-const defaultApiBaseUrl = isDevelopment
-	? "http://127.0.0.1:8000/api/"
-	: "https://flarize.com/api/";
+const defaultApiBaseUrl = "http://62.171.151.149:47063/api/";
 
 export const API_BASE_URL: string =
 	process.env.NEXT_PUBLIC_API_BASE_URL || defaultApiBaseUrl;
 
-// Blog CMS delivery API (Strapi-compatible). The prod CMS is proxied under
-// flarize.com/studio-api (nginx → CMS container); the blog reads /api there.
-// Dev uses the local CMS. Override with NEXT_PUBLIC_BLOG_API_BASE_URL if needed.
-const defaultBlogApiBaseUrl = isDevelopment
-	? "http://127.0.0.1:8009/api"
-	: "https://flarize.com/studio-api/api";
-export const BLOG_API_BASE_URL: string =
-	process.env.NEXT_PUBLIC_BLOG_API_BASE_URL || defaultBlogApiBaseUrl;
+// New platform backend: the anonymous website API (calculators, EMI, BOM quote,
+// leads, catalog, content). Every path under it ends in a slash. Override with
+// NEXT_PUBLIC_PUBLIC_API_BASE_URL (dev needs the backend's CORS_ALLOWED_ORIGINS
+// to list the site origin).
+const defaultPublicApiBaseUrl = "http://62.171.151.149:47063/api/public/v1/";
+export const PUBLIC_API_BASE_URL: string =
+	process.env.NEXT_PUBLIC_PUBLIC_API_BASE_URL || defaultPublicApiBaseUrl;
 
-// Content Studio admin API (JWT auth + authoring) — the same Django CMS that
-// serves the blog delivery API, proxied at flarize.com/studio-api/admin-api in
-// prod. Override with NEXT_PUBLIC_ADMIN_API_BASE_URL if needed.
-const defaultAdminApiBaseUrl = isDevelopment
-	? "http://127.0.0.1:8009/admin-api/"
-	: "https://flarize.com/studio-api/admin-api/";
-export const ADMIN_API_BASE_URL: string =
-	process.env.NEXT_PUBLIC_ADMIN_API_BASE_URL || defaultAdminApiBaseUrl;
+// New platform backend: the authenticated staff API (RS256 JWT, module.action
+// RBAC). Used by the Studio's BOM calculator, which keeps its own session
+// separate from the CMS sign-in. Override with NEXT_PUBLIC_STAFF_API_BASE_URL.
+const defaultStaffApiBaseUrl = "http://62.171.151.149:47063/api/v1/";
+export const STAFF_API_BASE_URL: string =
+	process.env.NEXT_PUBLIC_STAFF_API_BASE_URL || defaultStaffApiBaseUrl;
+
+// The blog's delivery API is now the platform's public surface
+// (PUBLIC_API_BASE_URL + `content/`), so there is no separate CMS base URL.
+
+// The Content Studio's authoring API used to be the Django CMS at
+// /studio-api/admin-api/. It now runs on the platform staff API (/api/v1/),
+// reached server-side through the BFF in src/app/fe-api/studio/, so there is no
+// browser-facing admin base URL any more. See STAFF_API_BASE_URL above.
 
 // Canonical production origin. Every absolute URL the site emits — canonical
 // tags, Open Graph, JSON-LD, sitemap — must be built from this constant so the

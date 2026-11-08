@@ -9,7 +9,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import LinkingButton from "../ui/LinkingButton";
-import { getEMIConfig, type EMIBank } from "@/services/emiCalculator";
+import { getEMIConfig, type PublicEMIBank as EMIBank } from "@/services/emiCalculator";
 
 // ─── filter options ────────────────────────────────────────────────────────────
 const LOAN_OPTIONS = [
@@ -267,7 +267,7 @@ export default function BankRates() {
       ) : filtered.length > 0 ? (
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {filtered.map((bank) => (
-            <BankCard key={bank.id} bank={bank} />
+            <BankCard key={bank.uid} bank={bank} />
           ))}
         </div>
       ) : (

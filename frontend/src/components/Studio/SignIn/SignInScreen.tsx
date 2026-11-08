@@ -8,7 +8,6 @@
 // middleware preserved).
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Wordmark from "../shell/Wordmark";
 import { studioColors } from "../shared/format";
 import { login, StudioApiError } from "@/services/studioService";
@@ -34,13 +33,12 @@ const inputStyle: React.CSSProperties = {
 function nextDestination(): string {
   if (typeof window !== "undefined") {
     const next = new URLSearchParams(window.location.search).get("next");
-    if (next && next.startsWith("/studio/") && !next.startsWith("//")) return next;
+    if (next && next.startsWith("/studio/") && !next.startsWith("//") && next !== "/studio/login") return next;
   }
   return "/studio/dashboard";
 }
 
 export default function SignInScreen() {
-  const router = useRouter();
   const [username, setUsername] = useState("");
   const [pw, setPw] = useState("");
   const [error, setError] = useState("");
@@ -49,7 +47,7 @@ export default function SignInScreen() {
   const submit = async () => {
     const user = username.trim();
     if (!user) {
-      setError("Enter your username");
+      setError("Enter your email or username");
       return;
     }
     if (!pw) {
@@ -60,7 +58,7 @@ export default function SignInScreen() {
     setBusy(true);
     try {
       await login(user, pw);
-      router.replace(nextDestination());
+      window.location.href = nextDestination();
     } catch (err) {
       setBusy(false);
       if (err instanceof StudioApiError) {
@@ -105,12 +103,12 @@ export default function SignInScreen() {
         </p>
 
         <div style={{ marginBottom: 14 }}>
-          <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: studioColors.labelGray, marginBottom: 6 }}>Username</label>
+          <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: studioColors.labelGray, marginBottom: 6 }}>Email or Username</label>
           <input
             type="text"
             autoComplete="username"
-            aria-label="Username"
-            placeholder="your.username"
+            aria-label="Email or Username"
+            placeholder="you@flarize.com"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             onKeyDown={onKey}

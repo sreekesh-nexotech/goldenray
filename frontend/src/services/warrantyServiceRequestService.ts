@@ -1,5 +1,6 @@
 // src/services/warrantyServiceRequestService.ts
 import { apiCall } from "./apiService";
+import { newIdempotencyKey } from "../utils/fetchApi";
 
 export interface WarrantyServiceRequestData {
   full_name: string;
@@ -12,13 +13,12 @@ export interface WarrantyServiceRequestData {
 }
 
 export interface WarrantyServiceRequestResponse {
+  uid: string;
+  full_name: string;
+  issue_type: string;
+  status: string;
+  created_at: string;
   message: string;
-  status: "success" | "error";
-  data?: Omit<WarrantyServiceRequestData, "website"> & {
-    id: number;
-    created_at: string;
-  };
-  errors?: Record<string, string[]>;
 }
 
 export async function submitWarrantyServiceRequest(
@@ -26,9 +26,10 @@ export async function submitWarrantyServiceRequest(
 ): Promise<WarrantyServiceRequestResponse> {
   try {
     const response = await apiCall<WarrantyServiceRequestResponse>(
-      "warranty-service-requests/",
+      "warranty-requests/",
       "POST",
-      data
+      data,
+      { publicApi: true, idempotencyKey: newIdempotencyKey() }
     );
     return response;
   } catch (error) {

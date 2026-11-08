@@ -20,7 +20,7 @@ export const EMPLOYMENT_TYPES: { key: EmploymentType; label: string }[] = [
 ];
 
 export interface Department {
-  id: number;
+  uid: string;
   name: string;
   slug: string;
   description: string;
@@ -30,13 +30,15 @@ export interface Department {
   open_job_count: number;
   created_at: string;
   updated_at: string;
+  version: number;
 }
 
 export interface PositionListItem {
-  id: number;
+  uid: string;
   title: string;
   slug: string;
-  department: number;
+  /** The department's uid (a plain string here, not a nested object). */
+  department: string;
   department_name: string;
   location: string;
   employment_type: EmploymentType;
@@ -49,6 +51,10 @@ export interface PositionListItem {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+  /** Platform additions. */
+  opens_on: string | null;
+  openings: number;
+  version: number;
 }
 
 export interface Position extends PositionListItem {
@@ -61,7 +67,10 @@ export interface Position extends PositionListItem {
   seo_title: string;
   meta_description: string;
   canonical_url: string;
-  og_image: number | null;
+  /** Nested media reference on read; a uid on write. */
+  og_image: { uid: string; url: string | null; alternative_text: string } | null;
+  og_title: string;
+  og_description: string;
   schema_type: string;
   schema_extra: Record<string, unknown>;
   noindex: boolean;
@@ -74,7 +83,7 @@ export interface Position extends PositionListItem {
 export interface PositionWrite {
   title: string;
   slug: string;
-  department: number;
+  department: string;
   location: string;
   employment_type: EmploymentType;
   experience_required?: string;
@@ -93,7 +102,7 @@ export interface PositionWrite {
 
 export interface PositionFilters {
   search?: string;
-  department?: number | "";
+  department?: string | "";
   location?: string;
   employment_type?: EmploymentType | "";
   status?: PositionStatus | "";
@@ -119,6 +128,9 @@ export interface CareersOverview {
     draft_positions: number;
     closed_positions: number;
     departments: number;
+    /** Present only when the caller may view applications. */
+    applications_total?: number;
+    applications_new?: number;
   };
   open_positions: PositionListItem[];
 }
@@ -126,58 +138,70 @@ export interface CareersOverview {
 /* ── Departments ─────────────────────────────────────────────────────────── */
 
 export function getDepartments(filters: { search?: string; is_active?: boolean } = {}): Promise<Paginated<Department>> {
-  return studioRequest(`departments/${query(filters)}`);
+  return studioRequest(`careers/departments/${query(filters)}`);
 }
 
-export function createDepartment(body: { name: string; slug: string; description?: string }): Promise<Department> {
-  return studioRequest("departments/", { method: "POST", body });
+export function createDepartment(body: { name: string; slug?: string; description?: string }): Promise<Department> {
+  return studioRequest("careers/departments/", { method: "POST", body });
 }
 
-export function updateDepartment(id: number, body: Partial<Department>): Promise<Department> {
-  return studioRequest(`departments/${id}/`, { method: "PATCH", body });
+export function updateDepartment(uid: string, body: Partial<Department>): Promise<Department> {
+  return studioRequest(`careers/departments/${uid}/`, { method: "PATCH", body });
 }
 
-/** Refused with a 400 while any job still belongs to the department (§6.15). */
-export function deleteDepartment(id: number): Promise<void> {
-  return studioRequest(`departments/${id}/`, { method: "DELETE" });
+/** 409 `department_in_use` while any job still belongs to the department. */
+export function deleteDepartment(uid: string): Promise<void> {
+  return studioRequest(`careers/departments/${uid}/`, { method: "DELETE" });
 }
 
 /* ── Positions ───────────────────────────────────────────────────────────── */
 
 export function getPositions(filters: PositionFilters = {}): Promise<Paginated<PositionListItem>> {
-  return studioRequest(`job-positions/${query(filters)}`);
+  return studioRequest(`careers/positions/${query(filters)}`);
 }
 
-export function getPosition(id: number): Promise<Position> {
-  return studioRequest(`job-positions/${id}/`);
+export function getPosition(uid: string): Promise<Position> {
+  return studioRequest(`careers/positions/${uid}/`);
 }
 
 export function createPosition(body: PositionWrite): Promise<Position> {
-  return studioRequest("job-positions/", { method: "POST", body });
+  return studioRequest("careers/positions/", { method: "POST", body });
 }
 
-export function updatePosition(id: number, body: Partial<PositionWrite>): Promise<Position> {
-  return studioRequest(`job-positions/${id}/`, { method: "PATCH", body });
+export function updatePosition(uid: string, body: Partial<PositionWrite>): Promise<Position> {
+  return studioRequest(`careers/positions/${uid}/`, { method: "PATCH", body });
 }
 
-export function publishPosition(id: number): Promise<Position> {
-  return studioRequest(`job-positions/${id}/publish/`, { method: "POST" });
+export function publishPosition(uid: string, expectedVersion?: number): Promise<Position> {
+  return studioRequest(`careers/positions/${uid}/publish/`, {
+    method: "POST",
+    body: expectedVersion === undefined ? {} : { expected_version: expectedVersion },
+  });
 }
 
-export function unpublishPosition(id: number): Promise<Position> {
-  return studioRequest(`job-positions/${id}/unpublish/`, { method: "POST" });
+export function unpublishPosition(uid: string, expectedVersion?: number): Promise<Position> {
+  return studioRequest(`careers/positions/${uid}/unpublish/`, {
+    method: "POST",
+    body: expectedVersion === undefined ? {} : { expected_version: expectedVersion },
+  });
 }
 
-export function closePosition(id: number): Promise<Position> {
-  return studioRequest(`job-positions/${id}/close/`, { method: "POST" });
+export function closePosition(uid: string, expectedVersion?: number): Promise<Position> {
+  return studioRequest(`careers/positions/${uid}/close/`, {
+    method: "POST",
+    body: expectedVersion === undefined ? {} : { expected_version: expectedVersion },
+  });
 }
 
-export function archivePosition(id: number): Promise<Position> {
-  return studioRequest(`job-positions/${id}/archive/`, { method: "POST" });
+export function archivePosition(uid: string, expectedVersion?: number): Promise<Position> {
+  return studioRequest(`careers/positions/${uid}/archive/`, {
+    method: "POST",
+    body: expectedVersion === undefined ? {} : { expected_version: expectedVersion },
+  });
 }
 
-export function previewPosition(id: number): Promise<PositionPreview> {
-  return studioRequest(`job-positions/${id}/preview/`);
+export function previewPosition(uid: string): Promise<PositionPreview> {
+  return studioRequest(`careers/positions/${uid}/preview/`);
 }
 
 /* ── Overview ────────────────────────────────────────────────────────────── */

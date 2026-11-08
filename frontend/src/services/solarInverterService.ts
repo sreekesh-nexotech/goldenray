@@ -7,144 +7,139 @@ import {
   RatingTier,
   RatingType,
 } from "@/types/solarInverter";
-import { apiCall } from "./apiService";
+import {
+  brandSlug,
+  fetchProduct,
+  fetchProducts,
+  orderingFor,
+  type CatalogProduct,
+  type CatalogSort,
+} from "./catalogApi";
 
-// Backend response interfaces
-interface BackendInverterData {
-  id: number;
-  brand: string;
-  name: string;
-  inverter_type: string;
-  rating_tier: string;
-  image_url: string;
-  description: string;
-  rated_output_power: number;
-  maximum_dc_input: number;
-  mppt_trackers: number;
-  maximum_dc_voltage: number;
-  maximum_input_current: string;
-  weight: string;
-  display: string;
-  suitable_system_size: string;
-  maximum_efficiency: string;
-  european_efficiency: string;
-  mppt_efficiency: string;
-  dc_oversizing: number;
-  ac_overloading: number;
-  pid_protection: boolean;
-  iv_curve_scanning: string;
-  ip_rating: string;
-  corrosion_protection: string;
-  operating_temperature: string;
-  cooling: string;
-  noise_level: string;
-  dc_surge_protection: string;
-  ac_surge_protection: string;
-  arc_fault_detection: string;
-  grid_protection: boolean;
-  monitoring_app: string;
-  real_time_monitoring: boolean;
-  remote_diagnostics: string;
-  firmware_updates: string;
-  connectivity: string;
-  warranty_years: number;
-  extendable_warranty_years: number | null;
-  certifications: string[];
-  brand_trust: string;
+// Backend payload (GET /api/public/v1/products/inverters/): the product profile
+// with the technical sheet under `spec`.
+interface InverterSpec {
+  kw: string | null;
+  inverter_type: string | null;
+  topology: string | null;
+  mppt_count: number | null;
+  max_pv_voltage_v: number | null;
+  max_input_current_text: string | null;
+  max_dc_input_kw: string | null;
+  efficiency_pct: string | null;
+  european_efficiency_pct: string | null;
+  mppt_efficiency_pct: string | null;
+  dc_oversizing_pct: number | null;
+  ac_overloading_pct: number | null;
+  weight_kg: string | null;
+  ip_rating: string | null;
+  display: string | null;
+  suitable_system_size: string | null;
+  pid_protection: boolean | null;
+  iv_curve_scanning: string | null;
+  corrosion_protection: string | null;
+  operating_temperature: string | null;
+  cooling: string | null;
+  noise_level: string | null;
+  dc_surge_protection: string | null;
+  ac_surge_protection: string | null;
+  arc_fault_detection: string | null;
+  grid_protection: boolean | null;
+  monitoring_app: string | null;
+  real_time_monitoring: boolean | null;
+  remote_diagnostics: string | null;
+  firmware_updates: string | null;
+  connectivity: string | null;
+  certifications: string[] | null;
+  brand_trust: string | null;
   year_founded: number | null;
-  countries_served: string;
-  global_installations: string;
-  price_range: string;
-  kerala_climate_score: number;
-  efficiency_rating: number;
-  reliability_rating: number;
-  warranty_rating: number;
-  kerala_climate_rating: number;
-  overall_rating: string;
+  countries_served: string | null;
+  global_installations: string | null;
 }
 
-interface SolarInvertersResponse {
-  data: BackendInverterData[];
-  meta?: { total: number };
-}
-
-interface SingleInverterResponse {
-  data: BackendInverterData;
-}
-
-const TYPE_MAP: Record<string, InverterType> = {
-  string: "String",
-  hybrid: "Hybrid",
-  microinverter: "Microinverter",
-  "optimized-string": "Optimized String",
-};
+type BackendInverterData = CatalogProduct<InverterSpec>;
 
 const TIER_MAP: Record<string, RatingTier> = {
-  premium: "Premium",
-  "mid-range": "Mid-Range",
-  value: "Value",
+  PREMIUM: "Premium",
+  MID_RANGE: "Mid-Range",
+  VALUE: "Value",
 };
 
 const RATING_MAP: Record<string, RatingType> = {
-  excellent: "Excellent",
-  "very-good": "Very Good",
-  good: "Good",
+  EXCELLENT: "Excellent",
+  VERY_GOOD: "Very Good",
+  GOOD: "Good",
 };
 
+const num = (value: string | number | null | undefined): number =>
+  value === null || value === undefined || value === "" ? 0 : Number(value);
+
+// The UI's four inverter kinds come from two backend fields: hybrid is an
+// inverter_type, the rest are topologies of an on-grid one.
+function inverterTypeOf(spec: InverterSpec): InverterType {
+  if (spec.inverter_type === "HYBRID") return "Hybrid";
+  if (spec.topology === "MICRO") return "Microinverter";
+  if (spec.topology === "OPTIMIZED_STRING") return "Optimized String";
+  return "String";
+}
+
+// `id` is the product slug (the comparison pages carry it in the URL).
 function transformInverterData(b: BackendInverterData): SolarInverter {
+  const spec = b.spec;
   return {
-    id: b.id.toString(),
-    brand: b.brand,
-    name: b.name,
-    type: TYPE_MAP[b.inverter_type] ?? "String",
-    ratingTier: TIER_MAP[b.rating_tier] ?? "Mid-Range",
+    id: b.slug,
+    brand: b.brand_label,
+    name: b.headline || b.model,
+    type: inverterTypeOf(spec),
+    ratingTier: TIER_MAP[b.rating_tier ?? ""] ?? "Mid-Range",
     imageUrl: b.image_url,
-    description: b.description,
-    ratedOutputPower: b.rated_output_power,
-    maximumDcInput: b.maximum_dc_input,
-    mpptTrackers: b.mppt_trackers,
-    maximumDcVoltage: b.maximum_dc_voltage,
-    maximumInputCurrent: b.maximum_input_current,
-    weight: parseFloat(b.weight),
-    display: b.display,
-    suitableSystemSize: b.suitable_system_size,
-    maximumEfficiency: parseFloat(b.maximum_efficiency),
-    europeanEfficiency: parseFloat(b.european_efficiency),
-    mpptEfficiency: parseFloat(b.mppt_efficiency),
-    dcOversizing: b.dc_oversizing,
-    acOverloading: b.ac_overloading,
-    pidProtection: b.pid_protection,
-    ivCurveScanning: b.iv_curve_scanning,
-    ipRating: b.ip_rating,
-    corrosionProtection: b.corrosion_protection,
-    operatingTemperature: b.operating_temperature,
-    cooling: b.cooling,
-    noiseLevel: b.noise_level,
-    dcSurgeProtection: b.dc_surge_protection,
-    acSurgeProtection: b.ac_surge_protection,
-    arcFaultDetection: b.arc_fault_detection,
-    gridProtection: b.grid_protection,
-    monitoringApp: b.monitoring_app,
-    realTimeMonitoring: b.real_time_monitoring,
-    remoteDiagnostics: b.remote_diagnostics,
-    firmwareUpdates: b.firmware_updates,
-    connectivity: b.connectivity,
-    warrantyYears: b.warranty_years,
-    extendableWarrantyYears: b.extendable_warranty_years,
-    certifications: b.certifications || [],
-    brandTrust: b.brand_trust,
-    yearFounded: b.year_founded,
-    countriesServed: b.countries_served,
-    globalInstallations: b.global_installations,
-    priceRange: b.price_range,
-    keralaClimateScore: b.kerala_climate_score,
+    description: b.description || b.summary,
+    // The UI works in watts; the backend sends kW.
+    ratedOutputPower: Math.round(num(spec.kw) * 1000),
+    maximumDcInput: Math.round(num(spec.max_dc_input_kw) * 1000),
+    mpptTrackers: num(spec.mppt_count),
+    maximumDcVoltage: num(spec.max_pv_voltage_v),
+    maximumInputCurrent: spec.max_input_current_text ?? "",
+    weight: num(spec.weight_kg),
+    display: spec.display ?? "",
+    suitableSystemSize: spec.suitable_system_size ?? "",
+    maximumEfficiency: num(spec.efficiency_pct),
+    europeanEfficiency: num(spec.european_efficiency_pct),
+    mpptEfficiency: num(spec.mppt_efficiency_pct),
+    dcOversizing: num(spec.dc_oversizing_pct),
+    acOverloading: num(spec.ac_overloading_pct),
+    pidProtection: Boolean(spec.pid_protection),
+    ivCurveScanning: spec.iv_curve_scanning ?? "",
+    ipRating: spec.ip_rating ?? "",
+    corrosionProtection: spec.corrosion_protection ?? "",
+    operatingTemperature: spec.operating_temperature ?? "",
+    cooling: spec.cooling ?? "",
+    noiseLevel: spec.noise_level ?? "",
+    dcSurgeProtection: spec.dc_surge_protection ?? "",
+    acSurgeProtection: spec.ac_surge_protection ?? "",
+    arcFaultDetection: spec.arc_fault_detection ?? "",
+    gridProtection: Boolean(spec.grid_protection),
+    monitoringApp: spec.monitoring_app ?? "",
+    realTimeMonitoring: Boolean(spec.real_time_monitoring),
+    remoteDiagnostics: spec.remote_diagnostics ?? "",
+    firmwareUpdates: spec.firmware_updates ?? "",
+    connectivity: spec.connectivity ?? "",
+    warrantyYears: num(b.warranty.product_years),
+    extendableWarrantyYears: b.warranty.extendable_years,
+    certifications: spec.certifications || [],
+    brandTrust: spec.brand_trust ?? "",
+    yearFounded: spec.year_founded,
+    countriesServed: spec.countries_served ?? "",
+    globalInstallations: spec.global_installations ?? "",
+    priceRange: b.price_range_label ?? "",
+    keralaClimateScore: num(b.kerala_climate_score),
     ratings: {
-      efficiency: b.efficiency_rating,
-      reliability: b.reliability_rating,
-      warranty: b.warranty_rating,
-      keralaClimate: b.kerala_climate_rating,
+      efficiency: num(b.ratings.efficiency),
+      reliability: num(b.ratings.reliability),
+      warranty: num(b.ratings.warranty),
+      keralaClimate: num(b.ratings.kerala_climate),
     },
-    overallRating: RATING_MAP[b.overall_rating] ?? "Good",
+    overallRating: RATING_MAP[b.overall_rating ?? ""] ?? "Good",
   };
 }
 
@@ -161,13 +156,8 @@ export function getAvailableInverterBrands(): string[] {
 
 export async function getAllInverters(): Promise<SolarInverter[]> {
   try {
-    const response = await apiCall<SolarInvertersResponse>(
-      "solar-inverters",
-      "GET",
-      null,
-      { revalidate: 3600 },
-    );
-    return response.data.map(transformInverterData);
+    const rows = await fetchProducts<BackendInverterData>("inverters", new URLSearchParams(), 3600);
+    return rows.map(transformInverterData);
   } catch (error) {
     console.error("Error fetching all inverters:", error);
     return [];
@@ -178,11 +168,7 @@ export async function getInverterById(
   id: string,
 ): Promise<SolarInverter | null> {
   try {
-    const response = await apiCall<SingleInverterResponse>(
-      `solar-inverters/${id}`,
-      "GET",
-    );
-    return transformInverterData(response.data);
+    return transformInverterData(await fetchProduct<BackendInverterData>("inverter", id));
   } catch (error) {
     console.error(`Error fetching inverter ${id}:`, error);
     return null;
@@ -193,86 +179,61 @@ export async function getInvertersByIds(
   ids: string[],
 ): Promise<SolarInverter[]> {
   try {
-    const idsParam = ids.join(",");
-    const response = await apiCall<SolarInvertersResponse>(
-      `solar-inverters?ids=${idsParam}`,
-      "GET",
-      null,
-      { revalidate: 3600 },
-    );
-    return response.data.map(transformInverterData);
+    const params = new URLSearchParams({ slug: ids.join(",") });
+    const rows = await fetchProducts<BackendInverterData>("inverters", params, 3600);
+    return rows.map(transformInverterData);
   } catch (error) {
     console.error("Error fetching inverters by IDs:", error);
     return [];
   }
 }
 
-const TYPE_TO_BACKEND: Record<InverterType, string> = {
-  String: "string",
-  Hybrid: "hybrid",
-  Microinverter: "microinverter",
-  "Optimized String": "optimized-string",
-};
-
 const TIER_TO_BACKEND: Record<RatingTier, string> = {
-  Premium: "premium",
-  "Mid-Range": "mid-range",
-  Value: "value",
+  Premium: "PREMIUM",
+  "Mid-Range": "MID_RANGE",
+  Value: "VALUE",
 };
 
-function buildFilterQuery(filters: InverterFilterState): string {
+// Build query parameters for filtering (public API v1 names). The inverter kind
+// is a client-side filter (see getFilteredInverters): it spans two backend fields.
+function buildFilterQuery(filters: InverterFilterState): URLSearchParams {
   const params = new URLSearchParams();
 
-  if (filters.inverterTypes.length > 0) {
-    params.append(
-      "type",
-      filters.inverterTypes.map((t) => TYPE_TO_BACKEND[t]).join(","),
-    );
-  }
-
-  if (filters.ratingTiers.length > 0) {
-    params.append(
-      "tier",
-      filters.ratingTiers.map((t) => TIER_TO_BACKEND[t]).join(","),
-    );
-  }
+  filters.ratingTiers.forEach((t) => params.append("rating_tier", TIER_TO_BACKEND[t]));
 
   if (filters.warranties.fifteenYearsPlus) {
-    params.append("minWarranty", "15");
+    params.append("min_product_warranty", "15");
   } else if (filters.warranties.tenYearsPlus) {
-    params.append("minWarranty", "10");
+    params.append("min_product_warranty", "10");
   }
 
   if (filters.warranties.extendableTo25) {
-    params.append("extendableTo", "25");
+    params.append("min_extendable_warranty", "25");
   }
 
   if (filters.brands.length > 0) {
-    params.append("brand", filters.brands.join(","));
+    params.append("brand", filters.brands.map(brandSlug).join(","));
   }
 
   if (filters.keralaClimateRated) {
-    params.append("minKeralaScore", "85");
+    params.append("min_kerala_score", "85");
   }
 
-  return params.toString();
+  return params;
 }
 
 export async function getFilteredInverters(
   filters: InverterFilterState,
-  sortBy: "topRated" | "efficiency" | "price" | "warranty" = "topRated",
+  sortBy: CatalogSort = "topRated",
 ): Promise<SolarInverter[]> {
   try {
-    const filterQuery = buildFilterQuery(filters);
-    const queryString = filterQuery
-      ? `${filterQuery}&sort=${sortBy}&order=desc`
-      : `sort=${sortBy}&order=desc`;
-
-    const response = await apiCall<SolarInvertersResponse>(
-      `solar-inverters?${queryString}`,
-      "GET",
-    );
-    return response.data.map(transformInverterData);
+    const params = buildFilterQuery(filters);
+    params.set("ordering", orderingFor(sortBy));
+    const rows = await fetchProducts<BackendInverterData>("inverters", params);
+    const inverters = rows.map(transformInverterData);
+    return filters.inverterTypes.length > 0
+      ? inverters.filter((inverter) => filters.inverterTypes.includes(inverter.type))
+      : inverters;
   } catch (error) {
     console.error("Error fetching filtered inverters:", error);
     return [];

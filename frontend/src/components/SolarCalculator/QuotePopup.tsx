@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Button from "../ui/Button";
 import { sendOtp,verifyOtp } from "@/services/detailedQuoteService";
+import { rememberVerification } from "@/services/phoneVerification";
 
 interface QuotePopupProps {
   onClose: () => void;
@@ -46,8 +47,9 @@ export default function QuotePopup({ onClose }: QuotePopupProps) {
           setShowOtpInput(true);
         } else {
           // Verify OTP
-          const response = await verifyOtp(name, phoneNumber, code);
+          const response = await verifyOtp(phoneNumber, code);
           if (response.status == "approved") {
+            rememberVerification(phoneNumber, response.verification_token);
             setFormSubmitted(true);
             setTimeout(() => {
               onClose();

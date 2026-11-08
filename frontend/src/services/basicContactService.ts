@@ -1,7 +1,8 @@
 // golden-ray/frontend/src/services/basicContactService.ts
-import { API_BASE_URL } from "../config";
 import { apiCall } from "./apiService";
-import { getStudioAccessToken, refreshStudioAccessToken } from "./studioService";
+import { newIdempotencyKey } from "../utils/fetchApi";
+import { requestPhoneVerification } from "./phoneVerification";
+import { studioRequest, type Paginated } from "./studioService";
 
 /** Which website form an enquiry came from — mirrors LeadCollectionHome.Source. */
 export type EnquirySource =
@@ -20,6 +21,8 @@ export interface ContactFormData {
   name: string;
   phone_number: string;
   source: EnquirySource;
+  /** A token from an earlier verification; when absent the customer is asked for a code. */
+  verification_token?: string;
   /** Site path the form was submitted from; defaults to the current page. */
   page?: string;
   /** Any extra fields the form collects (address, locality, …). */
@@ -35,7 +38,9 @@ export interface ContactResponse {
 
 /** A stored enquiry row as returned by GET lead-collection-home/. */
 export interface ContactEnquiry {
-  id: number;
+  uid: string;
+  /** Human-readable lead reference assigned by the platform (e.g. "L-00123"). */
+  number: string;
   name: string;
   phone_number: string;
   source: EnquirySource;
@@ -47,15 +52,68 @@ export interface ContactEnquiry {
   updated_at: string;
 }
 
+/** One row of `GET /api/v1/leads/`. */
+interface PlatformLead {
+  uid: string;
+  number: string;
+  form: string;
+  status: string;
+  name: string;
+  phone: string;
+  email: string | null;
+  message: string | null;
+  payload: Record<string, string | number | boolean> | null;
+  page: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// The platform's `form` enum for each website source (leads/ POST).
+const LEAD_FORM: Record<EnquirySource, string> = {
+  footer: "FOOTER",
+  home_booking: "HOME_BOOKING",
+  contact_page: "CONTACT_PAGE",
+  group_purchase: "GROUP_PURCHASE",
+  quotation: "QUOTATION",
+  quote_request: "QUOTE_REQUEST",
+  referral_partner: "REFERRAL_PARTNER",
+  warranty_service: "WARRANTY_SERVICE",
+  career_application: "OTHER",
+  other: "OTHER",
+};
+
+interface LeadApiResponse {
+  uid: string;
+  number: string;
+  message?: string;
+}
+
+/**
+ * Submit an enquiry to the platform (POST /api/public/v1/leads/). The backend
+ * only accepts a lead whose phone number was verified with a one-time code, so
+ * the customer is asked for one first (unless a token is passed in).
+ */
 export async function submitContactForm(data: ContactFormData): Promise<ContactResponse> {
   try {
     const page =
       data.page ?? (typeof window !== "undefined" ? window.location.pathname : "");
-    const response = await apiCall<ContactResponse>("lead-collection-home/", "POST", {
-      ...data,
-      page,
-    });
-    return response;
+    const phone = data.phone_number.replace(/\s+/g, "");
+    const verificationToken =
+      data.verification_token ?? (await requestPhoneVerification(data.name, phone));
+    const response = await apiCall<LeadApiResponse>(
+      "leads/",
+      "POST",
+      {
+        form: LEAD_FORM[data.source] ?? "OTHER",
+        name: data.name,
+        phone,
+        page,
+        details: data.details ?? {},
+        verification_token: verificationToken,
+      },
+      { publicApi: true, idempotencyKey: newIdempotencyKey() }
+    );
+    return { message: response.message ?? "Request received", status: "success" };
   } catch (error) {
     console.error("Error submitting contact form!", error);
     throw error;
@@ -74,33 +132,35 @@ export function contactErrorMessage(error: unknown): string {
   return "We couldn't submit your request. Please try again, or call us directly.";
 }
 
+/** Reverse of LEAD_FORM: the platform's `form` back to a website source. */
+const FORM_SOURCE: Record<string, EnquirySource> = Object.entries(LEAD_FORM).reduce(
+  (acc, [source, form]) => {
+    acc[form] = source as EnquirySource;
+    return acc;
+  },
+  {} as Record<string, EnquirySource>,
+);
+
 /**
  * Every enquiry captured by the footer / home contact forms, newest first
- * (the API already orders by `-created_at`). Feeds the Content Studio
- * Enquiries screen.
+ * (`GET /api/v1/leads/` already orders by `-created_at`). Feeds the Content
+ * Studio Enquiries screen, and needs the `leads` module.
  *
- * Reading the queue needs a Studio token granting `leads` (§6.8); the backend
- * verifies it with the key shared with the CMS. A 401 gets one refresh-and-
- * retry, matching careerApplicationService.
+ * The platform's lead is a richer record than the old `lead_collection_home`
+ * row, so it is mapped back onto the shape the screen renders.
  */
 export async function getContactEnquiries(): Promise<ContactEnquiry[]> {
-  const send = (token: string | null) =>
-    fetch(`${API_BASE_URL}lead-collection-home/`, {
-      cache: "no-store",
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
-  let response = await send(getStudioAccessToken());
-  if (response.status === 401) response = await send(await refreshStudioAccessToken());
-  if (!response.ok) {
-    let detail = `Request failed (${response.status})`;
-    try {
-      const data = await response.json();
-      if (typeof data?.detail === "string") detail = data.detail;
-    } catch {
-      /* keep the generic message */
-    }
-    throw new Error(detail);
-  }
-  const rows = (await response.json()) as ContactEnquiry[];
-  return Array.isArray(rows) ? rows : [];
+  const page = await studioRequest<Paginated<PlatformLead>>("leads/?page_size=200");
+  return page.results.map((row) => ({
+    uid: row.uid,
+    number: row.number,
+    name: row.name,
+    phone_number: row.phone,
+    source: FORM_SOURCE[row.form] ?? "footer",
+    source_label: row.form,
+    page: row.page ?? "",
+    details: row.payload ?? {},
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  }));
 }

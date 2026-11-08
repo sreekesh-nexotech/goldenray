@@ -6,10 +6,24 @@ import type { EntryStatus, StatusPillStyle } from "@/types/studio";
 import { STUDIO_NOW } from "@/data/studio/constants";
 
 /** Status pill colours + label, matching the design tokens. */
-export function statusPill(status: EntryStatus): StatusPillStyle {
-  if (status === "published") return { label: "Published", bg: "#C3E0BD", ink: "#0A6B31" };
-  if (status === "draft") return { label: "Draft", bg: "#FBF1BD", ink: "#8A6117" };
-  return { label: "Modified", bg: "#ADD6D8", ink: "#074A4D" };
+/**
+ * Status pill for a content row. Accepts the platform's uppercase lifecycle
+ * (DRAFT / REVIEW / PUBLISHED / ARCHIVED) as well as the older lowercase
+ * values still used by the mock screens.
+ */
+export function statusPill(status: EntryStatus | string): StatusPillStyle {
+  switch (String(status).toUpperCase()) {
+    case "PUBLISHED":
+      return { label: "Published", bg: "#C3E0BD", ink: "#0A6B31" };
+    case "DRAFT":
+      return { label: "Draft", bg: "#FBF1BD", ink: "#8A6117" };
+    case "REVIEW":
+      return { label: "In review", bg: "#FBD9BD", ink: "#8A3D17" };
+    case "ARCHIVED":
+      return { label: "Archived", bg: "#E5E7EB", ink: "#4B5563" };
+    default:
+      return { label: "Modified", bg: "#ADD6D8", ink: "#074A4D" };
+  }
 }
 
 /** Membership status pill colours + label. */
