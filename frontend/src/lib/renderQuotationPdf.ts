@@ -4,6 +4,7 @@ import puppeteer, { type Browser } from "puppeteer-core";
 import { resolveChromePath } from "@/lib/chromePath";
 import { attachmentHeader, quotationFileName } from "@/lib/quotationFileName";
 import { pageCountFor, parseVariant } from "@/components/QuotationV2/pageSets";
+import type { PropertyType } from "@/components/SolarCalculator/installationType";
 
 /**
  * Render a quotation page to a PDF with real Chrome — shared by the English
@@ -73,9 +74,11 @@ export async function renderQuotationPdf(
     if (!quotationData || typeof quotationData !== "object") {
       return NextResponse.json({ error: "Missing quotation data." }, { status: 400 });
     }
-    // `?variant=accounting` is the Studio's short copy (pages 1, 5, 7, 8).
+    // `?variant=accounting` is the Studio's short copy of the document.
     const variant = parseVariant(new URL(request.url).searchParams.get("variant"));
-    const expectedPages = pageCountFor(variant);
+    // The same routes serve the commercial document, which is shorter; the
+    // page chooses the document from `quotationData.sector`.
+    const expectedPages = pageCountFor(variant, (quotationData as { sector?: PropertyType }).sector);
 
     mark("launching Chrome");
     browser = await puppeteer.launch({

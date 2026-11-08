@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { QuotationV2MalayalamDocument } from "@/components/QuotationV2Malayalam";
+import { QuotationCommercialDocument } from "@/components/QuotationCommercial";
 import {
   buildQuotationV2MalayalamData,
   generateQuoteNo,
@@ -20,7 +21,7 @@ import {
 import { getQuotationFinancing } from "@/services/quotationEmiService";
 import { getQuotationTestimonials } from "@/services/quotationTestimonialsService";
 import type { TestimonialEntry } from "@/components/QuotationV2/testimonials";
-import { pageIdsFor, parseVariant } from "@/components/QuotationV2/pageSets";
+import { pageIdsFor, parseVariant, type QuotationVariant } from "@/components/QuotationV2/pageSets";
 import { withTimeout } from "@/lib/withTimeout";
 import { getQuotationSettings } from "@/services/quotationSettingsService";
 
@@ -37,9 +38,8 @@ export default function QuotationV2MalayalamView() {
   const [input, setInput] = useState<QuotationV2Input | null>(null);
   const [loading, setLoading] = useState(true);
   const [quoteNo, setQuoteNo] = useState("");
-  // `?variant=accounting` renders the Studio's short accounting copy (pages 1,
-  // 5, 7, 8) instead of all twelve pages.
-  const [pageIds, setPageIds] = useState<readonly string[] | undefined>();
+  // `?variant=accounting` renders the Studio's short copy, not the whole document.
+  const [variant, setVariant] = useState<QuotationVariant>("customer");
   const [stats, setStats] = useState<InstallationSummary | undefined>();
   // Admin's EMI rates and offer banner. The document waits for them (they
   // change printed figures) and falls back to defaults if the backend is down.
@@ -86,9 +86,7 @@ export default function QuotationV2MalayalamView() {
     // Generated once on mount: re-deriving it every render would change the
     // quote number on screen each time React re-renders the document.
     setQuoteNo(generateQuoteNo());
-    setPageIds(
-      pageIdsFor(parseVariant(new URLSearchParams(window.location.search).get("variant"))),
-    );
+    setVariant(parseVariant(new URLSearchParams(window.location.search).get("variant")));
 
     const storedData = sessionStorage.getItem("quotationData");
     if (storedData) {
@@ -140,6 +138,13 @@ export default function QuotationV2MalayalamView() {
   }
 
   if (!data) return null;
+
+  const pageIds = pageIdsFor(variant);
+
+  // The same figures; a commercial quote just reads them into its own pages.
+  if (input?.sector === "commercial") {
+    return <QuotationCommercialDocument data={data} language="Malayalam" pageIds={pageIds} />;
+  }
 
   return <QuotationV2MalayalamDocument data={data} pageIds={pageIds} />;
 }

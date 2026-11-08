@@ -1,6 +1,7 @@
 // Page 7 of the Flarize quotation document (English) — Technical Specifications — full spec comparison table
 import type { CSSProperties } from "react";
 import { HybridSpecTable } from "@/components/QuotationV2/HybridBlocks";
+import { ShortSystemSpecTable } from "@/components/QuotationV2/ShortSystemBlocks";
 import type { QuotationV2Data } from "../quotationV2Data";
 
 interface Page07TechSpecsProps {
@@ -198,7 +199,7 @@ export default function Page07TechSpecs({
                 your peace of mind.
               </span>
             </div>
-            {data.hybrid ? <HybridSpecTable data={data} language="English" /> : <div
+            {data.short ? <ShortSystemSpecTable system={data.short} subsidyAmount={data.hasSubsidy ? data.subsidyAmount : undefined} language="English" /> : data.hybrid ? <HybridSpecTable data={data} language="English" /> : <div
               style={{
                 position: "relative",
                 width: 1274,
@@ -2304,7 +2305,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.premium.downPayment}
+                  −{data.premium.downPayment}
                 </span>
               </div><div
                 style={{
@@ -2340,7 +2341,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.smart.downPayment}
+                  −{data.smart.downPayment}
                 </span>
               </div><div
                 style={{
@@ -2378,7 +2379,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.basic.downPayment}
+                  −{data.basic.downPayment}
                 </span>
               </div><div
                 style={{
@@ -2450,7 +2451,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.subsidyRowValue}
+                  {data.hasSubsidy ? `−${data.subsidyRowValue}` : data.subsidyRowValue}
                 </span>
               </div><div
                 style={{
@@ -2486,7 +2487,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.subsidyRowValue}
+                  {data.hasSubsidy ? `−${data.subsidyRowValue}` : data.subsidyRowValue}
                 </span>
               </div><div
                 style={{
@@ -2524,7 +2525,7 @@ export default function Page07TechSpecs({
                     alignSelf: "stretch",
                   }}
                 >
-                  {data.subsidyRowValue}
+                  {data.hasSubsidy ? `−${data.subsidyRowValue}` : data.subsidyRowValue}
                 </span>
               </div><div
                 style={{
@@ -2677,7 +2678,7 @@ export default function Page07TechSpecs({
                   {data.basic.financed}
                 </span>
               </div>
-            </div>}<p
+            </div>}{!data.short && <p
                 style={{
                   position: "relative",
                   // Sits right under the table rather than a full column gap below it.
@@ -2694,7 +2695,7 @@ export default function Page07TechSpecs({
                 }}
               >
                 Down payment is calculated on the total system cost. Amount payable / financed is the total cost less the down payment and the subsidy, and is the basis for the EMI.
-              </p>
+              </p>}
           </div>
           <div
             style={{
@@ -2779,13 +2780,14 @@ export default function Page07TechSpecs({
                     fontFamily:
                       'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                     fontWeight: 500,
-                    fontSize: 18,
-                    lineHeight: 1.399999976158142,
+                    fontSize: 12,
+                    whiteSpace: "pre-line",
+                    lineHeight: "14px",
                     color: "rgb(18,53,50)",
                     flexGrow: 1,
                   }}
                 >
-                  Thannikakal, Thumpoly PO, Alappuzha– 688008
+                  {"Tharath Building,Kalappura, \nAlappuzha – 688007"}
                 </span>
               </div>
               <div
@@ -2804,7 +2806,7 @@ export default function Page07TechSpecs({
                   style={{
                     position: "absolute",
                     left: 0,
-                    top: 16,
+                    top: 5,
                     width: 18,
                     height: 18,
                     color: "rgb(18,53,50)",
@@ -2820,7 +2822,7 @@ export default function Page07TechSpecs({
                   style={{
                     position: "absolute",
                     left: 29,
-                    top: 12.5,
+                    top: 1,
                     width: 163,
                     height: 25,
                     fontFamily:

@@ -24,9 +24,11 @@ const gridImages = [
   },
 ];
 
+const images = [largeImage, ...gridImages];
+
 export default function LifeAtFlarize() {
   return (
-    <section  className="py-16 px-4 sm:px-6 lg:px-8">
+    <section className="py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Heading */}
         <div className="text-center mb-12">
@@ -38,10 +40,32 @@ export default function LifeAtFlarize() {
           </p>
         </div>
 
-        {/* Gallery */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
-          {/* Large image */}
-          <div className="relative rounded-2xl overflow-hidden aspect-[4/5] sm:aspect-[3/4] lg:aspect-auto lg:h-full min-h-[280px]">
+        {/* Equal-height swipe gallery on mobile. */}
+        <div
+          aria-label="Life at Flarize photo gallery"
+          role="region"
+          tabIndex={0}
+          className="flex gap-4 overflow-x-auto pb-3 snap-x snap-mandatory overscroll-x-contain sm:gap-5 lg:hidden"
+        >
+          {images.map((image) => (
+            <div
+              key={image.src}
+              className="relative aspect-[4/3] w-[82vw] max-w-[360px] shrink-0 snap-center overflow-hidden rounded-2xl sm:w-[55vw]"
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                sizes="(max-width: 640px) 82vw, 55vw"
+                className="object-cover object-center"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Original large-image plus 2x2 gallery layout on desktop. */}
+        <div className="hidden gap-4 sm:gap-5 lg:grid lg:grid-cols-2">
+          <div className="relative min-h-[280px] overflow-hidden rounded-2xl lg:h-full">
             <Image
               src={largeImage.src}
               alt={largeImage.alt}
@@ -50,13 +74,11 @@ export default function LifeAtFlarize() {
               className="object-cover object-[17%_center]"
             />
           </div>
-
-          {/* 2x2 grid */}
           <div className="grid grid-cols-2 gap-4 sm:gap-5">
-            {gridImages.map((image, index) => (
+            {gridImages.map((image) => (
               <div
-                key={index}
-                className="relative rounded-2xl overflow-hidden aspect-[4/3]"
+                key={image.src}
+                className="relative aspect-[4/3] overflow-hidden rounded-2xl"
               >
                 <Image
                   src={image.src}

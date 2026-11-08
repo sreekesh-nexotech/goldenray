@@ -108,7 +108,7 @@ export default function FounderNote() {
                  growth and strategy.
               </p>
 
-              <p className="mt-5 text-[0.9rem] font-semibold leading-[1.5] text-[#111111] md:text-[1rem]">
+              <p className="mt-5 text-[0.9rem] f.o9ont-semibold leading-[1.5] text-[#111111] md:text-[1rem]">
                 Our direction is strengthened by experienced leaders who bring a 
                 broader perspective to how we build and grow Flarize.
               </p>

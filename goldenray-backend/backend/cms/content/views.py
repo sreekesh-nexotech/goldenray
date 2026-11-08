@@ -1,7 +1,9 @@
 from django.conf import settings
+from django.db import IntegrityError, transaction
 from django.utils.text import slugify
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -88,6 +90,28 @@ class EntryViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             return EntryReadSerializer
         return EntryWriteSerializer
+
+    # ── Writes ────────────────────────────────────────────────────────────────
+    # The serializer's slug check and the insert are not atomic, so two writers
+    # claiming the same slug at once both pass validation and the loser hits the
+    # database constraint. Report that as the same 400-on-`slug` the check gives,
+    # not a 500 the editor cannot explain.
+    def _save_or_slug_conflict(self, serializer):
+        try:
+            with transaction.atomic():
+                serializer.save()
+        except IntegrityError as exc:
+            if "uniq_entry_collection_slug" not in str(exc) and "slug" not in str(exc):
+                raise
+            raise ValidationError(
+                {"slug": ["This slug is already in use in this collection."]}
+            ) from exc
+
+    def perform_create(self, serializer):
+        self._save_or_slug_conflict(serializer)
+
+    def perform_update(self, serializer):
+        self._save_or_slug_conflict(serializer)
 
     # ── Slug helper for the editor's URL-slug field ───────────────────────────
     @action(detail=False, methods=["get"], url_path="check-slug")

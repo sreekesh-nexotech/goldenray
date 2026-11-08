@@ -4,9 +4,9 @@
 //
 // Content Studio → Quotations. The sales / accounting team's copy of a
 // customer quotation: the same document the customer downloads from the
-// website, either in full (all 12 pages) or cut down to pages 1, 5, 7 and 8
-// (cover, package pricing, technical specifications & pricing table, savings),
-// in English or Malayalam.
+// website in full, or a short copy, in English or Malayalam, for residential and
+// commercial customers. A short copy carries one chosen system: cover, its
+// specifications, its investment summary and the terms.
 //
 // Nothing here is re-implemented. The system size, price and savings come from
 // the public solar calculator's own endpoint; the quotation payload, BOM and
@@ -38,17 +38,21 @@ import {
   type CalculatorFigures,
 } from "@/services/quotationPdfService";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
+import { pageCountFor, type QuotationVariant } from "@/components/QuotationV2/pageSets";
 import {
-  ACCOUNTING_PAGE_IDS,
-  FULL_PAGE_COUNT,
-  type QuotationVariant,
-} from "@/components/QuotationV2/pageSets";
+  recommendedShortSystem,
+  shortSystemOptions,
+  type ShortSystemKey,
+} from "@/components/QuotationV2/shortSystem";
 import type { BasicCalculatorData } from "@/types/types";
 import {
+  COMMERCIAL_HYBRID_LIMIT_MESSAGE,
+  commercialHybridUnavailable,
   INSTALLATION_OPTIONS,
   propertyTypeOf,
   systemTypeOf,
   type InstallationType,
+  type PropertyType,
 } from "@/components/SolarCalculator/installationType";
 
 /** Same limit the public calculator enforces. */
@@ -58,22 +62,26 @@ const MAX_BILL = 40000;
 const SUBSIDY_OPTIONS = ["Eligible (DCR)", "Not Eligible (Non-DCR)"];
 
 /** Short = the accounting copy; full = the whole document the customer receives. */
-const VERSION_OPTIONS: { value: QuotationVariant; label: string }[] = [
-  { value: "accounting", label: `Short — ${ACCOUNTING_PAGE_IDS.length} pages (1, 5, 7, 8)` },
-  { value: "customer", label: `Full — all ${FULL_PAGE_COUNT} pages` },
-];
+function versionOptions(sector: PropertyType): { value: QuotationVariant; label: string }[] {
+  return [
+    { value: "accounting", label: `Short — ${pageCountFor("accounting", sector)} pages (one system)` },
+    { value: "customer", label: `Full — all ${pageCountFor("customer", sector)} pages` },
+  ];
+}
 
 interface FormState {
   customerName: string;
   phoneNumber: string;
   address: string;
   pincode: string;
-  /** Residential on-grid / hybrid, or commercial — as on the website calculator. */
+  /** Residential or commercial, on-grid or hybrid — as on the website calculator. */
   propertyType: InstallationType;
   monthlyBill: string;
   subsidyEligibility: string;
   salesPerson: string;
   variant: QuotationVariant;
+  /** The one system a short copy carries. */
+  selectedSystem: ShortSystemKey;
 }
 
 const EMPTY: Omit<FormState, "salesPerson" | "variant"> = {
@@ -84,6 +92,7 @@ const EMPTY: Omit<FormState, "salesPerson" | "variant"> = {
   propertyType: "residential-ongrid",
   monthlyBill: "",
   subsidyEligibility: SUBSIDY_OPTIONS[0],
+  selectedSystem: recommendedShortSystem("ongrid"),
 };
 
 function validate(f: FormState): Partial<Record<keyof FormState, string>> {
@@ -158,9 +167,17 @@ export default function QuotationsScreen() {
   const [downloading, setDownloading] = useState<QuotationLanguage | null>(null);
 
   const salesPerson = form.salesPerson || defaultSalesPerson;
+  const sector = propertyTypeOf(form.propertyType);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => {
-    setForm((f) => ({ ...f, [key]: value }));
+    setForm((f) => ({
+      ...f,
+      [key]: value,
+      // On-grid and hybrid offer different systems.
+      ...(key === "propertyType"
+        ? { selectedSystem: recommendedShortSystem(systemTypeOf(value as InstallationType)) }
+        : {}),
+    }));
     setErrors((e) => ({ ...e, [key]: undefined }));
     // Any change to what the calculator reads invalidates its answer.
     if (key === "pincode" || key === "monthlyBill" || key === "propertyType") setCalc(null);
@@ -192,6 +209,9 @@ export default function QuotationsScreen() {
     }
   };
 
+  const systemType = systemTypeOf(form.propertyType);
+  const singleSystem = form.variant === "accounting";
+
   const download = async (language: QuotationLanguage) => {
     if (!calc) return;
     setDownloading(language);
@@ -207,9 +227,12 @@ export default function QuotationsScreen() {
           monthlyBill: Number(form.monthlyBill),
         },
         figuresFrom(calc),
-        { salesPerson, systemType: systemTypeOf(form.propertyType) },
+        { salesPerson, systemType, sector },
       );
-      const { blob, fileName } = await requestQuotationPdf(data, { language, variant: form.variant });
+      const { blob, fileName } = await requestQuotationPdf(
+        singleSystem ? { ...data, selectedSystem: form.selectedSystem } : data,
+        { language, variant: form.variant },
+      );
       saveFile(blob, fileName);
       toast(`Downloaded ${fileName}`);
     } catch (err) {
@@ -227,24 +250,25 @@ export default function QuotationsScreen() {
     setCalc(null);
   };
 
-  const billLabel =
-    propertyTypeOf(form.propertyType) === "residential" ? "Average bi-monthly bill (₹)" : "Average monthly bill (₹)";
-  const hybrid = systemTypeOf(form.propertyType) === "hybrid";
+  const billLabel = sector === "residential" ? "Average bi-monthly bill (₹)" : "Average monthly bill (₹)";
+  const hybrid = systemType === "hybrid";
+  const pageCount = pageCountFor("customer", sector);
+  const unavailable = calc !== null && commercialHybridUnavailable(form.propertyType, calc.specifications.power_requirement);
   const busy = calculating || downloading !== null;
 
   return (
     <div>
       <PageHeader
         title="Quotations"
-        subtitle="A customer quotation for sales and accounting — the full document or a short copy (pages 1, 5, 7 and 8), in English or Malayalam."
+        subtitle="A customer quotation for sales and accounting — the full document or a short copy, in English or Malayalam."
       />
 
       <TipBanner>
         Enter the customer&apos;s details exactly as on the website calculator. The system size,
         price and savings come from the same calculator, and the EMI from the EMI calculator&apos;s
         rules, so the copy carries the same figures as the customer&apos;s quotation. The short
-        version contains the cover, package pricing, technical specifications and savings pages;
-        the full version is the complete 12-page document the customer receives.
+        version carries one system you choose — cover, specifications, investment summary and
+        terms; the full version is the complete document the customer receives ({pageCount} pages).
       </TipBanner>
 
       <div className="grid gap-4" style={{ gridTemplateColumns: "minmax(0, 1.4fr) minmax(0, 1fr)" }}>
@@ -294,15 +318,17 @@ export default function QuotationsScreen() {
                 mono
               />
             </Field>
-            <Field label="PM Surya Ghar subsidy">
-              <SelectField value={form.subsidyEligibility} onChange={(v) => set("subsidyEligibility", v)}>
-                {SUBSIDY_OPTIONS.map((o) => (
-                  <option key={o} value={o}>
-                    {o}
-                  </option>
-                ))}
-              </SelectField>
-            </Field>
+            {sector === "residential" && (
+              <Field label="PM Surya Ghar subsidy">
+                <SelectField value={form.subsidyEligibility} onChange={(v) => set("subsidyEligibility", v)}>
+                  {SUBSIDY_OPTIONS.map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </SelectField>
+              </Field>
+            )}
             <Field label="Proposal by (printed on the cover)">
               <TextInput
                 value={form.salesPerson}
@@ -312,13 +338,24 @@ export default function QuotationsScreen() {
             </Field>
             <Field label="Document version">
               <SelectField value={form.variant} onChange={(v) => set("variant", v as QuotationVariant)}>
-                {VERSION_OPTIONS.map((o) => (
+                {versionOptions(sector).map((o) => (
                   <option key={o.value} value={o.value}>
                     {o.label}
                   </option>
                 ))}
               </SelectField>
             </Field>
+            {singleSystem && (
+              <Field label="System">
+                <SelectField value={form.selectedSystem} onChange={(v) => set("selectedSystem", v as ShortSystemKey)}>
+                  {shortSystemOptions(systemType, sector).map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </SelectField>
+              </Field>
+            )}
             <div className="flex gap-2" style={{ gridColumn: "1 / -1" }}>
               <GoldButton onClick={calculate} disabled={busy}>
                 {calculating ? "Calculating…" : calc ? "Recalculate" : "Calculate"}
@@ -344,21 +381,29 @@ export default function QuotationsScreen() {
               <>
                 <SummaryRow label="System size" value={calc.specifications.power_requirement} />
                 <SummaryRow label="Total system cost" value={calc.financialDetails.overall_cost} />
-                <SummaryRow label="Subsidy (calculator)" value={calc.financialDetails.government_subsidy} />
+                {sector === "residential" && (
+                  <SummaryRow label="Subsidy (calculator)" value={calc.financialDetails.government_subsidy} />
+                )}
                 <SummaryRow label="Area required" value={calc.specifications.area_requirement} />
                 <p style={{ fontSize: 12, color: studioColors.mutedGray, margin: "12px 0 14px" }}>
-                  The quotation applies the subsidy only when the customer is eligible (DCR).
+                  {sector === "residential"
+                    ? "The quotation applies the subsidy only when the customer is eligible (DCR)."
+                    : "Commercial quotations carry no subsidy."}
                   {hybrid &&
                     " Hybrid: the BOM calculator prices the nearest hybrid size with no battery, one and two batteries when you download, so the PDF's prices differ from the on-grid figures above."}
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  <GoldButton onClick={() => download("English")} disabled={busy}>
-                    {downloading === "English" ? "Generating…" : "Download English PDF"}
-                  </GoldButton>
-                  <GoldButton onClick={() => download("Malayalam")} disabled={busy}>
-                    {downloading === "Malayalam" ? "Generating…" : "Download Malayalam PDF"}
-                  </GoldButton>
-                </div>
+                {unavailable ? (
+                  <p style={{ fontSize: 13, color: studioColors.danger, margin: 0 }}>{COMMERCIAL_HYBRID_LIMIT_MESSAGE}</p>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    <GoldButton onClick={() => download("English")} disabled={busy}>
+                      {downloading === "English" ? "Generating…" : "Download English PDF"}
+                    </GoldButton>
+                    <GoldButton onClick={() => download("Malayalam")} disabled={busy}>
+                      {downloading === "Malayalam" ? "Generating…" : "Download Malayalam PDF"}
+                    </GoldButton>
+                  </div>
+                )}
               </>
             )}
           </div>

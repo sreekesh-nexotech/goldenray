@@ -76,51 +76,21 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
         gap: 60,
         alignItems: "center",
         flexWrap: "nowrap",
-        flexGrow: 1
+        flexGrow: 1,
+        minHeight: 0,
+        overflow: "hidden"
       }}><div style={{
           position: "relative",
           width: 1280,
           backgroundColor: "rgba(0,0,0,0)",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
+          justifyContent: "space-evenly",
+          gap: 16,
           alignItems: "center",
           flexWrap: "nowrap",
           flexGrow: 1
-        }}><div style={{
-            position: "relative",
-            backgroundColor: "rgba(0,0,0,0)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 20,
-            padding: "0px 80px 0px 80px",
-            alignItems: "center",
-            flexWrap: "nowrap",
-            boxSizing: "border-box",
-            flexShrink: 0,
-            alignSelf: "stretch"
-          }}><span style={{
-              position: "relative",
-              fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-              fontWeight: 700,
-              fontSize: 42,
-              textAlign: "center",
-              lineHeight: "1.3",
-              letterSpacing: "-0.500px",
-              color: "rgb(0,0,0)",
-              flexShrink: 0,
-              alignSelf: "stretch"
-            }}>നിങ്ങളുടെ Solar ഓരോ ദിവസവും എന്തെല്ലാം പ്രവർത്തിപ്പിക്കുന്നുവെന്ന് നോക്കാം</span><span style={{
-              position: "relative",
-              fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-              fontWeight: 400,
-              fontSize: 22,
-              textAlign: "center",
-              lineHeight: "32px",
-              letterSpacing: "-0.500px",
-              color: "var(--greyy2)",
-              flexShrink: 0
-            }}>നിങ്ങളുടെ വൈദ്യുതി ഉപയോഗത്തെ അടിസ്ഥാനമാക്കി കണക്കാക്കിയ യഥാർത്ഥ വിവരങ്ങൾ</span></div><div style={{
+          }}><div style={{
             position: "relative",
             borderRadius: 16,
             background: "linear-gradient(90deg, rgb(18,53,50) 0.00%, rgb(17,98,92) 50.00%)",
@@ -233,7 +203,6 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                   alignSelf: "stretch"
                 }}>ഓരോ മാസവും ലഭിക്കുന്ന സൗജന്യ വൈദ്യുതിയുടെ മൂല്യം</span></div></div></div><div style={{
             position: "relative",
-            marginTop: 12,
             borderRadius: 8,
             backgroundColor: "rgb(255,255,255)",
             display: "flex",
@@ -1199,7 +1168,6 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                         color: "var(--green)"
                       }}>12.4 യൂണിറ്</span></div></div></div></div></div></div><div style={{
             position: "relative",
-            marginTop: 12,
             backgroundColor: "rgba(0,0,0,0)",
             display: "flex",
             flexDirection: "row",
@@ -1513,13 +1481,12 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                       flexShrink: 0
                     }}>യൂണിറ്റ് / ദിവസം</span></div></div></div></div></div><div style={{
             position: "relative",
-            marginTop: 12,
             borderRadius: 24,
             backgroundColor: "rgba(255,255,255,0.6)",
             display: "flex",
             flexDirection: "column",
-            gap: 31,
-            padding: "9px 0px 9px 0px",
+            gap: 12,
+            padding: "0px 0px 0px 0px",
             justifyContent: "center",
             alignItems: "flex-start",
             flexWrap: "nowrap",
@@ -1542,7 +1509,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                 backgroundColor: "rgba(0,0,0,0)",
                 display: "flex",
                 flexDirection: "column",
-                gap: 31,
+                gap: 12,
                 padding: "1px 0px 1px 0px",
                 alignItems: "center",
                 flexWrap: "nowrap",
@@ -1563,7 +1530,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                   backgroundColor: "rgba(0,0,0,0)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: 32,
+                  gap: 14,
                   alignItems: "center",
                   flexWrap: "nowrap",
                   flexShrink: 0,
@@ -1647,7 +1614,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                         color: "var(--grey)",
                         flexShrink: 0,
                         alignSelf: "stretch"
-                      }}>വൈദ്യുതി ബിൽ കൂടുമോ എന്ന ആശങ്ക കാരണം AC ഉപയോഗം പരിമിതപ്പെടുത്തേണ്ടി വരുന്നു.</span></div></div><div style={{
+                      }}>ബിൽ കൂടുമെന്ന ഭയത്തിൽ AC ഉപയോഗം കുറയ്ക്കുന്നു.</span></div></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
@@ -1726,7 +1693,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                         color: "var(--grey)",
                         flexShrink: 0,
                         alignSelf: "stretch"
-                      }}>പെട്രോൾ, ഡീസൽ വില വർധിക്കുന്നത് കുടുംബ ബജറ്റിനെ ബാധിക്കുന്നു.</span></div></div><div style={{
+                      }}>ഇന്ധനവില കുടുംബ ബജറ്റിനെ ബാധിക്കുന്നു.</span></div></div><div style={{
                     position: "relative",
                     backgroundColor: "rgba(0,0,0,0)",
                     display: "flex",
@@ -1805,13 +1772,13 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                         color: "var(--grey)",
                         flexShrink: 0,
                         alignSelf: "stretch"
-                      }}>എൽ.പി.ജി. ഗ്യാസ് നിറയ്ക്കുന്നതിനും ഇന്ധന വില വർധനവിനും ഓരോ മാസവും അധിക ചെലവ് വരുന്നു.</span></div></div></div></div><div style={{
+                      }}>ഗ്യാസിനും ഇന്ധനത്തിനും മാസേന കൂടുതൽ ചെലവാകുന്നു.</span></div></div></div></div><div style={{
                 position: "relative",
                 width: 560,
                 backgroundColor: "rgba(0,0,0,0)",
                 display: "flex",
                 flexDirection: "column",
-                gap: 31,
+                gap: 12,
                 alignItems: "center",
                 flexWrap: "nowrap",
                 flexShrink: 0
@@ -1830,7 +1797,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                   backgroundColor: "rgba(0,0,0,0)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: 32,
+                  gap: 14,
                   justifyContent: "center",
                   alignItems: "center",
                   flexWrap: "nowrap",
@@ -1917,7 +1884,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                         color: "var(--grey)",
                         flexShrink: 0,
                         alignSelf: "stretch"
-                      }}>ബിൽ കൂടുമെന്ന ഭയം കൂടാതെ ACയും മറ്റ് ഉപകരണങ്ങളും കൂടുതൽ സ്വതന്ത്രമായി ഉപയോഗിക്കാം.</span></div></div><div style={{
+                      }}>ബിൽ ആശങ്കയില്ലാതെ ACയും മറ്റ് ഉപകരണങ്ങളും ഉപയോഗിക്കാം.</span></div></div><div style={{
                     position: "relative",
                     height: 80,
                     backgroundColor: "rgba(0,0,0,0)",
@@ -1996,7 +1963,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                         color: "var(--grey)",
                         flexShrink: 0,
                         alignSelf: "stretch"
-                      }}>നിങ്ങളുടെ വീട് തന്നെ ഒരു ചെറിയ പവർ സ്റ്റേഷനായി മാറുന്നു. Grid-നെ ആശ്രയിക്കുന്നത് കുറയുന്നു.</span></div></div><div style={{
+                      }}>വീട് തന്നെ വൈദ്യുതി ഉൽപ്പാദിപ്പിക്കും; Grid ആശ്രയം കുറയും.</span></div></div><div style={{
                     position: "relative",
                     height: 80,
                     backgroundColor: "rgba(0,0,0,0)",
@@ -2075,7 +2042,7 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                         color: "var(--grey)",
                         flexShrink: 0,
                         alignSelf: "stretch"
-                      }}>വൈദ്യുതിക്കും മറ്റ് ഊർജ്ജ ആവശ്യങ്ങൾക്കും വരുന്ന മാസച്ചെലവ് കുറയും.</span></div></div></div></div></div></div></div><div style={{
+                      }}>വൈദ്യുതിയുടെയും മറ്റ് ഊർജത്തിന്റെയും മാസച്ചെലവ് കുറയും.</span></div></div></div></div></div></div></div><div style={{
           position: "relative",
           height: 98,
           backgroundColor: "rgb(247,244,230)",
@@ -2125,11 +2092,12 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
                 position: "relative",
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
                 fontWeight: 500,
-                fontSize: 18,
-                lineHeight: 1.399999976158142,
+                fontSize: 12,
+                whiteSpace: "pre-line",
+                lineHeight: "14px",
                 color: "rgb(18,53,50)",
                 flexGrow: 1
-              }}>Thannikakal, Thumpoly PO, Alappuzha– 688008</span></div><div style={{
+              }}>{"Tharath Building,Kalappura, \nAlappuzha – 688007"}</span></div><div style={{
               position: "relative",
               width: 192,
               flexShrink: 0,
@@ -2137,14 +2105,14 @@ export default function Page03Usage({ className, style, data }: Page03UsageProps
             }}><svg width={18} height={18} viewBox="0 0 18 18" fill="none" style={{
                 position: "absolute",
                 left: 0,
-                top: 16,
+                top: 5,
                 width: 18,
                 height: 18,
                 color: "rgb(18,53,50)"
               }}><path d="M 9.009 18 C 13.931 18 18 13.921 18 9 C 18 4.088 13.921 0 9 0 C 4.079 0 0 4.088 0 9 C 0 13.921 4.088 18 9.009 18 Z M 6.399 4.305 C 6.934 2.955 7.668 1.985 8.474 1.686 L 8.474 4.514 C 7.731 4.495 7.033 4.423 6.399 4.305 Z M 9.517 1.686 C 10.323 1.985 11.066 2.955 11.592 4.305 C 10.958 4.423 10.269 4.495 9.517 4.514 L 9.517 1.686 Z M 11.429 1.94 C 12.399 2.275 13.278 2.792 14.012 3.471 C 13.613 3.698 13.151 3.888 12.634 4.051 C 12.308 3.208 11.891 2.492 11.429 1.94 Z M 3.979 3.471 C 4.722 2.801 5.601 2.275 6.571 1.94 C 6.1 2.492 5.692 3.208 5.356 4.051 C 4.849 3.888 4.387 3.698 3.979 3.471 Z M 13.495 8.474 C 13.45 7.214 13.26 6.045 12.961 5.012 C 13.64 4.804 14.239 4.541 14.746 4.233 C 15.707 5.393 16.332 6.861 16.441 8.474 L 13.495 8.474 Z M 1.559 8.474 C 1.668 6.861 2.284 5.393 3.254 4.233 C 3.752 4.541 4.36 4.804 5.03 5.012 C 4.731 6.045 4.55 7.214 4.505 8.474 L 1.559 8.474 Z M 9.517 8.474 L 9.517 5.556 C 10.369 5.529 11.175 5.429 11.927 5.275 C 12.199 6.245 12.381 7.332 12.426 8.474 L 9.517 8.474 Z M 5.574 8.474 C 5.61 7.332 5.792 6.245 6.073 5.275 C 6.816 5.429 7.631 5.529 8.474 5.556 L 8.474 8.474 L 5.574 8.474 Z M 1.559 9.517 L 4.505 9.517 C 4.541 10.795 4.731 11.991 5.03 13.033 C 4.369 13.242 3.77 13.495 3.272 13.804 C 2.293 12.625 1.668 11.148 1.559 9.517 Z M 5.565 9.517 L 8.474 9.517 L 8.474 12.489 C 7.631 12.517 6.816 12.607 6.073 12.77 C 5.792 11.792 5.61 10.677 5.565 9.517 Z M 9.517 12.489 L 9.517 9.517 L 12.426 9.517 C 12.39 10.677 12.208 11.792 11.927 12.77 C 11.175 12.607 10.369 12.517 9.517 12.489 Z M 12.961 13.033 C 13.269 11.991 13.45 10.795 13.495 9.517 L 16.441 9.517 C 16.341 11.148 15.716 12.634 14.728 13.804 C 14.23 13.505 13.631 13.242 12.961 13.033 Z M 6.399 13.74 C 7.033 13.622 7.731 13.55 8.474 13.532 L 8.474 16.36 C 7.668 16.06 6.934 15.091 6.399 13.74 Z M 9.517 13.532 C 10.269 13.55 10.958 13.622 11.592 13.74 C 11.066 15.091 10.323 16.06 9.517 16.36 L 9.517 13.532 Z M 4.006 14.556 C 4.405 14.338 4.858 14.148 5.356 13.994 C 5.683 14.81 6.073 15.499 6.526 16.051 C 5.583 15.725 4.731 15.208 4.006 14.556 Z M 12.634 13.994 C 13.142 14.148 13.595 14.338 13.994 14.565 C 13.269 15.218 12.408 15.734 11.465 16.06 C 11.918 15.508 12.317 14.81 12.634 13.994 Z" fill="currentColor" fillRule="nonzero" /></svg><span style={{
                 position: "absolute",
                 left: 29,
-                top: 12.5,
+                top: 1,
                 width: 149,
                 height: 25,
                 fontFamily: "var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",

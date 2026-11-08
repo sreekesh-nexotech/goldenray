@@ -3,6 +3,11 @@ FROM node:22-alpine AS builder
 
 RUN apk add --no-cache build-base vips-dev
 
+# vips-dev makes sharp detect a global libvips and try to compile from source
+# (which fails), so npm silently drops the optional sharp package and
+# next/image breaks. Force the prebuilt musl binaries instead.
+ENV SHARP_IGNORE_GLOBAL_LIBVIPS=1
+
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 
 WORKDIR /app
@@ -50,6 +55,11 @@ RUN npm run build
 FROM node:22-alpine AS dev
 
 RUN apk add --no-cache build-base vips-dev
+
+# vips-dev makes sharp detect a global libvips and try to compile from source
+# (which fails), so npm silently drops the optional sharp package and
+# next/image breaks. Force the prebuilt musl binaries instead.
+ENV SHARP_IGNORE_GLOBAL_LIBVIPS=1
 
 # Chromium for the quotation PDF: the document is rendered by real Chrome via
 # puppeteer-core rather than rasterised in JS, so the PDF matches the page

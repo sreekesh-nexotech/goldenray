@@ -528,7 +528,9 @@ export default function EntryEditorScreen({ entryId }: { entryId: string }) {
   );
   const savedSnapshot = useRef<string | null>(null);
 
-  const autoSave = async () => {
+  const autoSave = () => serialized(autoSaveNow);
+
+  const autoSaveNow = async () => {
     // New entries auto-create once they have the required title + slug;
     // existing ones PATCH. Skip while a slug is known-duplicate.
     if (!canWrite) return;

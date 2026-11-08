@@ -12,7 +12,7 @@ import { getHybridBoms, getQuotationBom, type QuotationBom } from "@/services/bo
 import { getPackagesFinancing } from "@/services/quotationEmiService";
 import { PM_SURYA_GHAR_SUBSIDY, subsidyForEligibility } from "@/components/Quotation/subsidy";
 import type { HybridKey, HybridQuotationInput } from "@/components/QuotationV2/hybrid";
-import type { SystemType } from "@/components/SolarCalculator/installationType";
+import type { PropertyType, SystemType } from "@/components/SolarCalculator/installationType";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
 import type { QuotationVariant } from "@/components/QuotationV2/pageSets";
 import { quotationFileName } from "@/lib/quotationFileName";
@@ -35,6 +35,10 @@ export interface QuotationData extends HybridQuotationInput {
     }[];
   };
   bom?: QuotationBom;
+  /** The one system a short copy carries (see shortSystem.ts). */
+  selectedSystem?: string;
+  /** "commercial" renders the commercial document; residential otherwise. */
+  sector?: PropertyType;
 }
 
 export interface CustomerDetails {
@@ -55,25 +59,46 @@ export interface CalculatorFigures {
   graphData: QuotationData["graphData"];
 }
 
+/** No PM Surya Ghar subsidy applies; what `subsidyForEligibility` reads as zero. */
+const NO_SUBSIDY = "Not Eligible (Non-DCR)";
+
 /**
  * The full quotation payload. The Bill of Materials comes from the Django BOM
  * engine and is best-effort — a quotation still renders without it.
  *
  * A hybrid quote is priced entirely by the BOM engine (see `hybridQuotation`)
  * and fails if the engine cannot price it.
+ *
+ * A commercial quote gets no subsidy. The document assumes `systemPrice` has
+ * the subsidy taken off and adds it back (see `quotationPricing`), but the
+ * calculator's commercial rows carry none, so it is taken off here. From then
+ * on commercial runs through exactly the residential calculations.
  */
 export async function assembleQuotationData(
   customer: CustomerDetails,
   figures: CalculatorFigures,
-  { salesPerson = "", systemType = "ongrid" }: { salesPerson?: string; systemType?: SystemType } = {},
+  {
+    salesPerson = "",
+    systemType = "ongrid",
+    sector = "residential",
+  }: { salesPerson?: string; systemType?: SystemType; sector?: PropertyType } = {},
 ): Promise<QuotationData> {
-  if (systemType === "hybrid") return hybridQuotation(customer, figures, salesPerson);
+  const commercial = sector === "commercial";
+  const quoted = commercial ? { ...customer, subsidyEligibility: NO_SUBSIDY } : customer;
+  const priced = commercial
+    ? { ...figures, systemPrice: figures.systemPrice - PM_SURYA_GHAR_SUBSIDY }
+    : figures;
+
+  if (systemType === "hybrid") {
+    return { ...(await hybridQuotation(quoted, priced, salesPerson, sector)), sector };
+  }
   const bom = await getQuotationBom({
     systemSize: figures.systemSize,
     customerName: customer.customerName,
     salesPerson,
+    sector,
   });
-  return { ...customer, ...figures, bom: bom ?? undefined };
+  return { ...quoted, ...priced, bom: bom ?? undefined, sector };
 }
 
 /**
@@ -87,11 +112,13 @@ async function hybridQuotation(
   customer: CustomerDetails,
   figures: CalculatorFigures,
   salesPerson: string,
+  sector: PropertyType,
 ): Promise<QuotationData> {
   const boms = await getHybridBoms({
     systemSize: figures.systemSize,
     customerName: customer.customerName,
     salesPerson,
+    sector,
   });
   if (!boms) throw new Error("The BOM engine could not price the hybrid system.");
 
@@ -131,7 +158,7 @@ async function hybridQuotation(
 
 /**
  * Render the quotation to a PDF in the given language. `variant: "accounting"`
- * is the Studio's short copy (pages 1, 5, 7, 8).
+ * is the Studio's short copy.
  */
 export async function requestQuotationPdf(
   data: QuotationData,

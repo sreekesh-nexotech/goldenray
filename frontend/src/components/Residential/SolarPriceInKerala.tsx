@@ -1,3 +1,5 @@
+import styles from "./SolarPriceInKerala.module.css";
+
 const systems = [
   {
     title: "3kW On-Grid",
@@ -69,13 +71,11 @@ const SolarPriceInKerala = () => {
           The negative margin lets the strip bleed to the screen edges so the
           next card peeks in, as in the mobile design. */}
       <div className="-mx-4 w-[calc(100%+2rem)] overflow-x-auto md:mx-0 md:w-full md:overflow-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="flex snap-x snap-mandatory gap-5 px-4 md:grid md:grid-cols-3 md:gap-6 md:px-0">
+        <div className={`${styles.cards} flex snap-x snap-mandatory gap-5 px-4 md:grid md:grid-cols-3 md:gap-6 md:px-0`}>
           {systems.map((system) => (
             <div
               key={system.title}
-              className={`flex w-[78%] shrink-0 snap-start flex-col rounded-2xl border bg-white p-5 md:w-auto md:p-6 ${
-                system.highlighted ? "border-[#074A4D]" : "border-[#B2B2B233]"
-              }`}
+              className={`${styles.card} ${system.highlighted ? styles.featured : ""} flex w-[78%] shrink-0 snap-start flex-col rounded-2xl border bg-white p-5 md:w-auto md:p-6`}
             >
               <h3 className="text-[22px] md:text-2xl font-semibold leading-tight text-black">
                 {system.title}

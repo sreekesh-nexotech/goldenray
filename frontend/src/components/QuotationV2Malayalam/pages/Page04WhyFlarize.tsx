@@ -209,8 +209,8 @@ export default function Page04WhyFlarize({
                       fontFamily:
                         'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                       fontWeight: 400,
-                      fontSize: 28,
-                      lineHeight: "34px",
+                      fontSize: 24,
+                      lineHeight: "32px",
                       color: "var(--labels-vibrant-primary)",
                       flexShrink: 0,
                       alignSelf: "stretch",
@@ -263,8 +263,8 @@ export default function Page04WhyFlarize({
                         fontFamily:
                           'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                         fontWeight: 400,
-                        fontSize: 28,
-                        lineHeight: "34px",
+                        fontSize: 24,
+                        lineHeight: "32px",
                         color: "var(--black)",
                         flexShrink: 0,
                         alignSelf: "stretch",
@@ -283,6 +283,7 @@ export default function Page04WhyFlarize({
               </div>
             </div>
             <div
+              className="qv2-ml-proof-stats"
               style={{
                 position: "relative",
                 display: "flex",
@@ -872,15 +873,15 @@ export default function Page04WhyFlarize({
                           fontFamily:
                             'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                           fontWeight: 700,
-                          fontSize: 30,
-                          whiteSpace: "nowrap",
-                          lineHeight: "33.5px",
+                          fontSize: 42,
+                          whiteSpace: "normal",
+                          lineHeight: "46.5px",
                           color: "rgb(11,28,48)",
                           flexShrink: 0,
                           alignSelf: "stretch",
                         }}
                       >
-                        കേരളത്തിലുടനീളം ഞങ്ങൾ സ്ഥാപിച്ച സോളാർ പദ്ധതികൾ
+                        കേരളത്തിലെ ഞങ്ങളുടെ സോളാർ പദ്ധതികൾ
                       </span>
                     </div>
                     <div
@@ -923,7 +924,7 @@ export default function Page04WhyFlarize({
                         flexShrink: 0,
                       }}
                     >
-                      കേരളത്തിലാകെ 300+ വിജയകരമായ പ്രോജക്ടുകൾ
+                      കേരളത്തിലാകെ 300+ പദ്ധതികൾ
                     </span>
                   </div>
                 </div>
@@ -2174,13 +2175,14 @@ export default function Page04WhyFlarize({
                       fontFamily:
                         'var(--font-poppins), Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                       fontWeight: 500,
-                      fontSize: 18,
-                      lineHeight: 1.399999976158142,
+                      fontSize: 12,
+                      whiteSpace: "pre-line",
+                      lineHeight: "14px",
                       color: "rgb(18,53,50)",
                       flexGrow: 1,
                     }}
                   >
-                    Thannikakal, Thumpoly PO, Alappuzha– 688008
+                    {"Tharath Building,Kalappura, \nAlappuzha – 688007"}
                   </span>
                 </div>
                 <div
@@ -2199,7 +2201,7 @@ export default function Page04WhyFlarize({
                     style={{
                       position: "absolute",
                       left: 0,
-                      top: 16,
+                      top: 5,
                       width: 18,
                       height: 18,
                       color: "rgb(18,53,50)",
@@ -2215,7 +2217,7 @@ export default function Page04WhyFlarize({
                     style={{
                       position: "absolute",
                       left: 29,
-                      top: 12.5,
+                      top: 1,
                       width: 149,
                       height: 25,
                       fontFamily:

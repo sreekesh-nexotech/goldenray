@@ -19,8 +19,10 @@ export interface TermsClause {
   body: string;
 }
 
+const REGISTERED_ADDRESS = "Tharath Building,Kalappura,\nAlappuzha – 688007";
+
 const FOOTER_ITEMS = [
-  "Thannikakal, Thumpoly PO, Alappuzha– 688008",
+  REGISTERED_ADDRESS,
   "www.flarize.com",
   "sales@flarize.com",
   "+91 9995 073 579",
@@ -62,10 +64,10 @@ function Footer() {
             style={{
               fontFamily: POPPINS,
               fontWeight: 400,
-              fontSize: 18,
-              lineHeight: "140%",
+              fontSize: i === 0 ? 12 : 18,
+              lineHeight: i === 0 ? "14px" : "140%",
               color: "rgb(68,68,68)",
-              whiteSpace: "nowrap",
+              whiteSpace: i === 0 ? "pre-line" : "nowrap",
             }}
           >
             {item}

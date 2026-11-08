@@ -7,7 +7,7 @@ import Button from "../ui/Button";
 import BasicResult from "./basic-result";
 import { BasicCalculatorData } from "@/types/types";
 import CustomerDetailsPopup from "./CustomerDetailsPopup";
-import { INSTALLATION_OPTIONS, propertyTypeOf, systemTypeOf } from "./installationType";
+import { INSTALLATION_OPTIONS, propertyTypeOf } from "./installationType";
 
 interface SolarBasicResultProps {
   initialPincode: string;
@@ -310,7 +310,7 @@ export default function SolarBasicResult({
               calculatedData.financialDetails.starting_EMI.replace(/[₹,]/g, ""),
             )}
             graphData={calculatedData.graph_data}
-            systemType={systemTypeOf(initialproperty_type)}
+            installationType={initialproperty_type}
           />
         )}
       </div>
