@@ -9,6 +9,7 @@ import {
   saveFile,
   type QuotationData,
 } from "@/services/quotationPdfService";
+import type { SystemType } from "./installationType";
 
 interface CustomerDetailsPopupProps {
   onClose: () => void;
@@ -23,6 +24,8 @@ interface CustomerDetailsPopupProps {
       data: number[];
     }[];
   };
+  /** "hybrid" quotes the battery options; on-grid when omitted. */
+  systemType?: SystemType;
 }
 
 // Kept exported from here for existing imports; defined in quotationPdfService.
@@ -36,6 +39,7 @@ export default function CustomerDetailsPopup({
   systemPrice,
   emiPerMonth,
   graphData,
+  systemType = "ongrid",
 }: CustomerDetailsPopupProps) {
   const [customerName, setCustomerName] = useState("");
   const [address, setAddress] = useState("");
@@ -106,34 +110,36 @@ export default function CustomerDetailsPopup({
         Pincode: pincode,
         "Monthly bill": monthlyBill === "" ? "" : `₹${monthlyBill}`,
         "System size": systemSize,
+        "System type": systemType === "hybrid" ? "Hybrid" : "On-Grid",
         "Subsidy eligibility": subsidyEligibility,
         Language: preferredLanguage,
       },
     }).catch(() => {});
 
-    // Calculator figures + the BOM (best-effort), the same assembly the
-    // Studio's accounting copy uses.
-    const quotationData: QuotationData = await assembleQuotationData(
-      {
-        customerName,
-        address,
-        phoneNumber,
-        preferredLanguage,
-        subsidyEligibility,
-        pincode,
-        monthlyBill,
-      },
-      { systemSize, systemPrice, emiPerMonth, graphData },
-    );
-
-    // Also store in sessionStorage so /quotation/v2 (or /quotation/v2-malayalam)
-    // can be opened directly.
-    sessionStorage.setItem("quotationData", JSON.stringify(quotationData));
-
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
 
     try {
+      // Calculator figures + the BOM, the same assembly the Studio's
+      // accounting copy uses. A hybrid quote prices its battery options here.
+      const quotationData: QuotationData = await assembleQuotationData(
+        {
+          customerName,
+          address,
+          phoneNumber,
+          preferredLanguage,
+          subsidyEligibility,
+          pincode,
+          monthlyBill,
+        },
+        { systemSize, systemPrice, emiPerMonth, graphData },
+        { systemType },
+      );
+
+      // Also store in sessionStorage so /quotation/v2 (or /quotation/v2-malayalam)
+      // can be opened directly.
+      sessionStorage.setItem("quotationData", JSON.stringify(quotationData));
+
       // Chrome renders the real /quotation/v2 (or /quotation/v2-malayalam)
       // page server-side, so the download is exactly what the preview shows.
       const { blob, fileName } = await requestQuotationPdf(quotationData, {

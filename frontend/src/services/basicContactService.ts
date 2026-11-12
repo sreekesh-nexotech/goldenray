@@ -13,6 +13,7 @@ export type EnquirySource =
   | "quote_request"
   | "referral_partner"
   | "warranty_service"
+  | "career_application"
   | "other";
 
 export interface ContactFormData {

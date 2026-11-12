@@ -31,6 +31,21 @@ class StudioAuthNotConfigured(APIException):
     default_code = "studio_auth_not_configured"
 
 
+class StudioTokenInvalid(APIException):
+    """A Bearer token was sent but is expired, forged or malformed.
+
+    This must be a 401, not a 403: the Studio refreshes its token pair only on
+    a 401, so answering an expired token with 403 left every leads/EMI/
+    applications screen blank once the 30-minute access token ran out. Not a
+    NotAuthenticated subclass — DRF downgrades those to 403 on views with no
+    authentication classes, which is all of the Studio views here.
+    """
+
+    status_code = 401
+    default_detail = "Your Studio session has expired — please sign in again."
+    default_code = "studio_token_invalid"
+
+
 def _signing_key():
     key = getattr(settings, "STUDIO_JWT_SIGNING_KEY", "") or ""
     return key.strip()
@@ -51,11 +66,15 @@ def decode_studio_token(raw_token):
         return None
 
 
-def studio_payload_from_request(request):
+def _bearer_token(request):
     header = request.META.get("HTTP_AUTHORIZATION", "")
     if not header.lower().startswith("bearer "):
         return None
-    return decode_studio_token(header.split(" ", 1)[1].strip())
+    return header.split(" ", 1)[1].strip() or None
+
+
+def studio_payload_from_request(request):
+    return decode_studio_token(_bearer_token(request))
 
 
 class HasStudioModule(permissions.BasePermission):
@@ -112,9 +131,14 @@ class HasStudioModule(permissions.BasePermission):
         if not _signing_key():
             raise StudioAuthNotConfigured()
 
-        payload = studio_payload_from_request(request)
-        if payload is None:
+        raw = _bearer_token(request)
+        if raw is None:
             return False
+        payload = decode_studio_token(raw)
+        if payload is None:
+            # Expired or bad signature: a 401 makes the Studio refresh and
+            # retry, or send the user back to sign in.
+            raise StudioTokenInvalid()
 
         modules = payload.get("modules")
         grants = payload.get("permissions")

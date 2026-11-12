@@ -78,7 +78,17 @@ class LeadsGatingTests(TestCase):
 
     def test_a_forged_token_is_refused(self):
         forged = jwt.encode({"role": "admin", "modules": ["leads"], "exp": datetime.now(timezone.utc) + timedelta(minutes=5)}, "wrong-key", algorithm="HS256")
-        self.assertEqual(self.client.get("/api/lead-collection-home/", **bearer(forged)).status_code, 403)
+        self.assertEqual(self.client.get("/api/lead-collection-home/", **bearer(forged)).status_code, 401)
+
+    def test_an_expired_token_is_a_401_so_the_studio_refreshes(self):
+        # A 403 here left the Enquiries screen blank once the access token
+        # expired: the Studio only refreshes on a 401.
+        expired = jwt.encode(
+            {"role": "admin", "modules": ["leads"], "permissions": {"leads": ["view"]},
+             "exp": datetime.now(timezone.utc) - timedelta(minutes=1)},
+            KEY, algorithm="HS256",
+        )
+        self.assertEqual(self.client.get("/api/lead-collection-home/", **bearer(expired)).status_code, 401)
 
 
 @override_settings(STUDIO_JWT_SIGNING_KEY=KEY)
@@ -229,6 +239,26 @@ class WebsiteFormsReachStudioTests(TestCase):
         by_source = {r["source"]: r for r in self.enquiries()}
         self.assertEqual(by_source["referral_partner"]["details"]["District"], "Kollam")
         self.assertEqual(by_source["warranty_service"]["details"]["Issue"], "Inverter Fault")
+
+    def test_career_applications_are_mirrored_into_enquiries(self):
+        base = {"location": "Kochi", "linkedin": "linkedin.com/in/x", "declaration_accepted": "true", "website": ""}
+        posting = self.client.post("/api/job-applications/", {
+            **base, "position": "Solar Engineer", "position_id": 7, "position_title": "Solar Engineer",
+            "department_name": "Engineering", "full_name": "Post Person", "email": "post@example.com",
+            "phone": "9123456783", "resume": SimpleUploadedFile("cv.pdf", b"%PDF-1.4"),
+        })
+        general = self.client.post("/api/job-applications/", {
+            **base, "position": "General application", "department_name": "Operations",
+            "full_name": "Gen Person", "email": "gen@example.com", "phone": "9123456784",
+            "resume": SimpleUploadedFile("cv.pdf", b"%PDF-1.4"),
+        })
+        self.assertEqual((posting.status_code, general.status_code), (201, 201), general.content)
+        rows = {r["name"]: r for r in self.enquiries() if r["source"] == "career_application"}
+        self.assertEqual(rows["Post Person"]["source_label"], "Career application")
+        self.assertEqual(rows["Post Person"]["page"], "/career")
+        self.assertEqual(rows["Post Person"]["details"]["Position"], "Solar Engineer")
+        self.assertEqual(rows["Gen Person"]["page"], "/career/general-application-form")
+        self.assertEqual(rows["Gen Person"]["details"]["Department"], "Operations")
 
     def test_general_application_submits_with_its_extra_fields(self):
         resp = self.client.post("/api/job-applications/", {

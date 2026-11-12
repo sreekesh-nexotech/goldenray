@@ -7,6 +7,7 @@ import Button from "../ui/Button";
 import BasicResult from "./basic-result";
 import { BasicCalculatorData } from "@/types/types";
 import CustomerDetailsPopup from "./CustomerDetailsPopup";
+import { INSTALLATION_OPTIONS, propertyTypeOf, systemTypeOf } from "./installationType";
 
 interface SolarBasicResultProps {
   initialPincode: string;
@@ -38,7 +39,7 @@ export default function SolarBasicResult({
 }: SolarBasicResultProps) {
   const [pincode, setPincode] = useState(initialPincode);
   const [property_type, setproperty_type] = useState(
-    initialproperty_type || "residential",
+    initialproperty_type || "residential-ongrid",
   );
   const [monthly_bill, setmonthly_bill] = useState<number | "">(
     initialmonthly_bill,
@@ -49,7 +50,7 @@ export default function SolarBasicResult({
     initialownership_type,
   ); // Track submitted value
   const [monthly_label, setmonthly_label] = useState(
-    initialproperty_type === "residential"
+    propertyTypeOf(initialproperty_type || "residential") === "residential"
       ? "Average bi-Monthly Bill"
       : "Average Monthly Bill",
   );
@@ -92,7 +93,7 @@ export default function SolarBasicResult({
   const handleproperty_typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setproperty_type(e.target.value);
     setmonthly_label(
-      e.target.value === "residential"
+      propertyTypeOf(e.target.value) === "residential"
         ? "Average bi-Monthly Bill"
         : "Average Monthly Bill",
     );
@@ -205,8 +206,11 @@ export default function SolarBasicResult({
                 property_type === "" ? "text-gray-400" : "text-black"
               } ${errors.property_type ? "border-red-600" : ""}`}
             >
-              <option value="residential">Residential</option>
-              <option value="commercial">Commercial</option>
+              {INSTALLATION_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
             </select>
             {/* Specific error message removed, now part of the common list */}
           </div>
@@ -306,6 +310,7 @@ export default function SolarBasicResult({
               calculatedData.financialDetails.starting_EMI.replace(/[₹,]/g, ""),
             )}
             graphData={calculatedData.graph_data}
+            systemType={systemTypeOf(initialproperty_type)}
           />
         )}
       </div>
