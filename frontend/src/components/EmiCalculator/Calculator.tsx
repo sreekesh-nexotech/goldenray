@@ -10,7 +10,7 @@
 // used to let the UI and the API disagree.
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Minus, Plus, Zap, Award, ArrowRight, Check, Lightbulb } from "lucide-react";
+import { Minus, Plus, Zap, Check, Lightbulb, Download } from "lucide-react";
 import LinkingButton from "../ui/LinkingButton";
 import {
   calculateEMI,
@@ -39,24 +39,6 @@ function fmtPrice(p: number) {
   return `₹${Math.round(p / 1000)}k`;
 }
 
-/** The bank shown as "Best Match" — the flagged one, else the cheapest. */
-function bestMatch(banks: EMIBank[]): EMIBank | null {
-  if (!banks.length) return null;
-  return (
-    banks.find((b) => b.is_recommended) ??
-    [...banks].sort((a, b) => Number(a.interest_rate) - Number(b.interest_rate))[0]
-  );
-}
-
-function approvalText(bank: EMIBank): string {
-  if (!bank.approval_max_days) return "";
-  const range =
-    bank.approval_min_days && bank.approval_min_days !== bank.approval_max_days
-      ? `${bank.approval_min_days}–${bank.approval_max_days}`
-      : `${bank.approval_max_days}`;
-  return ` · Approval in ${range} days`;
-}
-
 export default function Calculator() {
   const [config, setConfig] = useState<EMIConfigResponse | null>(null);
   const [configError, setConfigError] = useState<string | null>(null);
@@ -68,11 +50,15 @@ export default function Calculator() {
   const [tenure, setTenure] = useState(5);
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
   const [downPaymentOverride, setDownPaymentOverride] = useState<number | null>(null);
+  const [priceInput, setPriceInput] = useState<string | null>(null);
+  const [downPaymentInput, setDownPaymentInput] = useState<string | null>(null);
   const [subsidyOn, setSubsidyOn] = useState(true);
 
   const [data, setData] = useState<EMICalculatorResponse | null>(null);
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   /* ---- config: sizes, sliders bounds and the bank list ---- */
   useEffect(() => {
@@ -159,15 +145,18 @@ export default function Calculator() {
   );
   const priceStep = Number(settings?.price_step ?? 5000);
 
-  const downPaymentAmount = data?.down_payment.amount ?? 0;
   const dpMin = data?.down_payment.min_percent ?? Number(settings?.down_payment_min_percent ?? 10);
   const dpMax = data?.down_payment.max_percent ?? Number(settings?.down_payment_max_percent ?? 90);
   const dpStep = data?.down_payment.step_percent ?? Number(settings?.down_payment_step_percent ?? 5);
   // While a debounced call is in flight the slider must still track the
   // customer's thumb, so the override wins over the last server value.
   const downPaymentPercent = downPaymentOverride ?? data?.down_payment.percent ?? dpMin;
-  const dpMinAmount = data?.down_payment.min_amount ?? (systemCost * dpMin) / 100;
-  const dpMaxAmount = data?.down_payment.max_amount ?? (systemCost * dpMax) / 100;
+  const downPaymentAmount =
+    downPaymentOverride !== null
+      ? (systemCost * downPaymentPercent) / 100
+      : data?.down_payment.amount ?? (systemCost * dpMin) / 100;
+  const dpMinAmount = (systemCost * dpMin) / 100;
+  const dpMaxAmount = (systemCost * dpMax) / 100;
   const quickAdds = data?.down_payment.quick_add_amounts ?? settings?.down_payment_quick_adds ?? [];
   const unlock = data?.interest.unlock ?? null;
 
@@ -180,22 +169,204 @@ export default function Calculator() {
   // size; only the EMI bar moves as the EMI changes.
   const emiBarWidth = monthlyBill > 0 ? Math.min(100, (emi / monthlyBill) * 100) : 0;
 
-  const topBank = useMemo(() => bestMatch(config?.banks ?? []), [config]);
+  /* ---- report: PDF download + WhatsApp share ---- */
+  const tenureLabel = `${tenure} ${tenure === 1 ? "year" : "years"}`;
+  const sizeLabel = selectedSize?.label ?? "";
 
-  /* ---- handlers ---- */
+  /** Plain-text summary of the report, used as the WhatsApp message. */
+  const buildShareText = () => {
+    const lines = [
+      "*My Flarize Solar EMI Report*",
+      "",
+      `System size: ${sizeLabel}`,
+      `System price: ₹${fmt(systemCost)}`,
+      `Down payment (${fmtPct(downPaymentPercent)}%): ₹${fmt(downPaymentAmount)}`,
+      ...(subsidyOn ? [`PM Surya Ghar subsidy: ₹${fmt(subsidyAmount)}`] : []),
+      `Loan amount: ₹${fmt(loanAmount)}`,
+      `Interest rate: ${rate.toFixed(2)}%`,
+      `Tenure: ${tenureLabel}`,
+      "",
+      `*Monthly EMI: ₹${fmt(emi)}* (just ₹${fmt(dailyAmount)}/day)`,
+      `Total interest: ₹${fmt(totalInterest)}`,
+      `Total repayment: ₹${fmt(totalPaid)}`,
+      `Monthly electricity bill: ₹${fmt(monthlyBill)}`,
+      `Estimated monthly savings: ${monthlySavings >= 0 ? "+" : "-"}₹${fmt(monthlySavings)}`,
+      "",
+      `Calculate yours: ${window.location.origin}${window.location.pathname}`,
+    ];
+    return lines.join("\n");
+  };
+
+  const buildReportPdf = async () => {
+      const { default: jsPDF } = await import("jspdf");
+      const pdf = new jsPDF();
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const margin = 18;
+      const contentWidth = pageWidth - margin * 2;
+      const formatCurrency = (amount: number) =>
+        `INR ${Math.round(Math.abs(amount)).toLocaleString("en-IN")}`;
+      const formatSignedCurrency = (amount: number) =>
+        `${amount < 0 ? "- " : ""}${formatCurrency(amount)}`;
+      let y = 22;
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(20);
+      pdf.setTextColor(18, 53, 50);
+      pdf.text("FLARIZE", margin, y);
+      pdf.setFontSize(13);
+      pdf.text("SOLAR EMI REPORT", pageWidth - margin, y, { align: "right" });
+
+      y += 8;
+      pdf.setDrawColor(247, 186, 65);
+      pdf.setLineWidth(1.2);
+      pdf.line(margin, y, pageWidth - margin, y);
+
+      y += 10;
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(10);
+      pdf.setTextColor(90, 90, 90);
+      pdf.text(`Generated: ${new Date().toLocaleDateString("en-IN")}`, margin, y);
+      pdf.text(`System size: ${sizeLabel}`, pageWidth - margin, y, { align: "right" });
+
+      y += 12;
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(12);
+      pdf.setTextColor(18, 53, 50);
+      pdf.text("Your EMI estimate", margin, y);
+
+      y += 8;
+      pdf.setFontSize(24);
+      pdf.text(`${formatCurrency(emi)} / month`, margin, y);
+      y += 7;
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(10);
+      pdf.text(`${tenure} ${tenure === 1 ? "year" : "years"} at ${rate.toFixed(2)}% interest`, margin, y);
+
+      y += 12;
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(11);
+      pdf.text("Loan breakdown", margin, y);
+
+      const rows: Array<[string, string]> = [
+        ["System price", formatCurrency(systemCost)],
+        [`Down payment (${fmtPct(downPaymentPercent)}%)`, formatCurrency(downPaymentAmount)],
+        ...(subsidyOn ? [["PM Surya Ghar subsidy", formatCurrency(subsidyAmount)] as [string, string]] : []),
+        ["Loan amount", formatCurrency(loanAmount)],
+        ["Applicable interest rate", `${rate.toFixed(2)}%`],
+        ["Loan tenure", `${tenure} ${tenure === 1 ? "year" : "years"}`],
+        ["Total interest", formatCurrency(totalInterest)],
+        ["Total repayment", formatCurrency(totalPaid)],
+        ["Daily amount to save for EMI", `${formatCurrency(dailyAmount)} / day`],
+        ["Monthly electricity bill (reference)", formatCurrency(monthlyBill)],
+        ["Estimated monthly savings vs. electricity bill", formatSignedCurrency(monthlySavings)],
+      ];
+
+      y += 4;
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(10);
+      for (const [label, value] of rows) {
+        y += 7;
+        pdf.setTextColor(70, 70, 70);
+        pdf.text(label, margin, y);
+        pdf.setFont("helvetica", "bold");
+        pdf.setTextColor(18, 53, 50);
+        pdf.text(value, pageWidth - margin, y, { align: "right" });
+        pdf.setFont("helvetica", "normal");
+      }
+
+      y += 13;
+      pdf.setFontSize(8);
+      pdf.setTextColor(110, 110, 110);
+      const disclaimer = "This report is an estimate based on the selections and information available when generated. Final loan terms, interest rates, subsidy eligibility, savings, and approval are subject to lender and government verification.";
+      pdf.text(pdf.splitTextToSize(disclaimer, contentWidth), margin, y);
+
+      return pdf;
+  };
+
+  // Downloads the PDF, then shares it on WhatsApp. Browsers only allow
+  // attaching a file via the Web Share API (mobile, HTTPS only); everywhere
+  // else we open WhatsApp with a text summary of the same report.
+  const handleDownloadAndShare = async () => {
+    if (!data || apiLoading || apiError || pdfLoading) return;
+
+    const fileName = "Flarize-Solar-EMI-Report.pdf";
+    const canShareFiles =
+      typeof navigator.canShare === "function" &&
+      navigator.canShare({ files: [new File([""], fileName, { type: "application/pdf" })] });
+
+    // Open the WhatsApp tab now, while the click's user activation is still
+    // valid — opening it after the async PDF build gets popup-blocked.
+    const waWindow = canShareFiles ? null : window.open("", "_blank");
+
+    setPdfLoading(true);
+    setPdfError(null);
+    try {
+      const pdf = await buildReportPdf();
+      pdf.save(fileName);
+
+      const text = buildShareText();
+      if (canShareFiles) {
+        const file = new File([pdf.output("blob")], fileName, { type: "application/pdf" });
+        try {
+          await navigator.share({ files: [file], title: "Flarize Solar EMI Report", text });
+        } catch (err) {
+          // AbortError = the customer closed the share sheet; not a failure.
+          if ((err as DOMException)?.name !== "AbortError") throw err;
+        }
+      } else {
+        const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        if (waWindow) waWindow.location.href = waUrl;
+        else window.open(waUrl, "_blank");
+      }
+    } catch (err) {
+      waWindow?.close();
+      console.error("Failed to generate or share EMI report:", err);
+      setPdfError("Could not generate the EMI report. Please try again.");
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
   // Changing the system size re-derives the price, down payment and rate
   // from policy rather than carrying the previous selection across.
   const handleSizeChange = useCallback((id: string) => {
     setSizeId(id);
     setPriceOverride(null);
     setDownPaymentOverride(null);
+    setPriceInput(null);
+    setDownPaymentInput(null);
   }, []);
 
   const nudgePrice = (delta: number) =>
     setPriceOverride(Math.min(priceMax, Math.max(priceMin, systemCost + delta)));
 
   const setDownPaymentPercent = (percent: number) =>
-    setDownPaymentOverride(Math.min(dpMax, Math.max(dpMin, Math.round(percent * 100) / 100)));
+    setDownPaymentOverride(
+      Math.min(dpMax, Math.max(dpMin, Math.round(percent * 1_000_000) / 1_000_000))
+    );
+
+  const handlePriceInputChange = (value: string) => {
+    const digits = value.replace(/\D/g, "");
+    setPriceInput(digits);
+    if (digits) {
+      setPriceOverride(Math.min(priceMax, Math.max(priceMin, Number(digits))));
+    }
+  };
+
+  const commitPriceInput = () => {
+    if (priceInput) {
+      setPriceOverride(Math.min(priceMax, Math.max(priceMin, Number(priceInput))));
+    }
+    setPriceInput(null);
+  };
+
+  const handleDownPaymentInputChange = (value: string) => {
+    const digits = value.replace(/\D/g, "");
+    setDownPaymentInput(digits);
+    if (digits && systemCost > 0) {
+      setDownPaymentPercent((Number(digits) / systemCost) * 100);
+    }
+  };
 
   const nudgeDownPayment = (delta: number) =>
     setDownPaymentPercent(downPaymentPercent + delta);
@@ -282,9 +453,19 @@ export default function Calculator() {
               <button onClick={() => nudgePrice(-priceStep)} className="cursor-pointer">
                 <Minus size={16} className="text-black" />
               </button>
-              <span className="flex-1 text-center text-base sm:text-xl md:text-2xl font-bold text-[#123532]">
-                ₹{fmt(systemCost)}
-              </span>
+              <label className="flex flex-1 items-center justify-center rounded-lg border border-[#E5E7EB] bg-[#F7F5EC] px-3 py-1 text-base sm:text-xl md:text-2xl font-bold text-[#123532] transition-colors focus-within:border-[#F7BA41] focus-within:ring-2 focus-within:ring-[#F7BA41]/30">
+                <span aria-hidden="true">₹</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  aria-label="System price in rupees"
+                  className="w-full min-w-0 bg-transparent text-center outline-none"
+                  value={priceInput ?? fmt(systemCost)}
+                  onFocus={() => setPriceInput(String(Math.round(systemCost)))}
+                  onChange={(e) => handlePriceInputChange(e.target.value)}
+                  onBlur={commitPriceInput}
+                />
+              </label>
               <button onClick={() => nudgePrice(priceStep)} className="cursor-pointer">
                 <Plus size={16} className="text-black" />
               </button>
@@ -325,9 +506,19 @@ export default function Calculator() {
               <button onClick={() => nudgeDownPayment(-dpStep)} className="cursor-pointer">
                 <Minus size={16} className="text-black" />
               </button>
-              <span className="flex-1 text-center text-base sm:text-xl md:text-2xl font-bold text-[#123532]">
-                ₹{fmt(downPaymentAmount)}
-              </span>
+              <label className="flex flex-1 items-center justify-center rounded-lg border border-[#E5E7EB] bg-[#F7F5EC] px-3 py-1 text-base sm:text-xl md:text-2xl font-bold text-[#123532] transition-colors focus-within:border-[#F7BA41] focus-within:ring-2 focus-within:ring-[#F7BA41]/30">
+                <span aria-hidden="true">₹</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  aria-label="Down payment in rupees"
+                  className="w-full min-w-0 bg-transparent text-center outline-none"
+                  value={downPaymentInput ?? fmt(downPaymentAmount)}
+                  onFocus={() => setDownPaymentInput(String(Math.round(downPaymentAmount)))}
+                  onChange={(e) => handleDownPaymentInputChange(e.target.value)}
+                  onBlur={() => setDownPaymentInput(null)}
+                />
+              </label>
               <button onClick={() => nudgeDownPayment(dpStep)} className="cursor-pointer">
                 <Plus size={16} className="text-black" />
               </button>
@@ -617,62 +808,39 @@ export default function Calculator() {
               </span>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Bottom Bar */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-        <div className="w-full bg-[#ADD6D880] border border-[#ADD6D8] rounded-2xl p-5 flex flex-col items-start gap-4 ">
-            <Zap size={30} className="text-[#ADD6D8]" fill="#ADD6D8" />
+          {/* Estimated Monthly Savings — grows to fill the rest of the column */}
+          <div className="flex-1 w-full bg-[#ADD6D880] border border-[#ADD6D8] rounded-2xl p-5 sm:p-7 flex flex-col justify-center items-start gap-4">
+            <Zap size={36} className="text-[#ADD6D8]" fill="#ADD6D8" />
             <div className="flex flex-col items-start">
-              <span className="text-sm text-[#074A4D]">
-                  Estimated Monthly Savings
+              <span className="text-sm sm:text-base text-[#074A4D]">
+                Estimated Monthly Savings
               </span>
-              <span
-                  className="text-3xl font-bold text-[#074A4D]"
-              >
-                  {monthlySavings >= 0 ? "+" : "-"}₹{fmt(monthlySavings)}/mo
+              <span className="text-3xl sm:text-4xl font-bold text-[#074A4D]">
+                {monthlySavings >= 0 ? "+" : "-"}₹{fmt(monthlySavings)}/mo
               </span>
-            </div>
-        </div>
-
-                  {/* Best Match For You */}
-          <div className="flex-1 bg-[#FBF1BD80] border border-[#FBF1BD80] rounded-2xl p-4 sm:p-5 flex flex-col items-start gap-3">
-            <div className="flex items-center">
-              <Award size={24} className="text-[#123532]" />
-              <p className="text-sm text-[#123532] font-medium uppercase tracking-wide mb-0.5">
-                Best Match For You
-              </p>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xl font-bold text-[#123532]">
-                {topBank?.name ?? "—"}
-              </p>
-              <p className="text-sm text-[#123532] mt-0.5">
-                {topBank
-                  ? `${Number(topBank.interest_rate).toFixed(2)}% Interest${approvalText(topBank)}`
-                  : ""}
-              </p>
-              <a
-                href="#bank-rates"
-                className="cursor-pointer mt-1.5 flex items-center gap-0.5 text-sm font-semibold text-[#F88A22] hover:underline"
-              >
-                See All Bank Options <ArrowRight size={14} />
-              </a>
+              <span className="text-xs sm:text-sm text-[#074A4D]/80 mt-1">
+                vs. your ₹{fmt(monthlyBill)} monthly electricity bill
+              </span>
             </div>
           </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl items-center justify-center">
-            <LinkingButton
-                content="Compare Bank Rates"
-                ButtonLink="#bank-rates"
-                ButtonBorder="border border-[#074A4D]"
-                ButtonBg="bg-transparent"
-                Buttontext="text-[#074A4D]"
-                ButtonHover="hover:bg-[#eeeeee]"
-                className="flex-1 sm:flex-none !whitespace-normal sm:!whitespace-nowrap text-center text-xs sm:text-sm"
-            />
+            <button
+              type="button"
+              onClick={handleDownloadAndShare}
+              disabled={!data || apiLoading || !!apiError || pdfLoading}
+              className="cursor-pointer flex items-center justify-center gap-2 rounded-xl border border-[#074A4D] bg-transparent px-5 py-3 text-xs sm:text-sm font-semibold text-[#074A4D] transition-colors hover:bg-[#eeeeee] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Download size={16} />
+              {pdfLoading
+                ? "Generating Report…"
+                : apiLoading
+                  ? "Updating Report…"
+                  : "Download EMI Report & Share"}
+            </button>
             <LinkingButton
                 content="Book Now"
                 ButtonLink="#footer"
@@ -682,6 +850,11 @@ export default function Calculator() {
                 className="flex-1 sm:flex-none !whitespace-normal sm:!whitespace-nowrap text-center text-xs sm:text-sm"
             />
           </div>
+          {pdfError && (
+            <p role="alert" className="text-center text-sm text-red-600">
+              {pdfError}
+            </p>
+          )}
 
       <style jsx global>{`
         .calc-slider {
