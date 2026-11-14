@@ -2,6 +2,7 @@
 import type { CSSProperties } from "react";
 import type { QuotationV2Data } from "../quotationV2MalayalamData";
 import SavingsChart from "../SavingsChart";
+import { ShortStructureCost, ShortSystemSummary } from "@/components/QuotationV2/ShortSystemBlocks";
 import FlowArrow from "../icons/FlowArrow";
 
 interface Page08SavingsProps {
@@ -74,7 +75,7 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
         alignItems: "center",
         flexWrap: "nowrap",
         flexGrow: 1
-      }}><div style={{
+      }}>{data.short ? <ShortSystemSummary system={data.short} emiYears={data.emiYears} subsidyAmount={data.hasSubsidy ? data.subsidyAmount : undefined} language="Malayalam" /> : <><div style={{
           position: "relative",
           backgroundColor: "rgb(255,255,255)",
           display: "flex",
@@ -958,7 +959,7 @@ export default function Page08Savings({ className, style, data }: Page08SavingsP
                   }}>25+ വർഷ</span><span style={{
                     color: "rgb(22,163,74)",
                     fontSize: 24
-                  }}> Warranty സംരക്ഷണം</span></span></div></div></div></div><div style={{
+                  }}> Warranty സംരക്ഷണം</span></span></div></div></div></div></>}<div style={{
           position: "relative",
           display: "flex",
           flexDirection: "column",
@@ -1303,7 +1304,8 @@ Branch: <span style={{
                   color: "var(--2-2)",
                   whiteSpace: "pre-wrap",
                   display: "inline-block"
-                }}>8. ITR (ലോൺ ₹2 ലക്ഷത്തിന് മുകളിൽ ആണെങ്കിൽ)</span></div></div></div></div><div style={{
+                }}>8. ITR (ലോൺ ₹2 ലക്ഷത്തിന് മുകളിൽ ആണെങ്കിൽ)</span></div></div></div></div>{data.short && <ShortStructureCost language="Malayalam" />}
+<div style={{
           position: "relative",
           height: 98,
           backgroundColor: "rgb(247,244,230)",

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { submitContactForm } from "@/services/basicContactService";
+import { requestPhoneVerification } from "@/services/phoneVerification";
 import type { QuotationLanguage } from "@/components/Quotation/i18n/quotationStrings";
 import {
   assembleQuotationData,
@@ -9,7 +10,12 @@ import {
   saveFile,
   type QuotationData,
 } from "@/services/quotationPdfService";
-import type { SystemType } from "./installationType";
+import {
+  COMMERCIAL_HYBRID_LIMIT_MESSAGE,
+  commercialHybridUnavailable,
+  propertyTypeOf,
+  systemTypeOf,
+} from "./installationType";
 
 interface CustomerDetailsPopupProps {
   onClose: () => void;
@@ -24,8 +30,8 @@ interface CustomerDetailsPopupProps {
       data: number[];
     }[];
   };
-  /** "hybrid" quotes the battery options; on-grid when omitted. */
-  systemType?: SystemType;
+  /** What the customer chose on the calculator, e.g. "commercial-hybrid". */
+  installationType?: string;
 }
 
 // Kept exported from here for existing imports; defined in quotationPdfService.
@@ -39,8 +45,13 @@ export default function CustomerDetailsPopup({
   systemPrice,
   emiPerMonth,
   graphData,
-  systemType = "ongrid",
+  installationType = "residential-ongrid",
 }: CustomerDetailsPopupProps) {
+  const systemType = systemTypeOf(installationType);
+  const sector = propertyTypeOf(installationType);
+  // PM Surya Ghar is residential; a commercial quote carries no subsidy.
+  const asksSubsidy = sector === "residential";
+  const unavailable = commercialHybridUnavailable(installationType, systemSize);
   const [customerName, setCustomerName] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -84,7 +95,7 @@ export default function CustomerDetailsPopup({
       newErrors.preferredLanguage = "Preferred quotation language is required.";
     }
 
-    if (!subsidyEligibility) {
+    if (asksSubsidy && !subsidyEligibility) {
       newErrors.subsidyEligibility = "Please select your subsidy eligibility.";
     }
 
@@ -97,21 +108,36 @@ export default function CustomerDetailsPopup({
 
     if (!validateForm()) return;
 
+    // The platform only stores an enquiry for a verified number. Ask for the
+    // one-time code first; if the customer skips or cancels it they still get
+    // their PDF, just without the enquiry being captured.
+    let verificationToken: string | undefined;
+    try {
+      verificationToken = await requestPhoneVerification(
+        customerName.trim(),
+        phoneNumber.trim(),
+      );
+    } catch {
+      verificationToken = undefined;
+    }
+
     setIsGenerating(true);
 
     // Capture the request in the Studio's Enquiries inbox. Fire-and-forget: a
     // failure here must never stop the customer getting their PDF.
-    submitContactForm({
+    if (verificationToken) submitContactForm({
       name: customerName.trim(),
       phone_number: phoneNumber.trim(),
+      verification_token: verificationToken,
       source: "quotation",
       details: {
         Address: address.trim(),
         Pincode: pincode,
         "Monthly bill": monthlyBill === "" ? "" : `₹${monthlyBill}`,
         "System size": systemSize,
+        "Property type": sector === "commercial" ? "Commercial" : "Residential",
         "System type": systemType === "hybrid" ? "Hybrid" : "On-Grid",
-        "Subsidy eligibility": subsidyEligibility,
+        ...(asksSubsidy ? { "Subsidy eligibility": subsidyEligibility } : {}),
         Language: preferredLanguage,
       },
     }).catch(() => {});
@@ -133,7 +159,7 @@ export default function CustomerDetailsPopup({
           monthlyBill,
         },
         { systemSize, systemPrice, emiPerMonth, graphData },
-        { systemType },
+        { systemType, sector },
       );
 
       // Also store in sessionStorage so /quotation/v2 (or /quotation/v2-malayalam)
@@ -176,6 +202,14 @@ export default function CustomerDetailsPopup({
           </button>
         </div>
 
+        {unavailable ? (
+          <div className="pt-4">
+            <h2 className="text-xl font-semibold text-[#123532] mb-4">
+              Custom Quote Needed
+            </h2>
+            <p className="text-gray-700">{COMMERCIAL_HYBRID_LIMIT_MESSAGE}</p>
+          </div>
+        ) : (
         <form className="space-y-4 pt-4" onSubmit={handleSubmit}>
           <h2 className="text-xl font-semibold text-[#123532] mb-4">
             Enter Your Details
@@ -266,7 +300,7 @@ export default function CustomerDetailsPopup({
             )}
           </div>
 
-          <div>
+          {asksSubsidy && <div>
             <label
               htmlFor="subsidyEligibility"
               className="block text-sm font-medium text-gray-700"
@@ -290,7 +324,7 @@ export default function CustomerDetailsPopup({
                 {errors.subsidyEligibility}
               </p>
             )}
-          </div>
+          </div>}
 
           <div className="pt-4">
             <button
@@ -324,6 +358,7 @@ export default function CustomerDetailsPopup({
             </button>
           </div>
         </form>
+        )}
       </div>
     </div>
   );

@@ -216,12 +216,25 @@ interface TierFigures {
   financed: string;
 }
 
-/** The fields the table reads; both languages' quotation data satisfy it. */
+/** The fields the hybrid table reads; both languages' quotation data satisfy it. */
 interface SpecTableData {
   hybrid: Record<HybridKey, TierFigures> | null;
   systemSize: string;
   downPaymentPercent: number;
   subsidyRowValue: string;
+}
+
+export interface SpecColumn<K extends string> {
+  key: K;
+  name: string;
+  /** The recommended column, outlined in orange. */
+  featured?: boolean;
+}
+
+export interface SpecRow<K extends string> {
+  label: { English: string; Malayalam: string };
+  values: (sizeKW: number) => Record<K, string>;
+  emphasis?: boolean;
 }
 
 const TABLE_LABELS: Record<Language, {
@@ -290,10 +303,49 @@ function cell(
 
 export function HybridSpecTable({ data, language }: { data: SpecTableData; language: Language }) {
   if (!data.hybrid) return null;
-  const hybrid = data.hybrid;
+  return (
+    <SpecComparisonTable
+      columns={HYBRID_KEYS.map((key) => ({
+        key,
+        name: HYBRID_OPTION_NAMES[key],
+        featured: key === HYBRID_RECOMMENDED,
+      }))}
+      rows={HYBRID_SPEC_ROWS}
+      figures={data.hybrid}
+      sizeKW={parseFloat(data.systemSize) || 5}
+      downPaymentPercent={data.downPaymentPercent}
+      subsidyRowValue={data.subsidyRowValue}
+      language={language}
+    />
+  );
+}
+
+/**
+ * The specification table: one column per option, its specification rows, then
+ * the money rows. The subsidy row is dropped when no `subsidyRowValue` is given.
+ */
+export function SpecComparisonTable<K extends string>({
+  columns: columnSpecs,
+  rows,
+  figures,
+  sizeKW,
+  downPaymentPercent,
+  subsidyRowValue,
+  language,
+  height = 1582,
+}: {
+  columns: SpecColumn<K>[];
+  rows: SpecRow<K>[];
+  figures: Record<K, TierFigures>;
+  sizeKW: number;
+  downPaymentPercent: number;
+  subsidyRowValue?: string;
+  language: Language;
+  height?: number;
+}) {
   const l = TABLE_LABELS[language] || TABLE_LABELS.English;
-  const sizeKW = parseFloat(data.systemSize) || 5;
-  const columns = HYBRID_KEYS.map((key, i) => ({ key, column: i + 2, featured: key === HYBRID_RECOMMENDED }));
+  const columns = columnSpecs.map((spec, i) => ({ ...spec, column: i + 2 }));
+  const withSubsidy = subsidyRowValue !== undefined;
 
   const labelText = text(21, 500, "var(--text-2)", { lineHeight: "24px", flexGrow: 1 });
   const valueText = text(21, 500, "var(--black)", { lineHeight: "23.5px", flexGrow: 1 });
@@ -301,13 +353,13 @@ export function HybridSpecTable({ data, language }: { data: SpecTableData; langu
     text(26, weight, color, { lineHeight: "29px", flexGrow: 1 });
   const moneyValue = (color: string) => text(28, 600, color, { lineHeight: "31px", flexGrow: 1 });
 
-  const firstMoneyRow = HYBRID_SPEC_ROWS.length + 2;
+  const firstMoneyRow = rows.length + 2;
   const moneyRows: {
     label: string;
     labelStyle: CSSProperties;
     labelBackground?: string;
     background?: string;
-    value: (key: HybridKey) => string;
+    value: (key: K) => string;
     valueColor: string;
     green?: boolean;
   }[] = [
@@ -316,31 +368,35 @@ export function HybridSpecTable({ data, language }: { data: SpecTableData; langu
       labelStyle: moneyLabel(600),
       labelBackground: "var(--light-grey)",
       background: "var(--light-grey)",
-      value: (key) => hybrid[key].total,
+      value: (key) => figures[key].total,
       valueColor: "var(--2-2)",
     },
     {
-      label: l.downPayment(data.downPaymentPercent),
-      labelStyle: moneyLabel(400),
-      labelBackground: "rgb(255,255,255)",
-      background: "rgb(255,255,255)",
-      value: (key) => hybrid[key].downPayment,
+      label: l.downPayment(downPaymentPercent),
+      labelStyle: moneyLabel(withSubsidy ? 400 : 600),
+      labelBackground: withSubsidy ? "rgb(255,255,255)" : "var(--light-grey)",
+      background: withSubsidy ? "rgb(255,255,255)" : "var(--light-grey)",
+      value: (key) => figures[key].downPayment,
       valueColor: "var(--2-2)",
     },
-    {
-      label: l.subsidy,
-      labelStyle: moneyLabel(600),
-      labelBackground: "var(--light-grey)",
-      background: "var(--light-grey)",
-      value: () => data.subsidyRowValue,
-      valueColor: "var(--green-2)",
-    },
+    ...(withSubsidy
+      ? [
+          {
+            label: l.subsidy,
+            labelStyle: moneyLabel(600),
+            labelBackground: "var(--light-grey)",
+            background: "var(--light-grey)",
+            value: () => subsidyRowValue,
+            valueColor: "var(--green-2)",
+          },
+        ]
+      : []),
     {
       label: l.financed,
       labelStyle: moneyLabel(600, "rgb(255,255,255)"),
       labelBackground: "var(--green-2)",
       background: "var(--green-2)",
-      value: (key) => hybrid[key].financed,
+      value: (key) => figures[key].financed,
       valueColor: "rgb(255,255,255)",
       green: true,
     },
@@ -351,7 +407,7 @@ export function HybridSpecTable({ data, language }: { data: SpecTableData; langu
       style={{
         position: "relative",
         width: 1274,
-        height: 1582,
+        height,
         display: "grid",
         gridTemplateRows: `repeat(${firstMoneyRow + moneyRows.length - 1}, auto)`,
         gridTemplateColumns: "318.5px 1fr 1fr 1fr",
@@ -362,7 +418,7 @@ export function HybridSpecTable({ data, language }: { data: SpecTableData; langu
       <div style={cell(1, 1, { first: true, padding: "28px 20px" })}>
         <span style={text(23, 600, "rgb(0,0,0)", { lineHeight: "25.5px", flexGrow: 1 })}>{l.items}</span>
       </div>
-      {columns.map(({ key, column, featured }) => (
+      {columns.map(({ key, name, column, featured }) => (
         <div
           key={key}
           style={cell(1, column, {
@@ -379,13 +435,13 @@ export function HybridSpecTable({ data, language }: { data: SpecTableData; langu
               whiteSpace: "pre-wrap",
             })}
           >
-            {HYBRID_OPTION_NAMES[key]}
+            {name}
           </span>
         </div>
       ))}
 
       {/* Specifications */}
-      {HYBRID_SPEC_ROWS.map((spec, i) => {
+      {rows.map((spec, i) => {
         const row = i + 2;
         const values = spec.values(sizeKW);
         const background = spec.emphasis ? BATTERY_BG : undefined;

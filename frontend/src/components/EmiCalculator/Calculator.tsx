@@ -15,8 +15,9 @@ import LinkingButton from "../ui/LinkingButton";
 import {
   calculateEMI,
   getEMIConfig,
+  type PublicEMIBank as EMIBank,
   type EMICalculatorResponse,
-  type EMIConfigResponse,
+  type PublicEMIConfigResponse as EMIConfigResponse,
 } from "@/services/emiCalculator";
 
 function fmt(n: number) {
@@ -45,7 +46,7 @@ export default function Calculator() {
   // Customer selections. `null` price/down-payment overrides mean "use the
   // policy default" — that is how they reset when the size changes, instead
   // of carrying the previous selection across.
-  const [sizeId, setSizeId] = useState<number | null>(null);
+  const [sizeId, setSizeId] = useState<string | null>(null);
   const [tenure, setTenure] = useState(5);
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
   const [downPaymentOverride, setDownPaymentOverride] = useState<number | null>(null);
@@ -67,7 +68,7 @@ export default function Calculator() {
         const cfg = await getEMIConfig();
         if (cancelled) return;
         setConfig(cfg);
-        setSizeId(cfg.system_sizes[0]?.id ?? null);
+        setSizeId(cfg.system_sizes[0]?.uid ?? null);
         setTenure(cfg.settings.tenure_default_years);
       } catch (err) {
         if (cancelled) return;
@@ -83,7 +84,7 @@ export default function Calculator() {
   const settings = config?.settings ?? null;
   const sizes = useMemo(() => config?.system_sizes ?? [], [config]);
   const selectedSize = useMemo(
-    () => sizes.find((s) => s.id === sizeId) ?? null,
+    () => sizes.find((s) => s.uid === sizeId) ?? null,
     [sizes, sizeId]
   );
 
@@ -328,7 +329,7 @@ export default function Calculator() {
 
   // Changing the system size re-derives the price, down payment and rate
   // from policy rather than carrying the previous selection across.
-  const handleSizeChange = useCallback((id: number) => {
+  const handleSizeChange = useCallback((id: string) => {
     setSizeId(id);
     setPriceOverride(null);
     setDownPaymentOverride(null);
@@ -425,16 +426,16 @@ export default function Calculator() {
             >
               {sizes.map((s) => (
                 <button
-                  key={s.id}
-                  onClick={() => handleSizeChange(s.id)}
+                  key={s.uid}
+                  onClick={() => handleSizeChange(s.uid)}
                   className={`flex flex-col items-center py-3 sm:py-4 px-1 rounded-lg border-2 transition-all ${
-                    sizeId === s.id
+                    sizeId === s.uid
                       ? "border-[#F7BA41]"
                       : "border-[#E5E7EB] hover:border-[#F7BA41]/60"
                   }`}
                 >
                   <span
-                    className={`text-sm sm:text-xl font-bold ${sizeId === s.id ? "text-[#F7BA41]" : "text-[#111827]"}`}
+                    className={`text-sm sm:text-xl font-bold ${sizeId === s.uid ? "text-[#F7BA41]" : "text-[#111827]"}`}
                   >
                     {s.label}
                   </span>

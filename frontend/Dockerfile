@@ -3,7 +3,8 @@ FROM node:22-alpine AS builder
 
 RUN apk add --no-cache build-base vips-dev
 
-ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV PUPPETEER_SKIP_DOWNLOAD=true \
+    SHARP_IGNORE_GLOBAL_LIBVIPS=1
 
 WORKDIR /app
 COPY package*.json ./
@@ -13,17 +14,26 @@ COPY . .
 # NEXT_PUBLIC_* vars are inlined into the client bundle at build time, so the
 # backend API URL must be supplied here as a build arg (defaults to the local
 # backend published on the host). It must be reachable from the browser.
-ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/
+ARG NEXT_PUBLIC_API_BASE_URL=https://flarize.com/api/
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
+# New platform backend (flarize-backend/goldenray-backend): the anonymous website
+# API under /api/public/v1/ (calculators, EMI, BOM quote, quotation data).
+ARG NEXT_PUBLIC_PUBLIC_API_BASE_URL=https://flarize.com/api/public/v1/
+ENV NEXT_PUBLIC_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_PUBLIC_API_BASE_URL
 
 # Content Studio admin API (blog CMS), called directly from the browser like
 # the main API above — must be a browser-reachable URL, baked at build time.
-ARG NEXT_PUBLIC_ADMIN_API_BASE_URL=http://localhost:8009/admin-api/
+ARG NEXT_PUBLIC_ADMIN_API_BASE_URL=https://flarize.com/api/v1/
 ENV NEXT_PUBLIC_ADMIN_API_BASE_URL=$NEXT_PUBLIC_ADMIN_API_BASE_URL
+
+# Staff API (Studio BOM Calculator)
+ARG NEXT_PUBLIC_STAFF_API_BASE_URL=https://flarize.com/api/v1/
+ENV NEXT_PUBLIC_STAFF_API_BASE_URL=$NEXT_PUBLIC_STAFF_API_BASE_URL
 
 # Blog CMS delivery API (Strapi-shaped, read-only) — also called from the
 # browser and baked at build time. Same host as the admin API in prod.
-ARG NEXT_PUBLIC_BLOG_API_BASE_URL=http://localhost:8009/api
+ARG NEXT_PUBLIC_BLOG_API_BASE_URL=https://flarize.com/api/public/v1/
 ENV NEXT_PUBLIC_BLOG_API_BASE_URL=$NEXT_PUBLIC_BLOG_API_BASE_URL
 
 # Canonical public origin, baked into canonical tags / OG / JSON-LD / sitemap
@@ -42,6 +52,11 @@ FROM node:22-alpine AS dev
 
 RUN apk add --no-cache build-base vips-dev
 
+# vips-dev makes sharp detect a global libvips and try to compile from source
+# (which fails), so npm silently drops the optional sharp package and
+# next/image breaks. Force the prebuilt musl binaries instead.
+ENV SHARP_IGNORE_GLOBAL_LIBVIPS=1
+
 # Chromium for the quotation PDF: the document is rendered by real Chrome via
 # puppeteer-core rather than rasterised in JS, so the PDF matches the page
 # exactly. puppeteer-core ships no browser of its own, hence the system one.
@@ -51,7 +66,8 @@ RUN apk add --no-cache build-base vips-dev
 RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates \
         ttf-freefont font-noto font-noto-emoji icu-data-full
 ENV PUPPETEER_SKIP_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
+    SHARP_IGNORE_GLOBAL_LIBVIPS=1
 
 WORKDIR /app
 COPY package*.json ./

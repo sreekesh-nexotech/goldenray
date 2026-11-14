@@ -2,6 +2,7 @@
 import type { CSSProperties } from "react";
 import type { QuotationV2Data } from "../quotationV2Data";
 import SavingsChart from "../SavingsChart";
+import { ShortStructureCost, ShortSystemSummary } from "@/components/QuotationV2/ShortSystemBlocks";
 import FlowArrow from "../icons/FlowArrow";
 
 interface Page08SavingsProps {
@@ -107,7 +108,7 @@ export default function Page08Savings({
             flexGrow: 1,
           }}
         >
-          <div
+          {data.short ? <ShortSystemSummary system={data.short} emiYears={data.emiYears} subsidyAmount={data.hasSubsidy ? data.subsidyAmount : undefined} language="English" /> : <><div
             style={{
               position: "relative",
               backgroundColor: "rgb(255,255,255)",
@@ -1555,7 +1556,7 @@ export default function Page08Savings({
                 </div>
               </div>
             </div>
-          </div>
+          </div></>}
           <div
             style={{
               position: "relative",
@@ -2103,6 +2104,7 @@ export default function Page08Savings({
             </div>
           </div>
           
+{data.short && <ShortStructureCost language="English" />}
           <div
             style={{
               position: "relative",

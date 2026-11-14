@@ -9,10 +9,6 @@
 export type EntryStatus = "published" | "draft" | "modified";
 
 /** CMS access role. */
-export type Role = "Admin" | "Editor" | "Author";
-
-/** Membership status in the team list. */
-export type MemberStatus = "active" | "invited";
 
 /** Field type for a template attribute. */
 export type AttributeType = "number" | "string" | "text" | "enum";
@@ -31,16 +27,6 @@ export interface Author {
   meta: string;
 }
 
-export interface Member {
-  id: string;
-  name: string;
-  email: string;
-  role: Role;
-  status: MemberStatus;
-  initials: string;
-  /** True for the currently signed-in user. */
-  self?: boolean;
-}
 
 /* -------------------------------------------------------------------------- */
 /*  Structure — collections, templates                                         */

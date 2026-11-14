@@ -15,7 +15,9 @@ import { getSettings, updateSettings, type SiteSettings } from "@/services/admin
 
 export default function SettingsScreen() {
   const { tips, toast, can } = useStudio();
-  const canEdit = can("settings", "edit");
+  // This screen PATCHes company/profile/, which company/views/profile.py
+  // gates on the `company` module — not `settings` (that is flags/integrations).
+  const canEdit = can("company", "edit");
   const [saved, setSaved] = useState<SiteSettings | null>(null);
   const [form, setForm] = useState<SiteSettings | null>(null);
   const [dirty, setDirty] = useState(false);

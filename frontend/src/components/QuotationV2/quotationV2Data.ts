@@ -11,6 +11,7 @@
  * different pages).
  */
 import type { QuotationBom } from "@/services/bomService";
+import type { PropertyType } from "@/components/SolarCalculator/installationType";
 import { getInstallationStats } from "@/services/installationStatsService";
 import {
   PM_SURYA_GHAR_SUBSIDY,
@@ -38,6 +39,7 @@ import {
   type HybridKey,
   type HybridQuotationInput,
 } from "@/components/QuotationV2/hybrid";
+import { buildShortSystem, type ShortSystem } from "@/components/QuotationV2/shortSystem";
 
 /**
  * What the customer details form writes to sessionStorage; the BOM
@@ -59,6 +61,10 @@ export interface QuotationV2Input extends HybridQuotationInput {
     datasets: { data: number[] }[];
   };
   bom?: QuotationBom;
+  /** The one system a short copy carries (see shortSystem.ts). */
+  selectedSystem?: string;
+  /** "commercial" renders the commercial document from these same figures. */
+  sector?: PropertyType;
 }
 
 export interface QuotationV2Tier {
@@ -128,6 +134,8 @@ export interface QuotationV2Data {
    * on-grid quote. `subtitle` sits under each option's name on page 5.
    */
   hybrid: (Record<HybridKey, QuotationV2Tier> & { subtitle: string }) | null;
+  /** The chosen system on a short copy, or null on the comparison document. */
+  short: ShortSystem | null;
 
   // ── Savings (pages 8, 12) ────────────────────────────────────────────────
   monthlyBillValue: string;
@@ -479,6 +487,19 @@ export function buildQuotationV2Data(
       const options = buildHybridOptions(input, subsidy, buildTier);
       return options && { ...options, subtitle: `${sizeKW} kW Solar System` };
     })(),
+
+    short: buildShortSystem(input, {
+      sizeKW,
+      subsidy,
+      avgMonthlySavings,
+      packageTotals: prices.totals,
+      tiers: {
+        premium: buildTier(premiumTotal, fin.premium),
+        smart: buildTier(smartTotal, fin.smart),
+        basic: buildTier(basicTotal, fin.basic),
+        ...buildHybridOptions(input, subsidy, buildTier),
+      },
+    }),
 
     monthlyBillValue: rupees(billAmount),
     withSolarBill: `₹${formatINR(WITH_SOLAR_BILL_MIN)}-${formatINR(

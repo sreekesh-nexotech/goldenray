@@ -191,8 +191,8 @@ export interface PincodeValidationResponse {
 export interface DeviceType {
   name: string;
   show_in_ui: boolean;
-  updated_at: string; 
-  created_at: string; 
+  updated_at?: string;
+  created_at?: string;
   url?:string;
 }
 
@@ -209,23 +209,26 @@ export interface VehicleType {
 // Interfaces for OTP API requests and responses
 
 export interface SendOtpRequest {
-  name: string;
-  phone_number: string;
+  name?: string;
+  phone: string;
 }
 
 export interface SendOtpResponse {
-  message: string;
+  status: string;
+  phone: string;
+  expires_at: string;
 }
 
 export interface VerifyOtpRequest {
-  name:string;
-  phone_number: string;
+  phone: string;
   code: string;
 }
 
 export interface VerifyOtpResponse {
-  message: string;
-  status:string;
+  status: string;
+  /** Proof of the verified number; sent with the lead POST (valid ~30 minutes). */
+  verification_token: string;
+  expires_at: string;
 }
 
 // Interface for API errors

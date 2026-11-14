@@ -22,8 +22,8 @@ import {
   ToggleField,
   nullableNum,
   str,
-} from "./shared";
-import { useEditableRows } from "./useEditableRows";
+} from "../shared/rows";
+import { useEditableRows } from "../shared/useEditableRows";
 
 const toInput = (row: EMIInterestRateRule): EMIInterestRateRuleInput => ({
   label: row.label,
@@ -124,7 +124,7 @@ export default function InterestRatesPanel({
 
         {rows.map((row) => (
           <RowCard
-            key={row.id}
+            key={row.uid}
             title={row.label || "New rate rule"}
             meta={
               <>
@@ -148,24 +148,24 @@ export default function InterestRatesPanel({
               </>
             }
             dirty={isDirty(row)}
-            busy={busyId === row.id}
+            busy={busyId === row.uid}
             readOnly={readOnly}
-            onSave={() => save(row.id)}
-            onDiscard={() => discard(row.id)}
-            onDelete={() => remove(row.id)}
+            onSave={() => save(row.uid)}
+            onDiscard={() => discard(row.uid)}
+            onDelete={() => remove(row.uid)}
           >
             <FieldGrid>
               <TextField
                 label="Name"
                 value={str(row.label)}
-                onChange={(v) => patch(row.id, { label: v })}
+                onChange={(v) => patch(row.uid, { label: v })}
                 placeholder="Loan amount above ₹2,00,000 — 8%"
                 disabled={readOnly}
               />
               <NumberField
                 label="Starting rate"
                 value={str(row.rate)}
-                onChange={(v) => patch(row.id, { rate: v })}
+                onChange={(v) => patch(row.uid, { rate: v })}
                 suffix="%"
                 disabled={readOnly}
                 hint="What the customer sees before adjusting."
@@ -173,7 +173,7 @@ export default function InterestRatesPanel({
               <NumberField
                 label="Floor rate"
                 value={str(row.min_rate)}
-                onChange={(v) => patch(row.id, { min_rate: v })}
+                onChange={(v) => patch(row.uid, { min_rate: v })}
                 suffix="%"
                 disabled={readOnly}
                 hint="The rate can never go below this."
@@ -181,7 +181,7 @@ export default function InterestRatesPanel({
               <NumberField
                 label="From capacity"
                 value={str(row.min_kw)}
-                onChange={(v) => patch(row.id, { min_kw: nullableNum(v) })}
+                onChange={(v) => patch(row.uid, { min_kw: nullableNum(v) })}
                 suffix="kW"
                 placeholder="any"
                 disabled={readOnly}
@@ -189,7 +189,7 @@ export default function InterestRatesPanel({
               <NumberField
                 label="Up to capacity"
                 value={str(row.max_kw)}
-                onChange={(v) => patch(row.id, { max_kw: nullableNum(v) })}
+                onChange={(v) => patch(row.uid, { max_kw: nullableNum(v) })}
                 suffix="kW"
                 placeholder="any"
                 disabled={readOnly}
@@ -197,7 +197,7 @@ export default function InterestRatesPanel({
               <NumberField
                 label="From system cost"
                 value={str(row.min_cost)}
-                onChange={(v) => patch(row.id, { min_cost: nullableNum(v) })}
+                onChange={(v) => patch(row.uid, { min_cost: nullableNum(v) })}
                 prefix="₹"
                 placeholder="any"
                 disabled={readOnly}
@@ -206,7 +206,7 @@ export default function InterestRatesPanel({
               <NumberField
                 label="Up to system cost"
                 value={str(row.max_cost)}
-                onChange={(v) => patch(row.id, { max_cost: nullableNum(v) })}
+                onChange={(v) => patch(row.uid, { max_cost: nullableNum(v) })}
                 prefix="₹"
                 placeholder="any"
                 disabled={readOnly}
@@ -214,7 +214,7 @@ export default function InterestRatesPanel({
               <NumberField
                 label="From loan amount"
                 value={str(row.min_loan)}
-                onChange={(v) => patch(row.id, { min_loan: nullableNum(v) })}
+                onChange={(v) => patch(row.uid, { min_loan: nullableNum(v) })}
                 prefix="₹"
                 placeholder="any"
                 disabled={readOnly}
@@ -222,7 +222,7 @@ export default function InterestRatesPanel({
               <NumberField
                 label="Up to loan amount"
                 value={str(row.max_loan)}
-                onChange={(v) => patch(row.id, { max_loan: nullableNum(v) })}
+                onChange={(v) => patch(row.uid, { max_loan: nullableNum(v) })}
                 prefix="₹"
                 placeholder="any"
                 disabled={readOnly}
@@ -230,21 +230,21 @@ export default function InterestRatesPanel({
               <NumberField
                 label="Priority"
                 value={str(row.priority)}
-                onChange={(v) => patch(row.id, { priority: Number(v) || 0 })}
+                onChange={(v) => patch(row.uid, { priority: Number(v) || 0 })}
                 disabled={readOnly}
                 hint="Higher wins when rules overlap."
               />
               <ToggleField
                 label="Lock this rate"
                 checked={row.is_locked}
-                onChange={() => patch(row.id, { is_locked: !row.is_locked })}
+                onChange={() => patch(row.uid, { is_locked: !row.is_locked })}
                 disabled={readOnly}
                 hint="Customer cannot change it (e.g. the loan-amount rate bands)."
               />
               <ToggleField
                 label="Active"
                 checked={row.is_active}
-                onChange={() => patch(row.id, { is_active: !row.is_active })}
+                onChange={() => patch(row.uid, { is_active: !row.is_active })}
                 disabled={readOnly}
               />
             </FieldGrid>

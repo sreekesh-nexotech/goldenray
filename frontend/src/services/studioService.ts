@@ -1,15 +1,21 @@
 // src/services/studioService.ts
 //
-// Client for the Content Studio admin API (see goldenray-backend/backend/cms/
-// ADMIN_API.md). Base URL comes from ADMIN_API_BASE_URL; every URL keeps its
-// trailing slash. Auth is a JWT access/refresh pair from `auth/login/`; the
-// refresh token rotates on every `auth/refresh/`, so both tokens are re-saved
-// each time.
+// Client for the platform staff API (/api/v1/), reached through this app's own
+// BFF at /fe-api/studio/ (see src/app/fe-api/studio/). Every URL keeps its
+// trailing slash.
 //
-// Tokens are stored in cookies rather than localStorage so the Next.js
-// middleware (src/middleware.ts) can gate /studio routes server-side.
+// No token is ever held in the browser: the BFF keeps the access/refresh pair
+// in HttpOnly cookies, attaches `Authorization: Bearer` server-side, and does
+// the one refresh-and-retry on a 401. So there is nothing here to read, save or
+// rotate — a 401 reaching this file means the session is genuinely over.
+//
+// The sibling per-module services (faqService, pagesService, careersService,
+// adminService) share this transport through `studioRequest`.
 
-import { ADMIN_API_BASE_URL } from "@/config";
+import { PUBLIC_API_BASE_URL, SITE_URL } from "@/config";
+
+/** Everything goes through the BFF, which is same-origin. */
+const STUDIO_API_BASE = "/fe-api/studio/proxy/";
 
 /* -------------------------------------------------------------------------- */
 /*  Response shapes                                                            */
@@ -20,44 +26,78 @@ export interface StudioTokens {
   refresh: string;
 }
 
-export type StudioApiRole = "admin" | "editor" | "author";
-
 /**
- * Phase 1 module keys and action verbs — mirror `accounts/modules.py`. The
- * sidebar and every screen's action buttons are gated on `me.permissions`,
- * which maps module → the actions this user holds.
+ * Module keys from the platform's permission registry (`accounts/registry.py`).
+ * The Studio only uses the website/careers/admin groups, but the registry also
+ * covers product, sales and HR modules, so unknown keys must not break `can()`.
+ *
+ * Note there is no umbrella `careers` module: the careers screens are gated on
+ * `job_positions`, `applications`, `departments` and `career_page`.
  */
 export type StudioModule =
+  // GENERAL
   | "dashboard"
+  // WEBSITE
   | "pages" | "blogs" | "faqs" | "media" | "seo"
-  | "leads" | "emi" | "quotations"
-  | "careers" | "job_positions" | "applications" | "departments" | "career_page"
-  | "users" | "roles" | "settings";
+  | "products_public" | "reference_data" | "emi"
+  // CAREERS
+  | "job_positions" | "applications" | "departments" | "career_page"
+  // SALES (the Studio reads leads and quotation content)
+  | "leads" | "customers" | "quotations" | "quotation_content"
+  // CONFIG (the BOM calculator screen)
+  | "bom" | "packs" | "pricing" | "market_rates" | "offers" | "catalog"
+  // Permission-only: holds no endpoints of its own, it unlocks fields. `pricing_internal`
+  // is what reveals a quote's cost breakdown and margin, so a screen showing those has to
+  // be able to ask for it rather than inferring from whether the API happened to send
+  // them.
+  | "pricing_internal"
+  // ADMIN
+  | "company" | "users" | "roles" | "settings" | "audit";
 
-export type StudioAction = "view" | "create" | "edit" | "publish" | "verify" | "archive" | "manage";
+/** Every action verb in the registry (17), not just the six the CMS had. */
+export type StudioAction =
+  | "view" | "create" | "edit" | "publish" | "verify" | "archive" | "manage"
+  | "approve" | "submit" | "lock" | "commit" | "issue" | "revise" | "assign"
+  | "release" | "export" | "sync";
 
 export type StudioPermissionMap = Partial<Record<StudioModule, StudioAction[]>>;
 
-/** GET auth/me/ */
-export interface StudioMe {
-  id: number;
-  username: string;
+/** Record scope per module: `all`, `owned`, `assigned`, `office` or `self`. */
+export type StudioScope = "all" | "owned" | "assigned" | "office" | "self";
+
+export type StudioScopeMap = Partial<Record<StudioModule, StudioScope>>;
+
+/** The signed-in user, as `GET auth/me/` returns them. */
+export interface StudioMeUser {
+  uid: string;
   email: string;
   first_name: string;
   last_name: string;
-  role: StudioApiRole;
-  /** Granted Phase 1 role (null for accounts still on the legacy enum). */
-  access_role: number | null;
-  access_role_name: string | null;
-  access_role_slug: string | null;
-  /** Resolved module → actions, after superuser override and legacy fallback. */
+  full_name: string;
+  phone_e164: string | null;
+  title: string | null;
+  last_login_at: string | null;
+  password_changed_at: string | null;
+}
+
+/** The user's role. Roles are data on the platform, not a fixed enum. */
+export interface StudioMeRole {
+  uid: string;
+  slug: string;
+  name: string;
+  is_system: boolean;
+}
+
+/**
+ * GET auth/me/ — nested, unlike the old CMS's flat payload. Nothing about
+ * permissions is carried in the token; they come from here.
+ */
+export interface StudioMe {
+  user: StudioMeUser;
+  role: StudioMeRole | null;
   permissions: StudioPermissionMap;
-  can_publish: boolean;
-  can_edit_schema: boolean;
-  is_staff: boolean;
-  is_active: boolean;
-  last_login: string | null;
-  date_joined: string;
+  scopes: StudioScopeMap;
+  session_uid: string | null;
 }
 
 /** GET config/ */
@@ -102,20 +142,20 @@ export interface StudioActivityItem {
   at: string;
 }
 
-/** Slim entry row inside dashboard `recent_entries`. */
+/** The platform's entry lifecycle. */
+export type StudioEntryStatus = "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED";
+
+/** Slim entry row for the list screen and the dashboard feed. */
 export interface StudioEntryListItem {
-  id: number;
-  document_id: string;
-  collection: number;
-  collection_uid: string;
-  collection_name: string;
-  template: number | null;
-  template_slug: string | null;
+  uid: string;
+  /** Nested on read. */
+  collection: { uid: string; api_uid: string; plural_name: string; path_prefix: string };
+  template: { uid: string; slug: string; name: string } | null;
   title: string;
   slug: string;
   excerpt: string;
-  status: "draft" | "published";
-  author_name: string | null;
+  status: StudioEntryStatus;
+  author: { uid: string; name: string; slug: string } | null;
   cover_url: string | null;
   is_featured: boolean;
   sort_order: number;
@@ -131,6 +171,90 @@ export interface StudioDashboard {
   recent_activity: StudioActivityItem[];
 }
 
+/**
+ * `GET dashboard/` as the platform sends it: counters nested per registry
+ * module, present only for modules the caller can `view` (and omitted entirely
+ * when a counter's feature flag is off). Every lookup must therefore be
+ * optional.
+ */
+export interface PlatformDashboard {
+  modules: Partial<Record<string, Record<string, number>>>;
+}
+
+/**
+ * One row of `GET audit/`, which replaces the old `recent_activity`. Audit rows
+ * have no id of their own — they are addressed by object and time.
+ */
+export interface PlatformAuditRow {
+  at: string;
+  action: string;
+  actor: { uid: string; email: string; name: string } | null;
+  actor_kind: string;
+  object_type: string;
+  object_uid: string | null;
+  note: string | null;
+}
+
+/**
+ * Map the nested platform counters onto the flat shape the screens use.
+ *
+ * Only three modules register counters today — `blogs`
+ * (`entries_draft|review|published|archived|scheduled`), `faqs`
+ * (`published|draft|archived`) and `pages` (`published|draft|unverified`). The
+ * rest of `StudioDashboardCounts` has no platform counter, so those fields come
+ * back 0; screens that need a real number should read the matching list
+ * endpoint's `count` instead. Every lookup is optional because a module the
+ * caller cannot `view` is absent entirely.
+ */
+export function flattenDashboardCounts(payload: PlatformDashboard): StudioDashboardCounts {
+  const m = payload.modules ?? {};
+  const n = (module: string, key: string): number => m[module]?.[key] ?? 0;
+  // Total entries = every status bucket except the scheduled overlay, which
+  // counts rows already included in another status.
+  const entriesTotal = Object.entries(m.blogs ?? {})
+    .filter(([key]) => key.startsWith("entries_") && key !== "entries_scheduled")
+    .reduce((sum, [, value]) => sum + (value ?? 0), 0);
+
+  return {
+    collections: 0,
+    entries: entriesTotal,
+    entries_draft: n("blogs", "entries_draft"),
+    entries_published: n("blogs", "entries_published"),
+    templates: 0,
+    media_assets: 0,
+    authors: 0,
+    categories: 0,
+    tags: 0,
+    badges: 0,
+    faqs: n("faqs", "published") + n("faqs", "draft") + n("faqs", "archived"),
+    faqs_draft: n("faqs", "draft"),
+    faqs_published: n("faqs", "published"),
+    positions_active: 0,
+    positions_draft: 0,
+    departments: 0,
+    pages: n("pages", "published") + n("pages", "draft"),
+    pages_seo_issues: n("pages", "unverified"),
+  };
+}
+
+/** Shape an audit row like the old activity-feed item. */
+export function toActivityItem(row: PlatformAuditRow): StudioActivityItem {
+  const objectType = (row.object_type || "").toLowerCase();
+  const kind: StudioActivityItem["kind"] = objectType.includes("faq")
+    ? "faq"
+    : objectType.includes("position") || objectType.includes("application")
+      ? "job"
+      : "blog";
+  return {
+    kind,
+    label: row.action || "changed",
+    detail: row.note || row.object_type || "",
+    href: "",
+    actor: row.actor?.name || null,
+    at: row.at,
+  };
+}
+
 /** DRF page envelope (PAGE_SIZE 25) wrapping every list endpoint. */
 export interface Paginated<T> {
   count: number;
@@ -142,28 +266,98 @@ export interface Paginated<T> {
 /** GET collections/ — `api_uid` is the public URL slug (/api/<api_uid>);
  *  treat it as fixed once live. */
 export interface StudioCollection {
-  id: number;
+  uid: string;
   api_uid: string;
   singular_name: string;
   plural_name: string;
   description: string;
+  /** Public route prefix, e.g. "/blog". Required when creating. */
+  path_prefix: string;
   is_active: boolean;
+  entry_count: number;
+  created_at: string;
+  updated_at: string;
+  version: number;
 }
 
 /* -------------------------------------------------------------------------- */
 /*  Errors                                                                     */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * The platform's error envelope: `{code, message, errors, error_codes}`.
+ * `errors` is `{field: [messages]}` (nested for nested serializers), `{}` when
+ * the failure is not a validation one.
+ */
+export interface StudioErrorEnvelope {
+  code: string;
+  message: string;
+  errors: Record<string, unknown>;
+  error_codes: string[];
+}
+
+/** Flatten `{field: [msg], nested: {field: [msg]}}` into a message list. */
+function flattenErrorMessages(value: unknown): string[] {
+  if (typeof value === "string") return [value];
+  if (Array.isArray(value)) return value.flatMap(flattenErrorMessages);
+  if (value && typeof value === "object") {
+    return Object.values(value as Record<string, unknown>).flatMap(flattenErrorMessages);
+  }
+  return [];
+}
+
 export class StudioApiError extends Error {
   status: number;
-  /** Per-field/validation messages when the API sent them (e.g. publish 400s). */
+  /** Stable machine code: `validation_error`, `stale_version`, `media_in_use`, … */
+  code: string;
+  /** Every machine code the envelope carried. */
+  errorCodes: string[];
+  /** Per-field messages, as sent (`{field: [messages]}`). */
+  fieldErrors: Record<string, unknown>;
+  /** Flat list of every message, for screens that show a bullet list. */
   errors?: string[];
-  constructor(status: number, message: string, errors?: string[]) {
+  /** Seconds to wait, from a 429's Retry-After header. */
+  retryAfter: number | null;
+
+  constructor(
+    status: number,
+    message: string,
+    options: {
+      code?: string;
+      errorCodes?: string[];
+      fieldErrors?: Record<string, unknown>;
+      retryAfter?: number | null;
+    } = {},
+  ) {
     super(message);
     this.name = "StudioApiError";
     this.status = status;
-    this.errors = errors;
+    this.code = options.code ?? "error";
+    this.errorCodes = options.errorCodes ?? [this.code];
+    this.fieldErrors = options.fieldErrors ?? {};
+    const flat = flattenErrorMessages(this.fieldErrors);
+    this.errors = flat.length ? flat : undefined;
+    this.retryAfter = options.retryAfter ?? null;
   }
+
+  /** First message for `field`, if the server flagged it. */
+  fieldError(field: string): string | undefined {
+    return flattenErrorMessages(this.fieldErrors[field])[0];
+  }
+}
+
+/** A write refused because the row changed since it was read (HTTP 409). */
+export function isStaleVersion(err: unknown): boolean {
+  return err instanceof StudioApiError && err.code === "stale_version";
+}
+
+/**
+ * A 409 that is not a version clash: the row is referenced by something live
+ * (`media_in_use`, `category_in_use`, `department_in_use`,
+ * `position_has_applications`). The blocking records are in `fieldErrors`.
+ */
+export function isInUseConflict(err: unknown): boolean {
+  return err instanceof StudioApiError && err.status === 409 && err.code !== "stale_version";
 }
 
 /** True when the failure means "sign in again" rather than a plain error. */
@@ -178,76 +372,20 @@ export function isAuthError(err: unknown): boolean {
 export function isSessionExpired(err: unknown): boolean {
   return err instanceof StudioApiError && err.status === 401;
 }
-
 /* -------------------------------------------------------------------------- */
-/*  Token storage (cookies, readable by the middleware)                        */
+/*  Session (held server-side by the BFF)                                      */
 /* -------------------------------------------------------------------------- */
-
-export const STUDIO_ACCESS_COOKIE = "flz_studio_access";
-export const STUDIO_REFRESH_COOKIE = "flz_studio_refresh";
-
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days; real validity is server-side
-
-function readCookie(name: string): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie
-    .split("; ")
-    .find((c) => c.startsWith(`${name}=`));
-  return match ? decodeURIComponent(match.slice(name.length + 1)) : null;
-}
-
-function writeCookie(name: string, value: string) {
-  if (typeof document === "undefined") return;
-  const secure = window.location.protocol === "https:" ? "; Secure" : "";
-  document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
-}
-
-function clearCookie(name: string) {
-  if (typeof document === "undefined") return;
-  document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax`;
-}
-
-function saveTokens(tokens: StudioTokens) {
-  writeCookie(STUDIO_ACCESS_COOKIE, tokens.access);
-  writeCookie(STUDIO_REFRESH_COOKIE, tokens.refresh);
-}
-
-function clearTokens() {
-  clearCookie(STUDIO_ACCESS_COOKIE);
-  clearCookie(STUDIO_REFRESH_COOKIE);
-}
-
-/** Whether a session exists locally (server still validates every call). */
-export function isAuthenticated(): boolean {
-  return readCookie(STUDIO_REFRESH_COOKIE) !== null;
-}
+//
+// The tokens live in HttpOnly cookies that only /fe-api/studio/* can read, so
+// there is nothing to store, decode or rotate here. `src/middleware.ts` gates
+// /studio on the same cookie server-side.
 
 /**
- * When the stored refresh token stops being accepted (ms since epoch), read
- * from its `exp` claim. Null when signed out or the token can't be decoded.
- * Past this moment no call can succeed, so the Studio sends the user to sign in.
- */
-export function sessionExpiresAt(): number | null {
-  const refresh = readCookie(STUDIO_REFRESH_COOKIE);
-  if (!refresh) return null;
-  try {
-    const part = refresh.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-    const { exp } = JSON.parse(atob(part)) as { exp?: number };
-    return typeof exp === "number" ? exp * 1000 : null;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * The session is over: drop the tokens and go to the sign-in screen, keeping
- * the current page in ?next= so signing in lands the user back where they were.
- * A full navigation (not the router) so no screen keeps stale state or keeps
- * firing requests. Every API path funnels a dead session through here, so a
- * screen never just sits there failing to load.
+ * The session is over: go to the sign-in screen, keeping the current page in
+ * ?next= so signing in lands the user back where they were. A full navigation
+ * (not the router) so no screen keeps stale state or keeps firing requests.
  */
 export function endStudioSession(): void {
-  clearTokens();
   if (typeof window === "undefined") return;
   const { pathname, search } = window.location;
   if (!pathname.startsWith("/studio") || pathname === "/studio/login") return;
@@ -256,149 +394,78 @@ export function endStudioSession(): void {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Token access for other services                                            */
-/* -------------------------------------------------------------------------- */
-//
-// The EMI calculator's settings live on the main goldenray backend rather than
-// the CMS, but they are authored from the Studio and authorised with the same
-// token (that backend verifies it with a shared signing key). These two let
-// emiConfigService reuse this session instead of keeping its own.
-
-/** Current Studio access token, or null when signed out. */
-export function getStudioAccessToken(): string | null {
-  return readCookie(STUDIO_ACCESS_COOKIE);
-}
-
-/** Rotate the token pair and return a fresh access token. */
-export function refreshStudioAccessToken(): Promise<string> {
-  return refreshTokens();
-}
-
-/* -------------------------------------------------------------------------- */
 /*  Low-level request helpers                                                  */
 /* -------------------------------------------------------------------------- */
 
+/** Parse the platform's error envelope off a failed response. */
+async function toApiError(res: Response): Promise<StudioApiError> {
+  let envelope: Partial<StudioErrorEnvelope> = {};
+  try {
+    envelope = (await res.json()) as Partial<StudioErrorEnvelope>;
+  } catch {
+    /* non-JSON body (a proxy error page, say) — fall back to the status */
+  }
+  const retryHeader = res.headers.get("Retry-After");
+  const retryAfter = retryHeader && /^\d+$/.test(retryHeader) ? Number(retryHeader) : null;
+  return new StudioApiError(res.status, envelope.message || `Request failed (${res.status})`, {
+    code: envelope.code,
+    errorCodes: envelope.error_codes,
+    fieldErrors: envelope.errors ?? {},
+    retryAfter,
+  });
+}
+
+/**
+ * One call to the staff API through the BFF. FormData bodies (media uploads)
+ * set their own multipart boundary — never force a Content-Type on them.
+ */
 async function request<T>(
   endpoint: string,
-  init: { method?: string; body?: object; token?: string | null } = {}
+  init: { method?: string; body?: object } = {},
 ): Promise<T> {
-  // FormData bodies (file uploads) set their own multipart boundary — never
-  // force a Content-Type on them.
   const isForm = init.body instanceof FormData;
   const headers: Record<string, string> = isForm ? {} : { "Content-Type": "application/json" };
-  if (init.token) headers.Authorization = `Bearer ${init.token}`;
 
-  const res = await fetch(`${ADMIN_API_BASE_URL}${endpoint}`, {
-    method: init.method ?? "GET",
-    headers,
-    body: isForm ? (init.body as FormData) : init.body ? JSON.stringify(init.body) : undefined,
-  });
-
-  if (!res.ok) {
-    let detail = `Request failed (${res.status})`;
-    let errors: string[] | undefined;
-    try {
-      const data = await res.json();
-      // DRF errors: {"detail": "..."} or field maps like {"username": ["..."]};
-      // publish failures add {"errors": ["..."]}.
-      if (Array.isArray(data?.errors) && data.errors.every((e: unknown) => typeof e === "string")) {
-        errors = data.errors as string[];
-      }
-      if (typeof data?.detail === "string") detail = data.detail;
-      else if (errors?.length) detail = errors[0];
-      else if (data && typeof data === "object") {
-        const first = Object.values(data)[0];
-        if (Array.isArray(first) && typeof first[0] === "string") detail = first[0];
-      }
-    } catch {
-      /* non-JSON body — keep the generic message */
-    }
-    throw new StudioApiError(res.status, detail, errors);
+  let res: Response;
+  try {
+    res = await fetch(`${STUDIO_API_BASE}${endpoint}`, {
+      method: init.method ?? "GET",
+      headers,
+      body: isForm ? (init.body as FormData) : init.body ? JSON.stringify(init.body) : undefined,
+      cache: "no-store",
+    });
+  } catch {
+    throw new StudioApiError(0, "Can’t reach the server — check your connection and try again.", {
+      code: "network_error",
+    });
   }
 
-  // DELETEs answer 204 No Content — there is no body to parse.
+  if (!res.ok) throw await toApiError(res);
+  // DELETEs and some actions answer 204 No Content — there is no body to parse.
   if (res.status === 204) return undefined as T;
-  return res.json() as Promise<T>;
+  return (await res.json()) as T;
 }
 
 /**
- * The refresh in flight, if any. A Publish click fires several calls at once
- * (save, publish, re-fetch) and auto-save may be mid-flight too; when the
- * access token has just expired they all 401 together. They share this one
- * refresh instead of each rotating the token pair independently.
+ * Authenticated call. The BFF owns the token and already did the one
+ * refresh-and-retry, so a 401 here means the session is genuinely gone.
  */
-let refreshInFlight: Promise<string> | null = null;
-
-/** POST auth/refresh/ with the stored (rotating) refresh token. */
-function refreshTokens(): Promise<string> {
-  refreshInFlight ??= doRefresh().finally(() => {
-    refreshInFlight = null;
-  });
-  return refreshInFlight;
-}
-
-async function doRefresh(): Promise<string> {
-  const refresh = readCookie(STUDIO_REFRESH_COOKIE);
-  if (!refresh) {
-    endStudioSession();
-    throw new StudioApiError(401, "Your session has expired — please sign in again");
-  }
-  try {
-    const tokens = await request<StudioTokens>("auth/refresh/", {
-      method: "POST",
-      body: { refresh },
-    });
-    saveTokens(tokens); // refresh rotates — always persist the new pair
-    return tokens.access;
-  } catch (err) {
-    // Only a definite rejection of the refresh token ends the session. A
-    // network drop, a timeout or a 5xx while the API restarts says nothing
-    // about the token, so keep it: the next save retries and succeeds once
-    // the server answers again, instead of silently signing the editor out
-    // mid-article.
-    if (err instanceof StudioApiError && (err.status === 400 || err.status === 401)) {
-      // Another tab may have rotated the pair while this call was out — its
-      // fresh token is already in the cookie, so use that rather than sign out.
-      const current = readCookie(STUDIO_REFRESH_COOKIE);
-      if (current && current !== refresh) {
-        const access = readCookie(STUDIO_ACCESS_COOKIE);
-        if (access) return access;
-      }
-      endStudioSession();
-      throw new StudioApiError(401, "Your session has expired — please sign in again");
-    }
-    if (err instanceof StudioApiError) {
-      throw new StudioApiError(err.status, "The server is busy — your changes are kept, try again in a moment");
-    }
-    throw new StudioApiError(0, "Can’t reach the server — check your connection and try again");
-  }
-}
-
-/** Authenticated call: attaches the Bearer token, retries once after a 401. */
 async function authRequest<T>(
   endpoint: string,
-  init: { method?: string; body?: object } = {}
+  init: { method?: string; body?: object } = {},
 ): Promise<T> {
-  const access = readCookie(STUDIO_ACCESS_COOKIE);
   try {
-    return await request<T>(endpoint, { ...init, token: access });
+    return await request<T>(endpoint, init);
   } catch (err) {
-    if (!(err instanceof StudioApiError) || err.status !== 401) throw err;
-    const fresh = await refreshTokens();
-    try {
-      return await request<T>(endpoint, { ...init, token: fresh });
-    } catch (retryErr) {
-      // A brand-new token still refused (e.g. the account was deactivated).
-      if (retryErr instanceof StudioApiError && retryErr.status === 401) endStudioSession();
-      throw retryErr;
-    }
+    if (err instanceof StudioApiError && err.status === 401) endStudioSession();
+    throw err;
   }
 }
 
 /**
- * The same authenticated call, for the per-module Phase 1 services
- * (faqService, pagesService, careersService, …). They live in their own files
- * so this one stops growing, but they share this session and its refresh.
+ * The same authenticated call, for the per-module services (faqService,
+ * pagesService, careersService, adminService). They live in their own files so
+ * this one stops growing, but they share this transport and its session.
  */
 export const studioRequest = authRequest;
 
@@ -417,86 +484,147 @@ export function query(params: object): string {
 /*  Public API                                                                 */
 /* -------------------------------------------------------------------------- */
 
-/** POST auth/login/ — stores the token pair on success. */
-export async function login(username: string, password: string): Promise<void> {
-  const tokens = await request<StudioTokens>("auth/login/", {
-    method: "POST",
-    body: { username, password },
-  });
-  saveTokens(tokens);
+/**
+ * Sign in. The BFF calls `/api/v1/auth/login/` and keeps the token pair in
+ * HttpOnly cookies, returning only the `me` payload.
+ *
+ * The platform signs in by **e-mail** (the old CMS used a username). Distinct
+ * failures worth surfacing: 401 `invalid_credentials`, 403
+ * `password_reset_required` (every migrated CMS account starts this way), and
+ * 429 `login_locked` with `retryAfter` seconds.
+ */
+export async function login(email: string, password: string): Promise<StudioMe> {
+  let res: Response;
+  try {
+    res = await fetch("/fe-api/studio/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+      cache: "no-store",
+    });
+  } catch {
+    throw new StudioApiError(0, "Can’t reach the server — check your connection and try again.", {
+      code: "network_error",
+    });
+  }
+  if (!res.ok) throw await toApiError(res);
+  const { me } = (await res.json()) as { me: StudioMe };
+  return me;
 }
 
-/** No logout endpoint — just discard the tokens. */
-export function logout(): void {
-  clearTokens();
+/** Sign out: blacklists the refresh token on the platform, clears the cookies. */
+export async function logout(): Promise<void> {
+  try {
+    await fetch("/fe-api/studio/logout", { method: "POST", cache: "no-store" });
+  } catch {
+    /* the cookies are cleared server-side on any reachable call; ignore */
+  }
 }
 
-/** GET auth/me/ — the signed-in internal user + capability flags. */
+/** GET auth/me/ — the signed-in user, their role, permissions and scopes. */
 export function getMe(): Promise<StudioMe> {
   return authRequest<StudioMe>("auth/me/");
 }
 
-/** GET config/ — static shell metadata (environment badge, preview links). */
-export function getConfig(): Promise<StudioConfig> {
-  return authRequest<StudioConfig>("config/");
+/**
+ * Shell metadata. The platform has no staff `config/` endpoint — the only
+ * `config/` route belongs to the device-agent surface — and all five fields are
+ * deployment constants, so they are assembled here rather than fetched.
+ */
+export function getConfig(): StudioConfig {
+  return {
+    environment: process.env.NODE_ENV === "production" ? "production" : "development",
+    site_url: SITE_URL,
+    blog_path: "/blog",
+    media_base_url: "",
+    delivery_api_base: `${PUBLIC_API_BASE_URL}content`,
+  };
 }
 
-/** GET dashboard/ — dashboard counts + recent entries (and sidebar badges). */
-export function getDashboard(): Promise<StudioDashboard> {
-  return authRequest<StudioDashboard>("dashboard/");
+/**
+ * Dashboard counters. The platform returns `{modules: {<module>: {<counter>:
+ * n}}}` — nested per registry module, and only for modules the caller may
+ * `view`, so every counter is optional. `flattenDashboardCounts` maps it onto
+ * the flat shape the screens and sidebar badges use.
+ */
+export async function getDashboard(): Promise<StudioDashboard> {
+  const [counters, entries, activity] = await Promise.all([
+    authRequest<PlatformDashboard>("dashboard/"),
+    // `recent_entries` and `recent_activity` no longer come from the dashboard.
+    authRequest<Paginated<StudioEntryListItem>>("content/entries/?ordering=-updated_at&page_size=8").catch(
+      () => ({ count: 0, next: null, previous: null, results: [] as StudioEntryListItem[] }),
+    ),
+    authRequest<Paginated<PlatformAuditRow>>("audit/?page_size=8").catch(
+      () => ({ count: 0, next: null, previous: null, results: [] as PlatformAuditRow[] }),
+    ),
+  ]);
+  return {
+    counts: flattenDashboardCounts(counters),
+    recent_entries: entries.results,
+    recent_activity: activity.results.map(toActivityItem),
+  };
 }
 
-/** Slot type on a template attribute (mirrors the backend TextChoices). */
+/**
+ * Slot type on a template attribute — the backend `TemplateAttributeSlot.Type`
+ * values verbatim. The legacy CMS used lowercase names ("enum", "boolean");
+ * the platform does not, and a mismatch silently degrades every typed slot to a
+ * free-text input whose value the backend then rejects on save.
+ */
 export type StudioSlotType =
-  | "text"
-  | "richtext_blocks"
-  | "number"
-  | "boolean"
-  | "date"
-  | "enum"
-  | "url";
+  | "TEXT"
+  | "RICHTEXT_BLOCKS"
+  | "NUMBER"
+  | "BOOL"
+  | "DATE"
+  | "ENUM"
+  | "URL";
 
-/** Image group on a template — `key` is the delivery contract, never rename it. */
+/**
+ * Image group on a template — `key` is the delivery contract, never rename it.
+ * The parent template is in the URL, not the payload.
+ */
 export interface StudioTemplateImageGroup {
-  id: number;
-  template: number;
+  uid: string;
   key: string;
   label: string;
   repeatable: boolean;
   max_items: number | null;
   required: boolean;
-  order: number;
+  /** Ordering within the template (was `order` on the CMS). */
+  position: number;
+  version: number;
 }
 
 /** Typed attribute slot on a template — rename `label`, never `key`. */
 export interface StudioTemplateAttributeSlot {
-  id: number;
-  template: number;
+  uid: string;
   key: string;
   label: string;
   type: StudioSlotType;
   options: Record<string, unknown>;
   required: boolean;
-  order: number;
+  position: number;
+  version: number;
 }
 
 /** GET templates/ — the entry editor's structure definition. */
 export interface StudioTemplate {
-  id: number;
+  uid: string;
   name: string;
   slug: string;
   description: string;
   is_active: boolean;
   sort_order: number;
-  /** "used by N entries" badge — absent until the backend ships it. */
-  entries_count?: number;
+  /** "used by N entries" badge. */
+  entry_count: number;
   image_groups: StudioTemplateImageGroup[];
   attribute_slots: StudioTemplateAttributeSlot[];
 }
 
 /** GET collections/ — readable by any signed-in user. */
 export function getCollections(): Promise<Paginated<StudioCollection>> {
-  return authRequest<Paginated<StudioCollection>>("collections/");
+  return authRequest<Paginated<StudioCollection>>("content/collections/");
 }
 
 /** POST collections/ — admin (schema editor) only; 403 otherwise. */
@@ -504,16 +632,18 @@ export function createCollection(body: {
   api_uid: string;
   singular_name: string;
   plural_name: string;
+  /** Required by the platform — the collection's public route prefix. */
+  path_prefix: string;
   description?: string;
 }): Promise<StudioCollection> {
-  return authRequest<StudioCollection>("collections/", { method: "POST", body });
+  return authRequest<StudioCollection>("content/collections/", { method: "POST", body });
 }
 
 /* ── Templates (schema editing — writes are admin only) ──────────────────── */
 
 /** GET templates/ — readable by any signed-in user. */
 export function getTemplates(): Promise<Paginated<StudioTemplate>> {
-  return authRequest<Paginated<StudioTemplate>>("templates/");
+  return authRequest<Paginated<StudioTemplate>>("content/templates/");
 }
 
 /** POST templates/ — create a new (empty) template; admin (schema editor) only. */
@@ -522,58 +652,72 @@ export function createTemplate(body: {
   slug: string;
   description?: string;
 }): Promise<StudioTemplate> {
-  return authRequest<StudioTemplate>("templates/", { method: "POST", body });
+  return authRequest<StudioTemplate>("content/templates/", { method: "POST", body });
 }
 
 /** POST templates/{id}/duplicate/ — deep copy (template + groups + slots). */
-export function duplicateTemplate(id: number): Promise<StudioTemplate> {
-  return authRequest<StudioTemplate>(`templates/${id}/duplicate/`, { method: "POST" });
+/** POST content/templates/{uid}/duplicate/ — `slug` is required. */
+export function duplicateTemplate(uid: string, body: { slug: string; name?: string }): Promise<StudioTemplate> {
+  return authRequest<StudioTemplate>(`content/templates/${uid}/duplicate/`, { method: "POST", body });
 }
 
+// Template children are nested under their template:
+//   content/templates/<template_uid>/image-groups/[<uid>/]
+//   content/templates/<template_uid>/attribute-slots/[<uid>/]
+
 export function createImageGroup(
-  body: Omit<StudioTemplateImageGroup, "id">
+  templateUid: string,
+  body: Omit<StudioTemplateImageGroup, "uid" | "version">,
 ): Promise<StudioTemplateImageGroup> {
-  return authRequest<StudioTemplateImageGroup>("template-image-groups/", { method: "POST", body });
+  return authRequest<StudioTemplateImageGroup>(`content/templates/${templateUid}/image-groups/`, { method: "POST", body });
 }
 
 export function patchImageGroup(
-  id: number,
-  body: Partial<Pick<StudioTemplateImageGroup, "label" | "required" | "repeatable" | "max_items" | "order">>
+  templateUid: string,
+  uid: string,
+  body: Partial<Pick<StudioTemplateImageGroup, "label" | "required" | "repeatable" | "max_items" | "position">> & {
+    expected_version?: number;
+  },
 ): Promise<StudioTemplateImageGroup> {
-  return authRequest<StudioTemplateImageGroup>(`template-image-groups/${id}/`, { method: "PATCH", body });
+  return authRequest<StudioTemplateImageGroup>(`content/templates/${templateUid}/image-groups/${uid}/`, { method: "PATCH", body });
 }
 
-export function deleteImageGroup(id: number): Promise<void> {
-  return authRequest<void>(`template-image-groups/${id}/`, { method: "DELETE" });
+export function deleteImageGroup(templateUid: string, uid: string): Promise<void> {
+  return authRequest<void>(`content/templates/${templateUid}/image-groups/${uid}/`, { method: "DELETE" });
 }
 
 export function createAttributeSlot(
-  body: Omit<StudioTemplateAttributeSlot, "id">
+  templateUid: string,
+  body: Omit<StudioTemplateAttributeSlot, "uid" | "version">,
 ): Promise<StudioTemplateAttributeSlot> {
-  return authRequest<StudioTemplateAttributeSlot>("template-attribute-slots/", { method: "POST", body });
+  return authRequest<StudioTemplateAttributeSlot>(`content/templates/${templateUid}/attribute-slots/`, { method: "POST", body });
 }
 
 export function patchAttributeSlot(
-  id: number,
-  body: Partial<Pick<StudioTemplateAttributeSlot, "label" | "required" | "type" | "options" | "order">>
+  templateUid: string,
+  uid: string,
+  body: Partial<Pick<StudioTemplateAttributeSlot, "label" | "required" | "type" | "options" | "position">> & {
+    expected_version?: number;
+  },
 ): Promise<StudioTemplateAttributeSlot> {
-  return authRequest<StudioTemplateAttributeSlot>(`template-attribute-slots/${id}/`, { method: "PATCH", body });
+  return authRequest<StudioTemplateAttributeSlot>(`content/templates/${templateUid}/attribute-slots/${uid}/`, { method: "PATCH", body });
 }
 
-export function deleteAttributeSlot(id: number): Promise<void> {
-  return authRequest<void>(`template-attribute-slots/${id}/`, { method: "DELETE" });
+export function deleteAttributeSlot(templateUid: string, uid: string): Promise<void> {
+  return authRequest<void>(`content/templates/${templateUid}/attribute-slots/${uid}/`, { method: "DELETE" });
 }
 
 /* ── Entries list + workflow actions ─────────────────────────────────────── */
 
 /** GET entries/ — lightweight rows; open the entry for body content. */
 export function getEntries(params?: {
-  collection?: number | string;
-  status?: "draft" | "published";
-  category?: number;
-  tag?: number;
-  template?: number;
-  author?: number;
+  /** Collection uid or api_uid. */
+  collection?: string;
+  status?: StudioEntryStatus;
+  category?: string;
+  tag?: string;
+  template?: string;
+  author?: string;
   search?: string;
   /** Whitelisted: title, slug, status, sort_order, created_at, updated_at,
    *  published_on, published_at — prefix with "-" for descending. */
@@ -585,66 +729,114 @@ export function getEntries(params?: {
     if (v !== undefined && v !== "") qs.set(k, String(v));
   }
   const query = qs.toString();
-  return authRequest<Paginated<StudioEntryListItem>>(`entries/${query ? `?${query}` : ""}`);
+  return authRequest<Paginated<StudioEntryListItem>>(`content/entries/${query ? `?${query}` : ""}`);
 }
 
-/** POST entries/{id}/publish/ — validates against the template; a 400 carries
- *  the human-readable list in StudioApiError.errors. */
-export function publishEntry(id: number): Promise<{ id: number; status: string }> {
-  return authRequest<{ id: number; status: string }>(`entries/${id}/publish/`, { method: "POST" });
+/**
+ * POST content/entries/{uid}/<action>/ — each returns the **full entry detail**
+ * (the CMS returned a stub). A failed publish is a 400 whose field errors carry
+ * the reasons.
+ */
+function entryAction(uid: string, action: string, expectedVersion?: number): Promise<StudioEntryDetail> {
+  return authRequest<StudioEntryDetail>(`content/entries/${uid}/${action}/`, {
+    method: "POST",
+    body: expectedVersion === undefined ? {} : { expected_version: expectedVersion },
+  });
 }
 
-export function unpublishEntry(id: number): Promise<{ id: number; status: string }> {
-  return authRequest<{ id: number; status: string }>(`entries/${id}/unpublish/`, { method: "POST" });
+export const publishEntry = (uid: string, expectedVersion?: number) => entryAction(uid, "publish", expectedVersion);
+export const unpublishEntry = (uid: string, expectedVersion?: number) => entryAction(uid, "unpublish", expectedVersion);
+export const submitEntry = (uid: string, expectedVersion?: number) => entryAction(uid, "submit", expectedVersion);
+export const archiveEntry = (uid: string, expectedVersion?: number) => entryAction(uid, "archive", expectedVersion);
+export const restoreEntry = (uid: string, expectedVersion?: number) => entryAction(uid, "restore", expectedVersion);
+export const verifyEntry = (uid: string, expectedVersion?: number) => entryAction(uid, "verify", expectedVersion);
+
+/** POST content/entries/{uid}/duplicate/ → 201 with the new draft. */
+export function duplicateEntry(uid: string): Promise<StudioEntryDetail> {
+  return authRequest<StudioEntryDetail>(`content/entries/${uid}/duplicate/`, { method: "POST" });
 }
 
-/** POST entries/{id}/duplicate/ → 201 with the new draft. */
-export function duplicateEntry(id: number): Promise<{ id: number; title: string }> {
-  return authRequest<{ id: number; title: string }>(`entries/${id}/duplicate/`, { method: "POST" });
-}
-
-export function deleteEntry(id: number): Promise<void> {
-  return authRequest<void>(`entries/${id}/`, { method: "DELETE" });
+/** Soft delete; frees the slug. `expected_version` rides the query string. */
+export function deleteEntry(uid: string, expectedVersion?: number): Promise<void> {
+  const qs = expectedVersion === undefined ? "" : `?expected_version=${expectedVersion}`;
+  return authRequest<void>(`content/entries/${uid}/${qs}`, { method: "DELETE" });
 }
 
 /* ── Single entry (full read + write) ────────────────────────────────────── */
 
 export interface EntryContentBlock {
-  id?: number;
+  uid?: string;
+  kind?: string;
   component: string;
-  body: unknown[];
-  order: number;
+  /** The block payload (was `body` on the CMS). */
+  data: unknown[];
+  /** Ordering within the entry (was `order`). */
+  position: number;
 }
 
 export interface EntryImageRow {
-  id?: number;
+  uid?: string;
   group_key: string;
   position: number;
-  media_asset: number | null;
+  /** Nested media reference on read; send `media_asset_uid` on write. */
+  media_asset: StudioMediaAsset | null;
+  alt?: string;
+  url?: string | null;
   external_url?: string;
 }
 
 export interface EntryAttributeValueRow {
-  id?: number;
+  /** Attribute values have no identity of their own. */
   slot_key: string;
   value: unknown;
 }
 
 export interface EntrySeo {
-  meta_title: string | null;
+  /** Was `meta_title` on the CMS. */
+  seo_title: string | null;
   meta_description: string | null;
   canonical_url: string | null;
   keywords: string | null;
+  og_title: string | null;
+  og_description: string | null;
+  og_image: StudioMediaAsset | null;
+  schema_type: string | null;
+  schema_extra: Record<string, unknown> | null;
+  noindex: boolean;
+  seo_status: string | null;
+  issues: { code: string; message: string }[];
+}
+
+/** What a write sends for the SEO block (uids, not nested objects). */
+/** Text fields are "" when blank — the backend rejects null for them. */
+export interface EntrySeoInput {
+  seo_title?: string;
+  meta_description?: string;
+  canonical_url?: string;
+  keywords?: string;
+  og_title?: string;
+  og_description?: string;
+  og_image_uid?: string | null;
+  schema_type?: string | null;
+  schema_extra?: Record<string, unknown> | null;
+  noindex?: boolean;
+}
+
+/** Image rows on write reference the asset by uid. */
+export interface EntryImageInput {
+  group_key: string;
+  position: number;
+  media_asset_uid?: string | null;
+  alt?: string;
+  external_url?: string;
 }
 
 /** GET entries/{id}/ — the full authoring shape (nested objects on read). */
 export interface StudioEntryDetail {
-  id: number;
-  document_id: string;
-  collection: number;
-  collection_uid: string;
-  template: number | null;
-  template_slug: string | null;
+  uid: string;
+  /** Nested on read; write with `collection_uid`. */
+  collection: { uid: string; api_uid: string; plural_name: string; path_prefix: string };
+  template: { uid: string; slug: string; name: string } | null;
   title: string;
   slug: string;
   excerpt: string;
@@ -653,10 +845,15 @@ export interface StudioEntryDetail {
   read_time: number | null;
   warning: string | null;
   insights: string | null;
-  status: "draft" | "published";
+  status: StudioEntryStatus;
   published_on: string | null;
   published_at: string | null;
-  author: StudioAuthor | null;
+  scheduled_for: string | null;
+  archived_at: string | null;
+  verified_at: string | null;
+  locale: string | null;
+  path: string | null;
+  author: { uid: string; name: string; slug: string } | null;
   categories: StudioCategory[];
   tags: StudioTag[];
   badges: StudioBadge[];
@@ -666,52 +863,63 @@ export interface StudioEntryDetail {
   seo: EntrySeo | null;
   created_at: string;
   updated_at: string;
+  version: number;
 }
 
-/** Write payload — ids for relations; children are replace-all on PATCH. */
+/** Write payload — uids for relations; children are replace-all on PATCH. */
 export interface EntryWritePayload {
-  collection: number;
-  template?: number | null;
+  collection_uid: string;
+  template_uid?: string | null;
   title: string;
   slug: string;
   excerpt?: string;
   summary?: unknown[];
   introduction?: unknown[];
   read_time?: number | null;
-  warning?: string | null;
-  insights?: string | null;
+  warning?: string;
+  insights?: string;
   published_on?: string | null;
-  author?: number | null;
-  categories?: number[];
-  tags?: number[];
-  badges?: number[];
+  author_uid?: string | null;
+  category_uids?: string[];
+  tag_uids?: string[];
+  badge_uids?: string[];
+  is_featured?: boolean;
+  sort_order?: number;
+  locale?: string;
+  cover_image_uid?: string | null;
   content_blocks?: EntryContentBlock[];
-  images?: EntryImageRow[];
+  images?: EntryImageInput[];
   attribute_values?: EntryAttributeValueRow[];
-  seo?: Partial<EntrySeo> | null;
+  seo?: EntrySeoInput | null;
 }
 
-export function getEntry(id: number | string): Promise<StudioEntryDetail> {
-  return authRequest<StudioEntryDetail>(`entries/${id}/`);
+export function getEntry(uid: string): Promise<StudioEntryDetail> {
+  return authRequest<StudioEntryDetail>(`content/entries/${uid}/`);
 }
 
 export function createEntry(body: EntryWritePayload): Promise<StudioEntryDetail> {
-  return authRequest<StudioEntryDetail>("entries/", { method: "POST", body });
+  return authRequest<StudioEntryDetail>("content/entries/", { method: "POST", body });
 }
 
 /** PATCH entries/{id}/ — omit a children key to leave it untouched; include it
  *  to replace the whole set. */
-export function updateEntry(id: number, body: Partial<EntryWritePayload>): Promise<StudioEntryDetail> {
-  return authRequest<StudioEntryDetail>(`entries/${id}/`, { method: "PATCH", body });
+export function updateEntry(uid: string, body: Partial<EntryWritePayload>): Promise<StudioEntryDetail> {
+  return authRequest<StudioEntryDetail>(`content/entries/${uid}/`, { method: "PATCH", body });
 }
 
 /** GET entries/check-slug/?collection=&slug= → availability + a suggestion. */
+/**
+ * GET content/entries/check-slug/ — `collection` takes a uid **or** an api_uid,
+ * and `exclude` is the entry being edited so its own slug does not clash.
+ */
 export function checkSlug(
-  collection: number,
-  slug: string
-): Promise<{ available: boolean; suggestion: string }> {
-  const qs = new URLSearchParams({ collection: String(collection), slug });
-  return authRequest<{ available: boolean; suggestion: string }>(`entries/check-slug/?${qs.toString()}`);
+  collection: string,
+  slug: string,
+  exclude?: string,
+): Promise<{ slug: string; available: boolean; suggestion: string; valid: boolean; error: string | null }> {
+  const qs = new URLSearchParams({ collection, slug });
+  if (exclude) qs.set("exclude", exclude);
+  return authRequest(`content/entries/check-slug/?${qs.toString()}`);
 }
 
 /* ── Media library ───────────────────────────────────────────────────────── */
@@ -719,160 +927,250 @@ export function checkSlug(
 /** GET media-assets/ row. Always render `url` — CDN copy wins, local file is
  *  the fallback (resolved server-side). */
 export interface StudioMediaAsset {
-  id: number;
-  file: string;
-  collection: number | null;
+  uid: string;
+  /** Resolved CDN URL — null for private files (use media/<uid>/signed-url/). */
   url: string | null;
-  cdn_url: string | null;
-  mime: string;
-  size: number;
+  thumbnail_url: string | null;
+  visibility: "PUBLIC" | "PRIVATE";
+  kind: "IMAGE" | "DOCUMENT" | "SIGNATURE" | "RESUME" | "PHOTO";
+  /** Flat string folder; the old per-collection scoping is gone. */
+  folder: string;
+  original_filename: string;
+  mime_type: string;
+  size_bytes: number;
   width: number | null;
   height: number | null;
   alternative_text: string;
   caption: string;
+  checksum_sha256: string;
+  uploaded_by: string | null;
   created_at: string;
+  updated_at: string;
+  version: number;
 }
 
-/** GET media-assets/ — optional `collection` (id or api_uid) and `search`. */
+/** GET media/ — a flat library; filter by exact `folder` or `search`. */
 export function getMediaAssets(params?: {
-  collection?: number | string;
+  folder?: string;
   search?: string;
 }): Promise<Paginated<StudioMediaAsset>> {
   const qs = new URLSearchParams();
-  if (params?.collection !== undefined && params.collection !== "") qs.set("collection", String(params.collection));
+  if (params?.folder) qs.set("folder", params.folder);
   if (params?.search) qs.set("search", params.search);
   const query = qs.toString();
-  return authRequest<Paginated<StudioMediaAsset>>(`media-assets/${query ? `?${query}` : ""}`);
+  return authRequest<Paginated<StudioMediaAsset>>(`media/${query ? `?${query}` : ""}`);
 }
 
-/** POST media-assets/ (multipart) — backend compresses to WebP + uploads to CDN. */
+/**
+ * POST media/upload/ (multipart). `visibility` and `kind` are **required** by
+ * the platform; Studio images are public images. The type is sniffed from the
+ * content, and limits are enforced server-side (an oversized body is a 413).
+ */
 export function uploadMediaAsset(
   file: File,
-  extra?: { collection?: number; alternative_text?: string; caption?: string }
+  extra?: {
+    visibility?: StudioMediaAsset["visibility"];
+    kind?: StudioMediaAsset["kind"];
+    folder?: string;
+    alternative_text?: string;
+    caption?: string;
+  },
 ): Promise<StudioMediaAsset> {
   const form = new FormData();
   form.append("file", file);
-  if (extra?.collection !== undefined) form.append("collection", String(extra.collection));
+  form.append("visibility", extra?.visibility ?? "PUBLIC");
+  form.append("kind", extra?.kind ?? "IMAGE");
+  if (extra?.folder) form.append("folder", extra.folder);
   if (extra?.alternative_text) form.append("alternative_text", extra.alternative_text);
   if (extra?.caption) form.append("caption", extra.caption);
-  return authRequest<StudioMediaAsset>("media-assets/", { method: "POST", body: form });
+  return authRequest<StudioMediaAsset>("media/upload/", { method: "POST", body: form });
 }
 
-/** PATCH media-assets/{id}/ — metadata only; the file itself is immutable. */
+/** PATCH media/{uid}/ — alt text and caption only; the file is immutable. */
 export function patchMediaAsset(
-  id: number,
-  body: Partial<Pick<StudioMediaAsset, "alternative_text" | "caption" | "collection">>
+  uid: string,
+  body: Partial<Pick<StudioMediaAsset, "alternative_text" | "caption">> & { expected_version?: number },
 ): Promise<StudioMediaAsset> {
-  return authRequest<StudioMediaAsset>(`media-assets/${id}/`, { method: "PATCH", body });
+  return authRequest<StudioMediaAsset>(`media/${uid}/`, { method: "PATCH", body });
 }
 
-/** DELETE media-assets/{id}/ — also deletes from the CDN; entries using the
- *  image simply lose it, so always confirm first. */
-export function deleteMediaAsset(id: number): Promise<void> {
-  return authRequest<void>(`media-assets/${id}/`, { method: "DELETE" });
+/**
+ * DELETE media/{uid}/ — refused with 409 `media_in_use` while a live record
+ * still references the asset; the blocking rows come back in the envelope's
+ * `errors`. (The old CMS deleted regardless and let entries lose the image.)
+ */
+export function deleteMediaAsset(uid: string): Promise<void> {
+  return authRequest<void>(`media/${uid}/`, { method: "DELETE" });
+}
+
+/** A 10-minute signed URL for a private file; public files return their CDN URL. */
+export function mediaSignedUrl(uid: string): Promise<{ url: string; thumbnail_url: string | null; expires_at: string | null }> {
+  return authRequest(`media/${uid}/signed-url/`);
 }
 
 /* ── Taxonomy lookups (standard CRUD, any signed-in role) ────────────────── */
 
 export interface StudioAuthor {
-  id: number;
+  uid: string;
   name: string;
+  slug: string;
   bio: string | null;
   role: string | null;
+  entry_count: number;
+  version: number;
 }
 
 export interface StudioCategory {
-  id: number;
+  uid: string;
   name: string;
   slug: string | null;
+  entry_count: number;
+  version: number;
 }
 
 export interface StudioTag {
-  id: number;
+  uid: string;
   name: string;
+  /** New on the platform. */
+  slug: string;
+  entry_count: number;
+  version: number;
 }
 
 export interface StudioBadge {
-  id: number;
-  label: string;
+  uid: string;
+  /** Was `label` on the CMS; the public delivery payload still says `label`. */
+  name: string;
+  slug: string;
   color: string;
+  entry_count: number;
+  version: number;
 }
 
 export function getAuthors(): Promise<Paginated<StudioAuthor>> {
-  return authRequest<Paginated<StudioAuthor>>("authors/");
+  return authRequest<Paginated<StudioAuthor>>("content/authors/");
 }
 
 export function createAuthor(body: { name: string; bio?: string; role?: string }): Promise<StudioAuthor> {
-  return authRequest<StudioAuthor>("authors/", { method: "POST", body });
+  return authRequest<StudioAuthor>("content/authors/", { method: "POST", body });
 }
 
 export function getCategories(): Promise<Paginated<StudioCategory>> {
-  return authRequest<Paginated<StudioCategory>>("categories/");
+  return authRequest<Paginated<StudioCategory>>("content/categories/");
 }
 
 export function createCategory(body: { name: string; slug?: string }): Promise<StudioCategory> {
-  return authRequest<StudioCategory>("categories/", { method: "POST", body });
+  return authRequest<StudioCategory>("content/categories/", { method: "POST", body });
 }
 
 export function getTags(): Promise<Paginated<StudioTag>> {
-  return authRequest<Paginated<StudioTag>>("tags/");
+  return authRequest<Paginated<StudioTag>>("content/tags/");
 }
 
 export function createTag(body: { name: string }): Promise<StudioTag> {
-  return authRequest<StudioTag>("tags/", { method: "POST", body });
+  return authRequest<StudioTag>("content/tags/", { method: "POST", body });
 }
 
 export function getBadges(): Promise<Paginated<StudioBadge>> {
-  return authRequest<Paginated<StudioBadge>>("badges/");
+  return authRequest<Paginated<StudioBadge>>("content/badges/");
 }
 
-export function createBadge(body: { label: string; color?: string }): Promise<StudioBadge> {
-  return authRequest<StudioBadge>("badges/", { method: "POST", body });
+export function createBadge(body: { name: string; color?: string }): Promise<StudioBadge> {
+  return authRequest<StudioBadge>("content/badges/", { method: "POST", body });
 }
 
-/* ── Users (Roles & access) — admin only, everyone else gets 403 ─────────── */
+/* ── Users (Roles & access) — needs the `users` module ───────────────── */
 
-/** Rows from GET auth/users/ share the auth/me/ shape. */
-export type StudioUser = StudioMe;
+/**
+ * A row from `GET users/`. Unlike the old CMS this is NOT the `auth/me/` shape:
+ * there is no `username` (e-mail is the login), the role is a nested object
+ * rather than a numeric `access_role`, and permissions are not included — only
+ * `auth/me/` carries grants, so a per-user matrix must join against `roles/`.
+ */
+export interface StudioUser {
+  uid: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  phone_e164: string | null;
+  title: string | null;
+  role: { uid: string; slug: string; name: string } | null;
+  is_active: boolean;
+  must_reset_password: boolean;
+  last_login_at: string | null;
+  password_changed_at: string | null;
+  created_at: string;
+  updated_at: string;
+  version: number;
+}
 
 export function getUsers(): Promise<Paginated<StudioUser>> {
-  return authRequest<Paginated<StudioUser>>("auth/users/");
+  return authRequest<Paginated<StudioUser>>("users/");
 }
 
-/** POST auth/users/ — password is required on create. */
+/**
+ * POST users/ — creates the account. `role` is the role's uid.
+ *
+ * Omit `password` (the default) and the platform stores an unusable password,
+ * sets `must_reset_password` and e-mails an invitation link. Send one and it is
+ * stored instead, no invitation goes out, and `must_reset_password` stays clear
+ * so the credentials work immediately — the fallback for when e-mail cannot be
+ * delivered. The password is write-only; it never comes back in the response.
+ */
 export function createUser(body: {
-  username: string;
-  password: string;
-  /** Legacy enum; derived from `access_role` on the server when that is set. */
-  role?: StudioApiRole;
-  /** Phase 1 role id (§6.17). */
-  access_role?: number | null;
-  email?: string;
+  email: string;
+  role: string;
   first_name?: string;
   last_name?: string;
+  phone_e164?: string;
+  title?: string;
+  /** Optional. Must satisfy the server's policy (min 10 chars, not common, not all-numeric, unlike the e-mail). */
+  password?: string;
 }): Promise<StudioUser> {
-  return authRequest<StudioUser>("auth/users/", { method: "POST", body });
+  return authRequest<StudioUser>("users/", { method: "POST", body });
 }
 
-/** PATCH auth/users/{id}/ — any fields; include `password` to reset it. */
+/**
+ * PATCH users/{uid}/ — `is_active` is read-only here (use deactivate /
+ * reactivate) and there is no password field (use forceUserReset). Changing
+ * `email` or `role` needs `users.manage`.
+ */
 export function patchUser(
-  id: number,
+  uid: string,
   body: Partial<{
-    username: string;
     email: string;
     first_name: string;
     last_name: string;
-    role: StudioApiRole;
-    access_role: number | null;
-    is_active: boolean;
-    password: string;
-  }>
+    phone_e164: string;
+    title: string;
+    /** The role's uid. */
+    role: string;
+    expected_version: number;
+  }>,
 ): Promise<StudioUser> {
-  return authRequest<StudioUser>(`auth/users/${id}/`, { method: "PATCH", body });
+  return authRequest<StudioUser>(`users/${uid}/`, { method: "PATCH", body });
 }
 
-/** DELETE auth/users/{id}/ — deactivates (authorship history stays); the
- *  backend refuses self-deletion. */
-export function deleteUser(id: number): Promise<void> {
-  return authRequest<void>(`auth/users/${id}/`, { method: "DELETE" });
+/** POST users/{uid}/deactivate/ — replaces the old DELETE. */
+export function deactivateUser(uid: string, expectedVersion?: number): Promise<StudioUser> {
+  return authRequest<StudioUser>(`users/${uid}/deactivate/`, {
+    method: "POST",
+    body: expectedVersion === undefined ? {} : { expected_version: expectedVersion },
+  });
+}
+
+export function reactivateUser(uid: string, expectedVersion?: number): Promise<StudioUser> {
+  return authRequest<StudioUser>(`users/${uid}/reactivate/`, {
+    method: "POST",
+    body: expectedVersion === undefined ? {} : { expected_version: expectedVersion },
+  });
+}
+
+/** POST users/{uid}/force-reset/ — replaces PATCH-ing a new password in. */
+export function forceUserReset(uid: string, expectedVersion?: number): Promise<StudioUser> {
+  return authRequest<StudioUser>(`users/${uid}/force-reset/`, {
+    method: "POST",
+    body: expectedVersion === undefined ? {} : { expected_version: expectedVersion },
+  });
 }

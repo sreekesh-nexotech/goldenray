@@ -93,6 +93,32 @@ export function blocksToHtml(body: BlockNode[] | null | undefined): string {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Plain text ↔ Blocks (rich-text attribute slots, edited in a textarea)        */
+/* -------------------------------------------------------------------------- */
+
+function inlinesToText(children: InlineNode[]): string {
+  return (children ?? [])
+    .map((n) => ((n as BlockLinkNode).type === "link" ? inlinesToText((n as BlockLinkNode).children) : (n as BlockTextNode).text ?? ""))
+    .join("");
+}
+
+/** One line per paragraph/heading/quote/list item. Marks and links are dropped. */
+export function blocksToText(body: BlockNode[] | null | undefined): string {
+  if (!Array.isArray(body)) return "";
+  return body
+    .flatMap((node) => (node.type === "list" ? (node.children ?? []).map((li) => inlinesToText(li.children)) : [inlinesToText(node.children)]))
+    .join("\n");
+}
+
+/** Each non-blank line becomes a paragraph. */
+export function textToBlocks(text: string): BlockNode[] {
+  return (text ?? "")
+    .split("\n")
+    .filter((line) => line.trim())
+    .map((line) => ({ type: "paragraph", children: [{ type: "text", text: line }] }));
+}
+
+/* -------------------------------------------------------------------------- */
 /*  HTML → Blocks (for saving)                                                  */
 /* -------------------------------------------------------------------------- */
 

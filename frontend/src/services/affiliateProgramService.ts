@@ -1,5 +1,6 @@
 // src/services/affiliateProgramService.ts
 import { apiCall } from "./apiService";
+import { newIdempotencyKey } from "../utils/fetchApi";
 
 export interface AffiliateApplicationData {
   full_name: string;
@@ -13,13 +14,13 @@ export interface AffiliateApplicationData {
 }
 
 export interface AffiliateApplicationResponse {
+  uid: string;
+  full_name: string;
+  profession: string;
+  district: string;
+  status: string;
+  created_at: string;
   message: string;
-  status: "success" | "error";
-  data?: Omit<AffiliateApplicationData, "website"> & {
-    id: number;
-    created_at: string;
-  };
-  errors?: Record<string, string[]>;
 }
 
 export async function submitAffiliateApplication(
@@ -29,7 +30,8 @@ export async function submitAffiliateApplication(
     const response = await apiCall<AffiliateApplicationResponse>(
       "affiliate-applications/",
       "POST",
-      data
+      data,
+      { publicApi: true, idempotencyKey: newIdempotencyKey() }
     );
     return response;
   } catch (error) {

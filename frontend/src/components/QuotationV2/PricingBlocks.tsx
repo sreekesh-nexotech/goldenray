@@ -200,7 +200,27 @@ function cardsFor(data: PricingData): CardSpec[] {
   return PACKAGES.map((pkg) => ({ ...pkg, subtitle: data.systemDescription, tier: data[pkg.key] }));
 }
 
-export function PackageCards({ data, language }: { data: PricingData; language: Language }) {
+/**
+ * The commercial document's wording of the same card: it drops the breakdown
+ * heading, names the payable amount its own way and notes EMI eligibility.
+ */
+export interface PackageCardWording {
+  subtitle: string;
+  amountLabel: string;
+  emiNote: string;
+  /** Hybrid option names, where they differ from the residential ones. */
+  names?: Partial<Record<HybridKey, string>>;
+}
+
+export function PackageCards({
+  data,
+  language,
+  wording,
+}: {
+  data: PricingData;
+  language: Language;
+  wording?: PackageCardWording;
+}) {
   return (
     <div
       style={{
@@ -215,7 +235,13 @@ export function PackageCards({ data, language }: { data: PricingData; language: 
       }}
     >
       {cardsFor(data).map((card) => (
-        <PackageCard key={card.key} card={card} data={data} l={labelsFor(language)} />
+        <PackageCard
+          key={card.key}
+          card={wording ? { ...card, subtitle: wording.subtitle, name: wording.names?.[card.key as HybridKey] ?? card.name } : card}
+          data={data}
+          l={labelsFor(language)}
+          wording={wording}
+        />
       ))}
     </div>
   );
@@ -225,10 +251,12 @@ function PackageCard({
   card,
   data,
   l,
+  wording,
 }: {
   card: CardSpec;
   data: PricingData;
   l: (typeof LABELS)[Language];
+  wording?: PackageCardWording;
 }) {
   const { tier } = card;
   const featured = card.recommended;
@@ -309,7 +337,7 @@ function PackageCard({
             padding: "8px 8px 4px",
           }}
         >
-          {l !== LABELS.Malayalam && (
+          {!wording && l !== LABELS.Malayalam && (
             <span
               style={text(13, 700, "rgb(146,128,106)", {
                 letterSpacing: "1.4px",
@@ -335,13 +363,18 @@ function PackageCard({
             </div>
           )}
           <div style={{ ...breakdownRow, borderTop: BREAKDOWN_BORDER, marginTop: 2, paddingTop: 2 }}>
-            <span style={text(20, 400, "rgb(0,0,0)")}>{l.loanAmount}</span>
+            <span style={text(20, 400, "rgb(0,0,0)")}>{wording?.amountLabel ?? l.loanAmount}</span>
             <span style={text(20, 700, ORANGE, { whiteSpace: "nowrap" })}>{tier.financed}</span>
           </div>
         </div>
 
         {/* EMI */}
-        <div style={row({ borderTop: RULE, marginTop: 16, paddingTop: 12 })}>
+        {wording && (
+          <span style={text(17, 400, GREEN, { lineHeight: "22px", borderTop: RULE, marginTop: 16, paddingTop: 12 })}>
+            {wording.emiNote}
+          </span>
+        )}
+        <div style={row(wording ? { marginTop: 8 } : { borderTop: RULE, marginTop: 16, paddingTop: 12 })}>
           <span style={text(21, 400, "rgb(0,0,0)", { lineHeight: "28px" })}>
             {l.emiShort(data.emiYears)}:
           </span>
